@@ -1,0 +1,10 @@
+/**
+ * 
+ */
+
+/**
+ * @author wargrey
+ *
+ */
+module eclipse {
+}
