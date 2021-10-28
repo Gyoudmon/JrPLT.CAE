@@ -63,3 +63,7 @@ local.properties
 .scala_dependencies
 .worksheet
 
+# C/C++ binaries
+*.o
+*.obj
+*.exe
