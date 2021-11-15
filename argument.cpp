@@ -1,16 +1,16 @@
-#include <iostream> /* C++ header file */
+#include <iostream> /* C++ 标准输入输出头文件 */
 
 /**
- * `main` is the entry point of an executable file
- * @param argc, short for "argument count"
- * @param argv, short for "argument vector", holds the content of arguments
+ * 程序入口必须命名为 `main`
+ * @param argc, "argument count" 的缩写，即"参数个数"的意思
+ * @param argv, "argument vector" 的缩写, 即"参数数组"的意思，包含命令行的所有输入参数
  */
 int main(int argc, char* argv[]) {
-	/* NOTE: the first argument is always the name of the executable file */
+	/* 注意: 第一个参数一定是程序的名字(可执行文件的名字，可在用 g++ 命令编译源码时用 -o 指定) */
 	std::cout<<"running: " << argv[0] <<std::endl;
 	std::cout<<"  received " << (argc - 1) <<" argumnets from user"<<std::endl;
-	
-	/* display all user input arguments to console line by line */
+
+	/* 显示所有的用户输入参数，一行一个 */
 	for (int i = 1; i < argc; i++) {
 		std::cout<<"    argv["<< i <<"]: "<<argv[i]<<std::endl;
 	}
