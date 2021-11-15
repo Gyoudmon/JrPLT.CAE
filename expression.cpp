@@ -19,10 +19,3 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
-
-int a, b;
-a = 1234;
-b = 99;
-int t = a;
-a = b;
-b = t;
