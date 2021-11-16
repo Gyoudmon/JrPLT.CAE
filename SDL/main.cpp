@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /*************************************************************************************************/
 // 窗口尺寸常量
@@ -10,7 +10,7 @@ const int WIN_HEIGHT = 600;
 const int BLOCK_LENGTH = 200;
 
 /** SDL 程序的入口可以是 `SDL_main`, 也可以是 `main` **/
-int SDL_main( int argc, char* args[] ){
+int main( int argc, char* args[] ){
     SDL_Window* window = NULL;          // SDL 窗口指针
     SDL_Renderer* renderer = NULL;      // SDL 渲染器
 
