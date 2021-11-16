@@ -1,8 +1,7 @@
 # depslib dependency file v1.0
-1637038031 source:f:\tabularasa\youthlanguage\codebase\youthlanguage\sdl\main.cpp
+1637055185 source:f:\tabularasa\youthlanguage\codebase\youthlanguage\sdl\main.cpp
 	<iostream>
 	<SDL.h>
-	<windows.h>
 
 1628610877 c:\framework\sdl2\include\sdl2\sdl_main.h
 	"SDL_stdinc.h"
@@ -375,4 +374,8 @@
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
+
+1637055303 source:f:\tabularasa\codebase\youthlanguage\sdl\main.cpp
+	<iostream>
+	<SDL.h>
 
