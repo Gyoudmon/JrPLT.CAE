@@ -375,7 +375,11 @@
 	"begin_code.h"
 	"close_code.h"
 
-1637055303 source:f:\tabularasa\codebase\youthlanguage\sdl\main.cpp
+1637140160 source:f:\tabularasa\codebase\youthlanguage\sdl\main.cpp
 	<iostream>
-	<SDL.h>
+	<SDL2/SDL.h>
+
+1637141308 source:f:\tabularasa\codebase\youthlanguage\sdl\colorspace.cpp
+	<iostream>
+	<SDL2/SDL.h>
 
