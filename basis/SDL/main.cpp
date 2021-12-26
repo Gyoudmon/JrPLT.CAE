@@ -1,5 +1,5 @@
+#include <SDL2/SDL.h>   /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
 #include <iostream>     /* C++ 标准输入输出头文件 */
-#include <SDL2/SDL.h>   /* Simple DirectMedia Layer 头文件 */
 
 /*************************************************************************************************/
 // 窗口尺寸常量
@@ -9,6 +9,7 @@ const int WIN_HEIGHT = 600;
 int main( int argc, char* args[] ){
     SDL_Window* window = NULL;      // SDL 窗口指针
     SDL_Renderer* renderer = NULL;  // SDL 渲染器
+    SDL_Event event;                // SDL
 
     // 初始化 SDL
     if (SDL_Init(SDL_INIT_VIDEO) == 0) {
@@ -23,6 +24,7 @@ int main( int argc, char* args[] ){
             SDL_RenderClear(renderer);      // 重置窗体
             SDL_RenderPresent(renderer);    // 更新窗体
 
+            // while (SDL_PollEvent(&event))
             SDL_Delay(10000);        // 等待三秒后退出
         } else {
             // 创建 SDL 窗口和渲染器失败
@@ -39,3 +41,4 @@ int main( int argc, char* args[] ){
 
     return 0;
 }
+
