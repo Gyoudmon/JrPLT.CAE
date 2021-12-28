@@ -11,4 +11,4 @@
 (define msvc-kits-version "10.0.19041.0")
 
 (define native-launcher-names '(["main.cpp"
-                                 (lib SDL2 SDL2main)]))
+                                 (config SDL2)]))
