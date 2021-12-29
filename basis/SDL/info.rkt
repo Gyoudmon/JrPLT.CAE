@@ -11,4 +11,6 @@
 (define msvc-kits-version "10.0.19041.0")
 
 (define native-launcher-names '(["main.cpp"
-                                 (config SDL2)]))
+                                 ((config SDL2)
+                                  (include (windows "C:\\opt\\SDL2-2.0.18-vc\\include"))
+                                  (libpath (windows "C:\\opt\\SDL2-2.0.18-vc\\lib\\x64")))]))
