@@ -1,4 +1,4 @@
-#include <SDL.h>   /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
+#include <SDL2/SDL.h>   /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
 #include <iostream>     /* C++ 标准输入输出头文件 */
 
 /*************************************************************************************************/
