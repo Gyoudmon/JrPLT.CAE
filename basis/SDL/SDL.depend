@@ -383,11 +383,11 @@
 	<iostream>
 	<SDL2/SDL.h>
 
-1637548654 source:g:\youthlanguage\basis\sdl\colorspace.cpp
-	<iostream>
-	<SDL2/SDL.h>
-
-1641178419 source:g:\youthlanguage\basis\sdl\main.cpp
+1641178607 source:g:\youthlanguage\basis\sdl\colorspace.cpp
 	<SDL.h>
+	<iostream>
+
+1642495745 source:g:\youthlanguage\basis\sdl\main.cpp
+	<SDL2/SDL.h>
 	<iostream>
 
