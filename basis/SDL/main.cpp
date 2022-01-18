@@ -15,7 +15,7 @@ int main( int argc, char* args[] ){
         // 创建 SDL 窗口和渲染器
         if (SDL_CreateWindowAndRenderer(WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_SHOWN, &window, &renderer) == 0) {
             bool game_is_running = true;    // 游戏主循环标志
-            SDL_Event event;                // SDL 事件
+            SDL_Event e;                    // SDL 事件
 
             // 设置窗口标题
             SDL_SetWindowTitle(window, "C++ with SDL");
@@ -27,10 +27,10 @@ int main( int argc, char* args[] ){
                 SDL_RenderClear(renderer);      // 重置窗体
                 SDL_RenderPresent(renderer);    // 更新窗体
 
-                while (SDL_PollEvent(&event)) { // 处理用户交互事件
-                    switch (event.type) {
+                while (SDL_PollEvent(&e)) { // 处理用户交互事件
+                    switch (e.type) {
                     case SDL_QUIT: {
-                        std::cout << "Program Quit after " << event.quit.timestamp / 1000.0 << "s." << std::endl;
+                        std::cout << "Quit after " << e.quit.timestamp << "ms." << std::endl;
                         game_is_running = false;
                     }; break;
                     }
