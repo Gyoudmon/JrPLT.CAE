@@ -21,10 +21,19 @@ int main( int argc, char* args[] ){
             SDL_SetWindowTitle(window, "C++ with SDL");
 
             /** 初始化完成，请开始你的代码 **/
-            while(game_is_running) { // 游戏主循环
+            while(game_is_running) {        // 游戏主循环
                 /* 渲染器清零 */
                 SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
                 SDL_RenderClear(renderer);      // 重置窗体
+
+                SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);   // 设置图形颜色
+                SDL_RenderDrawPoint(renderer, 400, 100);                    // 画点
+
+                /** 绘制三角形 **/
+                SDL_RenderDrawLine(renderer, 400, 200, 200, 400);           // 画线段
+                SDL_RenderDrawLine(renderer, 200, 400, 600, 400);
+                SDL_RenderDrawLine(renderer, 600, 400, 400, 200);
+
                 SDL_RenderPresent(renderer);    // 更新窗体
 
                 while (SDL_PollEvent(&e)) { // 处理用户交互事件
@@ -51,4 +60,3 @@ int main( int argc, char* args[] ){
 
     return 0;
 }
-
