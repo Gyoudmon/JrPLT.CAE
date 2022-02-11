@@ -1,12 +1,14 @@
 #include <SDL2/SDL.h>   /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
 #include <iostream>     /* C++ 标准输入输出头文件 */
 
+#include "rgb_blocks.h" /* 自己的头文件用 双引号 引用 */
+
 /*************************************************************************************************/
 // 窗口尺寸常量
 const int WIN_WIDTH  = 800;
 const int WIN_HEIGHT = 600;
 
-int main( int argc, char* args[] ){
+int main(int argc, char* args[]){
     SDL_Window* window = NULL;      // SDL 窗口指针
     SDL_Renderer* renderer = NULL;  // SDL 渲染器
 
@@ -17,25 +19,14 @@ int main( int argc, char* args[] ){
             bool game_is_running = true;    // 游戏主循环标志
             SDL_Event e;                    // SDL 事件
 
-            // 设置窗口标题
-            SDL_SetWindowTitle(window, "C++ with SDL");
-
             /** 初始化完成，请开始你的代码 **/
             while(game_is_running) {        // 游戏主循环
                 /* 渲染器清零 */
                 SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
-                SDL_RenderClear(renderer);      // 重置窗体
+                SDL_RenderClear(renderer);  // 重置窗体
 
-                SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);   // 设置图形颜色
-                SDL_RenderDrawPoint(renderer, 400, 100);                    // 画点
-
-                /** 绘制三角形 **/
-                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);           // 设置红色
-                SDL_RenderDrawLine(renderer, 400, 200, 200, 400);           // 画红色线段
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);           // 设置绿色
-                SDL_RenderDrawLine(renderer, 200, 400, 600, 400);           // 画绿色线段
-                SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 255);    // 设置蓝色
-                SDL_RenderDrawLine(renderer, 600, 400, 400, 200);           // 画蓝色线段
+                /** 调用自己头文件里的函数接口 **/
+                draw_rgb_blocks(argc, args, window, renderer);
 
                 SDL_RenderPresent(renderer);    // 更新窗体
 
