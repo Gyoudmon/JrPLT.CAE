@@ -11,12 +11,12 @@ using namespace WarGrey::STEM;
 /*************************************************************************************************/
 #define UCHAR(v) ((unsigned char)flround(v * 255.0))
 
-static int sdl_set_render_draw_color(SDL_Renderer* renderer, double r, double g, double b, unsigned char a) {
-    return SDL_SetRenderDrawColor(renderer, UCHAR(r), UCHAR(g), UCHAR(b), a);
+static int sdl_set_render_draw_color(SDL_Renderer* renderer, double r, double g, double b, double a) {
+    return SDL_SetRenderDrawColor(renderer, UCHAR(r), UCHAR(g), UCHAR(b), UCHAR(a));
 }
 
 /*************************************************************************************************/
-static int set_render_color_from_hue(SDL_Renderer* renderer, double hue, double chroma, double m, unsigned char a) {
+static int set_render_color_from_hue(SDL_Renderer* renderer, double hue, double chroma, double m, double a) {
     double r = m;
     double g = m;
     double b = m;
@@ -40,7 +40,7 @@ static int set_render_color_from_hue(SDL_Renderer* renderer, double hue, double 
     return sdl_set_render_draw_color(renderer, r, g, b, a);
 }
 
-static int set_render_color_from_hsi_sector(SDL_Renderer* renderer, double hue, double saturation, double intensity, char color_component, unsigned char alpha) {
+static int set_render_color_from_hsi_sector(SDL_Renderer* renderer, double hue, double saturation, double intensity, char color_component, double alpha) {
     double cosH_60H = 2.0; // if hue == 0.0 or hue == 120.0;
 
     if ((hue != 0.0) && (hue != 120.0)) {
@@ -62,7 +62,7 @@ static int set_render_color_from_hsi_sector(SDL_Renderer* renderer, double hue, 
 }
 
 /*************************************************************************************************/
-int WarGrey::STEM::HSV_SetRenderDrawColor(SDL_Renderer* renderer, double hue, double saturation, double value, unsigned char alpha) {
+int WarGrey::STEM::HSV_SetRenderDrawColor(SDL_Renderer* renderer, double hue, double saturation, double value, double alpha) {
     double chroma = saturation * value;
     double m = value - chroma;
     
@@ -70,7 +70,7 @@ int WarGrey::STEM::HSV_SetRenderDrawColor(SDL_Renderer* renderer, double hue, do
 }
 
 /*************************************************************************************************/
-int WarGrey::STEM::HSL_SetRenderDrawColor(SDL_Renderer* renderer, double hue, double saturation, double lightness, unsigned char alpha) {
+int WarGrey::STEM::HSL_SetRenderDrawColor(SDL_Renderer* renderer, double hue, double saturation, double lightness, double alpha) {
     double chroma = saturation * (1.0 - flabs(lightness * 2.0 - 1.0));
     double m = lightness - chroma * 0.5;
     
@@ -78,7 +78,7 @@ int WarGrey::STEM::HSL_SetRenderDrawColor(SDL_Renderer* renderer, double hue, do
 }
 
 /*************************************************************************************************/
-int WarGrey::STEM::HSI_SetRenderDrawColor(SDL_Renderer* renderer, double hue, double saturation, double intensity, unsigned char alpha) {
+int WarGrey::STEM::HSI_SetRenderDrawColor(SDL_Renderer* renderer, double hue, double saturation, double intensity, double alpha) {
     if ((saturation == 0.0) || flisnan(saturation)) {
         return sdl_set_render_draw_color(renderer, intensity, intensity, intensity, alpha);
     } else if (hue < 120.0) {
