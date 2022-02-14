@@ -3,15 +3,16 @@
 
 using namespace WarGrey::STEM;
 
-inline static double quick_degrees_to_radians(double degrees) {
-	return degrees * pi / 180.0;
+/*************************************************************************************************/
+inline static float quick_degrees_to_radians(float degrees) {
+	return degrees * pi / 180.0f;
 }
 
 /*************************************************************************************************/
-double WarGrey::STEM::radians_to_degrees(double radians) {
-	return (radians / pi) * 180.0;
+float WarGrey::STEM::radians_to_degrees(float radians) {
+	return (radians / pi) * 180.0f;
 }
 
-double WarGrey::STEM::degrees_to_radians(double degrees) {
+float WarGrey::STEM::degrees_to_radians(float degrees) {
 	return quick_degrees_to_radians(degrees);
 }

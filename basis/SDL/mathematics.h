@@ -2,8 +2,8 @@
 #define WARGREY_STEM_MATH
 
 namespace WarGrey::STEM {
-	double radians_to_degrees(double degrees);
-	double degrees_to_radians(double degrees);
+	float radians_to_degrees(float degrees);
+	float degrees_to_radians(float degrees);
 }
 
 #endif
