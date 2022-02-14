@@ -9,12 +9,13 @@ using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 // 色块边长常量
-const int BLOCK_LENGTH = 20;
-const int RADIUS = 200;
+const int BLOCK_LENGTH = 32;
+const float RADIUS = 256.0f;
 
 int draw_rainbow(int argc, char* args[], SDL_Window* window, SDL_Renderer* renderer) {
     int width, height;
-    SDL_Rect hsb; // 色块变量（矩形）
+    SDL_Rect hsb; // 色块变量（矩形
+    int unused;
     
     
     SDL_SetWindowTitle(window, "Rainbow");                   // 设置标题
@@ -23,11 +24,11 @@ int draw_rainbow(int argc, char* args[], SDL_Window* window, SDL_Renderer* rende
     
     hsb.w = hsb.h = BLOCK_LENGTH;
 
-    for (double hue = 0.0; hue < 360.0; hue += 10.0) {
-        HSV_SetRenderDrawColor(renderer, hue, 1.0, 1.0, 1.0);
+    for (float hue = 0.0; hue < 360.0; hue += 10.0) {
+        HSV_SetRenderDrawColor(renderer, hue, 1.0F, 1.0F, 1.0F);
         
-        hsb.x = (width - BLOCK_LENGTH) / 2 + RADIUS * flcos(degrees_to_radians(hue));
-        hsb.y = (height - BLOCK_LENGTH) / 2 + RADIUS * flsin(degrees_to_radians(hue));
+        hsb.x = (width - BLOCK_LENGTH) / 2.0f + RADIUS * flcos(degrees_to_radians(hue - 90.0));
+        hsb.y = (height - BLOCK_LENGTH) / 2.0f + RADIUS * flsin(degrees_to_radians(hue - 90.0));
         
         SDL_RenderFillRect(renderer, &hsb);
     }
