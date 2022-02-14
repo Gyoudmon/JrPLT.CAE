@@ -34,8 +34,4 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
-  named-colors
-  
-  (let ([target (build-path (find-system-path 'desk-dir) "named-colors.png")])
-    (bitmap-save named-colors target)
-    (printf "saved to : ~a~n" target)))
+  named-colors)

@@ -2,9 +2,6 @@
 
 (require bitmap)
 
-(require racket/format)
-(require racket/list)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define bitmap-car : (-> Nonnegative-Real Nonnegative-Real Nonnegative-Real Bitmap)
   (lambda [width height radius]
@@ -33,8 +30,4 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
-  force-diagram
-  
-  (let ([target (build-path (find-system-path 'desk-dir) "force-diagram.png")])
-    (bitmap-save force-diagram target)
-    (printf "saved to : ~a~n" target)))
+  force-diagram)

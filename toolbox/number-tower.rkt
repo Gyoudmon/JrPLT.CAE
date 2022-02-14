@@ -61,8 +61,4 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
-  number-tower
-  
-  (let ([target (build-path (find-system-path 'desk-dir) "number-tower.png")])
-    (bitmap-save number-tower target)
-    (printf "saved to : ~a~n" target)))
+  number-tower)
