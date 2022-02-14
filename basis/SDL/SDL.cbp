@@ -32,7 +32,12 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="colorspace.cpp" />
+		<Unit filename="colorspace.h" />
+		<Unit filename="fixnum.h" />
+		<Unit filename="flonum.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="rainbow.cpp" />
+		<Unit filename="rainbow.h" />
 		<Extensions>
 			<DoxyBlocks>
 				<comment_style block="0" line="0" />

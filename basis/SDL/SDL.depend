@@ -391,3 +391,18 @@
 	<SDL2/SDL.h>
 	<iostream>
 
+1644745716 source:a:\laboratory\youthlanguage\basis\sdl\main.cpp
+	<SDL2/SDL.h>
+	<iostream>
+	"rainbow.h"
+
+1644745623 a:\laboratory\youthlanguage\basis\sdl\rainbow.h
+
+1644753772 source:a:\laboratory\youthlanguage\basis\sdl\rainbow.cpp
+	<SDL2/SDL.h>
+	"colorspace.h"
+	"rainbow.h"
+
+1644751328 a:\laboratory\youthlanguage\basis\sdl\colorspace.h
+	<SDL2/SDL.h>
+

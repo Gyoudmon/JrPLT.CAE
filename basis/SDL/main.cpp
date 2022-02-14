@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>   /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
 #include <iostream>     /* C++ 标准输入输出头文件 */
 
-#include "rgb_blocks.h" /* 自己的头文件用 双引号 引用 */
+#include "rainbow.h" /* 自己的头文件用 双引号 引用 */
 
 /*************************************************************************************************/
 // 窗口尺寸常量
@@ -26,7 +26,7 @@ int main(int argc, char* args[]){
                 SDL_RenderClear(renderer);  // 重置窗体
 
                 /** 调用自己头文件里的函数接口 **/
-                draw_rgb_blocks(argc, args, window, renderer);
+                draw_rainbow(argc, args, window, renderer);
 
                 SDL_RenderPresent(renderer);    // 更新窗体
 
