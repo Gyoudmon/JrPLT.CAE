@@ -8,30 +8,35 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-// 色块边长常量
-const int BLOCK_LENGTH = 32;
-const float RADIUS = 256.0f;
+// 彩虹常量
+const float RAINBOW_RADIUS = 128.0F;
+const float RAINBOW_WIDTH = 256.0F;
+
+// 取样参数
+const float HUE_DELTA = 1.0F;
+const float SAMPLE_DELTA = 0.1F;
 
 int draw_rainbow(int argc, char* args[], SDL_Window* window, SDL_Renderer* renderer) {
     int width, height;
-    SDL_Rect hsb; // 色块变量（矩形
-    int unused;
+    float x, y;
     
+    SDL_SetWindowTitle(window, "Rainbow");                    // 设置标题
+    SDL_GetWindowSize(window, &width, &height);               // 获知窗口大小
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE); // 设置混色模式, 不要混色！！！
     
-    SDL_SetWindowTitle(window, "Rainbow");                   // 设置标题
-    SDL_GetWindowSize(window, &width, &height);              // 获知窗口大小
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD); // 设置混色模式，RGB 是加色模型
-    
-    hsb.w = hsb.h = BLOCK_LENGTH;
+    for (float hue = 0.0f; hue < 360.0f; hue += HUE_DELTA) {
+        for (float theta = 0.0f; theta < 360.0f; theta += SAMPLE_DELTA) {
+            float r = (360.0F - hue) / 360.0F * RAINBOW_WIDTH + RAINBOW_RADIUS;
 
-    for (float hue = 0.0; hue < 360.0; hue += 10.0) {
-        HSV_SetRenderDrawColor(renderer, hue, 1.0F, 1.0F, 1.0F);
+            HSV_SetRenderDrawColor(renderer, hue - 75.0F, 1.0F, 1.0F, 1.0F);
         
-        hsb.x = (width - BLOCK_LENGTH) / 2.0f + RADIUS * flcos(degrees_to_radians(hue - 90.0));
-        hsb.y = (height - BLOCK_LENGTH) / 2.0f + RADIUS * flsin(degrees_to_radians(hue - 90.0));
+            x = width / 2.0f + r * flcos(degrees_to_radians(theta));
+            y = height / 2.0f + r * flsin(degrees_to_radians(theta));
         
-        SDL_RenderFillRect(renderer, &hsb);
+            SDL_RenderDrawPoint(renderer, x, y);
+        }
     }
 
     return 0;
 }
+
