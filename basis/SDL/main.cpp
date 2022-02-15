@@ -3,7 +3,7 @@
 
 /* 自己的头文件用 双引号 引用 */
 #include "rainbow.h"
-#include "color_wheel.h"
+#include "contrast_blocks.h"
 
 /*************************************************************************************************/
 // 窗口尺寸常量
@@ -29,7 +29,8 @@ int main(int argc, char* args[]){
 
                 /** 调用自己头文件里的函数接口 **/
                 //draw_color_wheel(argc, args, window, renderer);
-                draw_rainbow(argc, args, window, renderer);
+                //draw_rainbow(argc, args, window, renderer);
+                draw_contrast_blocks(argc, args, window, renderer);
 
                 SDL_RenderPresent(renderer);    // 更新窗体
 
