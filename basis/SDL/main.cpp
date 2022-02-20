@@ -3,7 +3,6 @@
 
 /* 自己的头文件用 双引号 引用 */
 #include "rainbow.h"
-#include "contrast_blocks.h"
 
 /*************************************************************************************************/
 // 窗口尺寸常量
@@ -28,10 +27,8 @@ int main(int argc, char* args[]){
                 SDL_RenderClear(renderer);  // 重置窗体
 
                 /** 调用自己头文件里的函数接口 **/
-                //draw_color_wheel(argc, args, window, renderer);
-                //draw_rainbow(argc, args, window, renderer);
-                draw_contrast_blocks(argc, args, window, renderer);
-
+                draw_rainbow(argc, args, window, renderer);
+                
                 SDL_RenderPresent(renderer);    // 更新窗体
 
                 while (SDL_PollEvent(&e)) { // 处理用户交互事件
@@ -45,11 +42,11 @@ int main(int argc, char* args[]){
             }
         } else {
             // 创建 SDL 窗口和渲染器失败
-            std::cout << "Failed to create the window and renderer: " << SDL_GetError() << std::endl;
+            std::cout << "Failed to create the window and renderer: " << std::string(SDL_GetError()) << std::endl;
         }
     } else {
         // SDL 初始化失败
-        std::cout << "Failed to initialize the SDL: " << SDL_GetError() << std::endl;
+        std::cout << "Failed to initialize the SDL: " << std::string(SDL_GetError()) << std::endl;
     }
 
     SDL_DestroyRenderer(renderer);  // 销毁 SDL 渲染器

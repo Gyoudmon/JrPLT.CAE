@@ -4,7 +4,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define tower-layer : (->* (String String Positive-Byte) (Real Real #:natural? Boolean) Bitmap)
- (lambda [caption keyword level [width 100.0] [offset 4.0] #:natural? [natural? #false]]
+ (lambda [caption keyword level [width 128.0] [offset 4.0] #:natural? [natural? #false]]
    (define label (bitmap-text caption))
    (define type (bitmap-text keyword #:color 'blue))
    (define gridsize (bitmap-height type))
@@ -41,7 +41,7 @@
                      4.0 4.0 label)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(define integer-tower : Bitmap
+(define fixnum-tower : Bitmap
   (bitmap-vc-append
     (tower-layer "字节" "Char" 1)
     (tower-layer "短整型" "Short" 2)
@@ -50,15 +50,11 @@
 
 (define flonum-tower : Bitmap
   (bitmap-vc-append
-    (tower-layer "单精度浮点数" "float" 3)
-    (tower-layer "双精度浮点数" "double" 4)))
-
-(define number-tower : Bitmap
-  (bitmap-ht-append
-   #:gapsize 16.0
-   (tower-wrap "整数" integer-tower)
-   (tower-wrap "浮点数" flonum-tower)))
+    (tower-layer "单精度浮点数" "float" 1)
+    (tower-layer "双精度浮点数" "double" 2)
+    (tower-layer "扩展精度浮点数" "long double" 3)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
-  number-tower)
+  fixnum-tower
+  flonum-tower)

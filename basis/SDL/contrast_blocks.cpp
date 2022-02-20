@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 
 #include "rgb_blocks.h"
 #include "colorspace.h"
@@ -18,7 +19,7 @@ int draw_contrast_blocks(int argc, char* args[], SDL_Window* window, SDL_Rendere
     int width, height;
     float hue0 = 0.0F;
     char title[256];
-    
+
     if (argc > 1) {
         hue0 = float(std::atof(args[1]));
     }
