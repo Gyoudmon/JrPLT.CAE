@@ -11,11 +11,12 @@ int main(int argc, char* argv[]) {
     /* 假设你已经学了两年编程 */
     std::cout<<"You've already been learning coding for "<<coding_age<<" years!"<<std::endl;
 
-	/* 注意：跟在数学中的意义不同，"=" 在 C++ 中表示"赋值"，而不是两边相等 */
-	coding_age = coding_age + 3; /* coding_age 自增三年 */
+    /* 注意：跟在数学中的意义不同，"=" 在 C++ 中表示"赋值"，而不是两边相等 */
+    coding_age = coding_age + 3; /* coding_age 自增三年 */
 
-	/* 3年后你的编程年龄就有[m]年啦! */
-	std::cout<<"Your coding age is "<<coding_age<<" three years later!"<<std::endl;
+    /* 3年后你的编程年龄就有[m]年啦! */
+    std::cout<<"Your coding age is "<<coding_age<<" three years later!"<<std::endl;
 
-	return 0;
+    return 0;
 }
+

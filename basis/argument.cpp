@@ -6,14 +6,15 @@
  * @param argv, "argument vector" 的缩写, 即"参数数组"的意思，包含命令行的所有输入参数
  */
 int main(int argc, char* argv[]) {
-	/* 注意: 第一个参数一定是程序的名字(可执行文件的名字，可在用 g++ 命令编译源码时用 -o 指定) */
-	std::cout<<"running: " << argv[0] <<std::endl;
-	std::cout<<"  received " << (argc - 1) <<" argumnets from user"<<std::endl;
+    /* 注意: 第一个参数一定是程序的名字(可执行文件的名字，可在用 g++ 命令编译源码时用 -o 指定) */
+    std::cout<<"running: " << argv[0] <<std::endl;
+    std::cout<<"  received " << (argc - 1) <<" argumnets from user"<<std::endl;
 
-	/* 显示所有的用户输入参数，一行一个 */
-	for (int i = 1; i < argc; i++) {
-		std::cout<<"    argv["<< i <<"]: "<<argv[i]<<std::endl;
-	}
-
-	return 0;
+    /* 显示所有的用户输入参数，一行一个 */
+    for (int i = 1; i < argc; i++) {
+        std::cout<<"    argv["<< i <<"]: "<<argv[i]<<std::endl;
+    }
+	
+    return 0;
 }
+
