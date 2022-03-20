@@ -2,7 +2,7 @@
 #include <iostream>     /* C++ 标准输入输出头文件 */
 
 /* 自己的头文件用 双引号 引用 */
-#include "random_walk.h"
+#include "self_avoid_walk.h"
 
 /*************************************************************************************************/
 // 窗口尺寸常量
@@ -30,7 +30,7 @@ static unsigned int trigger_timer_event(unsigned int interval, void* datum) {
     user_event.code = 0;
 
     // 替换成自己头文件里需要执行的函数名称
-    user_event.data1 = reinterpret_cast<void*>(update_random_walk);
+    user_event.data1 = reinterpret_cast<void*>(update_self_avoid_walk);
     // 顺便把用户数据也还给自己的函数
     user_event.data2 = datum;
 
@@ -73,7 +73,7 @@ int main(int argc, char* args[]){
     }
 
     // 初始化自己的动画，并将返回值作为用户数据传给定时器
-    datum = random_walk_initialize(argc, args, window, renderer);
+    datum = self_avoid_walk_initialize(argc, args, window, renderer);
     if (SDL_AddTimer(TIMER_INTERVAL, trigger_timer_event, datum) == 0) {
         std::cout << "Failed to create the timer: " << std::string(SDL_GetError()) << std::endl;
         exit(1);
