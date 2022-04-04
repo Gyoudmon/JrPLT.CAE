@@ -2,7 +2,7 @@
 
 (require bitmap)
 
-(define R : Flonum 64.0)
+(define R : Flonum 32.0)
 
 (define regular-polygon : (-> Index Flonum Bitmap)
   (lambda [n pi-m]
