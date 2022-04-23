@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
-#include <cstdlib>
 
 #include "diffusion.h"
+#include "random.h"
 
 static int width;
 static int height;
@@ -38,7 +38,7 @@ void update_diffusion(unsigned int count, unsigned int interval, unsigned long l
     for (int i = 0; i < PARTICLE_COUNT; i++) {
         // 访问数组元素
         if ((xs[i] > 0) && (xs[i] < width) && (ys[i] > 0) && (ys[i] < height)) {
-            int chance = rand() % 100 + 1; // 产生位于区间 [1, 100] 的随机数
+            int chance = random_uniform(1, 100); // 产生位于区间 [1, 100] 的随机数
 
             if (chance < 30) {
                 ys[i]++;

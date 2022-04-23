@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
-#include <cstdlib>     /* 标准库，内含 rand() 用于生成随机数 */
 
+#include "random.h"
 #include "self_avoid_walk.h"
 
 static int width;
@@ -34,8 +34,6 @@ void* self_avoid_walk_initialize(int argc, char* args[], SDL_Window* window, SDL
     SDL_GetWindowSize(window, &width, &height);                 // 获知窗口大小
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);   // 设置混色模式, 不要混色！！！
     
-    sranddev();
-
     // 确保游戏世界被绘制在屏幕中心
     world_x = (width - WORLD_LENGTH) / 2;
     world_y = (height - WORLD_LENGTH) / 2;
@@ -87,7 +85,7 @@ void update_self_avoid_walk(unsigned int count, unsigned int interval, unsigned 
                 x = cur_x;
                 y = cur_y;
 
-                switch (rand() % 4) {
+                switch (random_raw() % 4) {
                     case 0: x -= 1; break;
                     case 1: x += 1; break;
                     case 2: y -= 1; break;
@@ -101,6 +99,7 @@ void update_self_avoid_walk(unsigned int count, unsigned int interval, unsigned 
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
     }
 
+    // 绘制路径
     grids[x][y] = 1;
     for (int i = 0; i < WORLD_SIZE; i++) {
         for (int j = 0; j < WORLD_SIZE; j++) {
