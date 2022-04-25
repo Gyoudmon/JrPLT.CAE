@@ -1,7 +1,6 @@
-#include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
+#include "self_avoid_walk.h"
 
 #include "random.h"
-#include "self_avoid_walk.h"
 
 static int width;
 static int height;
@@ -60,8 +59,7 @@ void* self_avoid_walk_initialize(int argc, char* args[], SDL_Window* window, SDL
     return NULL;
 }
 
-void update_self_avoid_walk(unsigned int count, unsigned int interval, unsigned long long uptime,
-        void* datum, SDL_Renderer* renderer) {
+void update_self_avoid_walk(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_Renderer* renderer) {
     // 绘制游戏世界的网格
     for (int i = 0; i <= WORLD_SIZE; i++) {
         int xi = world_x + i * GRID_SIZE;
@@ -85,7 +83,7 @@ void update_self_avoid_walk(unsigned int count, unsigned int interval, unsigned 
                 x = cur_x;
                 y = cur_y;
 
-                switch (random_raw() % 4) {
+                switch (random_uniform(0, 3) % 4) {
                     case 0: x -= 1; break;
                     case 1: x += 1; break;
                     case 2: y -= 1; break;

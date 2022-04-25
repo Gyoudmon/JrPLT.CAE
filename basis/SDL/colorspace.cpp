@@ -89,3 +89,12 @@ int WarGrey::STEM::HSI_SetRenderDrawColor(SDL_Renderer* renderer, float hue, flo
         return set_render_color_from_hsi_sector(renderer, hue - 240.0, saturation, intensity, 'b', alpha);
     }
 }
+
+/*************************************************************************************************/
+void WarGrey::STEM::RGB_FromHexadecimal(unsigned int hex, unsigned char* r, unsigned char* g, unsigned char* b, unsigned char* a) {
+    (*r) = (unsigned char)((hex >> 24) & 0xFF);
+    (*g) = (unsigned char)((hex >> 16) & 0xFF);
+    (*b) = (unsigned char)((hex >> 8) & 0xFF);
+    (*a) = (unsigned char)(hex & 0xFF);
+}
+

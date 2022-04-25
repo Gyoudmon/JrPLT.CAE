@@ -11,7 +11,7 @@
                                  ((config SDL2)
                                   (include [windows "C:\\opt\\SDL2-2.0.18-vc\\include"])
                                   (libpath [windows "C:\\opt\\SDL2-2.0.18-vc\\lib\\x64"]))]
-                                ["animated_main.cpp" console ;desktop
+                                ["GamePlayer.cpp" console ;desktop
                                  ((config SDL2)
                                   (include [windows "C:\\opt\\SDL2-2.0.18-vc\\include"])
                                   (libpath [windows "C:\\opt\\SDL2-2.0.18-vc\\lib\\x64"]))]))

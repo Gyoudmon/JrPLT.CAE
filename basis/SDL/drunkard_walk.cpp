@@ -1,7 +1,6 @@
-#include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
-#include <cstdlib>
-
 #include "drunkard_walk.h"
+
+#include "random.h"
 
 static int x;
 static int y;
@@ -21,9 +20,9 @@ void* drunkard_walk_initialize(int argc, char* args[], SDL_Window* window, SDL_R
     return NULL;
 }
 
-void update_drunkard_walk(unsigned int count, unsigned int interval, unsigned long long uptime, void* datum, SDL_Renderer* renderer) {
+void update_drunkard_walk(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_Renderer* renderer) {
     if ((x > 0) && (x < width) && (y > 0) && (y < height)) {
-        int chance = rand() % 100 + 1; // 产生位于区间 [1, 100] 的随机数
+        int chance = random_raw() % 100 + 1; // 产生位于区间 [1, 100] 的随机数
 
         if (chance < 40) {
             x--; // x = x - 1;

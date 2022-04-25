@@ -11,7 +11,7 @@ const int WIN_HEIGHT = 800;
 
 int main(int argc, char* args[]){
     SDL_Window* window = NULL;      // SDL 窗口指针
-    SDL_Renderer* renderer = NULL;  // SDL 渲染器
+    SDL_Renderer* renderer = NULL;  // SDL 渲染器指针
 
     // 初始化 SDL
     if (SDL_Init(SDL_INIT_VIDEO) == 0) {
@@ -55,3 +55,4 @@ int main(int argc, char* args[]){
 
     return 0;
 }
+

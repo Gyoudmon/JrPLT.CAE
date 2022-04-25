@@ -1,6 +1,5 @@
-#include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
-
 #include "diffusion.h"
+
 #include "random.h"
 
 static int width;
@@ -34,7 +33,7 @@ void* diffusion_initialize(int argc, char* args[], SDL_Window* window, SDL_Rende
     return NULL;
 }
 
-void update_diffusion(unsigned int count, unsigned int interval, unsigned long long uptime, void* datum, SDL_Renderer* renderer) {
+void update_diffusion(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_Renderer* renderer) {
     for (int i = 0; i < PARTICLE_COUNT; i++) {
         // 访问数组元素
         if ((xs[i] > 0) && (xs[i] < width) && (ys[i] > 0) && (ys[i] < height)) {

@@ -1,6 +1,5 @@
-#include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
-
 #include "random_walk.h"
+
 #include "random.h"
 
 static int x;
@@ -21,8 +20,7 @@ void* random_walk_initialize(int argc, char* args[], SDL_Window* window, SDL_Ren
     return NULL;
 }
 
-void update_random_walk(unsigned int count, unsigned int interval, unsigned long long uptime,
-        void* datum, SDL_Renderer* renderer) {
+void update_random_walk(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_Renderer* renderer) {
     if ((x > 0) && (x < width) && (y > 0) && (y < height)) {
         /**
          * random_raw() 随机产生一个整数
