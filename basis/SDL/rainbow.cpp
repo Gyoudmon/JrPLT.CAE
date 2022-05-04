@@ -1,9 +1,9 @@
 #include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
 
-#include "rainbow.h"
-#include "flonum.h"
-#include "mathematics.h"
-#include "colorspace.h"
+#include "rainbow.hpp"
+#include "flonum.hpp"
+#include "mathematics.hpp"
+#include "colorspace.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -39,3 +39,4 @@ int draw_rainbow(int argc, char* args[], SDL_Window* window, SDL_Renderer* rende
 
     return 0;
 }
+

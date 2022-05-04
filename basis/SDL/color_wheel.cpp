@@ -1,9 +1,9 @@
 #include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
 
-#include "colorspace.h"
-#include "color_wheel.h"
-#include "flonum.h"
-#include "mathematics.h"
+#include "colorspace.hpp"
+#include "color_wheel.hpp"
+#include "flonum.hpp"
+#include "mathematics.hpp"
 
 using namespace WarGrey::STEM;
 

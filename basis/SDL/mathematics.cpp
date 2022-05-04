@@ -1,5 +1,5 @@
-#include "flonum.h"
-#include "mathematics.h"
+#include "flonum.hpp"
+#include "mathematics.hpp"
 
 using namespace WarGrey::STEM;
 

@@ -1,5 +1,5 @@
-#include "game.h"          // 放最前面以兼容 maxOS
-#include "colorspace.h"
+#include "game.hpp"          // 放最前面以兼容 maxOS
+#include "colorspace.hpp"
 
 #include <iostream>
 
@@ -15,7 +15,6 @@ using namespace WarGrey::STEM;
 #define Call_With_Safe_Exit(init, message, quit) \
     Call_With_Error_Message(init, message); \
     atexit(quit);
-
 
 #define Call_For_Variable(id, init, failure, message) \
     id = init; \
@@ -64,7 +63,7 @@ SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window*
     SDL_Texture* texture;
 
     Call_With_Error_Message(SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_SHOWN, window, renderer),
-         "Failed to create the window and renderer: ");
+        "Failed to create the window and renderer: ");
     
     Call_For_Variable(texture,
         SDL_CreateTexture((*renderer), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height),

@@ -1,6 +1,6 @@
-#include "random_walk.h"
+#include "random_walk.hpp"
 
-#include "random.h"
+#include "random.hpp"
 
 static int x;
 static int y;

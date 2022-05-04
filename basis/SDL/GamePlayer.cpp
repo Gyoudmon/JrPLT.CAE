@@ -1,5 +1,5 @@
 /* 自己的头文件用 双引号 引用, 放最前面以兼容 macOS */
-#include "self_avoid_walk.h"
+#include "self_avoid_walk.hpp"
 
 #include <iostream>             /* C++ 标准输入输出头文件 */
 

@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>   /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
 
-#include "line.h"
+#include "line.hpp"
 
 /*************************************************************************************************/
 int draw_dot_and_line(int argc, char* argv[], SDL_Window* window, SDL_Renderer* renderer){

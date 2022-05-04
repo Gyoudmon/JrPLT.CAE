@@ -1,6 +1,6 @@
-#include "self_avoid_walk.h"
+#include "self_avoid_walk.hpp"
 
-#include "random.h"
+#include "random.hpp"
 
 static int width;
 static int height;

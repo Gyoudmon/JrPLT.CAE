@@ -1,6 +1,6 @@
-#include "diffusion.h"
+#include "diffusion.hpp"
 
-#include "random.h"
+#include "random.hpp"
 
 static int width;
 static int height;

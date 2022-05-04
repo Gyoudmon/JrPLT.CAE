@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
 
-#include "rgb_blocks.h"
+#include "rgb_blocks.hpp"
 
 /*************************************************************************************************/
 // 色块边长常量

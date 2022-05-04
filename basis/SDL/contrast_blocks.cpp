@@ -3,8 +3,8 @@
 #include <cstring>
 #include <cstdio>
 
-#include "rgb_blocks.h"
-#include "colorspace.h"
+#include "rgb_blocks.hpp"
+#include "colorspace.hpp"
 
 using namespace WarGrey::STEM;
 
