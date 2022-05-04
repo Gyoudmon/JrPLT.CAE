@@ -2,6 +2,9 @@
 
 #include "random.hpp"
 
+using namespace WarGrey::STEM;
+
+/*************************************************************************************************/
 static int width;
 static int height;
 

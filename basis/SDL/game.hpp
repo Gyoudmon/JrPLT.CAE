@@ -1,5 +1,5 @@
-#ifndef _SYNTAX_SUGAR_H
-#define _SYNTAX_SUGAR_H
+#ifndef _SYNTAX_GAME_H
+#define _SYNTAX_GAME_H
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
