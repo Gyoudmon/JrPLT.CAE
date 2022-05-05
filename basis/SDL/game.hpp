@@ -7,6 +7,7 @@
 #include <cstdint>
 
 namespace WarGrey::STEM {
+    /**********************************************************************************************/
     typedef struct timer_frame {
         uint32_t interval;
         uint32_t count;
@@ -21,12 +22,19 @@ namespace WarGrey::STEM {
         timer_frame_t frame;
     } timer_parcel_t;
 
-    void game_initialize(uint32_t flags);
+    /**********************************************************************************************/
+    void game_initialize(uint32_t flags, int fontsize = 24);
     SDL_Texture* game_create_world(int width, int height, SDL_Window** window, SDL_Renderer** renderer);
     uint32_t game_start(uint32_t fps, timer_update_t update_game_world, void* user_datum);
     
     void game_world_reset(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t fgcolor, uint32_t bgcolor);
     void game_world_refresh(SDL_Renderer* renderer, SDL_Texture* texture);
+    
+    TTF_Font* game_create_font(const char* face, int fontsize);
+    void game_font_destroy(TTF_Font* font);
+
+    /**********************************************************************************************/
+    extern TTF_Font* GAME_DEFAULT_FONT;
 }
 
 #endif

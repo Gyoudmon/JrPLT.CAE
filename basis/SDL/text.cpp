@@ -26,6 +26,15 @@ using namespace WarGrey::STEM;
     if (pool != chpool) delete[] pool;
 
 /*************************************************************************************************/
+static TTF_Font* game_default_font = NULL;
+
+static void game_text_initialize() {
+    if (game_default_font == NULL) {
+        game_default_font = TTF_OpenFont("Sans.ttf", 24);
+    }
+}
+
+/*************************************************************************************************/
 std::string WarGrey::STEM::game_create_string(const char* fmt, ...) {
     VSNPRINT(s, fmt);
 
@@ -34,5 +43,6 @@ std::string WarGrey::STEM::game_create_string(const char* fmt, ...) {
 
 /*************************************************************************************************/
 void WarGrey::STEM::game_text_size(TTF_Font* font, int* width, int* height, const char* fmt, ...) {
+    game_text_initialize();
 }
 
