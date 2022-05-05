@@ -398,11 +398,135 @@
 
 1644745623 a:\laboratory\youthlanguage\basis\sdl\rainbow.h
 
-1644753772 source:a:\laboratory\youthlanguage\basis\sdl\rainbow.cpp
+1651654862 source:a:\laboratory\youthlanguage\basis\sdl\rainbow.cpp
 	<SDL2/SDL.h>
-	"colorspace.h"
-	"rainbow.h"
+	"rainbow.hpp"
+	"flonum.hpp"
+	"mathematics.hpp"
+	"colorspace.hpp"
 
 1644751328 a:\laboratory\youthlanguage\basis\sdl\colorspace.h
 	<SDL2/SDL.h>
+
+1651654768 source:a:\laboratory\youthlanguage\basis\sdl\color_wheel.cpp
+	<SDL2/SDL.h>
+	"colorspace.hpp"
+	"color_wheel.hpp"
+	"flonum.hpp"
+	"mathematics.hpp"
+
+1650784581 a:\laboratory\youthlanguage\basis\sdl\colorspace.hpp
+	<SDL2/SDL.h>
+
+1644892052 a:\laboratory\youthlanguage\basis\sdl\color_wheel.hpp
+
+1644764993 a:\laboratory\youthlanguage\basis\sdl\flonum.hpp
+	<cmath>
+	<limits>
+	<cstdlib>
+
+1651654979 a:\laboratory\youthlanguage\basis\sdl\mathematics.hpp
+
+1651654420 source:a:\laboratory\youthlanguage\basis\sdl\colorspace.cpp
+	<SDL2/SDL.h>
+	<cmath>
+	"colorspace.hpp"
+	"flonum.hpp"
+	"fixnum.hpp"
+
+1644765010 a:\laboratory\youthlanguage\basis\sdl\fixnum.hpp
+	<cmath>
+	<cstdlib>
+
+1651734019 source:a:\laboratory\youthlanguage\basis\sdl\contrast_blocks.cpp
+	<SDL2/SDL.h>
+	<cstdlib>
+	<cstring>
+	<cstdio>
+	"rgb_blocks.hpp"
+	"colorspace.hpp"
+	"text.hpp"
+
+1644563478 a:\laboratory\youthlanguage\basis\sdl\rgb_blocks.hpp
+
+1651722095 a:\laboratory\youthlanguage\basis\sdl\text.hpp
+	<SDL2/SDL_ttf.h>
+	<string>
+	<cstdint>
+
+1651730248 source:a:\laboratory\youthlanguage\basis\sdl\diffusion.cpp
+	"diffusion.hpp"
+	"random.hpp"
+
+1651654939 a:\laboratory\youthlanguage\basis\sdl\diffusion.hpp
+	"game.hpp"
+
+1651656400 a:\laboratory\youthlanguage\basis\sdl\game.hpp
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	<cstdint>
+
+1651656454 a:\laboratory\youthlanguage\basis\sdl\random.hpp
+
+1651721615 source:a:\laboratory\youthlanguage\basis\sdl\game.cpp
+	"game.hpp"
+	"colorspace.hpp"
+	<iostream>
+
+1651730637 source:a:\laboratory\youthlanguage\basis\sdl\gameplayer.cpp
+	"self_avoid_walk.hpp"
+	<iostream>
+
+1651654996 a:\laboratory\youthlanguage\basis\sdl\self_avoid_walk.hpp
+	"game.hpp"
+
+1651730290 source:a:\laboratory\youthlanguage\basis\sdl\drunkard_walk.cpp
+	"drunkard_walk.hpp"
+	"random.hpp"
+
+1651654947 a:\laboratory\youthlanguage\basis\sdl\drunkard_walk.hpp
+	"game.hpp"
+
+1651654824 source:a:\laboratory\youthlanguage\basis\sdl\line.cpp
+	<SDL2/SDL.h>
+	"line.hpp"
+
+1645322809 a:\laboratory\youthlanguage\basis\sdl\line.hpp
+
+1651654842 source:a:\laboratory\youthlanguage\basis\sdl\mathematics.cpp
+	"flonum.hpp"
+	"mathematics.hpp"
+
+1644745623 a:\laboratory\youthlanguage\basis\sdl\rainbow.hpp
+
+1651659054 source:a:\laboratory\youthlanguage\basis\sdl\random.cpp
+	<iostream>
+	<random>
+	"random.hpp"
+
+1651654885 source:a:\laboratory\youthlanguage\basis\sdl\rgb_blocks.cpp
+	<SDL2/SDL.h>
+	"rgb_blocks.hpp"
+
+1651656503 source:a:\laboratory\youthlanguage\basis\sdl\self_avoid_walk.cpp
+	"self_avoid_walk.hpp"
+	"random.hpp"
+
+1651722229 source:a:\laboratory\youthlanguage\basis\sdl\text.cpp
+	"text.hpp"
+	<cstdarg>
+
+1651730311 source:a:\laboratory\youthlanguage\basis\sdl\random_walk.cpp
+	"random_walk.hpp"
+	"random.hpp"
+
+1651654987 a:\laboratory\youthlanguage\basis\sdl\random_walk.hpp
+	"game.hpp"
+
+1651721796 source:a:\laboratory\youthlanguage\basis\sdl\drawingboard.cpp
+	<SDL2/SDL.h>
+	<iostream>
+	"contrast_blocks.hpp"
+
+1644903907 a:\laboratory\youthlanguage\basis\sdl\contrast_blocks.hpp
 

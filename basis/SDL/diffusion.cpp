@@ -2,6 +2,9 @@
 
 #include "random.hpp"
 
+using namespace WarGrey::STEM;
+
+/*************************************************************************************************/
 static int width;
 static int height;
 static int ceiling;
@@ -13,7 +16,6 @@ static const int PARTICLE_COUNT = 128;
 static int xs[PARTICLE_COUNT];
 static int ys[PARTICLE_COUNT];
 
-
 /*************************************************************************************************/
 void* diffusion_initialize(int argc, char* args[], SDL_Window* window, SDL_Renderer* renderer) {
     SDL_SetWindowTitle(window, "Diffusion");                    // 设置标题
@@ -24,7 +26,7 @@ void* diffusion_initialize(int argc, char* args[], SDL_Window* window, SDL_Rende
 
     for (int i = 0; i < PARTICLE_COUNT; i++) {
         int offset = i % DROP_WIDTH  - DROP_WIDTH / 2; // 产生位于区间 [-DROP_WIDTH/2, DROP_WIDTH/2) 的偏移量
-        
+
         // 初始化数组
         xs[i] = width / 2 + offset;
         ys[i] = ceiling;

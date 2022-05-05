@@ -12,7 +12,7 @@ static const int WIN_HEIGHT = 800;
 
 // 定时器帧频
 static const int TIMER_FPS = 60;
-                    
+
 /*************************************************************************************************/
 int main(int argc, char* args[]){
     SDL_Window* window = NULL;      // SDL 窗口指针
@@ -20,7 +20,7 @@ int main(int argc, char* args[]){
     SDL_Texture* texture = NULL;    // SDL 纹理指针
     SDL_TimerID timer = 0;          // SDL 定时器
     void* datum = NULL;             // 传递给定时器的“用户数据”
-    
+
     game_initialize(SDL_INIT_VIDEO | SDL_INIT_TIMER);                       // 初始化游戏系统
     texture = game_create_world(WIN_WIDTH, WIN_HEIGHT, &window, &renderer); // 创建游戏世界
     game_world_reset(renderer, texture, 0xFFFFFFFF, 0x000000FF);            // 重制纹理，黑底白字
@@ -28,11 +28,11 @@ int main(int argc, char* args[]){
     // 初始化自己的动画，并将返回值作为用户数据启动定时器
     datum = self_avoid_walk_initialize(argc, args, window, renderer);
     timer = game_start(TIMER_FPS, /* --> */ update_self_avoid_walk /* <-- */, datum);
-        
+
     /** 初始化完成，请开始你的代码 **/ {
         bool game_is_running = true;    // 游戏主循环标志
         SDL_Event e;                    // SDL 事件
-        
+
         while(game_is_running) {        // 游戏主循环
             SDL_SetRenderTarget(renderer, texture);
 
@@ -46,8 +46,8 @@ int main(int argc, char* args[]){
                     timer_parcel_t* parcel = reinterpret_cast<timer_parcel_t*>(e.user.data1);
                     timer_update_t update = parcel->update_game_world;
                     timer_frame_t* frame = &(parcel->frame);
-             
-                    // TODO: why some first frames are lost, why some frames duplicate. 
+
+                    // TODO: why some first frames are lost, why some frames duplicate.
                     // printf("%u\t%u\n", frame->count, frame->uptime);
                     update(frame, e.user.data2, renderer);
                 }; break;

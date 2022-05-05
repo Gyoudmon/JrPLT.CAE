@@ -31,12 +31,25 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="DrawBoard.cpp" />
+		<Unit filename="DrawingBoard.cpp" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/color_wheel.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/colorspace.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/contrast_blocks.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/diffusion.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/drunkard_walk.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/fixnum.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/flonum.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/line.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/mathematics.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/rainbow.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/random.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/random_walk.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/rgb_blocks.h" />
+		<Unit filename="G:/YouthLanguage/basis/SDL/self_avoid_walk.h" />
 		<Unit filename="GamePlayer.cpp" />
 		<Unit filename="color_wheel.cpp" />
 		<Unit filename="color_wheel.hpp" />
 		<Unit filename="colorspace.cpp" />
-		<Unit filename="colorspace.h" />
 		<Unit filename="colorspace.hpp" />
 		<Unit filename="contrast_blocks.cpp" />
 		<Unit filename="contrast_blocks.hpp" />
@@ -44,19 +57,15 @@
 		<Unit filename="diffusion.hpp" />
 		<Unit filename="drunkard_walk.cpp" />
 		<Unit filename="drunkard_walk.hpp" />
-		<Unit filename="fixnum.h" />
 		<Unit filename="fixnum.hpp" />
-		<Unit filename="flonum.h" />
 		<Unit filename="flonum.hpp" />
 		<Unit filename="game.cpp" />
 		<Unit filename="game.hpp" />
 		<Unit filename="line.cpp" />
 		<Unit filename="line.hpp" />
-		<Unit filename="main.cpp" />
 		<Unit filename="mathematics.cpp" />
 		<Unit filename="mathematics.hpp" />
 		<Unit filename="rainbow.cpp" />
-		<Unit filename="rainbow.h" />
 		<Unit filename="rainbow.hpp" />
 		<Unit filename="random.cpp" />
 		<Unit filename="random.hpp" />

@@ -19,7 +19,6 @@ SDL_Rect b1, b2, b3;
 int draw_contrast_blocks(int argc, char* args[], SDL_Window* window, SDL_Renderer* renderer) {
     int width, height;
     float hue0 = 0.0F;
-    char title[256];
 
     if (argc > 1) {
         hue0 = float(std::atof(args[1]));
