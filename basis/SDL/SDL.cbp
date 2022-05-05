@@ -31,13 +31,43 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="DrawBoard.cpp" />
+		<Unit filename="GamePlayer.cpp" />
+		<Unit filename="color_wheel.cpp" />
+		<Unit filename="color_wheel.hpp" />
 		<Unit filename="colorspace.cpp" />
 		<Unit filename="colorspace.h" />
+		<Unit filename="colorspace.hpp" />
+		<Unit filename="contrast_blocks.cpp" />
+		<Unit filename="contrast_blocks.hpp" />
+		<Unit filename="diffusion.cpp" />
+		<Unit filename="diffusion.hpp" />
+		<Unit filename="drunkard_walk.cpp" />
+		<Unit filename="drunkard_walk.hpp" />
 		<Unit filename="fixnum.h" />
+		<Unit filename="fixnum.hpp" />
 		<Unit filename="flonum.h" />
+		<Unit filename="flonum.hpp" />
+		<Unit filename="game.cpp" />
+		<Unit filename="game.hpp" />
+		<Unit filename="line.cpp" />
+		<Unit filename="line.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="mathematics.cpp" />
+		<Unit filename="mathematics.hpp" />
 		<Unit filename="rainbow.cpp" />
 		<Unit filename="rainbow.h" />
+		<Unit filename="rainbow.hpp" />
+		<Unit filename="random.cpp" />
+		<Unit filename="random.hpp" />
+		<Unit filename="random_walk.cpp" />
+		<Unit filename="random_walk.hpp" />
+		<Unit filename="rgb_blocks.cpp" />
+		<Unit filename="rgb_blocks.hpp" />
+		<Unit filename="self_avoid_walk.cpp" />
+		<Unit filename="self_avoid_walk.hpp" />
+		<Unit filename="text.cpp" />
+		<Unit filename="text.hpp" />
 		<Extensions>
 			<DoxyBlocks>
 				<comment_style block="0" line="0" />
