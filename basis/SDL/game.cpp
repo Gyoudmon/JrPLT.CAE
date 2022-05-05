@@ -55,19 +55,19 @@ static unsigned int trigger_timer_event(unsigned int interval, void* datum) {
 
 /*************************************************************************************************/
 void WarGrey::STEM::game_initialize(uint32_t flags) {
-    Call_With_Safe_Exit(SDL_Init(flags), "Failed to initialize the SDL: ", SDL_Quit);
-    Call_With_Safe_Exit(TTF_Init(), "Failed to initialize the TTF: ", TTF_Quit);
+    Call_With_Safe_Exit(SDL_Init(flags), "SDL 初始化失败: ", SDL_Quit);
+    Call_With_Safe_Exit(TTF_Init(), "TTF 初始化失败: ", TTF_Quit);
 }
 
 SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window** window, SDL_Renderer** renderer) {
     SDL_Texture* texture;
 
     Call_With_Error_Message(SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_SHOWN, window, renderer),
-        "Failed to create the window and renderer: ");
+        "SDL 窗体和渲染器创建失败: ");
     
     Call_For_Variable(texture,
         SDL_CreateTexture((*renderer), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height),
-        NULL, "Failed to create the texture: ");
+        NULL, "纹理创建失败: ");
 
     return texture;
 }
@@ -85,7 +85,7 @@ uint32_t WarGrey::STEM::game_start(uint32_t fps, timer_update_t update_game_worl
     parcel->frame.uptime = 0;
 
     Call_For_Variable(timer, SDL_AddTimer(interval, trigger_timer_event, reinterpret_cast<void*>(parcel)),
-        0, "Failed to create the timer: ");
+        0, "定时器创建失败: ");
 
     return timer;
 }

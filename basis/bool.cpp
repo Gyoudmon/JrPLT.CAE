@@ -10,10 +10,10 @@ int main(int argc, char* argv[]) {
     bool zero = 0.0;
 
     std::cout << std::boolalpha; // 不要将布尔值转化为数字
-    std::cout << "variable 't' is " << t << std::endl;
-    std::cout << "variable 'f' is " << f << std::endl;
-    std::cout << "variable 'pi' is " << pi << std::endl;
-    std::cout << "variable 'zero' is " << zero << std::endl;
+    std::cout << "变量 t 的值是" << t << std::endl;
+    std::cout << "变量 f 的值是" << f << std::endl;
+    std::cout << "变量 pi 的值是" << pi << std::endl;
+    std::cout << "变量 zero 的值是" << zero << std::endl;
 
     return 0;
 }

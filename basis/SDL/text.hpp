@@ -7,8 +7,7 @@
 #include <cstdint>
 
 namespace WarGrey::STEM {
-    std::string game_create_nstring(const char* fmt, ...);
-    std::wstring game_create_wstring(const wchar_t* fmt, ...);
+    std::string game_create_string(const char* fmt, ...);
 
     void game_text_size(TTF_Font* font, int* width, int* height, const char* fmt, ...);
 }

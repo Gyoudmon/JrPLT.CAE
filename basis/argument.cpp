@@ -7,8 +7,8 @@
  */
 int main(int argc, char* argv[]) {
     /* 注意: 第一个参数一定是程序的名字(可执行文件的名字，可在用 g++ 命令编译源码时用 -o 指定) */
-    std::cout<<"running: " << argv[0] <<std::endl;
-    std::cout<<"  received " << (argc - 1) <<" argumnets from user"<<std::endl;
+    std::cout << "正在运行: " << argv[0] << std::endl;
+    std::cout << "    接收到了" << (argc - 1) << "个来自用户的输入: " << std::endl;
 
     /* 显示所有的用户输入参数，一行一个 */
     for (int i = 1; i < argc; i++) {

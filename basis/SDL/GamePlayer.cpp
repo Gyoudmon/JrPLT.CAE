@@ -39,7 +39,7 @@ int main(int argc, char* args[]){
             while (SDL_PollEvent(&e)) { // 处理用户交互事件
                 switch (e.type) {
                 case SDL_QUIT: {
-                    std::cout << "Quit after " << e.quit.timestamp << "ms." << std::endl;
+                    std::cout << "总计运行了" << e.quit.timestamp / 1000.0F << "秒。" << std::endl;
                     game_is_running = false;
                 }; break;
                 case SDL_USEREVENT: {    // 收到定时器到期通知，更新游戏

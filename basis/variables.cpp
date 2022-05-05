@@ -11,7 +11,8 @@ int main(int argc, char* argv[]) {
     std::string camelCase;  /* 字符串变量, 驼峰命名法 */
     int 5wrong_name;        /* 错误的变量名，数字开头 */
 
-    std::cout<<"Your age is "<<age<<" 3 years later."<<std::endl;
+    std::cout<< "你的年龄是" <<age <<"岁。" << std::endl;
 
     return 0;
 }
+

@@ -2,7 +2,7 @@
 #include <iostream>     /* C++ 标准输入输出头文件 */
 
 /* 自己的头文件用 双引号 引用 */
-#include "rainbow.hpp"
+#include "contrast_blocks.hpp"
 
 /*************************************************************************************************/
 // 窗口尺寸常量
@@ -27,26 +27,24 @@ int main(int argc, char* args[]){
                 SDL_RenderClear(renderer);  // 重置窗体
 
                 /** 调用自己头文件里的函数接口 **/
-                draw_rainbow(argc, args, window, renderer);
+                draw_contrast_blocks(argc, args, window, renderer);
                 
                 SDL_RenderPresent(renderer);    // 更新窗体
 
                 while (SDL_PollEvent(&e)) { // 处理用户交互事件
                     switch (e.type) {
                     case SDL_QUIT: {
-                        std::cout << "Quit after " << e.quit.timestamp << "ms." << std::endl;
+                        std::cout << "总共运行了" << e.quit.timestamp / 1000.0F << "秒。" << std::endl;
                         game_is_running = false;
                     }; break;
                     }
                 }
             }
         } else {
-            // 创建 SDL 窗口和渲染器失败
-            std::cout << "Failed to create the window and renderer: " << std::string(SDL_GetError()) << std::endl;
+            std::cout << "SDL 窗口和渲染器创建失败: " << std::string(SDL_GetError()) << std::endl;
         }
     } else {
-        // SDL 初始化失败
-        std::cout << "Failed to initialize the SDL: " << std::string(SDL_GetError()) << std::endl;
+        std::cout << "SDL 初始化失败: " << std::string(SDL_GetError()) << std::endl;
     }
 
     SDL_DestroyRenderer(renderer);  // 销毁 SDL 渲染器

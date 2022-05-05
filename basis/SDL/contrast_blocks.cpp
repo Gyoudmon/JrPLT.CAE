@@ -5,6 +5,7 @@
 
 #include "rgb_blocks.hpp"
 #include "colorspace.hpp"
+#include "text.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -24,13 +25,8 @@ int draw_contrast_blocks(int argc, char* args[], SDL_Window* window, SDL_Rendere
         hue0 = float(std::atof(args[1]));
     }
 
-    { // 设置标题
-        size_t size = sizeof(title) / sizeof(char);
-
-        memset(title, '\0', size);
-        snprintf(title, size, "Contrast Color Blocks [hue = %.2f]", hue0);
-        SDL_SetWindowTitle(window, title);
-    }
+    // 设置窗口标题
+    SDL_SetWindowTitle(window, game_create_string("Contrast Color Blocks [hue = %.2f]", hue0).c_str());
 
     SDL_GetWindowSize(window, &width, &height);             // 获知窗口大小
     b1.w = b1.h = b2.w = b2.h = b3.w = b3.h = BLOCK_LENGTH; // 设置三个色块的尺寸
