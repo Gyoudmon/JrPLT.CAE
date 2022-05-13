@@ -168,7 +168,7 @@ TTF_Font* WarGrey::STEM::game_create_font(const char* face, int fontsize) {
     }
 
     if (font == NULL) {
-        std::cerr << "Cannot load font '" << face << "': " << TTF_GetError() << std::endl;
+        std::cerr << "无法加载字体 '" << face << "': " << TTF_GetError() << std::endl;
     }
 
     return font;

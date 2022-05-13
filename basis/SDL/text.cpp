@@ -1,6 +1,8 @@
-#include "text.hpp"          // 放最前面以兼容 macOS
+#include "game.hpp"                 // 放最前面以兼容 macOS
+#include "text.hpp"
 
 #include <cstdarg>
+#include <iostream>
 
 using namespace WarGrey::STEM;
 
@@ -26,15 +28,6 @@ using namespace WarGrey::STEM;
     if (pool != chpool) delete[] pool;
 
 /*************************************************************************************************/
-static TTF_Font* game_default_font = NULL;
-
-static void game_text_initialize() {
-    if (game_default_font == NULL) {
-        game_default_font = TTF_OpenFont("Sans.ttf", 24);
-    }
-}
-
-/*************************************************************************************************/
 std::string WarGrey::STEM::game_create_string(const char* fmt, ...) {
     VSNPRINT(s, fmt);
 
@@ -43,6 +36,14 @@ std::string WarGrey::STEM::game_create_string(const char* fmt, ...) {
 
 /*************************************************************************************************/
 void WarGrey::STEM::game_text_size(TTF_Font* font, int* width, int* height, const char* fmt, ...) {
-    game_text_initialize();
+    VSNPRINT(text, fmt);
+
+    if (font == NULL) {
+        font = GAME_DEFAULT_FONT;
+    }
+
+    if (TTF_SizeUTF8(font, text.c_str(), width, height)) {
+        std::cerr << "无法计算文本尺寸: " << TTF_GetError() << std::endl;
+    }
 }
 

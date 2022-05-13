@@ -1,5 +1,6 @@
 #include "self_avoid_walk.hpp"
 
+#include "text.hpp"
 #include "random.hpp"
 
 using namespace WarGrey::STEM;
@@ -58,6 +59,14 @@ void* self_avoid_walk_initialize(int argc, char* args[], SDL_Window* window, SDL
 
     grid_self.w = GRID_SIZE;
     grid_self.h = GRID_SIZE;
+
+    {
+        int width, height;
+
+        game_text_size(NULL, &width, &height, "Self Avoid Random Walker");
+
+        printf("(%d, %d)\n", width, height);
+    }
 
     return NULL;
 }
