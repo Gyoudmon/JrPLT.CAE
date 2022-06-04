@@ -1,5 +1,5 @@
-#ifndef COLORSPACE
-#define COLORSPACE
+#ifndef _WARGREY_COLORSPACE_H
+#define _WARGREY_COLORSPACE_H
 
 #include <SDL2/SDL.h>
 

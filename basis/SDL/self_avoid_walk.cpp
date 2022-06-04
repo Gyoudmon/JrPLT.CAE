@@ -13,6 +13,10 @@ static const int GRID_SIZE = 16;     // 方格边长
 static const int WORLD_SIZE = 48;    // 方格单边数量
 static const int WORLD_LENGTH = WORLD_SIZE * GRID_SIZE;
 
+static TTF_Font* MESSAGE_FONT = GAME_DEFAULT_FONT;
+static int MESSAGE_OFFSET = 10;
+static int lineheight;
+
 static int world_x;
 static int world_y;
 
@@ -60,18 +64,12 @@ void* self_avoid_walk_initialize(int argc, char* args[], SDL_Window* window, SDL
     grid_self.w = GRID_SIZE;
     grid_self.h = GRID_SIZE;
 
-    {
-        int width, height;
-
-        game_text_size(NULL, &width, &height, "Self Avoid Random Walker");
-
-        printf("(%d, %d)\n", width, height);
-    }
+    game_text_size(MESSAGE_FONT, NULL, &lineheight, "em");
 
     return NULL;
 }
 
-void update_self_avoid_walk(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_Renderer* renderer) {
+void update_self_avoid_walk(timer_frame_t* frame, void* datum, SDL_Renderer* renderer) {
     // 绘制游戏世界的网格
     for (int i = 0; i <= WORLD_SIZE; i++) {
         int xi = world_x + i * GRID_SIZE;
@@ -101,12 +99,23 @@ void update_self_avoid_walk(WarGrey::STEM::timer_frame_t* frame, void* datum, SD
                     case 2: y -= 1; break;
                     case 3: y += 1; break;
                 }
+            
+                game_draw_shaded_text(MESSAGE_FONT, renderer, 0x0000FFFF, 0xFF,
+                        MESSAGE_OFFSET, MESSAGE_OFFSET,
+                        "Move To (%d, %d)  ", x, y);
+
             } while ((grids[x][y] == 1) && is_in_world(x, y));
         } else {
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+            game_draw_solid_text(MESSAGE_FONT, renderer, 0xFF0000FF,
+                    MESSAGE_OFFSET, MESSAGE_OFFSET + lineheight,
+                    "Failed!");
         }
     } else {
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
+        game_draw_solid_text(MESSAGE_FONT, renderer, 0x00FF00FF,
+                MESSAGE_OFFSET, MESSAGE_OFFSET + lineheight,
+                "Succeed!");
     }
 
     // 绘制路径
