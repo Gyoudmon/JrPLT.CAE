@@ -415,7 +415,7 @@
 	"flonum.hpp"
 	"mathematics.hpp"
 
-1650784581 a:\laboratory\youthlanguage\basis\sdl\colorspace.hpp
+1654333857 a:\laboratory\youthlanguage\basis\sdl\colorspace.hpp
 	<SDL2/SDL.h>
 
 1644892052 a:\laboratory\youthlanguage\basis\sdl\color_wheel.hpp
@@ -449,7 +449,7 @@
 
 1644563478 a:\laboratory\youthlanguage\basis\sdl\rgb_blocks.hpp
 
-1651722095 a:\laboratory\youthlanguage\basis\sdl\text.hpp
+1654334783 a:\laboratory\youthlanguage\basis\sdl\text.hpp
 	<SDL2/SDL_ttf.h>
 	<string>
 	<cstdint>
@@ -461,7 +461,7 @@
 1651654939 a:\laboratory\youthlanguage\basis\sdl\diffusion.hpp
 	"game.hpp"
 
-1651656400 a:\laboratory\youthlanguage\basis\sdl\game.hpp
+1654333632 a:\laboratory\youthlanguage\basis\sdl\game.hpp
 	<SDL2/SDL.h>
 	<SDL2/SDL_ttf.h>
 	<cstdint>
@@ -473,7 +473,7 @@
 	"colorspace.hpp"
 	<iostream>
 
-1651730637 source:a:\laboratory\youthlanguage\basis\sdl\gameplayer.cpp
+1652429245 source:a:\laboratory\youthlanguage\basis\sdl\gameplayer.cpp
 	"self_avoid_walk.hpp"
 	<iostream>
 
@@ -508,13 +508,17 @@
 	<SDL2/SDL.h>
 	"rgb_blocks.hpp"
 
-1651656503 source:a:\laboratory\youthlanguage\basis\sdl\self_avoid_walk.cpp
+1654335787 source:a:\laboratory\youthlanguage\basis\sdl\self_avoid_walk.cpp
 	"self_avoid_walk.hpp"
+	"text.hpp"
 	"random.hpp"
 
-1651722229 source:a:\laboratory\youthlanguage\basis\sdl\text.cpp
+1654334880 source:a:\laboratory\youthlanguage\basis\sdl\text.cpp
+	"game.hpp"
 	"text.hpp"
+	"colorspace.hpp"
 	<cstdarg>
+	<iostream>
 
 1651730311 source:a:\laboratory\youthlanguage\basis\sdl\random_walk.cpp
 	"random_walk.hpp"

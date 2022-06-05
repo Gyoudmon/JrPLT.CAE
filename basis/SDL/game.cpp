@@ -26,7 +26,7 @@ using namespace std::filesystem;
         exit(1); \
     }
 
-#define Game_Close_Font(id) if (id != NULL) TTF_CloseFont(id); id == NULL
+#define Game_Close_Font(id) if (id != NULL) TTF_CloseFont(id); id = NULL
 
 /*************************************************************************************************/
 static std::unordered_map<std::string, std::string> system_fonts;
@@ -52,7 +52,7 @@ static void game_push_fonts_of_directory(std::filesystem::path& root) {
 }
 
 static void game_fonts_initialize(int fontsize = 24) {
-    for (int idx = 0; idx < sizeof(system_fontdirs) / sizeof(std::string); idx++) {
+    for (unsigned int idx = 0; idx < sizeof(system_fontdirs) / sizeof(std::string); idx++) {
         path root(system_fontdirs[idx]);
 
         if (exists(root) && is_directory(root)) {
@@ -88,7 +88,7 @@ static unsigned int trigger_timer_event(unsigned int interval, void* datum) {
     parcel->frame.count += 1;
     parcel->frame.interval = interval;
     parcel->frame.uptime = SDL_GetTicks();
-    
+
     // 将该事件报告给事件系统
     timer_event.type = user_event.type;
     timer_event.user = user_event;
@@ -111,7 +111,7 @@ SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window*
 
     Call_With_Error_Message(SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_SHOWN, window, renderer),
         "SDL 窗体和渲染器创建失败: ", SDL_GetError);
-    
+
     Call_For_Variable(texture,
         SDL_CreateTexture((*renderer), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height),
         NULL, "纹理创建失败: ", SDL_GetError);
@@ -144,7 +144,7 @@ void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, SDL_Texture* textur
 
     RGB_FromHexadecimal(bgc, &r, &g, &b, &a);
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
-    SDL_RenderClear(renderer); 
+    SDL_RenderClear(renderer);
 
     RGB_FromHexadecimal(fgc, &r, &g, &b, &a);
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
