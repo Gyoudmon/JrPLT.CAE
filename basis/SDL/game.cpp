@@ -38,6 +38,11 @@ static std::string system_fontdirs[] = {
 };
 
 TTF_Font* WarGrey::STEM::GAME_DEFAULT_FONT = NULL;
+TTF_Font* WarGrey::STEM::game_sans_serif_font = NULL;
+TTF_Font* WarGrey::STEM::game_serif_font = NULL;
+TTF_Font* WarGrey::STEM::game_monospace_font = NULL;
+TTF_Font* WarGrey::STEM::game_math_font = NULL;
+TTF_Font* WarGrey::STEM::game_fangsong_font = NULL;
 
 static void game_push_fonts_of_directory(std::filesystem::path& root) {
     for (auto entry : directory_iterator(root)) {
@@ -51,7 +56,7 @@ static void game_push_fonts_of_directory(std::filesystem::path& root) {
     }
 }
 
-static void game_fonts_initialize(int fontsize = 24) {
+static void game_fonts_initialize(int fontsize = 16) {
     for (unsigned int idx = 0; idx < sizeof(system_fontdirs) / sizeof(std::string); idx++) {
         path root(system_fontdirs[idx]);
 
@@ -60,7 +65,24 @@ static void game_fonts_initialize(int fontsize = 24) {
         }
     }
 
-    GAME_DEFAULT_FONT = game_create_font("Apple Symbols.ttf", fontsize);
+#if defined(__macosx__)
+    game_sans_serif_font = game_create_font("LucidaGrande.ttc", fontsize);
+    game_serif_font = game_create_font("Times.ttc", fontsize);
+    game_monospace_font = game_create_font("Courier.ttc", fontsize);
+    game_math_font = game_create_font("Bodoni 72.ttc", fontsize);
+#elif defined(__windows__)
+    game_sans_serif_font = game_create_font("Microsoft YaHei.ttc", fontsize);
+    game_serif_font = game_create_font("Times New Roman.ttc", fontsize);
+    game_monospace_font = game_create_font("Courier New.ttc", fontsize);
+    game_math_font = game_create_font("Bodoni MT.ttc", fontsize);
+#else /* the following fonts have not tested */
+    game_sans_serif_font = game_create_font("Nimbus Sans.ttc", fontsize);
+    game_serif_font = game_create_font("DejaVu Serif.ttc", fontsize);
+    game_monospace_font = game_create_font("Monospace.ttf", fontsize);
+    game_math_font = game_create_font("URW Bookman.ttf", fontsize);
+#endif
+
+    GAME_DEFAULT_FONT = game_monospace_font;
 }
 
 static void game_fonts_destroy() {

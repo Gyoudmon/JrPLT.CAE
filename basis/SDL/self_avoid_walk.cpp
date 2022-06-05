@@ -100,7 +100,7 @@ void update_self_avoid_walk(timer_frame_t* frame, void* datum, SDL_Renderer* ren
                     case 3: y += 1; break;
                 }
             
-                game_draw_shaded_text(MESSAGE_FONT, renderer, 0x0000FFFF, 0xFF,
+                game_draw_shaded_text(MESSAGE_FONT, renderer, 0xFFA500FF, 0xFF,
                         MESSAGE_OFFSET, MESSAGE_OFFSET,
                         "Move To (%d, %d)  ", x, y);
 
