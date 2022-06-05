@@ -42,7 +42,6 @@ TTF_Font* WarGrey::STEM::game_sans_serif_font = NULL;
 TTF_Font* WarGrey::STEM::game_serif_font = NULL;
 TTF_Font* WarGrey::STEM::game_monospace_font = NULL;
 TTF_Font* WarGrey::STEM::game_math_font = NULL;
-TTF_Font* WarGrey::STEM::game_fangsong_font = NULL;
 
 static void game_push_fonts_of_directory(std::filesystem::path& root) {
     for (auto entry : directory_iterator(root)) {
@@ -70,12 +69,12 @@ static void game_fonts_initialize(int fontsize = 16) {
     game_serif_font = game_create_font("Times.ttc", fontsize);
     game_monospace_font = game_create_font("Courier.ttc", fontsize);
     game_math_font = game_create_font("Bodoni 72.ttc", fontsize);
-#elif defined(__windows__)
-    game_sans_serif_font = game_create_font("Microsoft YaHei.ttc", fontsize);
-    game_serif_font = game_create_font("Times New Roman.ttc", fontsize);
-    game_monospace_font = game_create_font("Courier New.ttc", fontsize);
-    game_math_font = game_create_font("Bodoni MT.ttc", fontsize);
-#else /* the following fonts have not tested */
+#elif defined(__windows__) /* HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Fonts */
+    game_sans_serif_font = game_create_font("msyh.ttc", fontsize); // Microsoft YaHei
+    game_serif_font = game_create_font("times.ttf", fontsize); // Times New Roman
+    game_monospace_font = game_create_font("cour.ttf", fontsize); // Courier New
+    game_math_font = game_create_font("BOD_R.TTF", fontsize); // Bodoni MT
+#else /* the following fonts have not been tested */
     game_sans_serif_font = game_create_font("Nimbus Sans.ttc", fontsize);
     game_serif_font = game_create_font("DejaVu Serif.ttc", fontsize);
     game_monospace_font = game_create_font("Monospace.ttf", fontsize);
