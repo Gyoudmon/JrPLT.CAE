@@ -46,7 +46,7 @@ static void game_push_fonts_of_directory(std::filesystem::path& root) {
         if (entry.is_directory()) {
             game_push_fonts_of_directory(self);
         } else if (entry.is_regular_file()) {
-            system_fonts[self.filename()] = self.string();
+            system_fonts[self.filename().string()] = self.string();
         }
     }
 }
