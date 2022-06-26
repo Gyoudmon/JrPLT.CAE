@@ -1,7 +1,9 @@
 #lang typed/racket
 
 (require bitmap)
+(require bitmap/constants)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define escape-chars : (HashTable Char String)
   (make-hasheq '([#\nul . "\\0"]
                  [#\tab . "\\t"]
@@ -31,9 +33,23 @@
                                                       spmb)))]
                                [else (char->bitmap null (+ idx 1) (cons grid spmb))])))))
 
+(define bitmap-text* : (->* (String Font) (Real) Bitmap)
+  (lambda [text font [size -2.0]]
+    (define content (bitmap-text #:ascent magenta #:descent blue #:capline orange #:meanline green #:baseline red
+                                 text (desc-font (desc-font font #:size 'xx-large) #:size size)))
+    (bitmap-frame content)))
+
 (define chars-array (make-chars-array (list #\我 #\是 #\一 #\个 #\汉 #\字 #\字 #\符 #\数 #\组) 12))
 (define string-array (make-chars-array "我是一个汉字字符串"  12 #:esc-fill 'lightskyblue))
 
+(define font-example
+  (bitmap-vr-append* #:gapsize 16.0
+                     (for/list : (Listof Bitmap) ([family (in-list '(monospace sans-serif serif math))])
+                       (define font (desc-font #:family family #:variant 'small-caps))
+                       (bitmap-text* (format "~a[~a]: Sphinx 0123456789" (font-face->family (font-face font)) (font-face font)) font))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
   chars-array
-  string-array)
+  string-array
+  font-example)
