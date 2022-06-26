@@ -2,8 +2,6 @@
 
 (require bitmap)
 
-(define R : Flonum 32.0)
-
 (define make-2d-array : (->* (Positive-Byte Positive-Byte) ((Listof (List Byte Byte Color)) #:size Real #:gapsize Nonnegative-Real) Bitmap)
   (lambda [row col [cells null] #:size [size 24] #:gapsize [gap 8.0]]
     (bitmap-table* (cons (cons (bitmap-blank)

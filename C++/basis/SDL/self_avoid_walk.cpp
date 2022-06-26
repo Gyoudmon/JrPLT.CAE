@@ -13,8 +13,6 @@ static const int GRID_SIZE = 16;     // 方格边长
 static const int WORLD_SIZE = 48;    // 方格单边数量
 static const int WORLD_LENGTH = WORLD_SIZE * GRID_SIZE;
 
-static TTF_Font* MESSAGE_FONT = GAME_DEFAULT_FONT;
-static int MESSAGE_OFFSET = 10;
 static int lineheight;
 
 static int world_x;
@@ -64,7 +62,7 @@ void* self_avoid_walk_initialize(int argc, char* args[], SDL_Window* window, SDL
     grid_self.w = GRID_SIZE;
     grid_self.h = GRID_SIZE;
 
-    game_text_size(MESSAGE_FONT, NULL, &lineheight, "em");
+    game_text_size(game_monospace_font, NULL, &lineheight, "em");
 
     return NULL;
 }
@@ -100,21 +98,21 @@ void update_self_avoid_walk(timer_frame_t* frame, void* datum, SDL_Renderer* ren
                     case 3: y += 1; break;
                 }
             
-                game_draw_shaded_text(MESSAGE_FONT, renderer, 0xFFA500FF, 0xFF,
-                        MESSAGE_OFFSET, MESSAGE_OFFSET,
-                        "Move To (%d, %d)  ", x, y);
+                game_draw_shaded_text(game_monospace_font, renderer, 0xFFA500FF, 0xFF,
+                        lineheight / 2, lineheight / 2,
+                        "Move to (%d, %d)  ", x, y);
 
             } while ((grids[x][y] == 1) && is_in_world(x, y));
         } else {
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-            game_draw_solid_text(MESSAGE_FONT, renderer, 0xFF0000FF,
-                    MESSAGE_OFFSET, MESSAGE_OFFSET + lineheight,
+            game_draw_blended_text(game_sans_serif_font, renderer, 0xFF0000FF,
+                    lineheight / 2, lineheight * 3 / 2,
                     "Failed!");
         }
     } else {
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-        game_draw_solid_text(MESSAGE_FONT, renderer, 0x00FF00FF,
-                MESSAGE_OFFSET, MESSAGE_OFFSET + lineheight,
+        game_draw_blended_text(game_sans_serif_font, renderer, 0x00FF00FF,
+                lineheight / 2, lineheight * 3 / 2,
                 "Succeed!");
     }
 
