@@ -13,16 +13,20 @@ typedef struct game_world {
     int grids[WORLD_SIZE][WORLD_SIZE];
     int draw_x;
     int draw_y;
+    int width;
+    int height;
     int lineheight;
 } game_world_t;
 
 game_world_t* game_world_construct(int width, int height, int nx, int ny) {
-    int world_length = GRID_SIZE * WORLD_SIZE;
     game_world_t* world = new game_world();
 
+    world->width = WORLD_SIZE;
+    world->height = WORLD_SIZE;
+
     // 确保游戏世界被绘制在屏幕中心
-    world->draw_x = (width - world_length) / 2;
-    world->draw_y = (height - world_length) / 2;
+    world->draw_x = (width - world->width * GRID_SIZE) / 2;
+    world->draw_y = (height - world->height * GRID_SIZE) / 2;
 
     game_text_size(game_monospace_font, NULL, &world->lineheight, "em");
 
@@ -35,7 +39,6 @@ void game_world_destroy(game_world_t* world) {
 
 /*************************************************************************************************/
 void* game_of_life_initialize(int argc, char* args[], SDL_Window* window, SDL_Renderer* renderer) {
-    int world_length = GRID_SIZE * WORLD_SIZE;
     int width, height;
     game_world_t* world;
 
@@ -48,6 +51,9 @@ void* game_of_life_initialize(int argc, char* args[], SDL_Window* window, SDL_Re
 
 void update_game_of_life(timer_frame_t* frame, void* datum, SDL_Renderer* renderer) {
     game_world_t* world = (game_world_t*)datum;
+
+    // 绘制游戏边界
+    game_draw_frame(renderer, world->draw_x, world->draw_y, world->width * GRID_SIZE, world->height * GRID_SIZE);
 
     // 绘制游戏世界的网格
     game_draw_grid(renderer, WORLD_SIZE, WORLD_SIZE, GRID_SIZE, world->draw_x, world->draw_y);

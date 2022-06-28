@@ -178,6 +178,17 @@ void WarGrey::STEM::game_world_refresh(SDL_Renderer* renderer, SDL_Texture* text
 }
 
 /*************************************************************************************************/
+void WarGrey::STEM::game_draw_frame(SDL_Renderer* renderer, int x, int y, int width, int height) {
+    SDL_Rect box;
+
+    box.x = x - 1;
+    box.y = y - 1;
+    box.w = width + 3;
+    box.h = height + 3;
+
+    SDL_RenderDrawRect(renderer, &box);
+}
+
 void WarGrey::STEM::game_draw_grid(SDL_Renderer* renderer, int nx, int ny, int grid_size, int xoff, int yoff) {
     int xend = xoff + nx * grid_size;
     int yend = yoff + ny * grid_size;
