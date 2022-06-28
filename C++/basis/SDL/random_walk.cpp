@@ -37,3 +37,7 @@ void update_random_walk(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_Re
     }
 }
 
+void random_walk_exit(void* datum) {
+    // 无事可做
+}
+

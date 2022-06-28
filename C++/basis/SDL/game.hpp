@@ -33,6 +33,9 @@ namespace WarGrey::STEM {
     TTF_Font* game_create_font(const char* face, int fontsize);
     void game_font_destroy(TTF_Font* font);
 
+    void game_draw_grid(SDL_Renderer* renderer, int nx, int ny, int grid_size, int xoff = 0, int yoff = 0);
+    void game_fill_grid(SDL_Renderer* renderer, int* grids, int nx, int ny, int grid_size, int xoff = 0, int yoff = 0);
+
     /**********************************************************************************************/
     extern TTF_Font* GAME_DEFAULT_FONT;
     extern TTF_Font* game_sans_serif_font;

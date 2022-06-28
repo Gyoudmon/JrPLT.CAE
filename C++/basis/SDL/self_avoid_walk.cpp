@@ -129,3 +129,7 @@ void update_self_avoid_walk(timer_frame_t* frame, void* datum, SDL_Renderer* ren
     }
 }
 
+void self_avoid_walk_exit(void* datum) {
+    // 无事可做
+}
+

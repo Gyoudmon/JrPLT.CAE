@@ -178,6 +178,41 @@ void WarGrey::STEM::game_world_refresh(SDL_Renderer* renderer, SDL_Texture* text
 }
 
 /*************************************************************************************************/
+void WarGrey::STEM::game_draw_grid(SDL_Renderer* renderer, int nx, int ny, int grid_size, int xoff, int yoff) {
+    int xend = xoff + nx * grid_size;
+    int yend = yoff + ny * grid_size;
+
+    for (int i = 0; i <= nx; i++) {
+        int x = xoff + i * grid_size;
+
+        for (int j = 0; j <= ny; j++) {
+            int y = yoff + j * grid_size;
+
+            SDL_RenderDrawLine(renderer, xoff, y, xend, y);
+        }
+
+        SDL_RenderDrawLine(renderer, x, yoff, x, yend);
+    }
+}
+
+void WarGrey::STEM::game_fill_grid(SDL_Renderer* renderer, int* grids, int nx, int ny, int grid_size, int xoff, int yoff) {
+    SDL_Rect grid_self;
+
+    grid_self.w = grid_size;
+    grid_self.h = grid_size;
+
+    for (int i = 0; i < nx; i++) {
+        for (int j = 0; j < ny; j++) {
+            if (grids[i * nx + j] == 1) {
+                grid_self.x = xoff + i * grid_self.w;
+                grid_self.y = yoff + j * grid_self.h;
+                SDL_RenderFillRect(renderer, &grid_self);
+            }
+        }
+    }
+}
+
+/*************************************************************************************************/
 TTF_Font* WarGrey::STEM::game_create_font(const char* face, int fontsize) {
     std::string face_key(face);
     TTF_Font* font = NULL;

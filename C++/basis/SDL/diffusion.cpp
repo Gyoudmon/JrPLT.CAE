@@ -56,3 +56,7 @@ void update_diffusion(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_Rend
     }
 }
 
+void diffusion_exit(void* datum) {
+    // 无事可做
+}
+

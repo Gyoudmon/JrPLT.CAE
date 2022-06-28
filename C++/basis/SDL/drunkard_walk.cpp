@@ -41,3 +41,7 @@ void update_drunkard_walk(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_
     }
 }
 
+void drunkard_walk_exit(void* datum) {
+    // 无事可做
+}
+

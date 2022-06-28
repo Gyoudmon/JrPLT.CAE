@@ -1,5 +1,5 @@
 /* 自己的头文件用 双引号 引用, 放最前面以兼容 macOS */
-#include "self_avoid_walk.hpp"
+#include "game_of_life.hpp"
 
 #include <iostream>             /* C++ 标准输入输出头文件 */
 
@@ -14,7 +14,7 @@ static const int WIN_HEIGHT = 800;
 static const int TIMER_FPS = 60;
 
 /*************************************************************************************************/
-int main(int argc, char* args[]){
+int main(int argc, char* args[]) {
     SDL_Window* window = NULL;      // SDL 窗口指针
     SDL_Renderer* renderer = NULL;  // SDL 渲染器指针
     SDL_Texture* texture = NULL;    // SDL 纹理指针
@@ -26,8 +26,8 @@ int main(int argc, char* args[]){
     game_world_reset(renderer, texture, 0xFFFFFFFF, 0x000000FF);            // 重制纹理，黑底白字
 
     // 初始化自己的动画，并将返回值作为用户数据启动定时器
-    datum = self_avoid_walk_initialize(argc, args, window, renderer);
-    timer = game_start(TIMER_FPS, /* --> */ update_self_avoid_walk /* <-- */, datum);
+    datum = game_of_life_initialize(argc, args, window, renderer);
+    timer = game_start(TIMER_FPS, /* --> */ update_game_of_life /* <-- */, datum);
 
     /** 初始化完成，请开始你的代码 **/ {
         bool game_is_running = true;    // 游戏主循环标志
@@ -39,6 +39,7 @@ int main(int argc, char* args[]){
             while (SDL_PollEvent(&e)) { // 处理用户交互事件
                 switch (e.type) {
                 case SDL_QUIT: {
+                    game_of_life_exit(datum); // <-- 别忘了销毁游戏世界
                     std::cout << "总计运行了" << e.quit.timestamp / 1000.0F << "秒。" << std::endl;
                     game_is_running = false;
                 }; break;
