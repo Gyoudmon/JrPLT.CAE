@@ -97,8 +97,8 @@ static void game_fonts_destroy() {
  **/
 static unsigned int trigger_timer_event(unsigned int interval, void* datum) {
     timer_parcel_t* parcel = reinterpret_cast<timer_parcel_t*>(datum);
-    SDL_Event timer_event;
     SDL_UserEvent user_event;
+    SDL_Event timer_event;
 
     user_event.type = SDL_USEREVENT;
     user_event.code = 0;
@@ -206,7 +206,7 @@ void WarGrey::STEM::game_draw_grid(SDL_Renderer* renderer, int nx, int ny, int g
     }
 }
 
-void WarGrey::STEM::game_fill_grid(SDL_Renderer* renderer, int* grids, int nx, int ny, int grid_size, int xoff, int yoff) {
+void WarGrey::STEM::game_fill_grid(SDL_Renderer* renderer, int* grids[], int nx, int ny, int grid_size, int xoff, int yoff) {
     SDL_Rect grid_self;
 
     grid_self.w = grid_size;
@@ -214,7 +214,7 @@ void WarGrey::STEM::game_fill_grid(SDL_Renderer* renderer, int* grids, int nx, i
 
     for (int i = 0; i < nx; i++) {
         for (int j = 0; j < ny; j++) {
-            if (grids[i * nx + j] == 1) {
+            if (grids[i][j] > 0) {
                 grid_self.x = xoff + i * grid_self.w;
                 grid_self.y = yoff + j * grid_self.h;
                 SDL_RenderFillRect(renderer, &grid_self);
@@ -243,5 +243,14 @@ TTF_Font* WarGrey::STEM::game_create_font(const char* face, int fontsize) {
 
 void WarGrey::STEM::game_font_destroy(TTF_Font* font) {
     TTF_CloseFont(font);
+}
+
+/*************************************************************************************************/
+WarGrey::STEM::Universe::Universe(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture,
+        const char *title, SDL_BlendMode bmode, uint32_t fgc, uint32_t bgc)
+    : _fgc(fgc), _bgc(bgc) {
+    SDL_SetWindowTitle(window, title);                 // 设置标题
+    SDL_SetRenderDrawBlendMode(renderer, bmode);
+    game_world_reset(renderer, texture, this->_fgc, this->_bgc);
 }
 
