@@ -4,7 +4,6 @@
 #include "game.hpp"
 
 namespace WarGrey::STEM {
-
     /** 声明游戏宇宙 **/
     class GameOfLife : public WarGrey::STEM::Universe {
         public:
@@ -13,14 +12,13 @@ namespace WarGrey::STEM {
 
         public:  // 覆盖游戏方法
             void construct(int argc, char* argv[], int width, int height);
-            void update(WarGrey::STEM::timer_frame_t* frame, SDL_Renderer* renderer);
+            void update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime);
 
         protected:
-            virtual void evolve(WarGrey::STEM::timer_frame_t* frame,
-                int** world, int* shadow, int world_width, int world_height) = 0;
+            virtual void evolve(int** world, int* shadow, int world_width, int world_height) = 0;
 
         private:
-            void timeline_forward(WarGrey::STEM::timer_frame_t* frame);
+            void timeline_forward(uint32_t interval, uint32_t count, uint32_t uptime);
 
         private: // 世界(网格)参数
             int** world;
@@ -33,6 +31,7 @@ namespace WarGrey::STEM {
 
         private:
             int lineheight;
+            char last_key_typed;
     };
 
     class ConwayLife : public WarGrey::STEM::GameOfLife {
@@ -40,8 +39,7 @@ namespace WarGrey::STEM {
             ConwayLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture);
 
         protected:
-            void evolve(WarGrey::STEM::timer_frame_t* frame,
-                int** world, int* shadow, int world_width, int world_height);
+            void evolve(int** world, int* shadow, int world_width, int world_height);
     };
 
     class HighLife : public WarGrey::STEM::GameOfLife {
@@ -49,8 +47,7 @@ namespace WarGrey::STEM {
             HighLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture);
 
         protected:
-            void evolve(WarGrey::STEM::timer_frame_t* frame,
-                int** world, int* shadow, int world_width, int world_height);
+            void evolve(int** world, int* shadow, int world_width, int world_height);
     };
 }
 

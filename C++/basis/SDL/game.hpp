@@ -41,7 +41,19 @@ namespace WarGrey::STEM {
             virtual void construct(int argc, char* argv[], int window_width, int window_height) {}
             
             /* 更新游戏世界，定时器到期时自动调用，默认什么都不做 */
-            virtual void update(WarGrey::STEM::timer_frame_t* frame, SDL_Renderer* renderer) {}
+            virtual void update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime) {}
+
+        public:
+            /* 响应定时器事件，刷新游戏世界 */
+            void on_elapse(SDL_Renderer* renderer, WarGrey::STEM::timer_frame_t &frame); 
+
+            /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
+            void on_mouse_event(SDL_MouseButtonEvent &mouse); 
+            void on_mouse_event(SDL_MouseMotionEvent &mouse); 
+            void on_mouse_event(SDL_MouseWheelEvent &mouse);
+
+            /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
+            void on_keyboard_event(SDL_KeyboardEvent &key);
 
         public:
             void set_fps(int fps) { this->_fps = fps; }
@@ -49,9 +61,14 @@ namespace WarGrey::STEM {
             uint32_t get_background_color() { return this->_bgc; }
             uint32_t get_foreground_color() { return this->_fgc; }
 
-        public:
-            /* 重制屏幕 */
-            void clear_screen(SDL_Renderer* renderer);
+        protected:
+            virtual void on_click(int x, int y) {}                                               // 处理单击事件
+            virtual void on_right_click(int x, int y) {}                                         // 处理右击事件
+            virtual void on_double_click(int x, int y) {}                                        // 处理双击事件
+            virtual void on_mouse_move(uint32_t state, int x, int y, int dx, int dy) {}          // 处理移动事件
+            virtual void on_scroll(int horizon, int vertical, float hprecise, float vprecise) {} // 处理滚轮事件
+
+            virtual void on_char(char key, uint16_t modifiers, uint8_t repeats) {}        // 处理键盘事件
 
         private:
             int _fps = 60; // 帧频

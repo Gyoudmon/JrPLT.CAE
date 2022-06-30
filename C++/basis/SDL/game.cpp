@@ -257,7 +257,54 @@ WarGrey::STEM::Universe::Universe(SDL_Window* window, SDL_Renderer* renderer, SD
     game_world_reset(renderer, texture, this->_fgc, this->_bgc);
 }
 
-void WarGrey::STEM::Universe::clear_screen(SDL_Renderer* renderer) {
+void WarGrey::STEM::Universe::on_elapse(SDL_Renderer* renderer, timer_frame_t &frame) {
+    // TODO: why some first frames are lost, why some frames duplicate.
+    // printf("%u\t%u\n", frame.count, frame.uptime);
+    
     game_world_reset(renderer, this->_fgc, this->_bgc);
+    this->update(renderer, frame.interval, frame.count, frame.uptime);
+}
+
+void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseButtonEvent &mouse) {
+    if (mouse.state == SDL_RELEASED) {
+        if (mouse.clicks == 1) {
+            switch (mouse.button) {
+                case SDL_BUTTON_LEFT: this->on_click(mouse.x, mouse.y); break;
+                case SDL_BUTTON_RIGHT: this->on_right_click(mouse.x, mouse.y); break;
+            }
+        } else {
+            switch (mouse.button) {
+                case SDL_BUTTON_LEFT: this->on_double_click(mouse.x, mouse.y); break;
+            }
+        }
+    }
+}
+
+void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseMotionEvent &mouse) {
+    this->on_mouse_move(mouse.state, mouse.x, mouse.y, mouse.xrel, mouse.yrel);
+}
+
+void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseWheelEvent &mouse) {
+    int horizon = mouse.x;
+    int vertical = mouse.y;
+    float hprecise = float(horizon);  // mouse.preciseX;
+    float vprecise = float(vertical); // mouse.preciseY;
+
+    if (mouse.direction == SDL_MOUSEWHEEL_FLIPPED) {
+        horizon  *= -1;
+        vertical *= -1;
+        hprecise *= -1.0F;
+        vprecise *= -1.0F;
+    }
+
+    this->on_scroll(horizon, vertical, hprecise, vprecise);
+}
+
+void WarGrey::STEM::Universe::on_keyboard_event(SDL_KeyboardEvent &keyboard) {
+    if (keyboard.state == SDL_RELEASED) {
+        SDL_Keysym key = keyboard.keysym;
+
+        this->on_char(key.sym, key.mod, keyboard.repeat);
+    }
 }
 

@@ -21,7 +21,7 @@ int main(int argc, char* args[]) {
     texture = game_create_world(WIN_WIDTH, WIN_HEIGHT, &window, &renderer); // 创建游戏世界
 
     /* 创建自己的游戏宇宙 */
-    auto universe = new HighLife(window, renderer, texture);
+    auto universe = new ConwayLife(window, renderer, texture);
     universe->construct(argc, args, WIN_WIDTH, WIN_HEIGHT);
     timer = game_start(universe->get_fps(), reinterpret_cast<timer_update_t>(0LL), reinterpret_cast<void*>(universe));
 
@@ -34,23 +34,29 @@ int main(int argc, char* args[]) {
             
             while (SDL_PollEvent(&e)) {     // 处理用户交互事件    
                 switch (e.type) {
+                case SDL_MOUSEMOTION: {     // 鼠标移动事件
+                    universe->on_mouse_event(e.motion);
+                }; break;
+                case SDL_MOUSEWHEEL: {      // 鼠标滚轮事件
+                    universe->on_mouse_event(e.wheel);
+                }; break;
+                case SDL_MOUSEBUTTONUP:
+                case SDL_MOUSEBUTTONDOWN: { // 鼠标点击事件
+                    universe->on_mouse_event(e.button);
+                }; break;
+                case SDL_KEYUP:
+                case SDL_KEYDOWN: {         // 键盘事件
+                    universe->on_keyboard_event(e.key);
+                }; break;
+                case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
+                    universe->on_elapse(renderer, reinterpret_cast<timer_parcel_t*>(e.user.data1)->frame);
+                }; break;
                 case SDL_QUIT: {
                     SDL_RemoveTimer(timer); // 停止定时器
                     delete universe;        // 别忘了销毁游戏世界
                     
                     std::cout << "总计运行了" << e.quit.timestamp / 1000.0F << "秒。" << std::endl;
                     game_is_running = false;
-                }; break;
-                case SDL_USEREVENT: {       // 收到定时器到期通知，更新游戏
-                    timer_parcel_t* parcel = reinterpret_cast<timer_parcel_t*>(e.user.data1);
-                    Universe* universe = reinterpret_cast<Universe*>(e.user.data2);
-                    timer_frame_t* frame = &(parcel->frame);
-
-                    universe->clear_screen(renderer);
-            
-                    // TODO: why some first frames are lost, why some frames duplicate.
-                    // printf("%u\t%u\n", frame->count, frame->uptime);
-                    universe->update(frame, renderer);
                 }; break;
                 default: {
                     // std::cout << "Ignored unhandled event(type = " << e.type << ")" << std::endl;
@@ -62,9 +68,9 @@ int main(int argc, char* args[]) {
         }
     }
 
-    SDL_DestroyTexture(texture);         // 销毁 SDL 纹理
-    SDL_DestroyRenderer(renderer);       // 销毁 SDL 渲染器
-    SDL_DestroyWindow(window);           // 销毁 SDL 窗口
+    SDL_DestroyTexture(texture);            // 销毁 SDL 纹理
+    SDL_DestroyRenderer(renderer);          // 销毁 SDL 渲染器
+    SDL_DestroyWindow(window);              // 销毁 SDL 窗口
 
     return 0;
 }

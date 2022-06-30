@@ -71,7 +71,7 @@ void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[], int width, int
     this->set_fps(8);
 }
 
-void WarGrey::STEM::GameOfLife::update(timer_frame_t* frame, SDL_Renderer* renderer) {
+void WarGrey::STEM::GameOfLife::update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime) {
     // 绘制游戏边界
     game_draw_frame(renderer, this->draw_x, this->draw_y, this->world_width * GRID_SIZE, this->world_height * GRID_SIZE);
 
@@ -79,7 +79,7 @@ void WarGrey::STEM::GameOfLife::update(timer_frame_t* frame, SDL_Renderer* rende
     game_draw_grid(renderer, this->world_width, this->world_height, GRID_SIZE, this->draw_x, this->draw_y);
 
     // 时间飞逝, 更新网格
-    this->timeline_forward(frame);
+    this->timeline_forward(interval, count, uptime);
     game_draw_blended_text(game_monospace_font, renderer, this->get_foreground_color(),
             0, 0, "Generation: %d", this->generation);
 
@@ -88,11 +88,11 @@ void WarGrey::STEM::GameOfLife::update(timer_frame_t* frame, SDL_Renderer* rende
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::GameOfLife::timeline_forward(timer_frame_t* frame) {
+void WarGrey::STEM::GameOfLife::timeline_forward(uint32_t interval, uint32_t count, uint32_t uptime) {
     bool evolved = false;
 
     // 应用演化规则
-    this->evolve(frame, this->world, this->shadow, this->world_width, this->world_height);
+    this->evolve(this->world, this->shadow, this->world_width, this->world_height);
 
     // 同步世界状态
     for (int x = 0; x < this->world_height; x++) {
@@ -115,7 +115,7 @@ void WarGrey::STEM::GameOfLife::timeline_forward(timer_frame_t* frame) {
 WarGrey::STEM::ConwayLife::ConwayLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
     : GameOfLife(window, renderer, texture, "Conway's Game of Life") {}
 
-void WarGrey::STEM::ConwayLife::evolve(timer_frame_t* frame, int** world, int* shadow, int world_width, int world_height) {
+void WarGrey::STEM::ConwayLife::evolve(int** world, int* shadow, int world_width, int world_height) {
     for (int x = 0; x < world_height; x++) {
         for (int y = 0; y < world_width; y++) {
             int n = count_neighbors(world, world_width, world_height, x, y);
@@ -138,7 +138,7 @@ void WarGrey::STEM::ConwayLife::evolve(timer_frame_t* frame, int** world, int* s
 WarGrey::STEM::HighLife::HighLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
     : GameOfLife(window, renderer, texture, "High Life") {}
 
-void WarGrey::STEM::HighLife::evolve(timer_frame_t* frame, int** world, int* shadow, int world_width, int world_height) {
+void WarGrey::STEM::HighLife::evolve(int** world, int* shadow, int world_width, int world_height) {
     for (int x = 0; x < world_height; x++) {
         for (int y = 0; y < world_width; y++) {
             int n = count_neighbors(world, world_width, world_height, x, y);
