@@ -158,10 +158,8 @@ uint32_t WarGrey::STEM::game_start(uint32_t fps, timer_update_t update_game_worl
     return timer;
 }
 
-void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t fgc, uint32_t bgc) {
+void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, uint32_t fgc, uint32_t bgc) {
     unsigned char r, g, b, a;
-
-    SDL_SetRenderTarget(renderer, texture);
 
     RGB_FromHexadecimal(bgc, &r, &g, &b, &a);
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
@@ -169,6 +167,11 @@ void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, SDL_Texture* textur
 
     RGB_FromHexadecimal(fgc, &r, &g, &b, &a);
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
+}
+
+void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t fgc, uint32_t bgc) {
+    SDL_SetRenderTarget(renderer, texture);
+    game_world_reset(renderer, fgc, bgc);
 }
 
 void WarGrey::STEM::game_world_refresh(SDL_Renderer* renderer, SDL_Texture* texture) {
@@ -252,5 +255,9 @@ WarGrey::STEM::Universe::Universe(SDL_Window* window, SDL_Renderer* renderer, SD
     SDL_SetWindowTitle(window, title);                 // 设置标题
     SDL_SetRenderDrawBlendMode(renderer, bmode);
     game_world_reset(renderer, texture, this->_fgc, this->_bgc);
+}
+
+void WarGrey::STEM::Universe::clear_screen(SDL_Renderer* renderer) {
+    game_world_reset(renderer, this->_fgc, this->_bgc);
 }
 

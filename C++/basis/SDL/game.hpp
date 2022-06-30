@@ -49,6 +49,10 @@ namespace WarGrey::STEM {
             uint32_t get_background_color() { return this->_bgc; }
             uint32_t get_foreground_color() { return this->_fgc; }
 
+        public:
+            /* 重制屏幕 */
+            void clear_screen(SDL_Renderer* renderer);
+
         private:
             int _fps = 60; // 帧频
             uint32_t _fgc = 0xFFFFFFFF; // 前景色
@@ -61,6 +65,7 @@ namespace WarGrey::STEM {
     uint32_t game_start(uint32_t fps, timer_update_t update_game_world, void* user_datum);
     uint32_t game_start(uint32_t fps, WarGrey::STEM::Universe* universe);
     
+    void game_world_reset(SDL_Renderer* renderer, uint32_t fgcolor, uint32_t bgcolor);
     void game_world_reset(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t fgcolor, uint32_t bgcolor);
     void game_world_refresh(SDL_Renderer* renderer, SDL_Texture* texture);
     

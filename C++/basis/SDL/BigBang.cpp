@@ -21,7 +21,7 @@ int main(int argc, char* args[]) {
     texture = game_create_world(WIN_WIDTH, WIN_HEIGHT, &window, &renderer); // 创建游戏世界
 
     /* 创建自己的游戏宇宙 */
-    auto universe = new GameOfLife(window, renderer, texture);
+    auto universe = new HighLife(window, renderer, texture);
     universe->construct(argc, args, WIN_WIDTH, WIN_HEIGHT);
     timer = game_start(universe->get_fps(), reinterpret_cast<timer_update_t>(0LL), reinterpret_cast<void*>(universe));
 
@@ -30,6 +30,8 @@ int main(int argc, char* args[]) {
         SDL_Event e;                        // SDL 事件
 
         while(game_is_running) {            // 游戏主循环
+            SDL_SetRenderTarget(renderer, texture);
+            
             while (SDL_PollEvent(&e)) {     // 处理用户交互事件    
                 switch (e.type) {
                 case SDL_QUIT: {
@@ -44,7 +46,7 @@ int main(int argc, char* args[]) {
                     Universe* universe = reinterpret_cast<Universe*>(e.user.data2);
                     timer_frame_t* frame = &(parcel->frame);
 
-                    game_world_reset(renderer, texture, universe->get_foreground_color(), universe->get_background_color());
+                    universe->clear_screen(renderer);
             
                     // TODO: why some first frames are lost, why some frames duplicate.
                     // printf("%u\t%u\n", frame->count, frame->uptime);

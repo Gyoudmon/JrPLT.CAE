@@ -17,15 +17,19 @@ static inline int check_neighbor(int* world[], int nx, int ny, int x, int y) {
 }
 
 static inline int count_neighbors(int *world[], int nx, int ny, int x, int y) {
-    return check_neighbor(world, nx, ny, x - 1, y + 0)
-         + check_neighbor(world, nx, ny, x + 1, y + 0)
-         + check_neighbor(world, nx, ny, x + 0, y - 1)
-         + check_neighbor(world, nx, ny, x + 0, y + 1);
+    return check_neighbor(world, nx, ny, x - 1, y + 0)  // left
+         + check_neighbor(world, nx, ny, x + 1, y + 0)  // right
+         + check_neighbor(world, nx, ny, x + 0, y - 1)  // up
+         + check_neighbor(world, nx, ny, x + 0, y + 1)  // down
+         + check_neighbor(world, nx, ny, x - 1, y - 1)  // left-up
+         + check_neighbor(world, nx, ny, x + 1, y + 1)  // right-down
+         + check_neighbor(world, nx, ny, x + 1, y - 1)  // right-up
+         + check_neighbor(world, nx, ny, x - 1, y + 1); // left-down
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::GameOfLife::GameOfLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
-    : Universe(window, renderer, texture, "Game of Life", SDL_BLENDMODE_NONE, 0xFFFFFFFF, 0x000000FF) {}
+WarGrey::STEM::GameOfLife::GameOfLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture, const char* title)
+    : Universe(window, renderer, texture, title, SDL_BLENDMODE_NONE, 0xFFFFFFFF, 0x000000FF) {}
 
 WarGrey::STEM::GameOfLife::~GameOfLife() {
     /* 销毁世界 */ {
@@ -74,40 +78,78 @@ void WarGrey::STEM::GameOfLife::update(timer_frame_t* frame, SDL_Renderer* rende
     // 绘制游戏世界的网格
     game_draw_grid(renderer, this->world_width, this->world_height, GRID_SIZE, this->draw_x, this->draw_y);
 
-    // 演化, 更新网格
-    this->evolve(frame, renderer);
-    game_draw_blended_text(game_monospace_font, renderer, 0xFFFFFFFF,
+    // 时间飞逝, 更新网格
+    this->timeline_forward(frame);
+    game_draw_blended_text(game_monospace_font, renderer, this->get_foreground_color(),
             0, 0, "Generation: %d", this->generation);
 
-    // 绘制路径
+    // 绘制生命
     game_fill_grid(renderer, this->world, this->world_width, this->world_height, GRID_SIZE, this->draw_x, this->draw_y);
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::GameOfLife::evolve(timer_frame_t* frame, SDL_Renderer* renderer) {
+void WarGrey::STEM::GameOfLife::timeline_forward(timer_frame_t* frame) {
+    bool evolved = false;
+
+    // 应用演化规则
+    this->evolve(frame, this->world, this->shadow, this->world_width, this->world_height);
+
+    // 同步世界状态
     for (int x = 0; x < this->world_height; x++) {
         for (int y = 0; y < this->world_width; y++) {
-            int n = count_neighbors(this->world, this->world_width, this->world_height, x, y);
-            int i = x * this->world_width + y;
+            int state = this->shadow[x * this->world_width + y];
 
-            if (n < 2) {            // 死亡(离群索居)
-                this->shadow[i] = 0;
-            } else if (n > 3) {     // 死亡(过度竞争)
-                this->shadow[i] = 0;
-            } else if (n == 3) {    // 繁殖
-                this->shadow[i] = 1;
-            } else {                // 安居乐业
-                this->shadow[i] = this->world[x][y];
+            if (this->world[x][y] != state) {
+                this->world[x][y] = state;
+                evolved = true;
             }
         }
     }
-    
-    for (int x = 0; x < this->world_height; x++) {
-        for (int y = 0; y < this->world_width; y++) {
-            this->world[x][y] = this->shadow[x * this->world_width + y];
+
+    if (evolved) {
+        this->generation ++;
+    }
+}
+
+/*************************************************************************************************/
+WarGrey::STEM::ConwayLife::ConwayLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
+    : GameOfLife(window, renderer, texture, "Conway's Game of Life") {}
+
+void WarGrey::STEM::ConwayLife::evolve(timer_frame_t* frame, int** world, int* shadow, int world_width, int world_height) {
+    for (int x = 0; x < world_height; x++) {
+        for (int y = 0; y < world_width; y++) {
+            int n = count_neighbors(world, world_width, world_height, x, y);
+            int i = x * world_width + y;
+
+            if (n < 2) {            // 死亡(离群索居)
+                shadow[i] = 0;
+            } else if (n > 3) {     // 死亡(过度竞争)
+                shadow[i] = 0;
+            } else if (n == 3) {    // 繁殖
+                shadow[i] = 1;
+            } else {                // 安居乐业
+                shadow[i] = world[x][y];
+            }
         }
     }
+}
 
-    this->generation ++;
+/*************************************************************************************************/
+WarGrey::STEM::HighLife::HighLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
+    : GameOfLife(window, renderer, texture, "High Life") {}
+
+void WarGrey::STEM::HighLife::evolve(timer_frame_t* frame, int** world, int* shadow, int world_width, int world_height) {
+    for (int x = 0; x < world_height; x++) {
+        for (int y = 0; y < world_width; y++) {
+            int n = count_neighbors(world, world_width, world_height, x, y);
+            int i = x * world_width + y;
+
+            switch (n) {
+            case 3: case 6: shadow[i] = 1; break;
+            case 2: shadow[i] = world[x][y]; break;
+            default: shadow[i] = 0;
+            }
+        }
+    }
 }
 
