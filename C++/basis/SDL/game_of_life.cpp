@@ -6,8 +6,7 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-static const int GRID_SIZE = 8;     // 方格边长
-static const int WORLD_SIZE = 96;   // 方格单边数量
+static const int GRID_SIZE = 12;     // 方格边长
 
 static inline int check_neighbor(int* world[], int nx, int ny, int x, int y) {
     return ((x >=0) && (x < nx)
@@ -29,7 +28,7 @@ static inline int count_neighbors(int *world[], int nx, int ny, int x, int y) {
 
 /*************************************************************************************************/
 WarGrey::STEM::GameOfLife::GameOfLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture, const char* title)
-    : Universe(window, renderer, texture, title, SDL_BLENDMODE_NONE, 0xFFFFFFFF, 0x000000FF) {}
+    : Universe(window, renderer, texture, title, SDL_BLENDMODE_NONE, 0x000000FF, 0xFFFFFFFF) {}
 
 WarGrey::STEM::GameOfLife::~GameOfLife() {
     /* 销毁世界 */ {
@@ -47,8 +46,8 @@ WarGrey::STEM::GameOfLife::~GameOfLife() {
 void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[], int width, int height) {
     this->screen_width = width;
     this->screen_height = height;
-    this->stage_width = WORLD_SIZE;
-    this->stage_height = WORLD_SIZE;
+    this->stage_width = this->screen_height / GRID_SIZE - 1;
+    this->stage_height = this->stage_width;
 
     // 确保舞台被绘制在屏幕中心
     this->stage_x = (this->screen_width - this->stage_width * GRID_SIZE) / 2;
@@ -193,7 +192,7 @@ void WarGrey::STEM::GameOfLife::construct_random_game_world() {
 }
 
 void WarGrey::STEM::GameOfLife::reset_game_world() {
-    if (this->state != GameState::Run) {
+    if (this->state == GameState::Edit) {
         for (int i = 0; i < this->stage_height; i++) {
             for (int j = 0; j < this->stage_width; j++) {
                 this->world[i][j] = 0;
