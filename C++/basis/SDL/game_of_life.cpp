@@ -6,8 +6,8 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-static const int GRID_SIZE = 16;     // 方格边长
-static const int WORLD_SIZE = 48;    // 方格单边数量
+static const int GRID_SIZE = 8;     // 方格边长
+static const int WORLD_SIZE = 96;   // 方格单边数量
 
 static inline int check_neighbor(int* world[], int nx, int ny, int x, int y) {
     return ((x >=0) && (x < nx)
@@ -33,7 +33,7 @@ WarGrey::STEM::GameOfLife::GameOfLife(SDL_Window* window, SDL_Renderer* renderer
 
 WarGrey::STEM::GameOfLife::~GameOfLife() {
     /* 销毁世界 */ {
-        for (int i = 0; i < this->world_height; i++) {
+        for (int i = 0; i < this->stage_height; i++) {
             delete [] this->world[i];
         }
 
@@ -45,63 +45,184 @@ WarGrey::STEM::GameOfLife::~GameOfLife() {
 
 /*************************************************************************************************/
 void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[], int width, int height) {
-    this->world_width = WORLD_SIZE;
-    this->world_height = WORLD_SIZE;
+    this->screen_width = width;
+    this->screen_height = height;
+    this->stage_width = WORLD_SIZE;
+    this->stage_height = WORLD_SIZE;
 
-    // 确保游戏世界被绘制在屏幕中心
-    this->draw_x = (width - this->world_width * GRID_SIZE) / 2;
-    this->draw_y = (height - this->world_height * GRID_SIZE) / 2;
+    // 确保舞台被绘制在屏幕中心
+    this->stage_x = (this->screen_width - this->stage_width * GRID_SIZE) / 2;
+    this->stage_y = (this->screen_height - this->stage_height * GRID_SIZE) / 2;
 
     /* 创建世界网格 */ {
-        this->shadow = new int[this->world_width * this->world_height];
-        this->world = new int*[this->world_height];
+        this->shadow = new int[this->stage_width * this->stage_height];
+        this->world = new int*[this->stage_height];
 
-        for (int i = 0; i < this->world_height; i++) {
-            this->world[i] = new int[this->world_width];
+        for (int i = 0; i < this->stage_height; i++) {
+            this->world[i] = new int[this->stage_width];
 
-            for (int j = 0; j < this->world_width; j++) {
-                this->world[i][j] = ((random_raw() % 2 == 0) ? 1 : 0);
+            for (int j = 0; j < this->stage_width; j++) {
+                this->world[i][j] = 0;
             }
         }
     }
 
-    game_text_size(game_monospace_font, NULL, &this->lineheight, "em");
-    this->generation = 0;
+    game_text_size(game_monospace_font, &this->chwidth, &this->lineheight, "x");
     
+    this->generation = 0;
+    this->switch_game_state(GameState::Run);
+
     this->set_fps(8);
 }
 
 void WarGrey::STEM::GameOfLife::update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime) {
-    // 绘制游戏边界
-    game_draw_frame(renderer, this->draw_x, this->draw_y, this->world_width * GRID_SIZE, this->world_height * GRID_SIZE);
+    // 绘制舞台边界
+    game_draw_frame(renderer, this->stage_x, this->stage_y, this->stage_width * GRID_SIZE, this->stage_height * GRID_SIZE);
 
-    // 绘制游戏世界的网格
-    game_draw_grid(renderer, this->world_width, this->world_height, GRID_SIZE, this->draw_x, this->draw_y);
+    // 绘制舞台的网格
+    if (!this->hide_grid) {
+        game_draw_grid(renderer, this->stage_width, this->stage_height, GRID_SIZE, this->stage_x, this->stage_y);
+    }
 
-    // 时间飞逝, 更新网格
-    this->timeline_forward(interval, count, uptime);
-    game_draw_blended_text(game_monospace_font, renderer, this->get_foreground_color(),
-            0, 0, "Generation: %d", this->generation);
+    // 根据游戏状态更新舞台
+    switch (this->state) {
+        case GameState::Run: this->timeline_forward(interval, count, uptime); break; // 时间飞逝, 生命演化
+        default: /* 什么都不做 */ ; break;
+    }
 
     // 绘制生命
-    game_fill_grid(renderer, this->world, this->world_width, this->world_height, GRID_SIZE, this->draw_x, this->draw_y);
+    game_fill_grid(renderer, this->world, this->stage_width, this->stage_height, GRID_SIZE, this->stage_x, this->stage_y);
+
+    /* 绘制提示信息 */ {
+        uint32_t fgcolor = this->get_foreground_color();
+        std::string desc_generation = game_create_string("Generation: %d", this->generation);
+    
+        game_draw_blended_text(game_monospace_font, renderer, fgcolor,
+                this->screen_width - this->chwidth * desc_generation.size(), 0,
+                "%s", desc_generation.c_str());
+
+        this->display_instruction(renderer, "Play",    'p', 0);
+        this->display_instruction(renderer, "Stop",    's', 1);
+        this->display_instruction(renderer, "Edit",    'e', 2);
+        this->display_instruction(renderer, "Random",  'r', 3);
+        this->display_instruction(renderer, "Clear",   'c', 4);
+        this->display_instruction(renderer, "Forward", 'f', 5);
+    
+        if (this->last_key_typed != '\0') {
+            int rx = this->screen_width - this->chwidth * 2;
+            int ry = this->screen_height - this->lineheight;
+
+            game_draw_blended_text(game_monospace_font, renderer, fgcolor, rx, ry, "%c", this->last_key_typed);
+        }
+
+        this->display_user_message(renderer, this->user_message);
+    }
+}
+
+void WarGrey::STEM::GameOfLife::display_game_state(SDL_Renderer* renderer, const std::string &desc_state, uint32_t color) {
+    int x = this->screen_width - this->chwidth * (desc_state.size() + 1);
+
+    game_draw_blended_text(game_monospace_font, renderer, color, x, 0, "%s", desc_state.c_str());
+}
+
+void WarGrey::STEM::GameOfLife::display_instruction(SDL_Renderer* renderer, const std::string &desc_state, char key, int index) {
+    uint32_t color = this->get_foreground_color();
+    int y = index * this->lineheight;
+
+    if (key == this->last_key_typed) {
+        color = 0x00FF00FF;
+    }
+
+    game_draw_blended_text(game_monospace_font, renderer, color, 0, y, "[%c] %s", key, desc_state.c_str());
+}
+
+void WarGrey::STEM::GameOfLife::display_user_message(SDL_Renderer* renderer, const std::string &message) {
+    if (message.size() > 0) {
+        game_draw_shaded_text(game_monospace_font, renderer, 0xFF0000FF, this->get_background_color(),
+            0, this->screen_height - this->lineheight,
+            "[Error] %s", message.c_str());
+    }
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::GameOfLife::timeline_forward(uint32_t interval, uint32_t count, uint32_t uptime) {
+void WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t repeats) {
+    this->last_key_typed = key;
+
+    switch(key) {
+        case 's': this->switch_game_state(GameState::Stop); break;
+        case 'p': this->switch_game_state(GameState::Run); break;
+        case 'e': this->switch_game_state(GameState::Edit); break;
+        case 'r': this->construct_random_game_world(); break;
+        case 'c': this->reset_game_world(); break;
+        case 'f': this->forward_game_world(repeats, false); break;
+    }
+}
+
+void WarGrey::STEM::GameOfLife::on_click(int x, int y) {
+    if (this->state == GameState::Edit) {
+        int sx = x - this->stage_x;
+        int sy = y - this->stage_y;
+        int mx = this->stage_width * GRID_SIZE;
+        int my = this->stage_height * GRID_SIZE;
+
+        if ((sx > 0) && (sx < mx) && (sy > 0) && (sy < my)) {
+            int gx = sx / GRID_SIZE;
+            int gy = sy / GRID_SIZE;
+
+            if ((gx < this->stage_width) && (gy < this->stage_height)) {
+                this->world[gx][gy] = (this->world[gx][gy] == 0) ? 1 : 0;
+            }
+        }
+    }
+}
+
+/*************************************************************************************************/
+void WarGrey::STEM::GameOfLife::construct_random_game_world() {
+    if (this->state == GameState::Edit) {
+        for (int i = 0; i < this->stage_height; i++) {
+            for (int j = 0; j < this->stage_width; j++) {
+                this->world[i][j] = ((random_raw() % 2 == 0) ? 1 : 0);
+            }
+        }
+
+        this->last_key_typed = 'e';
+    } else {
+        this->user_message = "Please enter the 'Edit' mode first!";
+        this->last_key_typed = '\0';
+    }
+}
+
+void WarGrey::STEM::GameOfLife::reset_game_world() {
+    if (this->state != GameState::Run) {
+        for (int i = 0; i < this->stage_height; i++) {
+            for (int j = 0; j < this->stage_width; j++) {
+                this->world[i][j] = 0;
+            }
+        }
+
+        this->generation = 0;
+    } else {
+        this->user_message = "Please enter the 'Edit' mode first!";
+        this->last_key_typed = '\0';
+    }
+}
+
+bool WarGrey::STEM::GameOfLife::forward_game_world(int repeats, bool force) {
     bool evolved = false;
 
-    // 应用演化规则
-    this->evolve(this->world, this->shadow, this->world_width, this->world_height);
+    if (force || (this->state != GameState::Run)) {
+        // 应用演化规则
+        this->evolve(this->world, this->shadow, this->stage_width, this->stage_height);
 
-    // 同步世界状态
-    for (int x = 0; x < this->world_height; x++) {
-        for (int y = 0; y < this->world_width; y++) {
-            int state = this->shadow[x * this->world_width + y];
+        // 同步舞台状态
+        for (int x = 0; x < this->stage_height; x++) {
+            for (int y = 0; y < this->stage_width; y++) {
+                int state = this->shadow[x * this->stage_width + y];
 
-            if (this->world[x][y] != state) {
-                this->world[x][y] = state;
-                evolved = true;
+                if (this->world[x][y] != state) {
+                    this->world[x][y] = state;
+                    evolved = true;
+                }
             }
         }
     }
@@ -109,23 +230,61 @@ void WarGrey::STEM::GameOfLife::timeline_forward(uint32_t interval, uint32_t cou
     if (evolved) {
         this->generation ++;
     }
+
+    return evolved;
+}
+
+void WarGrey::STEM::GameOfLife::timeline_forward(uint32_t interval, uint32_t count, uint32_t uptime) {
+    if (!this->forward_game_world(1, true)) {
+        this->switch_game_state(GameState::Stop);
+    }
+}
+
+void WarGrey::STEM::GameOfLife::switch_game_state(GameState new_state) {
+    if (this->state != new_state) {
+        switch (new_state) {
+        case GameState::Run: {
+            this->state = new_state;
+            this->hide_grid = true;
+            this->last_key_typed = 'p';
+            this->user_message = "";
+        }; break;
+        case GameState::Stop: {
+            if (this->state == GameState::Run) { 
+                this->state = new_state;
+                this->last_key_typed = 's';
+            }
+        }; break;
+        case GameState::Edit: {
+            if (this->state == GameState::Stop) {
+                this->state = new_state;
+                this->hide_grid = false;
+                this->last_key_typed = 'e';
+                this->user_message = "";
+            } else {
+                this->user_message = "Please stop the game first!";
+            }
+        }; break;
+        default: /* 什么都不做 */; break;
+        }
+    }
 }
 
 /*************************************************************************************************/
 WarGrey::STEM::ConwayLife::ConwayLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
     : GameOfLife(window, renderer, texture, "Conway's Game of Life") {}
 
-void WarGrey::STEM::ConwayLife::evolve(int** world, int* shadow, int world_width, int world_height) {
-    for (int x = 0; x < world_height; x++) {
-        for (int y = 0; y < world_width; y++) {
-            int n = count_neighbors(world, world_width, world_height, x, y);
-            int i = x * world_width + y;
+void WarGrey::STEM::ConwayLife::evolve(int** world, int* shadow, int stage_width, int stage_height) {
+    for (int x = 0; x < stage_height; x++) {
+        for (int y = 0; y < stage_width; y++) {
+            int n = count_neighbors(world, stage_width, stage_height, x, y);
+            int i = x * stage_width + y;
 
             if (n < 2) {            // 死亡(离群索居)
                 shadow[i] = 0;
             } else if (n > 3) {     // 死亡(过度竞争)
                 shadow[i] = 0;
-            } else if (n == 3) {    // 繁殖
+            } else if (n == 3) {    // 无性繁殖
                 shadow[i] = 1;
             } else {                // 安居乐业
                 shadow[i] = world[x][y];
@@ -138,11 +297,11 @@ void WarGrey::STEM::ConwayLife::evolve(int** world, int* shadow, int world_width
 WarGrey::STEM::HighLife::HighLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
     : GameOfLife(window, renderer, texture, "High Life") {}
 
-void WarGrey::STEM::HighLife::evolve(int** world, int* shadow, int world_width, int world_height) {
-    for (int x = 0; x < world_height; x++) {
-        for (int y = 0; y < world_width; y++) {
-            int n = count_neighbors(world, world_width, world_height, x, y);
-            int i = x * world_width + y;
+void WarGrey::STEM::HighLife::evolve(int** world, int* shadow, int stage_width, int stage_height) {
+    for (int x = 0; x < stage_height; x++) {
+        for (int y = 0; y < stage_width; y++) {
+            int n = count_neighbors(world, stage_width, stage_height, x, y);
+            int i = x * stage_width + y;
 
             switch (n) {
             case 3: case 6: shadow[i] = 1; break;

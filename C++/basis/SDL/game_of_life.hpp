@@ -4,34 +4,57 @@
 #include "game.hpp"
 
 namespace WarGrey::STEM {
+    enum class GameState { Run, Stop, Edit };
+
     /** 声明游戏宇宙 **/
     class GameOfLife : public WarGrey::STEM::Universe {
         public:
             GameOfLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture, const char* title);
             virtual ~GameOfLife();
 
-        public:  // 覆盖游戏方法
+        public:    // 覆盖游戏基本方法
             void construct(int argc, char* argv[], int width, int height);
             void update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime);
 
-        protected:
-            virtual void evolve(int** world, int* shadow, int world_width, int world_height) = 0;
+        protected: // 覆盖输入事件处理方法
+            void on_char(char key, uint16_t modifiers, uint8_t repeats);        // 处理键盘事件
+            void on_click(int x, int y);                                        // 处理单击事件
+
+        protected: // 演化策略, 默认留给子类实现
+            virtual void evolve(int** world, int* shadow, int stage_width, int stage_height) = 0;
 
         private:
             void timeline_forward(uint32_t interval, uint32_t count, uint32_t uptime);
+            void switch_game_state(WarGrey::STEM::GameState new_state);
+            void display_game_state(SDL_Renderer* renderer, const std::string &desc_state, uint32_t color);
+            void display_instruction(SDL_Renderer* renderer, const std::string &desc_state, char key, int index);
+            void display_user_message(SDL_Renderer* renderer, const std::string &message);
 
-        private: // 世界(网格)参数
+        private:
+            void construct_random_game_world();
+            void reset_game_world();
+            bool forward_game_world(int repeats, bool force);
+
+        private: // 舞台参数
             int** world;
             int* shadow;
             int generation;
-            int world_width;
-            int world_height;
-            int draw_x;
-            int draw_y;
+            int stage_x;
+            int stage_y;
+            int stage_width;
+            int stage_height;
+            int screen_width;
+            int screen_height;
+
+        private: // 游戏状态
+            WarGrey::STEM::GameState state;           
+            bool hide_grid;
 
         private:
+            int chwidth;
             int lineheight;
             char last_key_typed;
+            std::string user_message;
     };
 
     class ConwayLife : public WarGrey::STEM::GameOfLife {
@@ -39,7 +62,7 @@ namespace WarGrey::STEM {
             ConwayLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture);
 
         protected:
-            void evolve(int** world, int* shadow, int world_width, int world_height);
+            void evolve(int** world, int* shadow, int stage_width, int stage_height);
     };
 
     class HighLife : public WarGrey::STEM::GameOfLife {
@@ -47,7 +70,7 @@ namespace WarGrey::STEM {
             HighLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture);
 
         protected:
-            void evolve(int** world, int* shadow, int world_width, int world_height);
+            void evolve(int** world, int* shadow, int stage_width, int stage_height);
     };
 }
 

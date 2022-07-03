@@ -70,8 +70,6 @@ static inline void safe_render_text_surface(SDL_Renderer* target, SDL_Surface* m
     if (text != NULL) {
         SDL_RenderCopy(target, text, NULL, region);
         SDL_DestroyTexture(text);
-    } else {
-
     }
 
     SDL_FreeSurface(message);
@@ -95,7 +93,7 @@ void WarGrey::STEM::game_text_size(TTF_Font* font, int* width, int* height, cons
     unsafe_utf8_size(font, width, height, text);
 }
     
-void WarGrey::STEM::game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer, unsigned int rgba, int x, int y, const char* fmt, ...) {
+void WarGrey::STEM::game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgba, int x, int y, const char* fmt, ...) {
     SDL_Rect text_region;
     SDL_Color text_color;
 
@@ -110,7 +108,7 @@ void WarGrey::STEM::game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer,
     safe_render_text_surface(renderer, message, &text_region);
 }
 
-void WarGrey::STEM::game_draw_shaded_text(TTF_Font* font, SDL_Renderer* renderer, unsigned int fgc, unsigned int bgc, int x, int y, const char* fmt, ...) {
+void WarGrey::STEM::game_draw_shaded_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t fgc, uint32_t bgc, int x, int y, const char* fmt, ...) {
     SDL_Rect text_region;
     SDL_Color text_color, background_color;
 
@@ -126,7 +124,7 @@ void WarGrey::STEM::game_draw_shaded_text(TTF_Font* font, SDL_Renderer* renderer
     safe_render_text_surface(renderer, message, &text_region);
 }
 
-void WarGrey::STEM::game_draw_blended_text(TTF_Font* font, SDL_Renderer* renderer, unsigned int rgba, int x, int y, const char* fmt, ...) {
+void WarGrey::STEM::game_draw_blended_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgba, int x, int y, const char* fmt, ...) {
     SDL_Rect text_region;
     SDL_Color text_color;
 

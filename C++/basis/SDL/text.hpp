@@ -13,9 +13,9 @@ namespace WarGrey::STEM {
 
     void game_text_size(TTF_Font* font, int* width, int* height, const char* fmt, ...);
 
-    void game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer, unsigned int rgba, int x, int y, const char* fmt, ...);
-    void game_draw_shaded_text(TTF_Font* font, SDL_Renderer* renderer, unsigned int fgc, unsigned int bgc, int x, int y, const char* fmt, ...);
-    void game_draw_blended_text(TTF_Font* font, SDL_Renderer* renderer, unsigned int rgba, int x, int y, const char* fmt, ...);
+    void game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgba, int x, int y, const char* fmt, ...);
+    void game_draw_shaded_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t fgc, uint32_t bgc, int x, int y, const char* fmt, ...);
+    void game_draw_blended_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgba, int x, int y, const char* fmt, ...);
 }
 
 #endif

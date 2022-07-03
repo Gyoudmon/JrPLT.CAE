@@ -5,6 +5,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include <cstdint>
+#include <string>
 
 namespace WarGrey::STEM {
     /**********************************************************************************************/
@@ -68,7 +69,7 @@ namespace WarGrey::STEM {
             virtual void on_mouse_move(uint32_t state, int x, int y, int dx, int dy) {}          // 处理移动事件
             virtual void on_scroll(int horizon, int vertical, float hprecise, float vprecise) {} // 处理滚轮事件
 
-            virtual void on_char(char key, uint16_t modifiers, uint8_t repeats) {}        // 处理键盘事件
+            virtual void on_char(char key, uint16_t modifiers, uint8_t repeats) {}               // 处理键盘事件
 
         private:
             int _fps = 60; // 帧频

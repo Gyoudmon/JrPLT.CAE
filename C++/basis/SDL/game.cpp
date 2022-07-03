@@ -301,7 +301,7 @@ void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseWheelEvent &mouse) {
 }
 
 void WarGrey::STEM::Universe::on_keyboard_event(SDL_KeyboardEvent &keyboard) {
-    if (keyboard.state == SDL_RELEASED) {
+    if (keyboard.state == SDL_PRESSED) {
         SDL_Keysym key = keyboard.keysym;
 
         this->on_char(key.sym, key.mod, keyboard.repeat);
