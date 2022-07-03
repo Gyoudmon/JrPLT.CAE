@@ -22,10 +22,10 @@ static int set_render_color_from_hue(SDL_Renderer* renderer, float hue, float ch
     float b = m;
     
     if (!flisnan(hue)) {
-        float hue_60 = hue / 60.0;
+        float hue_60 = hue / 60.0f;
         float flhue = flfloor(hue_60);
         int fxhue = int(flhue);
-        float x = chroma * (1.0 - flabs(float(fxhue % 2) - (flhue - hue_60) - 1.0));
+        float x = chroma * (1.0f - flabs(float(fxhue % 2) - (flhue - hue_60) - 1.0f));
         
         switch (fxhue) {
         case 0: r += chroma; g += x; break;
@@ -41,17 +41,17 @@ static int set_render_color_from_hue(SDL_Renderer* renderer, float hue, float ch
 }
 
 static int set_render_color_from_hsi_sector(SDL_Renderer* renderer, float hue, float saturation, float intensity, char color_component, float alpha) {
-    float cosH_60H = 2.0; // if hue == 0.0 or hue == 120.0;
+    float cosH_60H = 2.0f; // if hue == 0.0 or hue == 120.0;
 
-    if ((hue != 0.0) && (hue != 120.0)) {
-        float H = hue * (pi / 180.0);
-        cosH_60H = flcos(H) / flcos(pi / 3.0 - H);
+    if ((hue != 0.0f) && (hue != 120.0f)) {
+        float H = hue * (pi_f / 180.0f);
+        cosH_60H = flcos(H) / flcos(pi_f / 3.0f - H);
     }
 
     {
-        float major = intensity * (1.0 + saturation * cosH_60H);
-        float midor = intensity * (1.0 - saturation);
-        float minor = (intensity * 3.0) - (major + midor);
+        float major = intensity * (1.0f + saturation * cosH_60H);
+        float midor = intensity * (1.0f - saturation);
+        float minor = (intensity * 3.0f) - (major + midor);
 
         switch (color_component) {
         case 'r': return sdl_set_render_draw_color(renderer, major, minor, midor, alpha); break;
@@ -71,22 +71,22 @@ int WarGrey::STEM::HSV_SetRenderDrawColor(SDL_Renderer* renderer, float hue, flo
 
 /*************************************************************************************************/
 int WarGrey::STEM::HSL_SetRenderDrawColor(SDL_Renderer* renderer, float hue, float saturation, float lightness, float alpha) {
-    float chroma = saturation * (1.0 - flabs(lightness * 2.0 - 1.0));
-    float m = lightness - chroma * 0.5;
+    float chroma = saturation * (1.0f - flabs(lightness * 2.0f - 1.0f));
+    float m = lightness - chroma * 0.5f;
     
     return set_render_color_from_hue(renderer, hue, chroma, m, alpha);
 }
 
 /*************************************************************************************************/
 int WarGrey::STEM::HSI_SetRenderDrawColor(SDL_Renderer* renderer, float hue, float saturation, float intensity, float alpha) {
-    if ((saturation == 0.0) || flisnan(saturation)) {
+    if ((saturation == 0.0f) || flisnan(saturation)) {
         return sdl_set_render_draw_color(renderer, intensity, intensity, intensity, alpha);
-    } else if (hue < 120.0) {
+    } else if (hue < 120.0f) {
         return set_render_color_from_hsi_sector(renderer, hue, saturation, intensity, 'r', alpha);
-    } else if (hue < 240.0) {
-        return set_render_color_from_hsi_sector(renderer, hue - 120.0, saturation, intensity, 'g', alpha);
+    } else if (hue < 240.0f) {
+        return set_render_color_from_hsi_sector(renderer, hue - 120.0f, saturation, intensity, 'g', alpha);
     } else {
-        return set_render_color_from_hsi_sector(renderer, hue - 240.0, saturation, intensity, 'b', alpha);
+        return set_render_color_from_hsi_sector(renderer, hue - 240.0f, saturation, intensity, 'b', alpha);
     }
 }
 
