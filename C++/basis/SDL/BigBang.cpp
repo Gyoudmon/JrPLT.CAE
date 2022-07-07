@@ -34,6 +34,9 @@ int main(int argc, char* args[]) {
             
             while (SDL_PollEvent(&e)) {     // 处理用户交互事件    
                 switch (e.type) {
+                case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
+                    universe->on_elapse(renderer, reinterpret_cast<timer_parcel_t*>(e.user.data1)->frame);
+                }; break;
                 case SDL_MOUSEMOTION: {     // 鼠标移动事件
                     universe->on_mouse_event(e.motion);
                 }; break;
@@ -47,9 +50,6 @@ int main(int argc, char* args[]) {
                 case SDL_KEYUP:
                 case SDL_KEYDOWN: {         // 键盘事件
                     universe->on_keyboard_event(e.key);
-                }; break;
-                case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
-                    universe->on_elapse(renderer, reinterpret_cast<timer_parcel_t*>(e.user.data1)->frame);
                 }; break;
                 case SDL_QUIT: {
                     SDL_RemoveTimer(timer); // 停止定时器

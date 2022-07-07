@@ -197,9 +197,6 @@ void WarGrey::STEM::game_draw_grid(SDL_Renderer* renderer, int nx, int ny, int g
     int yend = yoff + ny * grid_size;
     uint8_t r, g, b, alpha;
 
-    //SDL_GetRenderDrawColor(renderer, &r, &g, &b, &alpha);
-    //SDL_SetRenderDrawColor(renderer, r, g, b, 0x11);
-
     for (int i = 0; i <= nx; i++) {
         int x = xoff + i * grid_size;
 
@@ -211,8 +208,6 @@ void WarGrey::STEM::game_draw_grid(SDL_Renderer* renderer, int nx, int ny, int g
 
         SDL_RenderDrawLine(renderer, x, yoff, x, yend);
     }
-    
-    //SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
 }
 
 void WarGrey::STEM::game_fill_grid(SDL_Renderer* renderer, int* grids[], int nx, int ny, int grid_size, int xoff, int yoff) {

@@ -38,21 +38,19 @@ int main(int argc, char* args[]) {
 
             while (SDL_PollEvent(&e)) {          // 处理用户交互事件
                 switch (e.type) {
+                case SDL_USEREVENT: {            // 定时器到期通知，更新游戏
+                    timer_parcel_t* parcel = reinterpret_cast<timer_parcel_t*>(e.user.data1);
+                    timer_update_t update = parcel->update_game_world;
+                    timer_frame_t* frame = &(parcel->frame);
+
+                    update(frame, e.user.data2, renderer);
+                }; break;
                 case SDL_QUIT: {
                     SDL_RemoveTimer(timer);      // 停止定时器
                     self_avoid_walk_exit(datum); // 别忘了销毁游戏世界
                     
                     std::cout << "总计运行了" << e.quit.timestamp / 1000.0F << "秒。" << std::endl;
                     game_is_running = false;
-                }; break;
-                case SDL_USEREVENT: {            // 收到定时器到期通知，更新游戏
-                    timer_parcel_t* parcel = reinterpret_cast<timer_parcel_t*>(e.user.data1);
-                    timer_update_t update = parcel->update_game_world;
-                    timer_frame_t* frame = &(parcel->frame);
-
-                    // TODO: why some first frames are lost, why some frames duplicate.
-                    // printf("%u\t%u\n", frame->count, frame->uptime);
-                    update(frame, e.user.data2, renderer);
                 }; break;
                 default: {
                     // std::cout << "Ignored unhandled event(type = " << e.type << ")" << std::endl;
