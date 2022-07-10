@@ -195,7 +195,6 @@ void WarGrey::STEM::game_draw_frame(SDL_Renderer* renderer, int x, int y, int wi
 void WarGrey::STEM::game_draw_grid(SDL_Renderer* renderer, int nx, int ny, int grid_size, int xoff, int yoff) {
     int xend = xoff + nx * grid_size;
     int yend = yoff + ny * grid_size;
-    uint8_t r, g, b, alpha;
 
     for (int i = 0; i <= nx; i++) {
         int x = xoff + i * grid_size;
