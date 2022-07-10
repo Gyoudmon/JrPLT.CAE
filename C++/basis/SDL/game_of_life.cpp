@@ -28,7 +28,7 @@ static inline int count_neighbors(int *world[], int nx, int ny, int x, int y) {
 
 /*************************************************************************************************/
 WarGrey::STEM::GameOfLife::GameOfLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture, const char* title)
-    : Universe(window, renderer, texture, title, SDL_BLENDMODE_NONE, 0x000000FF, 0xFFFFFFFF) {}
+    : Universe(window, renderer, texture, title, SDL_BLENDMODE_NONE, 0x000000FFU, 0xFFFFFFFFU) {}
 
 WarGrey::STEM::GameOfLife::~GameOfLife() {
     /* 销毁世界 */ {
