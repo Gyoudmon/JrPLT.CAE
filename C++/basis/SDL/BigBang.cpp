@@ -6,71 +6,22 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-// 窗口尺寸常量
 static const int WIN_WIDTH  = 1200;
 static const int WIN_HEIGHT = 800;
 
 /*************************************************************************************************/
 int main(int argc, char* args[]) {
-    SDL_Window* window = NULL;      // SDL 窗口指针
-    SDL_Renderer* renderer = NULL;  // SDL 渲染器指针
-    SDL_Texture* texture = NULL;    // SDL 纹理指针
-    SDL_TimerID timer = 0;          // SDL 定时器
-    
-    game_initialize(SDL_INIT_VIDEO | SDL_INIT_TIMER);                       // 初始化游戏系统
-    texture = game_create_world(WIN_WIDTH, WIN_HEIGHT, &window, &renderer); // 创建游戏世界
-
     /* 创建自己的游戏宇宙 */
-    auto universe = new ConwayLife(window, renderer, texture);
-    universe->construct(argc, args, WIN_WIDTH, WIN_HEIGHT);
-    timer = game_start(universe->get_fps(), reinterpret_cast<timer_update_t>(0LL), reinterpret_cast<void*>(universe));
+    auto universe = new ConwayLife(WIN_WIDTH, WIN_HEIGHT);
 
-    /** 初始化完成，请开始你的代码 **/ {
-        bool game_is_running = true;        // 游戏主循环标志
-        SDL_Event e;                        // SDL 事件
+    /* 创建游戏世界 */
+    universe->construct(argc, args);
 
-        while(game_is_running) {            // 游戏主循环
-            SDL_SetRenderTarget(renderer, texture);
-            
-            while (SDL_PollEvent(&e)) {     // 处理用户交互事件    
-                switch (e.type) {
-                case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
-                    universe->on_elapse(renderer, reinterpret_cast<timer_parcel_t*>(e.user.data1)->frame);
-                }; break;
-                case SDL_MOUSEMOTION: {     // 鼠标移动事件
-                    universe->on_mouse_event(e.motion);
-                }; break;
-                case SDL_MOUSEWHEEL: {      // 鼠标滚轮事件
-                    universe->on_mouse_event(e.wheel);
-                }; break;
-                case SDL_MOUSEBUTTONUP:
-                case SDL_MOUSEBUTTONDOWN: { // 鼠标点击事件
-                    universe->on_mouse_event(e.button);
-                }; break;
-                case SDL_KEYUP:
-                case SDL_KEYDOWN: {         // 键盘事件
-                    universe->on_keyboard_event(e.key);
-                }; break;
-                case SDL_QUIT: {
-                    SDL_RemoveTimer(timer); // 停止定时器
-                    delete universe;        // 别忘了销毁游戏世界
-                    
-                    std::cout << "总计运行了" << e.quit.timestamp / 1000.0F << "秒。" << std::endl;
-                    game_is_running = false;
-                }; break;
-                default: {
-                    // std::cout << "Ignored unhandled event(type = " << e.type << ")" << std::endl;
-                }
-                }
-            }
+    /* 开始游戏主循环 */
+    universe->big_bang();
 
-            game_world_refresh(renderer, texture); // 更新窗体
-        }
-    }
-
-    SDL_DestroyTexture(texture);            // 销毁 SDL 纹理
-    SDL_DestroyRenderer(renderer);          // 销毁 SDL 渲染器
-    SDL_DestroyWindow(window);              // 销毁 SDL 窗口
+    /* 结束之前别忘了销毁游戏宇宙 */
+    delete universe;
 
     return 0;
 }

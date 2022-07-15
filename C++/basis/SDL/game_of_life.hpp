@@ -9,11 +9,11 @@ namespace WarGrey::STEM {
     /** 声明游戏宇宙 **/
     class GameOfLife : public WarGrey::STEM::Universe {
         public:
-            GameOfLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture, const char* title);
+            GameOfLife(const char* title, int width, int height);
             virtual ~GameOfLife();
 
         public:    // 覆盖游戏基本方法
-            void construct(int argc, char* argv[], int width, int height);
+            void construct(int argc, char* argv[]);
             void update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime);
 
         protected: // 覆盖输入事件处理方法
@@ -59,7 +59,7 @@ namespace WarGrey::STEM {
 
     class ConwayLife : public WarGrey::STEM::GameOfLife {
         public:
-            ConwayLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture);
+            ConwayLife(int width, int height);
 
         protected:
             void evolve(int** world, int* shadow, int stage_width, int stage_height);
@@ -67,7 +67,7 @@ namespace WarGrey::STEM {
 
     class HighLife : public WarGrey::STEM::GameOfLife {
         public:
-            HighLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture);
+            HighLife(int width, int height);
 
         protected:
             void evolve(int** world, int* shadow, int stage_width, int stage_height);

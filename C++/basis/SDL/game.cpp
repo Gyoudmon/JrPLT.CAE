@@ -120,11 +120,15 @@ static unsigned int trigger_timer_event(unsigned int interval, void* datum) {
 
 /*************************************************************************************************/
 void WarGrey::STEM::game_initialize(uint32_t flags, int fontsize) {
-    Call_With_Safe_Exit(SDL_Init(flags), "SDL 初始化失败: ", SDL_Quit, SDL_GetError);
-    Call_With_Safe_Exit(TTF_Init(), "TTF 初始化失败: ", TTF_Quit, TTF_GetError);
+    if (GAME_DEFAULT_FONT == NULL) {
+        Call_With_Safe_Exit(SDL_Init(flags), "SDL 初始化失败: ", SDL_Quit, SDL_GetError);
+        Call_With_Safe_Exit(TTF_Init(), "TTF 初始化失败: ", TTF_Quit, TTF_GetError);
 
-    game_fonts_initialize(fontsize);
-    atexit(game_fonts_destroy);
+        IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
+    
+        game_fonts_initialize(fontsize);
+        atexit(game_fonts_destroy);
+    }
 }
 
 SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window** window, SDL_Renderer** renderer) {
@@ -249,20 +253,86 @@ void WarGrey::STEM::game_font_destroy(TTF_Font* font) {
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::Universe::Universe(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture,
-        const char *title, SDL_BlendMode bmode, uint32_t fgc, uint32_t bgc)
-    : _fgc(fgc), _bgc(bgc) {
-    SDL_SetWindowTitle(window, title);                 // 设置标题
-    SDL_SetRenderDrawBlendMode(renderer, bmode);
-    game_world_reset(renderer, texture, this->_fgc, this->_bgc);
+WarGrey::STEM::Universe::Universe() : Universe("Big Bang!", 1200, 800) {}
+
+WarGrey::STEM::Universe::Universe(const char *title, int width, int height, int fps,
+        SDL_BlendMode bmode, uint32_t fgc, uint32_t bgc)
+    : _fps(fps), _fgc(fgc), _bgc(bgc) {
+    
+    // 初始化游戏系统
+    game_initialize(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+    // 创建游戏世界
+    this->texture = game_create_world(width, height, &this->window, &this->renderer);
+
+    // 设置标题
+    SDL_SetWindowTitle(this->window, title);
+    SDL_SetRenderDrawBlendMode(this->renderer, bmode);
+    game_world_reset(this->renderer, this->texture, this->_fgc, this->_bgc);
 }
 
-void WarGrey::STEM::Universe::on_elapse(SDL_Renderer* renderer, timer_frame_t &frame) {
+WarGrey::STEM::Universe::~Universe() {
+    if (this->timer > 0) {
+        SDL_RemoveTimer(this->timer);
+    }
+
+    SDL_DestroyTexture(this->texture);
+    SDL_DestroyRenderer(this->renderer);
+    SDL_DestroyWindow(this->window);
+}
+
+uint32_t WarGrey::STEM::Universe::big_bang() {
+    uint32_t quit_time = 0UL;           // 游戏在时间
+    SDL_Event e;                        // SDL 事件
+    
+    this->timer = game_start(this->_fps,
+            reinterpret_cast<timer_update_t>(0LL),
+            reinterpret_cast<void*>(this));
+
+    while(quit_time == 0UL) {            // 游戏主循环
+        SDL_SetRenderTarget(this->renderer, this->texture);
+            
+        while (SDL_PollEvent(&e)) {     // 处理用户交互事件    
+            switch (e.type) {
+            case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
+                this->on_elapse(reinterpret_cast<timer_parcel_t*>(e.user.data1)->frame);
+            }; break;
+            case SDL_MOUSEMOTION: {     // 鼠标移动事件
+                this->on_mouse_event(e.motion);
+            }; break;
+            case SDL_MOUSEWHEEL: {      // 鼠标滚轮事件
+                this->on_mouse_event(e.wheel);
+            }; break;
+            case SDL_MOUSEBUTTONUP:
+            case SDL_MOUSEBUTTONDOWN: { // 鼠标点击事件
+                this->on_mouse_event(e.button);
+            }; break;
+            case SDL_KEYUP:
+            case SDL_KEYDOWN: {         // 键盘事件
+                this->on_keyboard_event(e.key);
+            }; break;
+            case SDL_QUIT: {
+                SDL_RemoveTimer(this->timer); // 停止定时器
+                quit_time = e.quit.timestamp;
+                this->timer = 0;
+            }; break;
+            default: {
+                // std::cout << "Ignored unhandled event(type = " << e.type << ")" << std::endl;
+            }
+            }
+
+            game_world_refresh(this->renderer, this->texture); // 更新窗体
+        }
+    }
+
+    return quit_time;
+}
+
+void WarGrey::STEM::Universe::on_elapse(timer_frame_t &frame) {
     // TODO: why some first frames are lost, why some frames duplicate.
     // printf("%u\t%u\n", frame.count, frame.uptime);
     
-    game_world_reset(renderer, this->_fgc, this->_bgc);
-    this->update(renderer, frame.interval, frame.count, frame.uptime);
+    game_world_reset(this->renderer, this->_fgc, this->_bgc);
+    this->update(this->renderer, frame.interval, frame.count, frame.uptime);
 }
 
 void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseButtonEvent &mouse) {

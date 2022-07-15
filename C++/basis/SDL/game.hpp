@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 
 #include <cstdint>
 #include <string>
@@ -26,39 +27,29 @@ namespace WarGrey::STEM {
     /**********************************************************************************************/
     class Universe {
         public:
-            /* 构造函数，创建新对象时自动调用，默认什么都不做 */
-            Universe() {}
+            /* 构造函数，创建新对象时自动调用，默认创建一个黑底白字的窗口 */
+            Universe();
 
-            /*  更有用一些的构造函数，创建新对象时手动选择，设置窗口标题, 前景背景色, 和混色模式 */
-            Universe(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture,
-                    const char *title, SDL_BlendMode bmode = SDL_BLENDMODE_NONE,
-                    uint32_t fgc = 0xFFFFFFFF, uint32_t bgc = 0x000000FF);
+            /*  更有用一些的构造函数，创建新对象时手动选择，设置帧频, 窗口标题, 前景背景色, 和混色模式 */
+            Universe(const char* title, int width, int height, int fps = 60,
+                SDL_BlendMode bmode = SDL_BLENDMODE_NONE, uint32_t fgc = 0xFFFFFFFF, uint32_t bgc = 0x000000FF);
             
-            /* 析构函数，销毁旧对象时自动调用，默认什么都不做 */
-            virtual ~Universe() {}
+            /* 析构函数，销毁旧对象时自动调用，默认销毁游戏宇宙 */
+            virtual ~Universe();
+
+            /* 宇宙大爆炸，开始游戏主循环，返回游戏运行时间 */
+            uint32_t big_bang();
 
         public:
             /* 创建游戏世界，充当程序真的 main 函数，默认什么都不做 */
-            virtual void construct(int argc, char* argv[], int window_width, int window_height) {}
+            virtual void construct(int argc, char* argv[]) {}
             
             /* 更新游戏世界，定时器到期时自动调用，默认什么都不做 */
             virtual void update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime) {}
 
         public:
-            /* 响应定时器事件，刷新游戏世界 */
-            void on_elapse(SDL_Renderer* renderer, WarGrey::STEM::timer_frame_t &frame); 
-
-            /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
-            void on_mouse_event(SDL_MouseButtonEvent &mouse); 
-            void on_mouse_event(SDL_MouseMotionEvent &mouse); 
-            void on_mouse_event(SDL_MouseWheelEvent &mouse);
-
-            /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
-            void on_keyboard_event(SDL_KeyboardEvent &key);
-
-        public:
-            void set_fps(int fps) { this->_fps = fps; }
-            int get_fps() { return this->_fps; }
+            void fill_window_size(int* width, int* height) { SDL_GetWindowSize(this->window, width, height); }
+            int get_frame_per_second() { return this->_fps; }
             uint32_t get_background_color() { return this->_bgc; }
             uint32_t get_foreground_color() { return this->_fgc; }
 
@@ -72,9 +63,27 @@ namespace WarGrey::STEM {
             virtual void on_char(char key, uint16_t modifiers, uint8_t repeats) {}               // 处理键盘事件
 
         private:
-            int _fps = 60; // 帧频
-            uint32_t _fgc = 0xFFFFFFFF; // 前景色
-            uint32_t _bgc = 0x000000FF; // 背景色
+            /* 响应定时器事件，刷新游戏世界 */
+            void on_elapse(WarGrey::STEM::timer_frame_t &frame); 
+
+            /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
+            void on_mouse_event(SDL_MouseButtonEvent &mouse); 
+            void on_mouse_event(SDL_MouseMotionEvent &mouse); 
+            void on_mouse_event(SDL_MouseWheelEvent &mouse);
+
+            /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
+            void on_keyboard_event(SDL_KeyboardEvent &key);
+
+        private:
+            uint32_t _fgc = 0xFFFFFFFF;     // 窗体前景色
+            uint32_t _bgc = 0x000000FF;     // 窗体背景色
+            SDL_Window* window = NULL;      // 窗体对象
+            SDL_Renderer* renderer = NULL;  // 渲染器对象
+            SDL_Texture* texture = NULL;    // 纹理对象
+
+        private:
+            SDL_TimerID timer = 0;          // SDL 定时器
+            int _fps = 60;                  // 帧频
     };
 
     /**********************************************************************************************/

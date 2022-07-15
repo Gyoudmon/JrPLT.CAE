@@ -27,8 +27,8 @@ static inline int count_neighbors(int *world[], int nx, int ny, int x, int y) {
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::GameOfLife::GameOfLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture, const char* title)
-    : Universe(window, renderer, texture, title, SDL_BLENDMODE_NONE, 0x000000FFU, 0xFFFFFFFFU) {}
+WarGrey::STEM::GameOfLife::GameOfLife(const char* title, int width, int height)
+    : Universe(title, width, height, 8, SDL_BLENDMODE_NONE, 0x000000FFU, 0xFFFFFFFFU) {}
 
 WarGrey::STEM::GameOfLife::~GameOfLife() {
     /* 销毁世界 */ {
@@ -43,7 +43,11 @@ WarGrey::STEM::GameOfLife::~GameOfLife() {
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[], int width, int height) {
+void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[]) {
+    int width, height;
+
+    this->fill_window_size(&width, &height);
+
     this->screen_width = width;
     this->screen_height = height;
     this->stage_width = this->screen_height / GRID_SIZE - 1;
@@ -70,8 +74,6 @@ void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[], int width, int
     
     this->generation = 0;
     this->switch_game_state(GameState::Run);
-
-    this->set_fps(8);
 }
 
 void WarGrey::STEM::GameOfLife::update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime) {
@@ -270,8 +272,7 @@ void WarGrey::STEM::GameOfLife::switch_game_state(GameState new_state) {
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::ConwayLife::ConwayLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
-    : GameOfLife(window, renderer, texture, "Conway's Game of Life") {}
+WarGrey::STEM::ConwayLife::ConwayLife(int width, int height) : GameOfLife("Conway's Game of Life", width, height) {}
 
 void WarGrey::STEM::ConwayLife::evolve(int** world, int* shadow, int stage_width, int stage_height) {
     for (int x = 0; x < stage_height; x++) {
@@ -293,8 +294,7 @@ void WarGrey::STEM::ConwayLife::evolve(int** world, int* shadow, int stage_width
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::HighLife::HighLife(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
-    : GameOfLife(window, renderer, texture, "High Life") {}
+WarGrey::STEM::HighLife::HighLife(int width, int height) : GameOfLife("High Life", width, height) {}
 
 void WarGrey::STEM::HighLife::evolve(int** world, int* shadow, int stage_width, int stage_height) {
     for (int x = 0; x < stage_height; x++) {
