@@ -1,7 +1,4 @@
-/* 自己的头文件用 双引号 引用, 放最前面以兼容 macOS */
 #include "game_of_life.hpp"
-
-#include <iostream>             /* C++ 标准输入输出头文件 */
 
 using namespace WarGrey::STEM;
 
