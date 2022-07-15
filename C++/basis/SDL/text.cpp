@@ -1,5 +1,6 @@
 #include "game.hpp"                 // 放最前面以兼容 macOS
 #include "text.hpp"
+#include "vsntext.hpp"
 #include "colorspace.hpp"
 
 #include <cstdarg>
@@ -9,27 +10,6 @@ using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 enum TextRenderMode { SOLID, SHADED, BLENDED };
-
-/*************************************************************************************************/
-#define VSNPRINT(retval, fmt) \
-    const int DEFAULT_POOL_SIZE = 1024; \
-    char chpool[DEFAULT_POOL_SIZE]; \
-    int bigSize = DEFAULT_POOL_SIZE - 1; \
-    char* pool; \
-    va_list argl; \
-    do { \
-	pool = (bigSize < DEFAULT_POOL_SIZE) ? chpool : (new char[bigSize + 1]); \
-    	va_start(argl, fmt); \
-    	int status = vsnprintf(pool, bigSize + 1, fmt, argl); \
-	va_end(argl); \
-        if ((status == -1) || (status > bigSize)) { \
-	    bigSize = ((status > 0) ? status : (bigSize * 2)) + 1; \
-	    if (pool != chpool) delete[] pool; \
-	    pool = nullptr; \
-	} \
-    } while (pool == nullptr); \
-    std::string retval(pool); \
-    if (pool != chpool) delete[] pool;
 
 /*************************************************************************************************/
 static inline void unsafe_utf8_size(TTF_Font* font, int* width, int* height, const std::string& text) {

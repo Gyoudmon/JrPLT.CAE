@@ -1,4 +1,5 @@
 #include "game.hpp"          // 放最前面以兼容 maxOS
+#include "vsntext.hpp"
 #include "colorspace.hpp"
 
 #include <iostream>
@@ -255,8 +256,7 @@ void WarGrey::STEM::game_font_destroy(TTF_Font* font) {
 /*************************************************************************************************/
 WarGrey::STEM::Universe::Universe() : Universe("Big Bang!", 1200, 800) {}
 
-WarGrey::STEM::Universe::Universe(const char *title, int width, int height, int fps,
-        SDL_BlendMode bmode, uint32_t fgc, uint32_t bgc)
+WarGrey::STEM::Universe::Universe(const char *title, int width, int height, int fps, uint32_t fgc, uint32_t bgc)
     : _fps(fps), _fgc(fgc), _bgc(bgc) {
     
     // 初始化游戏系统
@@ -266,8 +266,9 @@ WarGrey::STEM::Universe::Universe(const char *title, int width, int height, int 
 
     // 设置标题
     SDL_SetWindowTitle(this->window, title);
-    SDL_SetRenderDrawBlendMode(this->renderer, bmode);
     game_world_reset(this->renderer, this->texture, this->_fgc, this->_bgc);
+
+    this->set_blend_mode(SDL_BLENDMODE_NONE);
 }
 
 WarGrey::STEM::Universe::~Universe() {
@@ -281,12 +282,18 @@ WarGrey::STEM::Universe::~Universe() {
 }
 
 uint32_t WarGrey::STEM::Universe::big_bang() {
-    uint32_t quit_time = 0UL;           // 游戏在时间
+    uint32_t quit_time = 0UL;           // 游戏退出时的在线时间
     SDL_Event e;                        // SDL 事件
+    int width, height;
     
-    this->timer = game_start(this->_fps,
-            reinterpret_cast<timer_update_t>(0LL),
-            reinterpret_cast<void*>(this));
+    if (this->_fps > 0) {
+        this->timer = game_start(this->_fps,
+                reinterpret_cast<timer_update_t>(0LL),
+                reinterpret_cast<void*>(this));
+    }
+
+    this->fill_window_size(&width, &height);
+    this->draw(this->renderer, 0, 0, width, height);
 
     while(quit_time == 0UL) {            // 游戏主循环
         SDL_SetRenderTarget(this->renderer, this->texture);
@@ -295,6 +302,7 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
             switch (e.type) {
             case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
                 this->on_elapse(reinterpret_cast<timer_parcel_t*>(e.user.data1)->frame);
+                this->draw(this->renderer, 0, 0, width, height);
             }; break;
             case SDL_MOUSEMOTION: {     // 鼠标移动事件
                 this->on_mouse_event(e.motion);
@@ -311,9 +319,12 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
                 this->on_keyboard_event(e.key);
             }; break;
             case SDL_QUIT: {
-                SDL_RemoveTimer(this->timer); // 停止定时器
+                if (this->timer > 0UL) {
+                    SDL_RemoveTimer(this->timer); // 停止定时器
+                    this->timer = 0;
+                }
+
                 quit_time = e.quit.timestamp;
-                this->timer = 0;
             }; break;
             default: {
                 // std::cout << "Ignored unhandled event(type = " << e.type << ")" << std::endl;
@@ -332,7 +343,7 @@ void WarGrey::STEM::Universe::on_elapse(timer_frame_t &frame) {
     // printf("%u\t%u\n", frame.count, frame.uptime);
     
     game_world_reset(this->renderer, this->_fgc, this->_bgc);
-    this->update(this->renderer, frame.interval, frame.count, frame.uptime);
+    this->update(frame.interval, frame.count, frame.uptime);
 }
 
 void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseButtonEvent &mouse) {
@@ -376,5 +387,23 @@ void WarGrey::STEM::Universe::on_keyboard_event(SDL_KeyboardEvent &keyboard) {
 
         this->on_char(key.sym, key.mod, keyboard.repeat);
     }
+}
+
+/*************************************************************************************************/
+void WarGrey::STEM::Universe::set_blend_mode(SDL_BlendMode bmode) {
+    SDL_SetRenderDrawBlendMode(this->renderer, bmode);
+}
+
+void WarGrey::STEM::Universe::set_window_title(std::string& title) {
+    SDL_SetWindowTitle(this->window, title.c_str());
+}
+
+void WarGrey::STEM::Universe::set_window_title(const char* fmt, ...) {
+    VSNPRINT(title, fmt);
+    this->set_window_title(title);
+}
+
+void WarGrey::STEM::Universe::fill_window_size(int* width, int* height) {
+    SDL_GetWindowSize(this->window, width, height);
 }
 

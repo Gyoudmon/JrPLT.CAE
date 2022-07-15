@@ -28,7 +28,7 @@ static inline int count_neighbors(int *world[], int nx, int ny, int x, int y) {
 
 /*************************************************************************************************/
 WarGrey::STEM::GameOfLife::GameOfLife(const char* title, int width, int height)
-    : Universe(title, width, height, 8, SDL_BLENDMODE_NONE, 0x000000FFU, 0xFFFFFFFFU) {}
+    : Universe(title, width, height, 8, 0x000000FFU, 0xFFFFFFFFU) {}
 
 WarGrey::STEM::GameOfLife::~GameOfLife() {
     /* 销毁世界 */ {
@@ -76,19 +76,24 @@ void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[]) {
     this->switch_game_state(GameState::Run);
 }
 
-void WarGrey::STEM::GameOfLife::update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime) {
+void WarGrey::STEM::GameOfLife::update(uint32_t interval, uint32_t count, uint32_t uptime) {
+    switch (this->state) {
+        case GameState::Run: { // 时间飞逝, 生命演化
+            if (!this->forward_game_world(1, true)) {
+                this->switch_game_state(GameState::Stop);
+            }
+        }; break;
+        default: /* 什么都不做 */ ; break;
+    }
+}
+
+void WarGrey::STEM::GameOfLife::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     // 绘制舞台边界
     game_draw_frame(renderer, this->stage_x, this->stage_y, this->stage_width * GRID_SIZE, this->stage_height * GRID_SIZE);
 
     // 绘制舞台的网格
     if (!this->hide_grid) {
         game_draw_grid(renderer, this->stage_width, this->stage_height, GRID_SIZE, this->stage_x, this->stage_y);
-    }
-
-    // 根据游戏状态更新舞台
-    switch (this->state) {
-        case GameState::Run: this->timeline_forward(interval, count, uptime); break; // 时间飞逝, 生命演化
-        default: /* 什么都不做 */ ; break;
     }
 
     // 绘制生命
@@ -233,12 +238,6 @@ bool WarGrey::STEM::GameOfLife::forward_game_world(int repeats, bool force) {
     }
 
     return evolved;
-}
-
-void WarGrey::STEM::GameOfLife::timeline_forward(uint32_t interval, uint32_t count, uint32_t uptime) {
-    if (!this->forward_game_world(1, true)) {
-        this->switch_game_state(GameState::Stop);
-    }
 }
 
 void WarGrey::STEM::GameOfLife::switch_game_state(GameState new_state) {

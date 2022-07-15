@@ -8,18 +8,19 @@ static const int WIN_HEIGHT = 800;
 
 /*************************************************************************************************/
 int main(int argc, char* args[]) {
-    /* 创建自己的游戏宇宙 */
+    /* 创建游戏宇宙 */
     auto universe = new ConwayLife(WIN_WIDTH, WIN_HEIGHT);
 
-    /* 创建游戏世界 */
+    /* 初始化游戏世界 */
     universe->construct(argc, args);
 
-    /* 开始游戏主循环 */
+    /* 宇宙大爆炸，开启游戏主循环 */
     universe->big_bang();
 
-    /* 结束之前别忘了销毁游戏宇宙 */
+    /* 销毁游戏宇宙，回归虚无 */
     delete universe;
 
+    /* C++ 心满意足地退出 */
     return 0;
 }
 

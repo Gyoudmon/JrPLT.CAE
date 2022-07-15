@@ -14,7 +14,8 @@ namespace WarGrey::STEM {
 
         public:    // 覆盖游戏基本方法
             void construct(int argc, char* argv[]);
-            void update(SDL_Renderer* renderer, uint32_t interval, uint32_t count, uint32_t uptime);
+            void update(uint32_t interval, uint32_t count, uint32_t uptime);
+            void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
 
         protected: // 覆盖输入事件处理方法
             void on_char(char key, uint16_t modifiers, uint8_t repeats);        // 处理键盘事件
@@ -24,7 +25,6 @@ namespace WarGrey::STEM {
             virtual void evolve(int** world, int* shadow, int stage_width, int stage_height) = 0;
 
         private:
-            void timeline_forward(uint32_t interval, uint32_t count, uint32_t uptime);
             void switch_game_state(WarGrey::STEM::GameState new_state);
             void display_game_state(SDL_Renderer* renderer, const std::string &desc_state, uint32_t color);
             void display_instruction(SDL_Renderer* renderer, const std::string &desc_state, char key, int index);
