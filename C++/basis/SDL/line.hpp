@@ -1,7 +1,17 @@
-#ifndef DRAW_DOT_AND_LINE // 确保只被 include 一次
-#define DRAW_DOT_AND_LINE
+#ifndef _DOT_AND_LINE_H // 确保只被 include 一次
+#define _DOT_AND_LINE_H
 
-/** 声明函数接口 **/
-int draw_dot_and_line(int argc, char* argv[], SDL_Window* window, SDL_Renderer* renderer);
+#include "game.hpp"
+
+namespace WarGrey::STEM {
+    class DotAndLine : public WarGrey::STEM::DrawingBoard {
+        public:
+            DotAndLine(int width, int height);
+        
+        public:
+            void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
+    };
+}
 
 #endif
+

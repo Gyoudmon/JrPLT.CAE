@@ -1,7 +1,29 @@
-#ifndef DRAW_RGB_BLOCKS // 确保只被 include 一次
-#define DRAW_RGB_BLOCKS
+#ifndef _RGB_BLOCKS_H // 确保只被 include 一次
+#define _RGB_BLOCKS_H
 
-/** 声明函数接口 **/
-int draw_rgb_blocks(int argc, char* argv[], SDL_Window* window, SDL_Renderer* renderer);
+#include "game.hpp"
+
+namespace WarGrey::STEM {
+    class RGBBlock : public WarGrey::STEM::DrawingBoard {
+        public:
+            RGBBlock(int width, int height);
+        
+        public:
+            void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
+    };
+    
+    class ContrastColorBlock : public WarGrey::STEM::DrawingBoard {
+        public:
+            ContrastColorBlock(int width, int height);
+        
+        public:
+            void construct(int argc, char* argv[]);
+            void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
+
+        private:
+            float hue0;
+    };
+}
 
 #endif
+

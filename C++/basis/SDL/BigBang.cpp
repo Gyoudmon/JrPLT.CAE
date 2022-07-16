@@ -1,11 +1,11 @@
-#include "self_avoid_walk.hpp"
+#include "game_of_life.hpp"
 
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 int main(int argc, char* args[]) {
     /* 混沌初开，宇宙诞生 */
-    SelfAvoidWalk universe(1200, 800);
+    ConwayLife universe(1200, 800);
 
     /* 创造游戏世界 */
     universe.construct(argc, args);

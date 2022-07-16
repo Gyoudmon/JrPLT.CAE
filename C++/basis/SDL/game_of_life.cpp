@@ -6,7 +6,7 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-static const int GRID_SIZE = 12;     // 方格边长
+static const int GRID_SIZE = 24;     // 方格边长
 
 static inline int check_neighbor(int* world[], int nx, int ny, int x, int y) {
     return ((x >=0) && (x < nx)

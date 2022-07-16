@@ -1,6 +1,5 @@
-#include <SDL2/SDL.h>  /* Simple DirectMedia Layer 头文件, 放前面以兼容 macOS */
-
 #include "rainbow.hpp"
+
 #include "flonum.hpp"
 #include "mathematics.hpp"
 #include "colorspace.hpp"
@@ -8,35 +7,43 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-// 彩虹常量
-const float RAINBOW_RADIUS = 128.0F;
-const float RAINBOW_WIDTH = 256.0F;
+WarGrey::STEM::ColorWheel::ColorWheel(int width, int height, float r, int blength)
+    : DrawingBoard("Color Wheel", width, height), radius(r), block_length(blength) {}
 
-// 取样参数
-const float HUE_DELTA = 1.0F;
-const float SAMPLE_DELTA = 0.1F;
+void WarGrey::STEM::ColorWheel::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
+    SDL_Rect hsb; // 色块变量（矩形
+    
+    hsb.w = hsb.h = this->block_length;
 
-int draw_rainbow(int argc, char* args[], SDL_Window* window, SDL_Renderer* renderer) {
-    int width, height;
-    float x, y;
+    for (float hue = 0.0F; hue < 360.0F; hue += 10.0F) {
+        HSV_SetRenderDrawColor(renderer, hue, 1.0F, 1.0F, 1.0F);
+        
+        hsb.x = (width - this->block_length)  / 2.0f + this->radius * flcos(degrees_to_radians(hue - 90.0F));
+        hsb.y = (height - this->block_length) / 2.0f + this->radius * flsin(degrees_to_radians(hue - 90.0F));
+        
+        SDL_RenderFillRect(renderer, &hsb);
+    }
+}
+
+/*************************************************************************************************/
+WarGrey::STEM::Rainbow::Rainbow(int width, int height, float r, float dh, float ds)
+    : DrawingBoard("Rainbow", width, height), radius(r), hue_delta(dh), sample_delta(ds) {}
+
+void WarGrey::STEM::Rainbow::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
+    float rainbow_width = this->radius * 2.0f;
+    float flx, fly;
     
-    SDL_SetWindowTitle(window, "Rainbow");                    // 设置标题
-    SDL_GetWindowSize(window, &width, &height);               // 获知窗口大小
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE); // 设置混色模式, 不要混色！！！
-    
-    for (float hue = 0.0f; hue < 360.0f; hue += HUE_DELTA) {
-        for (float theta = 0.0f; theta < 360.0f; theta += SAMPLE_DELTA) {
-            float r = (360.0F - hue) / 360.0F * RAINBOW_WIDTH + RAINBOW_RADIUS;
+    for (float hue = 0.0f; hue < 360.0f; hue += this->hue_delta) {
+        for (float theta = 0.0f; theta < 360.0f; theta += this->sample_delta) {
+            float r = (360.0F - hue) / 360.0F * rainbow_width + this->radius;
 
             HSV_SetRenderDrawColor(renderer, hue - 75.0F, 1.0F, 1.0F, 1.0F);
         
-            x = width / 2.0f + r * flcos(degrees_to_radians(theta));
-            y = height / 2.0f + r * flsin(degrees_to_radians(theta));
+            flx = float(width)  / 2.0f + r * flcos(degrees_to_radians(theta));
+            fly = float(height) / 2.0f + r * flsin(degrees_to_radians(theta));
         
-            SDL_RenderDrawPoint(renderer, x, y);
+            SDL_RenderDrawPoint(renderer, flx, fly);
         }
     }
-
-    return 0;
 }
 
