@@ -90,6 +90,13 @@ static void game_fonts_destroy() {
 }
 
 /*************************************************************************************************/
+typedef struct timer_parcel {
+    Universe* universe;
+    uint32_t interval;
+    uint32_t count;
+    uint32_t uptime;
+} timer_parcel_t;
+
 /**
  * 本函数在定时器到期时执行, 并将该事件报告给事件系统，以便绘制下一帧动画
  * @param interval, 定时器等待时长，以 ms 为单位
@@ -105,11 +112,10 @@ static unsigned int trigger_timer_event(unsigned int interval, void* datum) {
     user_event.code = 0;
 
     user_event.data1 = datum;
-    user_event.data2 = parcel->user_datum;
 
-    parcel->frame.count += 1;
-    parcel->frame.interval = interval;
-    parcel->frame.uptime = SDL_GetTicks();
+    parcel->count += 1;
+    parcel->interval = interval;
+    parcel->uptime = SDL_GetTicks();
 
     // 将该事件报告给事件系统
     timer_event.type = user_event.type;
@@ -143,24 +149,6 @@ SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window*
         NULL, "纹理创建失败: ", SDL_GetError);
 
     return texture;
-}
-
-uint32_t WarGrey::STEM::game_start(uint32_t fps, timer_update_t update_game_world, void* user_datum) {
-    timer_parcel_t* parcel = new timer_parcel_t();
-    uint32_t interval = 1000 / fps;
-    uint32_t timer;
-
-    // TODO: find a way to delete this parcel
-    parcel->update_game_world = update_game_world;
-    parcel->user_datum = user_datum;
-    parcel->frame.interval = interval;
-    parcel->frame.count = 0;
-    parcel->frame.uptime = 0;
-
-    Call_For_Variable(timer, SDL_AddTimer(interval, trigger_timer_event, reinterpret_cast<void*>(parcel)),
-        0, "定时器创建失败: ", SDL_GetError);
-
-    return timer;
 }
 
 void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, uint32_t fgc, uint32_t bgc) {
@@ -285,11 +273,17 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
     uint32_t quit_time = 0UL;           // 游戏退出时的在线时间
     SDL_Event e;                        // SDL 事件
     int width, height;
+    timer_parcel_t parcel;
     
     if (this->_fps > 0) {
-        this->timer = game_start(this->_fps,
-                reinterpret_cast<timer_update_t>(0LL),
-                reinterpret_cast<void*>(this));
+        parcel.universe = this;
+        parcel.interval = 1000 / this->_fps;
+        parcel.count = 0;
+        parcel.uptime = 0;
+
+        this->timer = Call_For_Variable(timer,
+                SDL_AddTimer(parcel.interval, trigger_timer_event, reinterpret_cast<void*>(&parcel)),
+                0, "定时器创建失败: ", SDL_GetError);
     }
 
     this->fill_window_size(&width, &height);
@@ -301,11 +295,12 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
         while (SDL_PollEvent(&e)) {     // 处理用户交互事件    
             switch (e.type) {
             case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
-                // TODO: why some first frames are lost, why some frames duplicate.
-                // printf("%u\t%u\n", frame.count, frame.uptime);
-    
-                this->on_elapse(reinterpret_cast<timer_parcel_t*>(e.user.data1)->frame);
-                this->draw(this->renderer, 0, 0, width, height);
+                auto parcel = reinterpret_cast<timer_parcel_t*>(e.user.data1);
+
+                if (parcel->universe == this) {
+                    this->on_elapse(parcel->interval, parcel->count, parcel->uptime);
+                    this->draw(this->renderer, 0, 0, width, height);
+                }
             }; break;
             case SDL_MOUSEMOTION: {     // 鼠标移动事件
                 this->on_mouse_event(e.motion);
@@ -345,9 +340,9 @@ void WarGrey::STEM::Universe::on_frame(uint32_t interval, uint32_t count, uint32
     game_world_reset(this->renderer, this->_fgc, this->_bgc);
 }
 
-void WarGrey::STEM::Universe::on_elapse(timer_frame_t &frame) {
-    this->update(frame.interval, frame.count, frame.uptime);
-    this->on_frame(frame.interval, frame.count, frame.uptime);
+void WarGrey::STEM::Universe::on_elapse(uint32_t interval, uint32_t count, uint32_t uptime) {
+    this->update(interval, count, uptime);
+    this->on_frame(interval, count, uptime);
 }
 
 void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseButtonEvent &mouse) {

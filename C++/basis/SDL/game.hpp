@@ -10,21 +10,6 @@
 
 namespace WarGrey::STEM {
     /**********************************************************************************************/
-    typedef struct timer_frame {
-        uint32_t interval;
-        uint32_t count;
-        uint32_t uptime;
-    } timer_frame_t;
-
-    typedef void (*timer_update_t)(timer_frame_t*, void*, SDL_Renderer*);
-
-    typedef struct timer_parcel {
-        timer_update_t update_game_world;
-        void* user_datum;
-        timer_frame_t frame;
-    } timer_parcel_t;
-
-    /**********************************************************************************************/
     class Universe {
         public:
             /* 构造函数，创建新对象时自动调用，默认创建一个黑底白字的窗口 */
@@ -76,7 +61,7 @@ namespace WarGrey::STEM {
 
         private:
             /* 响应定时器事件，刷新游戏世界 */
-            void on_elapse(WarGrey::STEM::timer_frame_t &frame); 
+            void on_elapse(uint32_t interval, uint32_t count, uint32_t uptime);
 
             /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
             void on_mouse_event(SDL_MouseButtonEvent &mouse); 
@@ -118,8 +103,6 @@ namespace WarGrey::STEM {
     /**********************************************************************************************/
     void game_initialize(uint32_t flags, int fontsize = 16);
     SDL_Texture* game_create_world(int width, int height, SDL_Window** window, SDL_Renderer** renderer);
-    uint32_t game_start(uint32_t fps, timer_update_t update_game_world, void* user_datum);
-    uint32_t game_start(uint32_t fps, WarGrey::STEM::Universe* universe);
     
     void game_world_reset(SDL_Renderer* renderer, uint32_t fgcolor, uint32_t bgcolor);
     void game_world_reset(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t fgcolor, uint32_t bgcolor);
