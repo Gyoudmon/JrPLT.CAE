@@ -301,6 +301,9 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
         while (SDL_PollEvent(&e)) {     // 处理用户交互事件    
             switch (e.type) {
             case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
+                // TODO: why some first frames are lost, why some frames duplicate.
+                // printf("%u\t%u\n", frame.count, frame.uptime);
+    
                 this->on_elapse(reinterpret_cast<timer_parcel_t*>(e.user.data1)->frame);
                 this->draw(this->renderer, 0, 0, width, height);
             }; break;
@@ -338,12 +341,13 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
     return quit_time;
 }
 
-void WarGrey::STEM::Universe::on_elapse(timer_frame_t &frame) {
-    // TODO: why some first frames are lost, why some frames duplicate.
-    // printf("%u\t%u\n", frame.count, frame.uptime);
-    
+void WarGrey::STEM::Universe::on_frame(uint32_t interval, uint32_t count, uint32_t uptime) {
     game_world_reset(this->renderer, this->_fgc, this->_bgc);
+}
+
+void WarGrey::STEM::Universe::on_elapse(timer_frame_t &frame) {
     this->update(frame.interval, frame.count, frame.uptime);
+    this->on_frame(frame.interval, frame.count, frame.uptime);
 }
 
 void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseButtonEvent &mouse) {

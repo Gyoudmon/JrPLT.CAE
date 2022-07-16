@@ -11,10 +11,6 @@
                                  ((config SDL2)
                                   (include [windows "C:\\opt\\SDL2-2.0.18-vc\\include"])
                                   (libpath [windows "C:\\opt\\SDL2-2.0.18-vc\\lib\\x64"]))]
-                                ["GamePlayer.cpp" console ;desktop
-                                 ((config SDL2)
-                                  (include [windows "C:\\opt\\SDL2-2.0.18-vc\\include"])
-                                  (libpath [windows "C:\\opt\\SDL2-2.0.18-vc\\lib\\x64"]))]
                                 ["Pasteboard.cpp" console ;desktop
                                  ((config SDL2)
                                   (include [windows "C:\\opt\\SDL2-2.0.18-vc\\include"])

@@ -3,10 +3,28 @@
 
 #include "game.hpp"
 
-/** 声明函数接口 **/
-void* random_walk_initialize(int argc, char* argv[], SDL_Window* window, SDL_Renderer* renderer);
-void update_random_walk(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_Renderer* renderer);
-void random_walk_exit(void* datum);
+namespace WarGrey::STEM {
+    class RandomWalk : public WarGrey::STEM::DrawingPlayer {
+        public:
+            RandomWalk(int width, int height, const char* title = "Random Walk");
+        
+        public:
+            void update(uint32_t interval, uint32_t count, uint32_t uptime);
+            void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
+
+        protected:
+            int x;
+            int y;
+    };
+    
+    class DrunkardWalk : public WarGrey::STEM::RandomWalk {
+        public:
+            DrunkardWalk(int width, int height);
+        
+        public:
+            void update(uint32_t interval, uint32_t count, uint32_t uptime);
+    };
+}
 
 #endif
 

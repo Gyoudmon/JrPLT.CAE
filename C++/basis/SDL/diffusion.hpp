@@ -3,10 +3,26 @@
 
 #include "game.hpp"
 
-/** 声明函数接口 **/
-void* diffusion_initialize(int argc, char* argv[], SDL_Window* window, SDL_Renderer* renderer);
-void update_diffusion(WarGrey::STEM::timer_frame_t* frame, void* datum, SDL_Renderer* renderer);
-void diffusion_exit(void* datum);
+namespace WarGrey::STEM {
+#define PARTICLE_COUNT 128
+    
+    class Diffusion : public WarGrey::STEM::DrawingPlayer {
+        public:
+            Diffusion(int width, int height);
+        
+        public:
+            void construct(int argc, char* argv[]);
+            void update(uint32_t interval, uint32_t count, uint32_t uptime);
+            void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
+
+        private: // 声明静态数组
+            int xs[PARTICLE_COUNT];
+            int ys[PARTICLE_COUNT];
+
+        private:
+            int ceiling;
+    };
+}
 
 #endif
 

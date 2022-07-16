@@ -71,6 +71,9 @@ namespace WarGrey::STEM {
 
             virtual void on_char(char key, uint16_t modifiers, uint8_t repeats) {}               // 处理键盘事件
 
+        protected:
+            virtual void on_frame(uint32_t interval, uint32_t count, uint32_t uptime);
+
         private:
             /* 响应定时器事件，刷新游戏世界 */
             void on_elapse(WarGrey::STEM::timer_frame_t &frame); 
@@ -95,10 +98,21 @@ namespace WarGrey::STEM {
             int _fps = 60;                  // 帧频
     };
 
-    class Pasteboard : public WarGrey::STEM::Universe {
+    class DrawingBoard : public WarGrey::STEM::Universe {
         public:
-            Pasteboard(const char* title, int width, int height, uint32_t fgc = 0xFFFFFFFF, uint32_t bgc = 0x000000FF)
+            DrawingBoard(const char* title, int width, int height, uint32_t fgc = 0xFFFFFFFF, uint32_t bgc = 0x000000FF)
                 : Universe(title, width, height, 0, fgc, bgc) {}
+    };
+
+    class DrawingPlayer : public WarGrey::STEM::Universe {
+        public:
+            DrawingPlayer(const char* title, int width, int height, int fps = 24,
+                    uint32_t fgc = 0xFFFFFFFF, uint32_t bgc = 0x000000FF)
+                : Universe(title, width, height, fps, fgc, bgc) {}
+            
+        protected:
+            /* 绘制新帧时不擦除已有帧 */
+            void on_frame(uint32_t interval, uint32_t count, uint32_t uptime) {}
     };
 
     /**********************************************************************************************/
