@@ -14,16 +14,12 @@ enum TextRenderMode { SOLID, SHADED, BLENDED };
 /*************************************************************************************************/
 static inline void unsafe_utf8_size(TTF_Font* font, int* width, int* height, const std::string& text) {
     if (TTF_SizeUTF8(font, text.c_str(), width, height)) {
-        std::cerr << "无法计算文本尺寸: " << TTF_GetError() << std::endl;
+        fprintf(stderr, "无法计算文本尺寸: %s\n", TTF_GetError());
     }
 }
 
-static inline void setup_for_text(TTF_Font* font, const std::string& text, unsigned int rgba, int x, int y, SDL_Rect& r, SDL_Color& c) {
+static inline void setup_for_text(TTF_Font* font, const std::string& text, unsigned int rgba, SDL_Color& c) {
     RGB_FromHexadecimal(rgba, &c.r, &c.g, &c.b, &c.a);
-
-    r.x = x;
-    r.y = y;
-    unsafe_utf8_size(font, &r.w, &r.h, text);
 }
 
 static SDL_Surface* game_text_surface(const std::string& text, ::TextRenderMode mode, TTF_Font* font, SDL_Color& fgc, SDL_Color& bgc) {
@@ -36,22 +32,16 @@ static SDL_Surface* game_text_surface(const std::string& text, ::TextRenderMode 
     }
 
     if (surface == NULL) {
-        std::cerr << "无法渲染文本: " << TTF_GetError() << std::endl;
+        fprintf(stderr, "无法渲染文本: %s\n", TTF_GetError());
     }
 
     return surface;
 }
 
-static inline void safe_render_text_surface(SDL_Renderer* target, SDL_Surface* message, SDL_Rect* region) {
+static inline void safe_render_text_surface(SDL_Renderer* target, SDL_Surface* message, int x, int y) {
     /** TODO: Cache the textures of text **/
-    
-    SDL_Texture* text = SDL_CreateTextureFromSurface(target, message);
 
-    if (text != NULL) {
-        SDL_RenderCopy(target, text, NULL, region);
-        SDL_DestroyTexture(text);
-    }
-
+    game_render_surface(target, message, x, y);
     SDL_FreeSurface(message);
 }
 
@@ -74,7 +64,6 @@ void WarGrey::STEM::game_text_size(TTF_Font* font, int* width, int* height, cons
 }
     
 void WarGrey::STEM::game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgba, int x, int y, const char* fmt, ...) {
-    SDL_Rect text_region;
     SDL_Color text_color;
 
     VSNPRINT(text, fmt);
@@ -83,13 +72,12 @@ void WarGrey::STEM::game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer,
         font = GAME_DEFAULT_FONT;
     }
 
-    setup_for_text(font, text, rgba, x, y, text_region, text_color);
+    setup_for_text(font, text, rgba, text_color);
     SDL_Surface* message = game_text_surface(text, ::TextRenderMode::SOLID, font, text_color, text_color);
-    safe_render_text_surface(renderer, message, &text_region);
+    safe_render_text_surface(renderer, message, x, y);
 }
 
 void WarGrey::STEM::game_draw_shaded_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t fgc, uint32_t bgc, int x, int y, const char* fmt, ...) {
-    SDL_Rect text_region;
     SDL_Color text_color, background_color;
 
     VSNPRINT(text, fmt);
@@ -98,14 +86,13 @@ void WarGrey::STEM::game_draw_shaded_text(TTF_Font* font, SDL_Renderer* renderer
         font = GAME_DEFAULT_FONT;
     }
 
-    setup_for_text(font, text, fgc, x, y, text_region, text_color);
+    setup_for_text(font, text, fgc, text_color);
     RGB_FromHexadecimal(bgc, &background_color.r, &background_color.g, &background_color.b, &background_color.a);
     SDL_Surface* message = game_text_surface(text, ::TextRenderMode::SHADED, font, text_color, background_color);
-    safe_render_text_surface(renderer, message, &text_region);
+    safe_render_text_surface(renderer, message, x, y);
 }
 
 void WarGrey::STEM::game_draw_blended_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgba, int x, int y, const char* fmt, ...) {
-    SDL_Rect text_region;
     SDL_Color text_color;
 
     VSNPRINT(text, fmt);
@@ -114,8 +101,8 @@ void WarGrey::STEM::game_draw_blended_text(TTF_Font* font, SDL_Renderer* rendere
         font = GAME_DEFAULT_FONT;
     }
 
-    setup_for_text(font, text, rgba, x, y, text_region, text_color);
+    setup_for_text(font, text, rgba, text_color);
     SDL_Surface* message = game_text_surface(text, ::TextRenderMode::BLENDED, font, text_color, text_color);
-    safe_render_text_surface(renderer, message, &text_region);
+    safe_render_text_surface(renderer, message, x, y);
 }
 

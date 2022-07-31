@@ -2,6 +2,7 @@
 
 #include "text.hpp"
 #include "random.hpp"
+#include "image.hpp"
 
 using namespace WarGrey::STEM;
 

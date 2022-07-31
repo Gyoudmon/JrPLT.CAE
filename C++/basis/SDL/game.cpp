@@ -134,6 +134,8 @@ void WarGrey::STEM::game_initialize(uint32_t flags, int fontsize) {
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
     
         game_fonts_initialize(fontsize);
+
+        atexit(IMG_Quit);
         atexit(game_fonts_destroy);
     }
 }
@@ -219,6 +221,26 @@ void WarGrey::STEM::game_fill_grid(SDL_Renderer* renderer, int* grids[], int nx,
     }
 }
 
+void WarGrey::STEM::game_render_surface(SDL_Renderer* target, SDL_Surface* surface, int x, int y) {
+    SDL_Rect box;
+
+    box.x = x;
+    box.y = y;
+    box.w = surface->w;
+    box.h = surface->h;
+
+    game_render_surface(target, surface, &box);
+}
+
+void WarGrey::STEM::game_render_surface(SDL_Renderer* target, SDL_Surface* surface, SDL_Rect* region) {
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(target, surface);
+
+    if (texture != NULL) {
+        SDL_RenderCopy(target, texture, NULL, region);
+        SDL_DestroyTexture(texture);
+    }
+}
+
 /*************************************************************************************************/
 TTF_Font* WarGrey::STEM::game_create_font(const char* face, int fontsize) {
     std::string face_key(face);
@@ -231,7 +253,7 @@ TTF_Font* WarGrey::STEM::game_create_font(const char* face, int fontsize) {
     }
 
     if (font == NULL) {
-        std::cerr << "无法加载字体 '" << face << "': " << TTF_GetError() << std::endl;
+        fprintf(stderr, "无法加载字体 '%s': %s\n", face, TTF_GetError());
     }
 
     return font;
