@@ -8,17 +8,6 @@
 #include <cstdint>
 #include <string>
 
-/**
- * 兼容 Windows
- * vcpkg 不提供 SDL2main
- * 但是 SDL2.h 将 main 替换成 SDL_main 了
- * 结果导致 MSVC 链接找不到 main
- * 所以在这统一取消 main 宏
- */
-#ifdef main
-#undef main
-#endif
-
 namespace WarGrey::STEM {
     /**********************************************************************************************/
     class Universe {
