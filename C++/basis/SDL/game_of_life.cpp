@@ -105,7 +105,7 @@ void WarGrey::STEM::GameOfLife::draw(SDL_Renderer* renderer, int x, int y, int w
         std::string desc_generation = game_create_string("Generation: %d", this->generation);
     
         game_draw_blended_text(game_monospace_font, renderer, fgcolor,
-                this->screen_width - this->chwidth * desc_generation.size(), 0,
+                this->screen_width - this->chwidth * int(desc_generation.size()), 0,
                 "%s", desc_generation.c_str());
 
         this->display_instruction(renderer, "Play",    'p', 0);
@@ -127,7 +127,7 @@ void WarGrey::STEM::GameOfLife::draw(SDL_Renderer* renderer, int x, int y, int w
 }
 
 void WarGrey::STEM::GameOfLife::display_game_state(SDL_Renderer* renderer, const std::string &desc_state, uint32_t color) {
-    int x = this->screen_width - this->chwidth * (desc_state.size() + 1);
+    int x = this->screen_width - this->chwidth * (int(desc_state.size()) + 1);
 
     game_draw_blended_text(game_monospace_font, renderer, color, x, 0, "%s", desc_state.c_str());
 }

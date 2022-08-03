@@ -8,6 +8,13 @@
 #include <cstdint>
 #include <string>
 
+/**
+ * vcpkg
+ */
+#ifdef main
+#undef main
+#endif
+
 namespace WarGrey::STEM {
     /**********************************************************************************************/
     class Universe {
