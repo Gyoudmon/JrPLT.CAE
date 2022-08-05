@@ -1,11 +1,11 @@
-#include "game_of_life.hpp"
+#include "ball_game.hpp"
 
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 int main(int argc, char* args[]) {
     /* 混沌初开，宇宙诞生 */
-    ConwayLife universe(1200, 800);
+    BallGame universe(1200, 800);
 
     /* 创造游戏世界 */
     universe.construct(argc, args);
@@ -22,3 +22,4 @@ int main(int argc, char* args[]) {
      **/
     return 0;
 }
+

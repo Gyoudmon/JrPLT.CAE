@@ -264,6 +264,23 @@ void WarGrey::STEM::game_font_destroy(TTF_Font* font) {
 }
 
 /*************************************************************************************************/
+void WarGrey::STEM::game_draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color) {
+    circleColor(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(radius), color);
+}
+
+void WarGrey::STEM::game_fill_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color) {
+    filledCircleColor(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(radius), color);
+}
+
+void WarGrey::STEM::game_draw_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
+    rectangleColor(renderer, (int16_t)x, (int16_t)y, (int16_t)width, (int16_t)height, color);
+}
+
+void WarGrey::STEM::game_fill_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
+    boxColor(renderer, (int16_t)x, (int16_t)y, (int16_t)width, (int16_t)height, color);
+}
+
+/*************************************************************************************************/
 WarGrey::STEM::Universe::Universe() : Universe("Big Bang!", 1200, 800) {}
 
 WarGrey::STEM::Universe::Universe(const char *title, int width, int height, int fps, uint32_t fgc, uint32_t bgc)

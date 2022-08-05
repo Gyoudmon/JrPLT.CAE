@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 
 #include <cstdint>
 #include <string>
@@ -131,6 +132,13 @@ namespace WarGrey::STEM {
 
     void game_render_surface(SDL_Renderer* target, SDL_Surface* surface, int x, int y);
     void game_render_surface(SDL_Renderer* target, SDL_Surface* surface, SDL_Rect* region);
+
+    /**********************************************************************************************/
+    void game_draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color);
+    void game_fill_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color);
+
+    void game_draw_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color);
+    void game_fill_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color);
 
     /**********************************************************************************************/
     extern TTF_Font* GAME_DEFAULT_FONT;
