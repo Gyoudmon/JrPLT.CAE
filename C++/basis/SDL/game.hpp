@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <string>
 
+#include "named_colors.hpp"
+
 /**
  * 为兼容 Windows 而变得丑陋
  *

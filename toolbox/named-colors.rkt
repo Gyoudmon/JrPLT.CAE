@@ -34,4 +34,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
-  named-colors)
+  named-colors
+
+  (for ([c (in-list (list-color-names))])
+    (printf "#define ~a 0x~aFFU~n"
+            (string-upcase (symbol->string c))
+            (number->string (flcolor->hex c) 16))))

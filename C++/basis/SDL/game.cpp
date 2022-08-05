@@ -265,19 +265,31 @@ void WarGrey::STEM::game_font_destroy(TTF_Font* font) {
 
 /*************************************************************************************************/
 void WarGrey::STEM::game_draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color) {
-    circleColor(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(radius), color);
+    unsigned char r, g, b, a;
+
+    RGB_FromHexadecimal(color, &r, &g, &b, &a);
+    aaellipseRGBA(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(radius), int16_t(radius), r, g, b, a);
 }
 
 void WarGrey::STEM::game_fill_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color) {
-    filledCircleColor(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(radius), color);
+    unsigned char r, g, b, a;
+
+    RGB_FromHexadecimal(color, &r, &g, &b, &a);
+    filledEllipseRGBA(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(radius), int16_t(radius), r, g, b, a);
 }
 
 void WarGrey::STEM::game_draw_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
-    rectangleColor(renderer, (int16_t)x, (int16_t)y, (int16_t)width, (int16_t)height, color);
+    unsigned char r, g, b, a;
+
+    RGB_FromHexadecimal(color, &r, &g, &b, &a);
+    rectangleRGBA(renderer, (int16_t)x, (int16_t)y, (int16_t)width, (int16_t)height, r, g, b, a);
 }
 
 void WarGrey::STEM::game_fill_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
-    boxColor(renderer, (int16_t)x, (int16_t)y, (int16_t)width, (int16_t)height, color);
+    unsigned char r, g, b, a;
+
+    RGB_FromHexadecimal(color, &r, &g, &b, &a);
+    boxRGBA(renderer, (int16_t)x, (int16_t)y, (int16_t)width, (int16_t)height, r, g, b, a);
 }
 
 /*************************************************************************************************/
