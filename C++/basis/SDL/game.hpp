@@ -15,11 +15,11 @@
  * 为兼容 Windows 而变得丑陋
  *
  * vcpkg 不直接提供 SDL2main
- * 而 SDL2.h 又把 main 改名为 SDL_main 了
+ * SDL2.h 把 main 改名为 SDL_main 了
  * 导致 MSVC 连接器找不到程序入口
  *
  * 手动链接会引发别的问题，比如跟默认库冲突
- * (否则 vcpkg 作者肯定脑子有坑才会整出“手动链接”这种脱了裤子的那啥的活)
+ * (否则 vcpkg 作者肯定脑子有坑才会整出“手动链接”这种脱了裤子那啥的活)
  */
 #ifdef main
 #undef main
@@ -65,13 +65,13 @@ namespace WarGrey::STEM {
             uint32_t get_foreground_color() { return this->_fgc; }
 
         protected:
-            virtual void on_click(int x, int y) {}                                               // 处理单击事件
-            virtual void on_right_click(int x, int y) {}                                         // 处理右击事件
-            virtual void on_double_click(int x, int y) {}                                        // 处理双击事件
-            virtual void on_mouse_move(uint32_t state, int x, int y, int dx, int dy) {}          // 处理移动事件
-            virtual void on_scroll(int horizon, int vertical, float hprecise, float vprecise) {} // 处理滚轮事件
+            virtual bool on_click(int x, int y) { return false; }                                               // 处理单击事件
+            virtual bool on_right_click(int x, int y) { return false; }                                         // 处理右击事件
+            virtual bool on_double_click(int x, int y) { return false; }                                        // 处理双击事件
+            virtual bool on_mouse_move(uint32_t state, int x, int y, int dx, int dy) { return false; }          // 处理移动事件
+            virtual bool on_scroll(int horizon, int vertical, float hprecise, float vprecise) { return false; } // 处理滚轮事件
 
-            virtual void on_char(char key, uint16_t modifiers, uint8_t repeats) {}               // 处理键盘事件
+            virtual bool on_char(char key, uint16_t modifiers, uint8_t repeats) { return false; }               // 处理键盘事件
 
         protected:
             virtual void on_frame(uint32_t interval, uint32_t count, uint32_t uptime);
@@ -81,12 +81,12 @@ namespace WarGrey::STEM {
             void on_elapse(uint32_t interval, uint32_t count, uint32_t uptime);
 
             /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
-            void on_mouse_event(SDL_MouseButtonEvent &mouse); 
-            void on_mouse_event(SDL_MouseMotionEvent &mouse); 
-            void on_mouse_event(SDL_MouseWheelEvent &mouse);
+            bool on_mouse_event(SDL_MouseButtonEvent &mouse); 
+            bool on_mouse_event(SDL_MouseMotionEvent &mouse); 
+            bool on_mouse_event(SDL_MouseWheelEvent &mouse);
 
             /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
-            void on_keyboard_event(SDL_KeyboardEvent &key);
+            bool on_keyboard_event(SDL_KeyboardEvent &key);
 
         private:
             uint32_t _fgc = 0xFFFFFFFF;     // 窗体前景色

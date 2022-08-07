@@ -152,7 +152,7 @@ void WarGrey::STEM::GameOfLife::display_user_message(SDL_Renderer* renderer, con
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t repeats) {
+bool WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t repeats) {
     this->last_key_typed = key;
 
     switch(key) {
@@ -163,9 +163,11 @@ void WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t re
         case 'c': this->reset_game_world(); break;
         case 'f': this->forward_game_world(repeats, false); break;
     }
+
+    return true;
 }
 
-void WarGrey::STEM::GameOfLife::on_click(int x, int y) {
+bool WarGrey::STEM::GameOfLife::on_click(int x, int y) {
     if (this->state == GameState::Edit) {
         int sx = x - this->stage_x;
         int sy = y - this->stage_y;
@@ -181,6 +183,8 @@ void WarGrey::STEM::GameOfLife::on_click(int x, int y) {
             }
         }
     }
+
+    return true;
 }
 
 /*************************************************************************************************/

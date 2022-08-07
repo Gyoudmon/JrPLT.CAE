@@ -7,7 +7,7 @@ const int paddle_width = 128;
 const int paddle_height = 8;
 
 const int ball_speed = 4;
-const int paddle_speed = ball_speed * 3;
+const int paddle_speed = ball_speed * 2;
 
 /*************************************************************************************************/
 WarGrey::STEM::BallGame::BallGame(int width, int height)
@@ -67,18 +67,24 @@ void WarGrey::STEM::BallGame::draw(SDL_Renderer* renderer, int x, int y, int wid
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::BallGame::on_char(char key, uint16_t modifiers, uint8_t repeats) {
+bool WarGrey::STEM::BallGame::on_char(char key, uint16_t modifiers, uint8_t repeats) {
+    bool handled = false;
+
     switch(key) {
         case 'a': {
             if (this->paddle_x > 0) {
                 this->paddle_x -= 1 * paddle_speed;
+                handled = true;
             }
         }; break;
         case 'd': {
             if (this->paddle_x < this->screen_width - paddle_width) {
                 this->paddle_x += 1 * paddle_speed;
+                handled = true;
             }
         }; break;
     }
+
+    return handled;
 }
 
