@@ -10,5 +10,4 @@
 (define native-launcher-names '(["BigBang.cpp" console ;desktop
                                  ((config SDL2)
                                   (include [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\include"])
-                                  (libpath [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\lib"
-                                                    "C:\\opt\\vcpkg\\installed\\x64-windows\\lib\\manual-link"]))]))
+                                  (libpath [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\lib"]))]))
