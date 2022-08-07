@@ -3,11 +3,11 @@
 using namespace WarGrey::STEM;
 
 const int ball_radius = 8;
-const int paddle_width = 64;
+const int paddle_width = 128;
 const int paddle_height = 8;
 
 const int ball_speed = 4;
-const int paddle_speed = ball_speed * 2;
+const int paddle_speed = ball_speed * 3;
 
 /*************************************************************************************************/
 WarGrey::STEM::BallGame::BallGame(int width, int height)

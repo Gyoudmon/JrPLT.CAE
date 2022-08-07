@@ -300,6 +300,7 @@ WarGrey::STEM::Universe::Universe(const char *title, int width, int height, int 
     
     // 初始化游戏系统
     game_initialize(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+    
     // 创建游戏世界
     this->texture = game_create_world(width, height, &this->window, &this->renderer);
 
@@ -340,10 +341,10 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
     this->fill_window_size(&width, &height);
     this->draw(this->renderer, 0, 0, width, height);
 
-    while(quit_time == 0UL) {            // 游戏主循环
+    while(quit_time == 0UL) {           // 游戏主循环
         SDL_SetRenderTarget(this->renderer, this->texture);
             
-        while (SDL_PollEvent(&e)) {     // 处理用户交互事件    
+        if (SDL_WaitEvent(&e)) {        // 处理用户交互事件, SDL_PollEvent 多占用 4-7% CPU
             switch (e.type) {
             case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
                 auto parcel = reinterpret_cast<timer_parcel_t*>(e.user.data1);
