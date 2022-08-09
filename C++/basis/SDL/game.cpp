@@ -283,14 +283,14 @@ void WarGrey::STEM::game_draw_rectangle(SDL_Renderer* renderer, int x, int y, in
     unsigned char r, g, b, a;
 
     RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    rectangleRGBA(renderer, (int16_t)x, (int16_t)y, (int16_t)width, (int16_t)height, r, g, b, a);
+    rectangleRGBA(renderer, (int16_t)x, (int16_t)y, (int16_t)(x + width), (int16_t)(y + height), r, g, b, a);
 }
 
 void WarGrey::STEM::game_fill_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
     unsigned char r, g, b, a;
 
     RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    boxRGBA(renderer, (int16_t)x, (int16_t)y, (int16_t)width, (int16_t)height, r, g, b, a);
+    boxRGBA(renderer, (int16_t)x, (int16_t)y, (int16_t)(x + width), (int16_t)(y + height), r, g, b, a);
 }
 
 /*************************************************************************************************/
