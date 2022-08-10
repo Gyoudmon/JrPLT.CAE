@@ -3,19 +3,22 @@
 (require bitmap)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(define cols : Byte 16)
+(define cols : Byte 15)
+(define rows : Byte 5)
 
 (define wani : Dryland-Wani (make-dryland-wani 16))
+
+(for ([i (in-range (add1 rows))])
+  (with-dryland-wani! wani
+    (jump-back)
+    (jump-up i)
+    (step-right cols)))
 
 (for ([i (in-range (add1 cols))])
   (with-dryland-wani! wani
     (jump-back)
-    (jump-up i)
-    (step-right cols)
-    
-    (jump-back)
     (jump-right i)
-    (step-up cols)))
+    (step-up rows)))
 
 (define coordinate
   (bitmap-track wani))
