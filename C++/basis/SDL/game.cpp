@@ -265,6 +265,22 @@ void WarGrey::STEM::game_font_destroy(TTF_Font* font) {
 }
 
 /*************************************************************************************************/
+void WarGrey::STEM::game_draw_point(SDL_Renderer* renderer, int x, int y, uint32_t color) {
+    unsigned char r, g, b, a;
+
+    RGB_FromHexadecimal(color, &r, &g, &b, &a);
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_RenderDrawPoint(renderer, x, y);
+}
+
+void WarGrey::STEM::game_draw_line(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
+    unsigned char r, g, b, a;
+
+    RGB_FromHexadecimal(color, &r, &g, &b, &a);
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+}
+
 void WarGrey::STEM::game_draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color) {
     unsigned char r, g, b, a;
 
@@ -279,14 +295,28 @@ void WarGrey::STEM::game_fill_circle(SDL_Renderer* renderer, int cx, int cy, int
     filledEllipseRGBA(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(radius), int16_t(radius), r, g, b, a);
 }
 
-void WarGrey::STEM::game_draw_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
+void WarGrey::STEM::game_draw_ellipse(SDL_Renderer* renderer, int cx, int cy, int ar, int br, uint32_t color) {
+    unsigned char r, g, b, a;
+
+    RGB_FromHexadecimal(color, &r, &g, &b, &a);
+    aaellipseRGBA(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(ar), int16_t(br), r, g, b, a);
+}
+
+void WarGrey::STEM::game_fill_ellipse(SDL_Renderer* renderer, int cx, int cy, int ar, int br, uint32_t color) {
+    unsigned char r, g, b, a;
+
+    RGB_FromHexadecimal(color, &r, &g, &b, &a);
+    filledEllipseRGBA(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(ar), int16_t(br), r, g, b, a);
+}
+
+void WarGrey::STEM::game_draw_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
     unsigned char r, g, b, a;
 
     RGB_FromHexadecimal(color, &r, &g, &b, &a);
     rectangleRGBA(renderer, (int16_t)x, (int16_t)y, (int16_t)(x + width), (int16_t)(y + height), r, g, b, a);
 }
 
-void WarGrey::STEM::game_fill_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
+void WarGrey::STEM::game_fill_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
     unsigned char r, g, b, a;
 
     RGB_FromHexadecimal(color, &r, &g, &b, &a);
@@ -341,9 +371,10 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
     }
 
     this->fill_window_size(&width, &height);
-    this->draw(this->renderer, 0, 0, width, height);
-    
     SDL_SetRenderTarget(this->renderer, this->texture);
+    
+    this->draw(this->renderer, 0, 0, width, height);
+    game_world_refresh(this->renderer, this->texture);
 
     while(quit_time == 0UL) {           // 游戏主循环
         if (SDL_WaitEvent(&e)) {        // 处理用户交互事件, SDL_PollEvent 多占用 4-7% CPU

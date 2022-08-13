@@ -62,7 +62,7 @@ void WarGrey::STEM::BallGame::draw(SDL_Renderer* renderer, int x, int y, int wid
     game_fill_circle(renderer, this->ball_x, this->ball_y, ball_radius,
             ((this->ball_y >= this->paddle_y) ? RED : ORANGE));
 
-    game_fill_rectangle(renderer, this->paddle_x, this->paddle_y,
+    game_fill_rect(renderer, this->paddle_x, this->paddle_y,
             paddle_width, paddle_height, FORESTGREEN);
 }
 

@@ -102,7 +102,7 @@ namespace WarGrey::STEM {
 
     class DrawingBoard : public WarGrey::STEM::Universe {
         public:
-            DrawingBoard(const char* title, int width, int height, uint32_t fgc = 0xFFFFFFFF, uint32_t bgc = 0x000000FF)
+            DrawingBoard(const char* title, int width, int height, uint32_t fgc = 0x000000FFU, uint32_t bgc = 0xFFFFFFFFU)
                 : Universe(title, width, height, 0, fgc, bgc) {}
     };
 
@@ -136,11 +136,17 @@ namespace WarGrey::STEM {
     void game_render_surface(SDL_Renderer* target, SDL_Surface* surface, SDL_Rect* region);
 
     /**********************************************************************************************/
+    void game_draw_point(SDL_Renderer* renderer, int x, int y, uint32_t color);
+    void game_draw_line(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color);
+    
+    void game_draw_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color);
+    void game_fill_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color);
+
     void game_draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color);
     void game_fill_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color);
 
-    void game_draw_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color);
-    void game_fill_rectangle(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color);
+    void game_draw_ellipse(SDL_Renderer* renderer, int cx, int cy, int aradius, int bradius, uint32_t color);
+    void game_fill_ellipse(SDL_Renderer* renderer, int cx, int cy, int aradius, int bradius, uint32_t color);
 
     /**********************************************************************************************/
     extern TTF_Font* GAME_DEFAULT_FONT;
