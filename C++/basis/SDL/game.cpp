@@ -265,65 +265,6 @@ void WarGrey::STEM::game_font_destroy(TTF_Font* font) {
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::game_draw_point(SDL_Renderer* renderer, int x, int y, uint32_t color) {
-    unsigned char r, g, b, a;
-
-    RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    SDL_SetRenderDrawColor(renderer, r, g, b, a);
-    SDL_RenderDrawPoint(renderer, x, y);
-}
-
-void WarGrey::STEM::game_draw_line(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
-    unsigned char r, g, b, a;
-
-    RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    SDL_SetRenderDrawColor(renderer, r, g, b, a);
-    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
-}
-
-void WarGrey::STEM::game_draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color) {
-    unsigned char r, g, b, a;
-
-    RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    aaellipseRGBA(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(radius), int16_t(radius), r, g, b, a);
-}
-
-void WarGrey::STEM::game_fill_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color) {
-    unsigned char r, g, b, a;
-
-    RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    filledEllipseRGBA(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(radius), int16_t(radius), r, g, b, a);
-}
-
-void WarGrey::STEM::game_draw_ellipse(SDL_Renderer* renderer, int cx, int cy, int ar, int br, uint32_t color) {
-    unsigned char r, g, b, a;
-
-    RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    aaellipseRGBA(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(ar), int16_t(br), r, g, b, a);
-}
-
-void WarGrey::STEM::game_fill_ellipse(SDL_Renderer* renderer, int cx, int cy, int ar, int br, uint32_t color) {
-    unsigned char r, g, b, a;
-
-    RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    filledEllipseRGBA(renderer, (int16_t)(cx), (int16_t)(cy), (int16_t)(ar), int16_t(br), r, g, b, a);
-}
-
-void WarGrey::STEM::game_draw_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
-    unsigned char r, g, b, a;
-
-    RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    rectangleRGBA(renderer, (int16_t)x, (int16_t)y, (int16_t)(x + width), (int16_t)(y + height), r, g, b, a);
-}
-
-void WarGrey::STEM::game_fill_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color) {
-    unsigned char r, g, b, a;
-
-    RGB_FromHexadecimal(color, &r, &g, &b, &a);
-    boxRGBA(renderer, (int16_t)x, (int16_t)y, (int16_t)(x + width), (int16_t)(y + height), r, g, b, a);
-}
-
-/*************************************************************************************************/
 WarGrey::STEM::Universe::Universe() : Universe("Big Bang!", 1200, 800) {}
 
 WarGrey::STEM::Universe::Universe(const char *title, int width, int height, int fps, uint32_t fgc, uint32_t bgc)

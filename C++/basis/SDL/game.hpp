@@ -4,12 +4,12 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
 
 #include <cstdint>
 #include <string>
 
 #include "named_colors.hpp"
+#include "geometry.hpp"
 
 /**
  * 为兼容 Windows 而变得丑陋
@@ -37,7 +37,7 @@ namespace WarGrey::STEM {
              * 设置帧频, 窗口标题, 前景背景色, 和混色模式
              */
             Universe(const char* title, int width, int height, int fps = 60,
-                    uint32_t fgc = 0xFFFFFFFF, uint32_t bgc = 0x000000FF);
+                    uint32_t fgc = 0xFFFFFFFFU, uint32_t bgc = 0x000000FFU);
             
             /* 析构函数，销毁旧对象时自动调用，默认销毁游戏宇宙 */
             virtual ~Universe();
@@ -89,8 +89,8 @@ namespace WarGrey::STEM {
             bool on_keyboard_event(SDL_KeyboardEvent &key);
 
         private:
-            uint32_t _fgc = 0xFFFFFFFF;     // 窗体前景色
-            uint32_t _bgc = 0x000000FF;     // 窗体背景色
+            uint32_t _fgc = 0xFFFFFFFFU;    // 窗体前景色
+            uint32_t _bgc = 0x000000FFU;    // 窗体背景色
             SDL_Window* window = NULL;      // 窗体对象
             SDL_Renderer* renderer = NULL;  // 渲染器对象
             SDL_Texture* texture = NULL;    // 纹理对象
@@ -102,14 +102,15 @@ namespace WarGrey::STEM {
 
     class DrawingBoard : public WarGrey::STEM::Universe {
         public:
-            DrawingBoard(const char* title, int width, int height, uint32_t fgc = 0x000000FFU, uint32_t bgc = 0xFFFFFFFFU)
+            DrawingBoard(const char* title, int width, int height,
+                    uint32_t fgc = 0x000000FFU, uint32_t bgc = 0xFFFFFFFFU)
                 : Universe(title, width, height, 0, fgc, bgc) {}
     };
 
     class DrawingPlayer : public WarGrey::STEM::Universe {
         public:
             DrawingPlayer(const char* title, int width, int height, int fps = 24,
-                    uint32_t fgc = 0xFFFFFFFF, uint32_t bgc = 0x000000FF)
+                    uint32_t fgc = 0xFFFFFFFFU, uint32_t bgc = 0x000000FFU)
                 : Universe(title, width, height, fps, fgc, bgc) {}
             
         protected:
@@ -134,19 +135,6 @@ namespace WarGrey::STEM {
 
     void game_render_surface(SDL_Renderer* target, SDL_Surface* surface, int x, int y);
     void game_render_surface(SDL_Renderer* target, SDL_Surface* surface, SDL_Rect* region);
-
-    /**********************************************************************************************/
-    void game_draw_point(SDL_Renderer* renderer, int x, int y, uint32_t color);
-    void game_draw_line(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color);
-    
-    void game_draw_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color);
-    void game_fill_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t color);
-
-    void game_draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color);
-    void game_fill_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t color);
-
-    void game_draw_ellipse(SDL_Renderer* renderer, int cx, int cy, int aradius, int bradius, uint32_t color);
-    void game_fill_ellipse(SDL_Renderer* renderer, int cx, int cy, int aradius, int bradius, uint32_t color);
 
     /**********************************************************************************************/
     extern TTF_Font* GAME_DEFAULT_FONT;

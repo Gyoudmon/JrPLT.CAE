@@ -1,6 +1,5 @@
 #include "shape.hpp"
 #include "game.hpp"
-#include "named_colors.hpp"
 
 using namespace WarGrey::STEM;
 

@@ -4,18 +4,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define math-font (desc-font #:size 14.0 #:family 'math))
-(define cs-line (desc-stroke #:color 'lightgray #:dash 'short-dash))
+(define cs-line (desc-stroke #:color 'gray #:dash 'short-dash))
 (define arrow-color 'lightsteelblue)
 (define ch (font-metrics-ref math-font 'ch))
 (define axis-length 256.0)
 (define ar 4.0)
 
 (define (cs-xyline [x : Real] [y : Real]) : Bitmap
-  (bitmap-rb-superimpose (bitmap-hline x 1 #:stroke cs-line) (bitmap-vline 1 y #:stroke cs-line)))
+  (bitmap-rb-superimpose (bitmap-hline x 0.5 #:stroke cs-line) (bitmap-vline 0.5 y #:stroke cs-line)))
 
 (define (cs-dot [x : Real] [y : Real] [c : Color 'black]) : Bitmap
   (bitmap-pin* 1.0 1.0 0.5 0.5 (cs-xyline x y)
-               (bitmap-circle 2.0 #:border c #:fill c)))
+               (bitmap-circle 2.0 #:border #false #:fill c)))
 
 (define (cs-rect [x : Real] [y : Real] [w : Real] [h : Real] [c : Color 'black]) : Bitmap
   (bitmap-pin* 1.0 1.0 0.0 0.0 (cs-xyline x y)
