@@ -23,7 +23,7 @@ static void draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius) {
         }
 
         if ((radius > x) || (err > y)) {
-            err += ++x * 2 + 1;
+            err += ++x * 2 ;
         }
     } while (x < 0);
 }
@@ -34,8 +34,9 @@ static void draw_filled_circle(SDL_Renderer* renderer, int cx, int cy, int radiu
     int y = 0;
     
     do {
-        SDL_RenderDrawLine(renderer, cx + x, cy + y, cx - x, cy - y);
-        SDL_RenderDrawLine(renderer, cx + y, cy + x, cx - y, cy - x);
+        SDL_RenderDrawLine(renderer, cx + x, cy + y, cx - x, cy + y); // Q I, Q II
+        SDL_RenderDrawLine(renderer, cx + x, cy,     cx + x, cy - y); // Q III
+        SDL_RenderDrawLine(renderer, cx - x, cy - y, cx,     cy - y); // Q I
 
         radius = err;
         if (radius <= y) {
