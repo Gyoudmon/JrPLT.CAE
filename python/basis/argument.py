@@ -4,16 +4,17 @@ import sys # 系统相关参数和函数
 import os  # 操作系统相关函数
 
 def main(argc, argv):
-    ''' 程序入口函数，不一定非得命名为 main，但习惯上应该如此
+    ''' 程序入口函数，不一定非得命名为 main, 此处仅为与习惯对比
+
     :param argc: "argument count" 的缩写, 即"参数个数"的意思
     :param argv: "argument vector" 的缩写, 即"参数数组"的意思，包含命令行的所有输入参数
     '''
 
-    # 第一个参数一定是程序的名字(也就是这个模块的名字)
+    # 第一个参数一定是程序的名字(也就是这个源码文件的名字)
     print(argv[0])
     print("  received {} arguments from user".format(argc - 1))
 
-    # 现实所有用户输入参数，一行一个
+    # 显示所有用户输入参数，一行一个
     for i in range(1, argc):
         print("    argv[{}]: {}".format(i, argv[i]))
 
