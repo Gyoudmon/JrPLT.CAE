@@ -1,4 +1,5 @@
 #include <iostream> /* C++ 标准输入输出头文件 */
+#include <string>   /* C++ 字符串头文件 */
 
 /**
  * 使用 std::getline 与计算机对话
