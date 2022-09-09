@@ -11,7 +11,7 @@ def main(argc, argv):
     '''
 
     # 第一个参数一定是程序的名字(也就是这个源码文件的名字)
-    print(argv[0])
+    print("the running program is " + argv[0])
     print("  received {} arguments from user".format(argc - 1))
 
     # 显示所有用户输入参数，一行一个
@@ -19,6 +19,7 @@ def main(argc, argv):
         print("    argv[{}]: {}".format(i, argv[i]))
 
     return 0
+
 
 
 # __name__ 是一个特殊变量
