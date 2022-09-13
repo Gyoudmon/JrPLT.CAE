@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import sys # 系统相关参数和函数
-import os  # 操作系统相关函数
 
 ###################################################################################################
 def main(argc, argv):
@@ -17,6 +16,6 @@ def main(argc, argv):
 
 ###################################################################################################
 if __name__=="__main__":
-    os._exit(main(len(sys.argv), sys.argv))
+    sys.exit(main(len(sys.argv), sys.argv))
 
 

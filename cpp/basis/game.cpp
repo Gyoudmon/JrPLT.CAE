@@ -1,4 +1,4 @@
-#include "game.hpp"          // 放最前面以兼容 maxOS
+#include "game.hpp"          // 放最前面以兼容 macOS
 #include "vsntext.hpp"
 #include "colorspace.hpp"
 
