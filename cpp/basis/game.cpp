@@ -132,6 +132,15 @@ void WarGrey::STEM::game_initialize(uint32_t flags, int fontsize) {
         Call_With_Safe_Exit(TTF_Init(), "TTF 初始化失败: ", TTF_Quit, TTF_GetError);
 
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
+
+        /* manually check errors */ {
+            std::string err = std::string(IMG_GetError());
+
+            if (err.size() > 0) {
+                std::cout << "IMG 初始化失败: " << err << std::endl;
+                exit(1);
+            }
+        }
     
         game_fonts_initialize(fontsize);
 
