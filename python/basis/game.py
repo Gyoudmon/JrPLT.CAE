@@ -17,19 +17,17 @@ def Call_With_Error_Message(init, message, GetError):
         print(message + GetError().decode('utf-8'))
         os._exit(1)
     
-def Call_With_Safe_Exit(init, message, fquit, GetError):
+def Call_With_Safe_Exit(init, message, fquit, GetError = sdl2.SDL_GetError):
     Call_With_Error_Message(init, message, GetError)
     atexit.register(fquit)
 
-def Call_For_Variable(init, failure, message, GetError):
+def Check_Variable_Validity(init, failure, message, GetError = sdl2.SDL_GetError):
     if (init == failure):
         print(message + GetError().decode('utf-8'))
         os._exit(1)
         
-    return init
-
 def game_initialize(flags, fontsize = 16):
-    Call_With_Safe_Exit(sdl2.SDL_Init(flags), "SDL 初始化失败：", sdl2.SDL_Quit, sdl2.SDL_GetError)
+    Call_With_Safe_Exit(sdl2.SDL_Init(flags), "SDL 初始化失败：", sdl2.SDL_Quit)
     Call_With_Safe_Exit(sdl2.sdlttf.TTF_Init(), "TTF 初始化失败：", sdl2.sdlttf.TTF_Quit, sdl2.sdlttf.TTF_GetError)
     sdl2.sdlimage.IMG_Init(sdl2.sdlimage.IMG_INIT_JPG | sdl2.sdlimage.IMG_INIT_PNG)
     
@@ -40,16 +38,31 @@ def game_initialize(flags, fontsize = 16):
 
     atexit.register(sdl2.sdlimage.IMG_Quit)
 
+def game_world_create(title, width, height):
+    cpos = sdl2.SDL_WINDOWPOS_CENTERED
+
+    w = sdl2.SDL_CreateWindow(title.encode('utf-8'), cpos, cpos, width, height, sdl2.SDL_WINDOW_SHOWN)
+    Check_Variable_Validity(w, None, "SDL 窗体创建失败：")
+
+    r = sdl2.SDL_CreateRenderer(w, -1, sdl2.SDL_RENDERER_ACCELERATED)
+    Check_Variable_Validity(r, None, "SDL 渲染器创建失败：")
+
+    t = sdl2.SDL_CreateTexture(r, sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET, width, height)
+    Check_Variable_Validity(t, None, "SDL 纹理创建失败：")
+
+    return w, r, t
+
+
 def game_world_reset(renderer, fgc, bgc, texture = None):
     fc = sdl2.ext.color.RGBA(fgc)
     bc = sdl2.ext.color.RGBA(bgc)
 
-    if texture == None:
+    if not (texture is None):
         sdl2.SDL_SetRenderTarget(renderer, texture)
 
-    sdl2.SDL_SetRenderDrawColor(renderer, fc.r, fc.g, fc.b, fc.a)
-    sdl2.SDL_RenderClear(renderer)
     sdl2.SDL_SetRenderDrawColor(renderer, bc.r, bc.g, bc.b, bc.a)
+    sdl2.SDL_RenderClear(renderer)
+    sdl2.SDL_SetRenderDrawColor(renderer, fc.r, fc.g, fc.b, fc.a)
 
 def game_world_refresh(renderer, texture):
     sdl2.SDL_SetRenderTarget(renderer, None)
@@ -63,20 +76,10 @@ class Universe:
         ''' 构造函数，在创建对象时自动调用，以设置帧频、窗口标题、前背景色和混色模式 '''
         game_initialize(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_TIMER)
         
-        self.window = Call_For_Variable(sdl2.SDL_CreateWindow(title.encode('utf-8'),
-            sdl2.SDL_WINDOWPOS_CENTERED, sdl2.SDL_WINDOWPOS_CENTERED, width, height, sdl2.SDL_WINDOW_SHOWN),
-            None, "SDL 窗体创建失败：", sdl2.SDL_GetError())
+        # Please search "Python sequence unpacking"(序列解包)
+        self.window, self.renderer, self.texture = game_world_create(title, width, height)
+        self.fps, self.fgc, self.bgc = fps, fgc, bgc
 
-        self.renderer = Call_For_Variable(sdl2.SDL_CreateRenderer(self.window, -1, sdl2.SDL_RENDERER_ACCELERATED),
-            None, "SDL 渲染器创建失败：", sdl2.SDL_GetError())
-
-        self.texture = Call_For_Variable(sdl2.SDL_CreateTexture(self.renderer,
-            sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET, width, height),
-            None, "SDL 纹理创建失败：", sdl2.SDL_GetError())
-
-        self.fps = fps
-        self.fgc = fgc
-        self.bgc = bgc
         game_world_reset(self.renderer, self.fgc, self.bgc, self.texture)
 
     def __del__(self):
@@ -90,14 +93,13 @@ class Universe:
         if self.window:
             sdl2.SDL_DestroyWindow(self.window)
 
-
     def construct(self, argv):
         pass
 
     def big_bang(self):
-        quit_time = 0
         width = ctypes.c_int()
         height = ctypes.c_int()
+        quit_time = 0
         handled = False
 
         sdl2.SDL_GetWindowSize(self.window, ctypes.byref(width), ctypes.byref(height))
@@ -122,7 +124,7 @@ class Universe:
 if __name__=="__main__":
 
     # 混沌初开，宇宙诞生
-    universe = Universe("The Pong Game", 1200, 800, fgc = 0x00ff00ff, bgc = 0x00ff00ff)
+    universe = Universe("The Pong Game", 1200, 800)
 
     # 创建游戏世界
     universe.construct(sys.argv)
