@@ -46,7 +46,7 @@ namespace WarGrey::STEM {
             uint32_t big_bang();
 
         public:
-            /* 创建游戏世界，充当程序真的 main 函数，默认什么都不做 */
+            /* 创建游戏世界，充当程序真正的 main 函数，默认什么都不做 */
             virtual void construct(int argc, char* argv[]) {}
             
             /* 更新游戏世界，定时器到期时自动调用，默认什么都不做 */

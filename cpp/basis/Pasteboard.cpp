@@ -1,11 +1,10 @@
-#include "rgb_blocks.hpp"
+#include "shape.hpp"  /* 当前要启动的游戏头文件 */
 
 using namespace WarGrey::STEM;
 
-/*************************************************************************************************/
 int main(int argc, char* args[]) {
     /* 混沌初开，宇宙诞生 */
-    RGBBlock universe(1200, 800);
+    PrimitiveShape universe(1200, 800);
 
     /* 创造游戏世界 */
     universe.construct(argc, args);
@@ -22,4 +21,5 @@ int main(int argc, char* args[]) {
      **/
     return 0;
 }
+
 

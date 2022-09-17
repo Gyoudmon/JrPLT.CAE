@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-
-import os            # 操作系统相关函数
-import sys           # 系统相关参数和函数
 import ctypes        # 外语接口
 import atexit        # 用于管理程序退出时执行的函数
 
@@ -14,7 +10,7 @@ import sdl2.ext      # Python 风格的 SDL2 函数
 ###############################################################################
 def Call_With_Error_Message(init, message, GetError):
     if init != 0:
-        print(message + GetError().decode('utf-8'))
+        print(message + GetError().decode("utf-8"))
         os._exit(1)
     
 def Call_With_Safe_Exit(init, message, fquit, GetError = sdl2.SDL_GetError):
@@ -23,7 +19,7 @@ def Call_With_Safe_Exit(init, message, fquit, GetError = sdl2.SDL_GetError):
 
 def Check_Variable_Validity(init, failure, message, GetError = sdl2.SDL_GetError):
     if (init == failure):
-        print(message + GetError().decode('utf-8'))
+        print(message + GetError().decode("utf-8"))
         os._exit(1)
         
 def game_initialize(flags, fontsize = 16):
@@ -41,7 +37,7 @@ def game_initialize(flags, fontsize = 16):
 def game_world_create(title, width, height):
     cpos = sdl2.SDL_WINDOWPOS_CENTERED
 
-    w = sdl2.SDL_CreateWindow(title.encode('utf-8'), cpos, cpos, width, height, sdl2.SDL_WINDOW_SHOWN)
+    w = sdl2.SDL_CreateWindow(title.encode("utf-8"), cpos, cpos, width, height, sdl2.SDL_WINDOW_SHOWN)
     Check_Variable_Validity(w, None, "SDL 窗体创建失败：")
 
     r = sdl2.SDL_CreateRenderer(w, -1, sdl2.SDL_RENDERER_ACCELERATED)
@@ -71,19 +67,19 @@ def game_world_refresh(renderer, texture):
     sdl2.SDL_SetRenderTarget(renderer, texture)
 
 ###############################################################################
-class Universe:
-    def __init__(self, title = "Big Bang!", width = 1200, height = 800, fps = 60, fgc = 0xFFFFFFFF, bgc = 0x000000FF):
-        ''' 构造函数，在创建对象时自动调用，以设置帧频、窗口标题、前背景色和混色模式 '''
+class Universe(object):
+    def __init__(self, title, width = 1200, height = 800, fps = 60, fgc = 0xFFFFFFFF, bgc = 0x000000FF):
+        """ 构造函数，在创建对象时自动调用，以设置帧频、窗口标题、前背景色和混色模式 """
         game_initialize(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_TIMER)
         
         # Please search "Python sequence unpacking"(序列解包)
         self.window, self.renderer, self.texture = game_world_create(title, width, height)
-        self.fps, self.fgc, self.bgc = fps, fgc, bgc
+        self.fps, self.fgc, self.bgc, self.timer = fps, fgc, bgc, 0
 
         game_world_reset(self.renderer, self.fgc, self.bgc, self.texture)
 
     def __del__(self):
-        ''' 析构函数，在对象被销毁时自动调用 '''
+        """ 析构函数，在对象被销毁时自动调用，默认销毁游戏宇宙 """
         if self.texture:
             sdl2.SDL_DestroyTexture(self.texture)
 
@@ -94,15 +90,25 @@ class Universe:
             sdl2.SDL_DestroyWindow(self.window)
 
     def construct(self, argv):
+        """ 创建游戏世界，充当程序真正的 main 函数，默认什么都不做 """
+        pass
+
+    def update(self, interval, count, uptime):
+        """ 更新游戏世界，定时器到期时自动调用，默认什么都不做 """
+        pass
+
+    def draw(self, renderer, x, y, width, height):
+        """ 绘制游戏世界，在合适的时候自动调用，默认什么都不做 """
         pass
 
     def big_bang(self):
-        width = ctypes.c_int()
-        height = ctypes.c_int()
+        """ 宇宙大爆炸，开启游戏主循环，返回游戏运行时间 """
         quit_time = 0
         handled = False
 
-        sdl2.SDL_GetWindowSize(self.window, ctypes.byref(width), ctypes.byref(height))
+        width, height = self.get_window_size()
+        sdl2.SDL_SetRenderTarget(self.renderer, self.texture)
+        self.draw(self.renderer, 0, 0, width, height)
         game_world_refresh(self.renderer, self.texture)
         
         while (quit_time == 0):
@@ -115,26 +121,42 @@ class Universe:
                 game_world_refresh(self.renderer, self.texture)
                 handled = False
 
+    def set_window_title(self, title):
+        sdl2.SDL_SetWindowTitle(self.window, title.encode("utf-8"))
 
+    def get_window_size(self):
+        w = ctypes.c_int()
+        h = ctypes.c_int()
+        
+        sdl2.SDL_GetWindowSize(self.window, ctypes.byref(w), ctypes.byref(h))
+
+        return w, h
+
+# protected
+    def _on_frame(self, interval, count, uptime):
+        game_world_reset(self.renderer, self.fgc, self.bgc)
+
+# private
+    def __on_elapse(self, interval, count, uptime):
+        """ 响应定时器事件，刷新游戏世界 """
+        self.uptime(interval, count, uptime)
+        self._on_frame(interval, count, uptime)
 
 ###############################################################################
-# __name__ 是一个特殊变量
-# 可用于提示是否从这行代码启动应用程序
-# 效果上相当于 C++ 程序的启动器，负责调用 main 函数
-if __name__=="__main__":
+class DrawingBoard(Universe):
+    def __init__(self, title, width = 1200, height = 800, fgc = 0x000000FF, bgc = 0xFFFFFFFF):
+        super(DrawingBoard, self).__init__(title, width, height, 0, fgc, bgc)
 
-    # 混沌初开，宇宙诞生
-    universe = Universe("The Pong Game", 1200, 800)
+class DrawingPlayer(Universe):
+    def __init__(self, title, width = 1200, height = 800, fps = 24, fgc = 0xFFFFFFFF, bgc = 0x000000FF):
+        super(DrawingPlayer, self).__init__(title, width, height, fps, fgc, bgc)
 
-    # 创建游戏世界
-    universe.construct(sys.argv)
+    def _on_frame():
+        """ 更新游戏时不重置窗体 """
+        pass
 
-    # 宇宙大爆炸
-    # 开启游戏主循环，直到玩家关闭游戏
-    universe.big_bang()
+###############################################################################
+def game_draw_point(renderer, x, y, color):
 
-    # Python 心满意足地退出
-    # 顺便销毁游戏宇宙，回归虚无
-    sys.exit(0)
 
 

@@ -1,5 +1,4 @@
 #include "shape.hpp"
-#include "game.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -27,4 +26,5 @@ void WarGrey::STEM::PrimitiveShape::draw(SDL_Renderer* renderer, int x, int y, i
     game_fill_ellipse(renderer, 900, 600, 64, 32, KHAKI);       // 画卡其色椭圆
     game_draw_ellipse(renderer, 900, 600, 64, 32, SKYBLUE);     // 画天蓝色轮廓
 }
+
 
