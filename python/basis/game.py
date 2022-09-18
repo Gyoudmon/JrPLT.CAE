@@ -8,23 +8,9 @@ import sdl2.sdlimage # 原始 (C 风格) SDL2_Image 函数
 import sdl2.ext      # Python 风格的 SDL2 函数
 
 ###############################################################################
-def Call_With_Error_Message(init, message, GetError):
-    if init != 0:
-        print(message + GetError().decode("utf-8"))
-        os._exit(1)
-    
-def Call_With_Safe_Exit(init, message, fquit, GetError = sdl2.SDL_GetError):
-    Call_With_Error_Message(init, message, GetError)
-    atexit.register(fquit)
-
-def Check_Variable_Validity(init, failure, message, GetError = sdl2.SDL_GetError):
-    if (init == failure):
-        print(message + GetError().decode("utf-8"))
-        os._exit(1)
-        
 def game_initialize(flags, fontsize = 16):
-    Call_With_Safe_Exit(sdl2.SDL_Init(flags), "SDL 初始化失败：", sdl2.SDL_Quit)
-    Call_With_Safe_Exit(sdl2.sdlttf.TTF_Init(), "TTF 初始化失败：", sdl2.sdlttf.TTF_Quit, sdl2.sdlttf.TTF_GetError)
+    _Call_With_Safe_Exit(sdl2.SDL_Init(flags), "SDL 初始化失败：", sdl2.SDL_Quit)
+    _Call_With_Safe_Exit(sdl2.sdlttf.TTF_Init(), "TTF 初始化失败：", sdl2.sdlttf.TTF_Quit, sdl2.sdlttf.TTF_GetError)
     sdl2.sdlimage.IMG_Init(sdl2.sdlimage.IMG_INIT_JPG | sdl2.sdlimage.IMG_INIT_PNG)
     
     maybe_err = sdl2.sdlimage.IMG_GetError()
@@ -38,16 +24,15 @@ def game_world_create(title, width, height):
     cpos = sdl2.SDL_WINDOWPOS_CENTERED
 
     w = sdl2.SDL_CreateWindow(title.encode("utf-8"), cpos, cpos, width, height, sdl2.SDL_WINDOW_SHOWN)
-    Check_Variable_Validity(w, None, "SDL 窗体创建失败：")
+    _Check_Variable_Validity(w, None, "SDL 窗体创建失败：")
 
     r = sdl2.SDL_CreateRenderer(w, -1, sdl2.SDL_RENDERER_ACCELERATED)
-    Check_Variable_Validity(r, None, "SDL 渲染器创建失败：")
+    _Check_Variable_Validity(r, None, "SDL 渲染器创建失败：")
 
     t = sdl2.SDL_CreateTexture(r, sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET, width, height)
-    Check_Variable_Validity(t, None, "SDL 纹理创建失败：")
+    _Check_Variable_Validity(t, None, "SDL 纹理创建失败：")
 
     return w, r, t
-
 
 def game_world_reset(renderer, fgc, bgc, texture = None):
     fc = sdl2.ext.color.RGBA(fgc)
@@ -156,7 +141,17 @@ class DrawingPlayer(Universe):
         pass
 
 ###############################################################################
-def game_draw_point(renderer, x, y, color):
+def _Call_With_Error_Message(init, message, GetError):
+    if init != 0:
+        print(message + GetError().decode("utf-8"))
+        os._exit(1)
+    
+def _Call_With_Safe_Exit(init, message, fquit, GetError = sdl2.SDL_GetError):
+    _Call_With_Error_Message(init, message, GetError)
+    atexit.register(fquit)
 
-
-
+def _Check_Variable_Validity(init, failure, message, GetError = sdl2.SDL_GetError):
+    if (init == failure):
+        print(message + GetError().decode("utf-8"))
+        os._exit(1)
+        

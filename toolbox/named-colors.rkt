@@ -37,6 +37,12 @@
   named-colors
 
   (for ([c (in-list (list-color-names))])
-    (printf "#define ~a 0x~aFFU~n"
+    (printf "#define ~a 0x~aU~n"
+            (string-upcase (symbol->string c))
+            (number->string (flcolor->hex c) 16)))
+
+  (newline)
+  (for ([c (in-list (list-color-names))])
+    (printf "~a = 0x~a~n"
             (string-upcase (symbol->string c))
             (number->string (flcolor->hex c) 16))))

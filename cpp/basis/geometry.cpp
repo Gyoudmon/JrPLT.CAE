@@ -59,10 +59,7 @@ static void draw_filled_ellipse(SDL_Renderer* renderer, int cx, int cy, int ar, 
 
 /**************************************************************************************************/
 void WarGrey::STEM::game_draw_point(SDL_Renderer* renderer, int x, int y, uint32_t rgb, uint8_t alpha) {
-    unsigned char r, g, b;
-
-    RGB_FromHexadecimal(rgb, &r, &g, &b);
-    SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
+    RGB_SetRenderDrawColor(renderer, rgb, alpha);
     SDL_RenderDrawPoint(renderer, x, y);
 }
 
@@ -72,10 +69,7 @@ void WarGrey::STEM::game_draw_point(SDL_Renderer* renderer, int x, int y, float 
 }
 
 void WarGrey::STEM::game_draw_line(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t rgb, uint8_t alpha) {
-    unsigned char r, g, b;
-
-    RGB_FromHexadecimal(rgb, &r, &g, &b);
-    SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
+    RGB_SetRenderDrawColor(renderer, rgb, alpha);
     SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
 }
 
@@ -85,7 +79,6 @@ void WarGrey::STEM::game_draw_line(SDL_Renderer* renderer, int x1, int y1, int x
 }
 
 void WarGrey::STEM::game_draw_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t rgb, uint8_t alpha) {
-    unsigned char r, g, b;
     SDL_Rect box;
 
     box.x = x;
@@ -93,8 +86,7 @@ void WarGrey::STEM::game_draw_rect(SDL_Renderer* renderer, int x, int y, int wid
     box.w = width;
     box.h = height;
 
-    RGB_FromHexadecimal(rgb, &r, &g, &b);
-    SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
+    RGB_SetRenderDrawColor(renderer, rgb, alpha);
     SDL_RenderDrawRect(renderer, &box);
 }
 
@@ -111,7 +103,6 @@ void WarGrey::STEM::game_draw_rect(SDL_Renderer* renderer, int x, int y, int wid
 }
 
 void WarGrey::STEM::game_fill_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t rgb, uint8_t alpha) {
-    unsigned char r, g, b;
     SDL_Rect box;
 
     box.x = x;
@@ -119,8 +110,7 @@ void WarGrey::STEM::game_fill_rect(SDL_Renderer* renderer, int x, int y, int wid
     box.w = width;
     box.h = height;
 
-    RGB_FromHexadecimal(rgb, &r, &g, &b);
-    SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
+    RGB_SetRenderDrawColor(renderer, rgb, alpha);
     SDL_RenderFillRect(renderer, &box);
 }
 
@@ -153,11 +143,7 @@ void WarGrey::STEM::game_fill_square(SDL_Renderer* renderer, int cx, int cy, int
 }
 
 void WarGrey::STEM::game_draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t rgb, uint8_t alpha) {
-    unsigned char r, g, b;
-    
-    RGB_FromHexadecimal(rgb, &r, &g, &b);
-    SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
-
+    RGB_SetRenderDrawColor(renderer, rgb, alpha);
     draw_circle(renderer, cx, cy, radius);
 }
 
@@ -167,11 +153,7 @@ void WarGrey::STEM::game_draw_circle(SDL_Renderer* renderer, int cx, int cy, int
 }
 
 void WarGrey::STEM::game_fill_circle(SDL_Renderer* renderer, int cx, int cy, int radius, uint32_t rgb, uint8_t alpha) {
-    unsigned char r, g, b;
-    
-    RGB_FromHexadecimal(rgb, &r, &g, &b);
-    SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
-
+    RGB_SetRenderDrawColor(renderer, rgb, alpha);
     draw_filled_circle(renderer, cx, cy, radius);
 }
 
@@ -181,9 +163,7 @@ void WarGrey::STEM::game_fill_circle(SDL_Renderer* renderer, int cx, int cy, int
 }
 
 void WarGrey::STEM::game_draw_ellipse(SDL_Renderer* renderer, int cx, int cy, int ar, int br, uint32_t rgb, uint8_t alpha) {
-    unsigned char r, g, b;
-
-    RGB_FromHexadecimal(rgb, &r, &g, &b);
+    RGB_SetRenderDrawColor(renderer, rgb, alpha);
     draw_ellipse(renderer, cx, cy, ar, br);
 }
 
@@ -193,9 +173,7 @@ void WarGrey::STEM::game_draw_ellipse(SDL_Renderer* renderer, int cx, int cy, in
 }
 
 void WarGrey::STEM::game_fill_ellipse(SDL_Renderer* renderer, int cx, int cy, int ar, int br, uint32_t rgb, uint8_t alpha) {
-    unsigned char r, g, b;
-
-    RGB_FromHexadecimal(rgb, &r, &g, &b);
+    RGB_SetRenderDrawColor(renderer, rgb, alpha);
     draw_filled_ellipse(renderer, cx, cy, ar, br);
 }
 

@@ -62,6 +62,19 @@ static int set_render_color_from_hsi_sector(SDL_Renderer* renderer, float hue, f
 }
 
 /*************************************************************************************************/
+int WarGrey::STEM::RGB_SetRenderDrawColor(SDL_Renderer* renderer, unsigned int hex, float alpha) {
+    return RGB_SetRenderDrawColor(renderer, hex, UCHAR(alpha));
+}
+
+int WarGrey::STEM::RGB_SetRenderDrawColor(SDL_Renderer* renderer, unsigned int hex, unsigned char alpha) {
+    unsigned char r, g, b;
+
+    RGB_FromHexadecimal(hex, &r, &g, &b);
+    
+    return SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
+}
+
+/*************************************************************************************************/
 int WarGrey::STEM::HSV_SetRenderDrawColor(SDL_Renderer* renderer, float hue, float saturation, float value, float alpha) {
     return HSV_SetRenderDrawColor(renderer, hue, saturation, value, UCHAR(alpha));
 }
