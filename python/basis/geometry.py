@@ -41,6 +41,72 @@ def game_fill_rect(renderer, x, y, width, height, cs, alpha = 0xFF):
 
     sdl2.SDL_RenderFillRect(renderer, ffi.byref(box))
 
+def game_draw_square(renderer, cx, cy, apothem, cs, alpha = 0xFF):
+    game_draw_rect(renderer, cx - apothem, cy - apothem, apothem * 2, apothem * 2, cs, alpha)
+
+def game_fill_square(renderer, cx, cy, apothem, cs, alpha = 0xFF):
+    game_fill_rect(renderer, cx - apothem, cy - apothem, apothem * 2, apothem * 2, cs, alpha)
+
+def game_draw_circle(renderer, cx, cy, radius, cs, alpha = 0xFF):
+    if isinstance(cs, int):
+        RGB_SetRenderDrawColor(renderer, cs, alpha)
+    else:
+        HSV_SetRenderDrawColor(renderer, cs[0], cs[1], cs[2], alpha)
+
+    _draw_circle(renderer, cx, cy, radius)
+
+def game_fill_circle(renderer, cx, cy, radius, cs, alpha = 0xFF):
+    if isinstance(cs, int):
+        RGB_SetRenderDrawColor(renderer, cs, alpha)
+    else:
+        HSV_SetRenderDrawColor(renderer, cs[0], cs[1], cs[2], alpha)
+
+    _fill_circle(renderer, cx, cy, radius)
+
+###############################################################################
+def _draw_circle(renderer, cx, cy, radius):
+    err = 2 - 2 * radius
+    x = -radius
+    y = 0
+    
+    while True:
+        sdl2.SDL_RenderDrawPoint(renderer, cx + x, cy - y)
+        sdl2.SDL_RenderDrawPoint(renderer, cx - x, cy + y)
+        sdl2.SDL_RenderDrawPoint(renderer, cx + y, cy + x)
+        sdl2.SDL_RenderDrawPoint(renderer, cx - y, cy - x)
+
+        radius = err
+        if radius <= y:
+            y += 1
+            err += y * 2 + 1
+
+        if (radius > x) or (err > y):
+            x += 1
+            err += x * 2
+
+        if x >= 0: break
+
+def _fill_circle(renderer, cx, cy, radius):
+    err = 2 - 2 * radius
+    x = -radius
+    y = 0
+    
+    while True:
+        sdl2.SDL_RenderDrawLine(renderer, cx + x, cy + y, cx - x, cy + y); # Q I, Q II
+        sdl2.SDL_RenderDrawLine(renderer, cx + x, cy,     cx + x, cy - y); # Q III
+        sdl2.SDL_RenderDrawLine(renderer, cx - x, cy - y, cx,     cy - y); # Q I
+
+        radius = err
+        if radius <= y:
+            y += 1
+            err += y * 2 + 1
+
+        if (radius > x) or (err > y):
+            x += 1
+            err += x * 2 + 1
+    
+        if x >= 0: break
+
 ###############################################################################
 BISQUE = 0xffe4c4
 MOCCASIN = 0xffe4b5

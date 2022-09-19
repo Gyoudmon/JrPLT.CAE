@@ -21,4 +21,8 @@ class PrimitiveShape(DrawingBoard):
         game_fill_rect(renderer, 800, 100, 200, 100, YELLOWGREEN);  # 画黄绿色矩形
         game_draw_rect(renderer, 800, 100, 200, 100, ORANGE);       # 画橘色边框
 
+        ### 绘制圆 ###
+        game_fill_circle(renderer, 900, 400, 50, PINK);             # 画粉红色圆
+        game_draw_circle(renderer, 900, 400, 50, PURPLE);           # 画紫色轮廓
+
 
