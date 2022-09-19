@@ -92,9 +92,9 @@ def _fill_circle(renderer, cx, cy, radius):
     y = 0
     
     while True:
-        sdl2.SDL_RenderDrawLine(renderer, cx + x, cy + y, cx - x, cy + y); # Q I, Q II
-        sdl2.SDL_RenderDrawLine(renderer, cx + x, cy,     cx + x, cy - y); # Q III
-        sdl2.SDL_RenderDrawLine(renderer, cx - x, cy - y, cx,     cy - y); # Q I
+        sdl2.SDL_RenderDrawLine(renderer, cx + x, cy + y, cx - x, cy + y)  # Q I, Q II
+        sdl2.SDL_RenderDrawLine(renderer, cx + x, cy,     cx + x, cy - y)  # Q III
+        sdl2.SDL_RenderDrawLine(renderer, cx - x, cy - y, cx,     cy - y)  # Q I
 
         radius = err
         if radius <= y:

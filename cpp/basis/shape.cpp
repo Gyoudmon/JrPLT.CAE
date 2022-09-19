@@ -22,7 +22,7 @@ void WarGrey::STEM::PrimitiveShape::draw(SDL_Renderer* renderer, int x, int y, i
     game_fill_circle(renderer, 900, 400, 50, PINK);             // 画粉红色圆
     game_draw_circle(renderer, 900, 400, 50, PURPLE);           // 画紫色轮廓
 
-    /** 绘制圆 **/
+    /** 绘制椭圆 **/
     game_fill_ellipse(renderer, 900, 600, 64, 32, KHAKI);       // 画卡其色椭圆
     game_draw_ellipse(renderer, 900, 600, 64, 32, SKYBLUE);     // 画天蓝色轮廓
 }
