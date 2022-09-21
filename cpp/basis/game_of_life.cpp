@@ -152,7 +152,7 @@ void WarGrey::STEM::GameOfLife::display_user_message(SDL_Renderer* renderer, con
 }
 
 /*************************************************************************************************/
-bool WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t repeats) {
+bool WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
     this->last_key_typed = key;
 
     switch(key) {

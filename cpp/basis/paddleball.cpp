@@ -1,4 +1,4 @@
-#include "ball_game.hpp"
+#include "paddleball.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -10,13 +10,13 @@ const int ball_speed = 4;
 const int paddle_speed = ball_speed * 2;
 
 /*************************************************************************************************/
-WarGrey::STEM::BallGame::BallGame(int width, int height)
-    : Universe("Ball Game", width, height, 60, 0x000000FFU, 0xFFFFFFFFU) { /* 什么都不做 */ }
+WarGrey::STEM::PaddleBall::PaddleBall(int width, int height)
+    : Universe("Paddle Ball", width, height, 60, 0x000000FFU, 0xFFFFFFFFU) { /* 什么都不做 */ }
 
-WarGrey::STEM::BallGame::~BallGame() { /* 什么都不做 */ }
+WarGrey::STEM::PaddleBall::~PaddleBall() { /* 什么都不做 */ }
 
 /*************************************************************************************************/
-void WarGrey::STEM::BallGame::construct(int argc, char* argv[]) {
+void WarGrey::STEM::PaddleBall::construct(int argc, char* argv[]) {
     this->fill_window_size(&this->screen_width, &this->screen_height);
 
     // 确保球产生于屏幕上方的中间
@@ -25,13 +25,14 @@ void WarGrey::STEM::BallGame::construct(int argc, char* argv[]) {
 
     this->ball_dx = 1 * ball_speed;
     this->ball_dy = 1 * ball_speed;
+    this->paddle_dx = 0;
 
     // 确保浆产生在靠近屏幕下方的中间
     this->paddle_x = this->ball_x - paddle_width / 2;
     this->paddle_y = this->screen_height - paddle_height * 3;
 }
 
-void WarGrey::STEM::BallGame::update(uint32_t interval, uint32_t count, uint32_t uptime) {
+void WarGrey::STEM::PaddleBall::update(uint32_t interval, uint32_t count, uint32_t uptime) {
     int dead_y = this->screen_height - ball_radius;
 
     if (this->ball_y < dead_y) {
@@ -46,6 +47,18 @@ void WarGrey::STEM::BallGame::update(uint32_t interval, uint32_t count, uint32_t
             this->ball_dy = -this->ball_dy;
         }
 
+        /* 检测是否需要移动板 */ {
+            if (this->paddle_dx < 0) {
+                if (this->paddle_x > 0) {
+                    this->paddle_x += this->paddle_dx;
+                }
+            } else if (this->paddle_dx > 0) {
+                if ((this->paddle_x + paddle_width) < this->screen_width) {
+                    this->paddle_x += this->paddle_dx;
+                }
+            }
+        }
+
         /* 检测小球是否被捕获 */ {
             int ball_bottom = this->ball_y + ball_radius;
 
@@ -58,7 +71,7 @@ void WarGrey::STEM::BallGame::update(uint32_t interval, uint32_t count, uint32_t
     }
 }
 
-void WarGrey::STEM::BallGame::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
+void WarGrey::STEM::PaddleBall::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     game_fill_circle(renderer, this->ball_x, this->ball_y, ball_radius,
             ((this->ball_y >= this->paddle_y) ? RED : ORANGE));
 
@@ -67,22 +80,22 @@ void WarGrey::STEM::BallGame::draw(SDL_Renderer* renderer, int x, int y, int wid
 }
 
 /*************************************************************************************************/
-bool WarGrey::STEM::BallGame::on_char(char key, uint16_t modifiers, uint8_t repeats) {
+bool WarGrey::STEM::PaddleBall::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
     bool handled = false;
+    int dx = this->paddle_dx;
 
     switch(key) {
         case 'a': {
-            if (this->paddle_x > 0) {
-                this->paddle_x -= 1 * paddle_speed;
-                handled = true;
-            }
+            dx = (pressed ? -1 : 0) * paddle_speed;
         }; break;
         case 'd': {
-            if (this->paddle_x < this->screen_width - paddle_width) {
-                this->paddle_x += 1 * paddle_speed;
-                handled = true;
-            }
+            dx = (pressed ? +1 : 0) * paddle_speed;
         }; break;
+    }
+
+    if (dx != this->paddle_dx) {
+        this->paddle_dx = dx;
+        handled = true;
     }
 
     return handled;

@@ -344,13 +344,17 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
             case SDL_MOUSEWHEEL: {      // 鼠标滚轮事件
                 handled = this->on_mouse_event(e.wheel);
             }; break;
-            case SDL_MOUSEBUTTONUP:
-            case SDL_MOUSEBUTTONDOWN: { // 鼠标点击事件
-                handled = this->on_mouse_event(e.button);
+            case SDL_MOUSEBUTTONUP: {   // 鼠标松开事件
+                handled = this->on_mouse_event(e.button, false);
             }; break;
-            case SDL_KEYUP:
-            case SDL_KEYDOWN: {         // 键盘事件
-                handled = this->on_keyboard_event(e.key);
+            case SDL_MOUSEBUTTONDOWN: { // 鼠标按下事件
+                handled = this->on_mouse_event(e.button, true);
+            }; break;
+            case SDL_KEYUP: {           // 按键松开时间
+                handled = this->on_keyboard_event(e.key, false);
+            }; break;
+            case SDL_KEYDOWN: {         // 按键按下事件
+                handled = this->on_keyboard_event(e.key, true);
             }; break;
             case SDL_QUIT: {
                 if (this->timer > 0UL) {
@@ -359,7 +363,6 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
                 }
 
                 quit_time = e.quit.timestamp;
-                handled = false;
             }; break;
             default: {
                 // std::cout << "Ignored unhandled event(type = " << e.type << ")" << std::endl;
@@ -367,7 +370,7 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
             }
 
             if (handled) {
-                game_world_refresh(this->renderer, this->texture); // 更新窗体
+                game_world_refresh(this->renderer, this->texture);
                 handled = false;
             }
         }
@@ -385,10 +388,10 @@ void WarGrey::STEM::Universe::on_elapse(uint32_t interval, uint32_t count, uint3
     this->on_frame(interval, count, uptime);
 }
 
-bool WarGrey::STEM::Universe::on_mouse_event(SDL_MouseButtonEvent &mouse) {
+bool WarGrey::STEM::Universe::on_mouse_event(SDL_MouseButtonEvent &mouse, bool pressed) {
     bool handled = false;
 
-    if (mouse.state == SDL_RELEASED) {
+    if (!pressed) {
         if (mouse.clicks == 1) {
             switch (mouse.button) {
                 case SDL_BUTTON_LEFT: handled = this->on_click(mouse.x, mouse.y); break;
@@ -424,16 +427,10 @@ bool WarGrey::STEM::Universe::on_mouse_event(SDL_MouseWheelEvent &mouse) {
     return this->on_scroll(horizon, vertical, hprecise, vprecise);
 }
 
-bool WarGrey::STEM::Universe::on_keyboard_event(SDL_KeyboardEvent &keyboard) {
-    bool handled = false;
+bool WarGrey::STEM::Universe::on_keyboard_event(SDL_KeyboardEvent &keyboard, bool pressed) {
+    SDL_Keysym key = keyboard.keysym;
 
-    if (keyboard.state == SDL_PRESSED) {
-        SDL_Keysym key = keyboard.keysym;
-
-        handled = this->on_char(key.sym, key.mod, keyboard.repeat);
-    }
-
-    return handled;
+    return this->on_char(key.sym, key.mod, keyboard.repeat, pressed);
 }
 
 /*************************************************************************************************/

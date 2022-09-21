@@ -1,14 +1,14 @@
-#ifndef _GAME_OF_LIFE_H // 确保只被 include 一次
-#define _GAME_OF_LIFE_H
+#ifndef _PADDLE_BALL_H // 确保只被 include 一次
+#define _PADDLE_BALL_H
 
 #include "game.hpp"
 
 namespace WarGrey::STEM {
     /** 声明游戏宇宙 **/
-    class BallGame : public WarGrey::STEM::Universe {
+    class PaddleBall : public WarGrey::STEM::Universe {
         public:
-            BallGame(int width, int height);
-            virtual ~BallGame();
+            PaddleBall(int width, int height);
+            virtual ~PaddleBall();
 
         public:    // 覆盖游戏基本方法
             void construct(int argc, char* argv[]);
@@ -16,7 +16,7 @@ namespace WarGrey::STEM {
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
 
         protected: // 覆盖输入事件处理方法
-            bool on_char(char key, uint16_t modifiers, uint8_t repeats);        // 处理键盘事件
+            bool on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed);  // 处理键盘事件
 
         private:
             int ball_x;
@@ -27,6 +27,7 @@ namespace WarGrey::STEM {
         private:
             int ball_dx;
             int ball_dy;
+            int paddle_dx;
 
         private:
             int screen_width;

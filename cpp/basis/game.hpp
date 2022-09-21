@@ -71,7 +71,7 @@ namespace WarGrey::STEM {
             virtual bool on_mouse_move(uint32_t state, int x, int y, int dx, int dy) { return false; }          // 处理移动事件
             virtual bool on_scroll(int horizon, int vertical, float hprecise, float vprecise) { return false; } // 处理滚轮事件
 
-            virtual bool on_char(char key, uint16_t modifiers, uint8_t repeats) { return false; }               // 处理键盘事件
+            virtual bool on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) { return false; } // 处理键盘事件
 
         protected:
             virtual void on_frame(uint32_t interval, uint32_t count, uint32_t uptime);
@@ -81,12 +81,12 @@ namespace WarGrey::STEM {
             void on_elapse(uint32_t interval, uint32_t count, uint32_t uptime);
 
             /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
-            bool on_mouse_event(SDL_MouseButtonEvent &mouse); 
+            bool on_mouse_event(SDL_MouseButtonEvent &mouse, bool pressed); 
             bool on_mouse_event(SDL_MouseMotionEvent &mouse); 
             bool on_mouse_event(SDL_MouseWheelEvent &mouse);
 
             /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
-            bool on_keyboard_event(SDL_KeyboardEvent &key);
+            bool on_keyboard_event(SDL_KeyboardEvent &key, bool pressed);
 
         private:
             uint32_t _fgc = 0xFFFFFFFFU;    // 窗体前景色
