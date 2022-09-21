@@ -25,7 +25,6 @@ void WarGrey::STEM::PaddleBall::construct(int argc, char* argv[]) {
 
     this->ball_dx = 1 * ball_speed;
     this->ball_dy = 1 * ball_speed;
-    this->paddle_dx = 0;
 
     // 确保浆产生在靠近屏幕下方的中间
     this->paddle_x = this->ball_x - paddle_width / 2;
@@ -45,18 +44,6 @@ void WarGrey::STEM::PaddleBall::update(uint32_t interval, uint32_t count, uint32
     
         if (this->ball_y <= ball_radius) {
             this->ball_dy = -this->ball_dy;
-        }
-
-        /* 检测是否需要移动板 */ {
-            if (this->paddle_dx < 0) {
-                if (this->paddle_x > 0) {
-                    this->paddle_x += this->paddle_dx;
-                }
-            } else if (this->paddle_dx > 0) {
-                if ((this->paddle_x + paddle_width) < this->screen_width) {
-                    this->paddle_x += this->paddle_dx;
-                }
-            }
         }
 
         /* 检测小球是否被捕获 */ {
@@ -82,22 +69,25 @@ void WarGrey::STEM::PaddleBall::draw(SDL_Renderer* renderer, int x, int y, int w
 /*************************************************************************************************/
 bool WarGrey::STEM::PaddleBall::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
     bool handled = false;
-    int dx = this->paddle_dx;
 
-    switch(key) {
-        case 'a': {
-            dx = (pressed ? -1 : 0) * paddle_speed;
-        }; break;
-        case 'd': {
-            dx = (pressed ? +1 : 0) * paddle_speed;
-        }; break;
+    if (pressed) {
+        switch(key) {
+            case 'a': {
+                if (this->paddle_x > 0) {
+                    this->paddle_x -= paddle_speed;
+                    handled = true;
+                }
+            }; break;
+            case 'd': {
+                if ((this->paddle_x + paddle_width) < this->screen_width) {
+                    this->paddle_x += paddle_speed;
+                    handled = true;
+                }
+            }; break;
+        }
     }
 
-    if (dx != this->paddle_dx) {
-        this->paddle_dx = dx;
-        handled = true;
-    }
-
-    return handled;
+    /* 思考，为什么这个始终返回 false 而不是 handled */
+    return false;
 }
 

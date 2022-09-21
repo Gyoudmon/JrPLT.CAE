@@ -27,7 +27,6 @@ namespace WarGrey::STEM {
         private:
             int ball_dx;
             int ball_dy;
-            int paddle_dx;
 
         private:
             int screen_width;
