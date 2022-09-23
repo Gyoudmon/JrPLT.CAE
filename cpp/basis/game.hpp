@@ -42,8 +42,8 @@ namespace WarGrey::STEM {
             /* 析构函数，销毁旧对象时自动调用，默认销毁游戏宇宙 */
             virtual ~Universe();
 
-            /* 宇宙大爆炸，开始游戏主循环，返回游戏运行时间 */
-            uint32_t big_bang();
+            /* 宇宙大爆炸，开始游戏主循环 */
+            void big_bang();
 
         public:
             /* 创建游戏世界，充当程序真正的 main 函数，默认什么都不做 */
@@ -55,6 +55,9 @@ namespace WarGrey::STEM {
             /* 绘制游戏世界，在合适的时候自动调用，默认什么都不做 */
             virtual void draw(SDL_Renderer* renderer, int x, int y, int width, int height) {}
 
+            /* 告诉游戏主循环，是否游戏已经结束可以退出了，默认永久运行 */
+            virtual bool can_exit() { return false; }
+            
         public:
             void set_blend_mode(SDL_BlendMode bmode);
             void set_window_title(std::string& title);

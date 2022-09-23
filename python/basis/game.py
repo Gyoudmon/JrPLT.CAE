@@ -86,6 +86,10 @@ class Universe(object):
         """ 绘制游戏世界，在合适的时候自动调用，默认什么都不做 """
         pass
 
+    def can_exit(self):
+        """ 告诉游戏主循环，是否游戏已经结束可以退出了，默认永久运行 """
+        return False
+
     def big_bang(self):
         """ 宇宙大爆炸，开启游戏主循环，返回游戏运行时间 """
         quit_time = 0
@@ -96,7 +100,7 @@ class Universe(object):
         self.draw(self.renderer, 0, 0, width, height)
         game_world_refresh(self.renderer, self.texture)
         
-        while (quit_time == 0):
+        while (quit_time == 0) and not self.can_exit():
             for e in sdl2.ext.get_events():
                 if e.type == sdl2.SDL_QUIT:
                     quit_time = e.quit.timestamp

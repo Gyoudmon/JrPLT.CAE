@@ -302,7 +302,7 @@ WarGrey::STEM::Universe::~Universe() {
     SDL_DestroyWindow(this->window);
 }
 
-uint32_t WarGrey::STEM::Universe::big_bang() {
+void WarGrey::STEM::Universe::big_bang() {
     uint32_t quit_time = 0UL;           // 游戏退出时的在线时间
     SDL_Event e;                        // SDL 事件
     int width, height;
@@ -326,7 +326,8 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
     this->draw(this->renderer, 0, 0, width, height);
     game_world_refresh(this->renderer, this->texture);
 
-    while(quit_time == 0UL) {           // 游戏主循环
+    /* 游戏主循环 */
+    while ((quit_time == 0UL) && !this->can_exit()) {
         if (SDL_WaitEvent(&e)) {        // 处理用户交互事件, SDL_PollEvent 多占用 4-7% CPU
             switch (e.type) {
             case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
@@ -375,8 +376,6 @@ uint32_t WarGrey::STEM::Universe::big_bang() {
             }
         }
     }
-
-    return quit_time;
 }
 
 void WarGrey::STEM::Universe::on_frame(uint32_t interval, uint32_t count, uint32_t uptime) {
