@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import sys           # 系统相关参数和函数
-
 from shape import *  # 当前要启动的游戏
 
 # __name__ 是一个特殊变量
@@ -12,7 +10,7 @@ if __name__=="__main__":
 
     # 混沌初开，宇宙诞生，游戏世界就绪
     # Python 设计在惯例上无需 C++ 那样的“两步初始化”
-    universe = PrimitiveShape(sys.argv, 1200, 800)
+    universe = PrimitiveShape(1200, 800)
 
     # 宇宙大爆炸
     # 开启游戏主循环，直到玩家关闭游戏

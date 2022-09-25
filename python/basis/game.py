@@ -1,3 +1,4 @@
+import sys              # 系统相关参数和函数
 import ctypes           # 外语接口
 import atexit           # 用于管理程序退出时执行的函数
 
@@ -53,9 +54,8 @@ def game_world_refresh(renderer, texture):
 
 ###############################################################################
 class Universe(object):
-    def __init__(self, argv, title, width = 1200, height = 800, fps = 60, fgc = 0xFFFFFFFF, bgc = 0x000000FF):
+    def __init__(self, title, width = 1200, height = 800, fps = 60, fgc = 0xFFFFFFFF, bgc = 0x000000FF):
         """ 构造函数，在创建游戏世界时自动调用，以设置帧频、窗口标题、前背景色和混色模式 """
-        # Python doesn't need two-step initialization as C++ does
         game_initialize(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_TIMER)
         
         # Please search "Python sequence unpacking"(序列解包)
@@ -63,6 +63,9 @@ class Universe(object):
         self.fps, self.fgc, self.bgc, self.timer = fps, fgc, bgc, 0
 
         game_world_reset(self.renderer, self.fgc, self.bgc, self.texture)
+
+        # Python doesn't need two-step initialization as C++ does
+        self.construct(sys.argv)
 
     def __del__(self):
         """ 析构函数，在对象被销毁时自动调用，默认销毁游戏宇宙 """
@@ -74,6 +77,10 @@ class Universe(object):
 
         if self.window:
             sdl2.SDL_DestroyWindow(self.window)
+
+    def construct(self, argv):
+        """ 给游戏世界一个解析命令行参数的机会，默认什么都不做 """
+        pass
 
     def update(self, interval, count, uptime):
         """ 更新游戏世界，定时器到期时自动调用，默认什么都不做 """
@@ -130,12 +137,12 @@ class Universe(object):
 
 ###############################################################################
 class DrawingBoard(Universe):
-    def __init__(self, argv, title, width = 1200, height = 800, fgc = 0x000000FF, bgc = 0xFFFFFFFF):
-        super(DrawingBoard, self).__init__(argv, title, width, height, 0, fgc, bgc)
+    def __init__(self, title, width = 1200, height = 800, fgc = 0x000000FF, bgc = 0xFFFFFFFF):
+        super(DrawingBoard, self).__init__(title, width, height, 0, fgc, bgc)
 
 class DrawingPlayer(Universe):
-    def __init__(self, argv, title, width = 1200, height = 800, fps = 24, fgc = 0xFFFFFFFF, bgc = 0x000000FF):
-        super(DrawingPlayer, self).__init__(argv, title, width, height, fps, fgc, bgc)
+    def __init__(self, title, width = 1200, height = 800, fps = 24, fgc = 0xFFFFFFFF, bgc = 0x000000FF):
+        super(DrawingPlayer, self).__init__(title, width, height, fps, fgc, bgc)
 
     def _on_frame():
         """ 更新游戏时不重置窗体 """
