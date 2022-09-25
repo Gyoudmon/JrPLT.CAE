@@ -10,11 +10,9 @@ from shape import *  # 当前要启动的游戏
 
 if __name__=="__main__":
 
-    # 混沌初开，宇宙诞生
-    universe = PrimitiveShape(1200, 800)
-
-    # 创建游戏世界
-    universe.construct(sys.argv)
+    # 混沌初开，宇宙诞生，游戏世界就绪
+    # Python 设计在惯例上无需 C++ 那样的“两步初始化”
+    universe = PrimitiveShape(sys.argv, 1200, 800)
 
     # 宇宙大爆炸
     # 开启游戏主循环，直到玩家关闭游戏

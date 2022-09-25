@@ -5,8 +5,8 @@ from geometry import *      # 基本图形绘制函数
 
 ###############################################################################
 class PrimitiveShape(DrawingBoard):
-    def __init__(self, width, height):
-        super(PrimitiveShape, self).__init__("Primitive Shapes", width, height)
+    def __init__(self, argv, width, height):
+        super(PrimitiveShape, self).__init__(argv, "Primitive Shapes", width, height)
 
     def draw(self, renderer, x, y, width, height):
         game_draw_point(renderer, 600, 300, ROYALBLUE)              # 画皇家蓝点
