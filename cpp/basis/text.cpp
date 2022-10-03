@@ -18,8 +18,9 @@ static inline void unsafe_utf8_size(TTF_Font* font, int* width, int* height, con
     }
 }
 
-static inline void setup_for_text(TTF_Font* font, const std::string& text, unsigned int rgba, SDL_Color& c) {
-    RGB_FromHexadecimal(rgba, &c.r, &c.g, &c.b, &c.a);
+static inline void setup_for_text(TTF_Font* font, const std::string& text, unsigned int rgb, SDL_Color& c) {
+    RGB_FromHexadecimal(rgb, &c.r, &c.g, &c.b);
+    c.a = 0xFFU;
 }
 
 static SDL_Surface* game_text_surface(const std::string& text, ::TextRenderMode mode, TTF_Font* font, SDL_Color& fgc, SDL_Color& bgc) {
@@ -63,7 +64,7 @@ void WarGrey::STEM::game_text_size(TTF_Font* font, int* width, int* height, cons
     unsafe_utf8_size(font, width, height, text);
 }
     
-void WarGrey::STEM::game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgba, int x, int y, const char* fmt, ...) {
+void WarGrey::STEM::game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgb, int x, int y, const char* fmt, ...) {
     SDL_Color text_color;
 
     VSNPRINT(text, fmt);
@@ -72,7 +73,7 @@ void WarGrey::STEM::game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer,
         font = GAME_DEFAULT_FONT;
     }
 
-    setup_for_text(font, text, rgba, text_color);
+    setup_for_text(font, text, rgb, text_color);
     SDL_Surface* message = game_text_surface(text, ::TextRenderMode::SOLID, font, text_color, text_color);
     safe_render_text_surface(renderer, message, x, y);
 }
@@ -87,12 +88,13 @@ void WarGrey::STEM::game_draw_shaded_text(TTF_Font* font, SDL_Renderer* renderer
     }
 
     setup_for_text(font, text, fgc, text_color);
-    RGB_FromHexadecimal(bgc, &background_color.r, &background_color.g, &background_color.b, &background_color.a);
+    RGB_FromHexadecimal(bgc, &background_color.r, &background_color.g, &background_color.b);
+    background_color.a = 0xFF;
     SDL_Surface* message = game_text_surface(text, ::TextRenderMode::SHADED, font, text_color, background_color);
     safe_render_text_surface(renderer, message, x, y);
 }
 
-void WarGrey::STEM::game_draw_blended_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgba, int x, int y, const char* fmt, ...) {
+void WarGrey::STEM::game_draw_blended_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgb, int x, int y, const char* fmt, ...) {
     SDL_Color text_color;
 
     VSNPRINT(text, fmt);
@@ -101,7 +103,7 @@ void WarGrey::STEM::game_draw_blended_text(TTF_Font* font, SDL_Renderer* rendere
         font = GAME_DEFAULT_FONT;
     }
 
-    setup_for_text(font, text, rgba, text_color);
+    setup_for_text(font, text, rgb, text_color);
     SDL_Surface* message = game_text_surface(text, ::TextRenderMode::BLENDED, font, text_color, text_color);
     safe_render_text_surface(renderer, message, x, y);
 }

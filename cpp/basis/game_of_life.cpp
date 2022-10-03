@@ -29,7 +29,7 @@ static inline int count_neighbors(int *world[], int nx, int ny, int x, int y) {
 
 /*************************************************************************************************/
 WarGrey::STEM::GameOfLife::GameOfLife(const char* title, int width, int height)
-    : Universe(title, width, height, 8, 0x000000FFU, 0xFFFFFFFFU) {}
+    : Universe(title, width, height, 8, 0x000000U, 0xFFFFFFU) {}
 
 WarGrey::STEM::GameOfLife::~GameOfLife() {
     /* 销毁世界 */ {

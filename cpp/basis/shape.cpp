@@ -1,5 +1,7 @@
 #include "shape.hpp"
 
+#include "text.hpp"
+
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
@@ -7,6 +9,9 @@ WarGrey::STEM::PrimitiveShape::PrimitiveShape(int width, int height)
     : DrawingBoard("Primitive Shapes", width, height) {}
 
 void WarGrey::STEM::PrimitiveShape::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
+    game_draw_solid_text(game_unicode_font, renderer,
+            this->get_foreground_color(), 0, 0, "基本图形");
+
     game_draw_point(renderer, 600, 300, ROYALBLUE);             // 画皇家蓝点
 
     /** 绘制三角形 **/

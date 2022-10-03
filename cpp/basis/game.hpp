@@ -37,7 +37,7 @@ namespace WarGrey::STEM {
              * 设置帧频, 窗口标题, 前景背景色, 和混色模式
              */
             Universe(const char* title, int width, int height, int fps = 60,
-                    uint32_t fgc = 0xFFFFFFFFU, uint32_t bgc = 0x000000FFU);
+                    uint32_t fgc = 0xFFFFFFU, uint32_t bgc = 0x000000U);
             
             /* 析构函数，销毁旧对象时自动调用，默认销毁游戏宇宙 */
             virtual ~Universe();
@@ -92,8 +92,8 @@ namespace WarGrey::STEM {
             bool on_keyboard_event(SDL_KeyboardEvent &key, bool pressed);
 
         private:
-            uint32_t _fgc = 0xFFFFFFFFU;    // 窗体前景色
-            uint32_t _bgc = 0x000000FFU;    // 窗体背景色
+            uint32_t _fgc = 0xFFFFFFU;    // 窗体前景色
+            uint32_t _bgc = 0x000000U;    // 窗体背景色
             SDL_Window* window = NULL;      // 窗体对象
             SDL_Renderer* renderer = NULL;  // 渲染器对象
             SDL_Texture* texture = NULL;    // 纹理对象
@@ -106,14 +106,14 @@ namespace WarGrey::STEM {
     class DrawingBoard : public WarGrey::STEM::Universe {
         public:
             DrawingBoard(const char* title, int width, int height,
-                    uint32_t fgc = 0x000000FFU, uint32_t bgc = 0xFFFFFFFFU)
+                    uint32_t fgc = 0x000000U, uint32_t bgc = 0xFFFFFFU)
                 : Universe(title, width, height, 0, fgc, bgc) {}
     };
 
     class DrawingPlayer : public WarGrey::STEM::Universe {
         public:
             DrawingPlayer(const char* title, int width, int height, int fps = 24,
-                    uint32_t fgc = 0xFFFFFFFFU, uint32_t bgc = 0x000000FFU)
+                    uint32_t fgc = 0xFFFFFFU, uint32_t bgc = 0x000000U)
                 : Universe(title, width, height, fps, fgc, bgc) {}
             
         protected:
@@ -145,6 +145,7 @@ namespace WarGrey::STEM {
     extern TTF_Font* game_serif_font;
     extern TTF_Font* game_monospace_font;
     extern TTF_Font* game_math_font;
+    extern TTF_Font* game_unicode_font;
 }
 
 #endif

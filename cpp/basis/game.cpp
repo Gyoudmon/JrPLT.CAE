@@ -43,6 +43,7 @@ TTF_Font* WarGrey::STEM::game_sans_serif_font = NULL;
 TTF_Font* WarGrey::STEM::game_serif_font = NULL;
 TTF_Font* WarGrey::STEM::game_monospace_font = NULL;
 TTF_Font* WarGrey::STEM::game_math_font = NULL;
+TTF_Font* WarGrey::STEM::game_unicode_font = NULL;
 
 static void game_push_fonts_of_directory(std::filesystem::path& root) {
     for (auto entry : directory_iterator(root)) {
@@ -70,6 +71,7 @@ static void game_fonts_initialize(int fontsize = 16) {
     game_serif_font = game_create_font("Times.ttc", fontsize);
     game_monospace_font = game_create_font("Courier.ttc", fontsize);
     game_math_font = game_create_font("Bodoni 72.ttc", fontsize);
+    game_unicode_font = game_create_font("Arial Unicode.ttf", fontsize);
 #elif defined(__windows__) /* HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Fonts */
     game_sans_serif_font = game_create_font("msyh.ttc", fontsize); // Microsoft YaHei
     game_serif_font = game_create_font("times.ttf", fontsize); // Times New Roman
@@ -82,7 +84,7 @@ static void game_fonts_initialize(int fontsize = 16) {
     game_math_font = game_create_font("URW Bookman.ttf", fontsize);
 #endif
 
-    GAME_DEFAULT_FONT = game_monospace_font;
+    GAME_DEFAULT_FONT = game_sans_serif_font;
 }
 
 static void game_fonts_destroy() {
@@ -163,14 +165,14 @@ SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window*
 }
 
 void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, uint32_t fgc, uint32_t bgc) {
-    unsigned char r, g, b, a;
+    unsigned char r, g, b;
 
-    RGB_FromHexadecimal(bgc, &r, &g, &b, &a);
-    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    RGB_FromHexadecimal(bgc, &r, &g, &b);
+    SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
     SDL_RenderClear(renderer);
 
-    RGB_FromHexadecimal(fgc, &r, &g, &b, &a);
-    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    RGB_FromHexadecimal(fgc, &r, &g, &b);
+    SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
 }
 
 void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t fgc, uint32_t bgc) {

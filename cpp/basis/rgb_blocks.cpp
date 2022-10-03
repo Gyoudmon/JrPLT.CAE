@@ -21,7 +21,7 @@ void WarGrey::STEM::RGBBlock::draw(SDL_Renderer* renderer, int x, int y, int wid
 
 /*************************************************************************************************/
 WarGrey::STEM::ContrastColorBlock::ContrastColorBlock(int width, int height)
-    : DrawingBoard("Contrast Color Blocks", width, height, 0xFFFFFFFFU, 0x0000FFU), hue0(0.0f) {}
+    : DrawingBoard("Contrast Color Blocks", width, height, 0xFFFFFFU, 0x000000U), hue0(0.0f) {}
 
 void WarGrey::STEM::ContrastColorBlock::construct(int argc, char* argv[]) {
     if (argc > 1) {

@@ -11,7 +11,7 @@ const int paddle_speed = ball_speed * 2;
 
 /*************************************************************************************************/
 WarGrey::STEM::PaddleBall::PaddleBall(int width, int height)
-    : Universe("Paddle Ball", width, height, 60, 0x000000FFU, 0xFFFFFFFFU) { /* 什么都不做 */ }
+    : Universe("Paddle Ball", width, height, 60, 0x000000U, 0xFFFFFFU) { /* 什么都不做 */ }
 
 WarGrey::STEM::PaddleBall::~PaddleBall() { /* 什么都不做 */ }
 
