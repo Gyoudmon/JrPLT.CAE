@@ -6,9 +6,10 @@
 namespace WarGrey::STEM {
     class PrimitiveShape : public WarGrey::STEM::DrawingBoard {
         public:
-            PrimitiveShape(int width, int height);
+            PrimitiveShape();
         
         public:
+            void construct(int argc, char* argv[]);
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
     };
 }

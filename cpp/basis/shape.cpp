@@ -5,8 +5,11 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-WarGrey::STEM::PrimitiveShape::PrimitiveShape(int width, int height)
-    : DrawingBoard("Primitive Shapes", width, height) {}
+WarGrey::STEM::PrimitiveShape::PrimitiveShape() : DrawingBoard("Primitive Shapes") {}
+
+void WarGrey::STEM::PrimitiveShape::construct(int argc, char* argv[]) {
+    this->set_window_size(1200, 800);
+}
 
 void WarGrey::STEM::PrimitiveShape::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     game_draw_solid_text(game_unicode_font, renderer,

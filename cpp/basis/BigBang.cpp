@@ -4,7 +4,7 @@ using namespace WarGrey::STEM;
 
 int main(int argc, char* args[]) {
     /* 混沌初开，宇宙诞生 */
-    PaddleBall universe(1200, 800);
+    PaddleBall universe;
 
     /* 创造游戏世界 */
     universe.construct(argc, args);

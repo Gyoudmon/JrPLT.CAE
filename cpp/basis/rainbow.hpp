@@ -6,7 +6,7 @@
 namespace WarGrey::STEM {
     class ColorWheel : public WarGrey::STEM::DrawingBoard {
         public:
-            ColorWheel(int width, int height, float r = 256.0f, int blength = 32);
+            ColorWheel(float r = 256.0f, int blength = 32);
         
         public:
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
@@ -18,7 +18,7 @@ namespace WarGrey::STEM {
     
     class Rainbow : public WarGrey::STEM::DrawingBoard {
         public:
-            Rainbow(int width, int height, float r = 128.0f, float dh = 1.0f, float ds = 0.1f);
+            Rainbow(float r = 128.0f, float dh = 1.0f, float ds = 0.1f);
         
         public:
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);

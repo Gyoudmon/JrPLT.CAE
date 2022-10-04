@@ -7,8 +7,8 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-WarGrey::STEM::ColorWheel::ColorWheel(int width, int height, float r, int blength)
-    : DrawingBoard("Color Wheel", width, height), radius(r), block_length(blength) {}
+WarGrey::STEM::ColorWheel::ColorWheel(float r, int blength)
+    : DrawingBoard("Color Wheel"), radius(r), block_length(blength) {}
 
 void WarGrey::STEM::ColorWheel::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     SDL_Rect hsb; // 色块变量（矩形
@@ -26,8 +26,8 @@ void WarGrey::STEM::ColorWheel::draw(SDL_Renderer* renderer, int x, int y, int w
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::Rainbow::Rainbow(int width, int height, float r, float dh, float ds)
-    : DrawingBoard("Rainbow", width, height), radius(r), hue_delta(dh), sample_delta(ds) {}
+WarGrey::STEM::Rainbow::Rainbow(float r, float dh, float ds)
+    : DrawingBoard("Rainbow"), radius(r), hue_delta(dh), sample_delta(ds) {}
 
 void WarGrey::STEM::Rainbow::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     float rainbow_width = this->radius * 2.0f;

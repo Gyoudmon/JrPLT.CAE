@@ -28,14 +28,7 @@ static inline bool is_inside_world(int x, int y) {
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::SelfAvoidWalk::SelfAvoidWalk(int width, int height) : DrawingPlayer("Self Avoid Walk", width, height) {
-    // 确保游戏世界被绘制在屏幕中心
-    this->world_x = (width - WORLD_LENGTH) / 2;
-    this->world_y = (height - WORLD_LENGTH) / 2;
-    
-    this->grid_self.w = GRID_SIZE;
-    this->grid_self.h = GRID_SIZE;
-
+WarGrey::STEM::SelfAvoidWalk::SelfAvoidWalk() : DrawingPlayer("Self Avoid Walk") {
     game_text_size(game_monospace_font, NULL, &this->lineheight, "em");
 }
 
@@ -57,6 +50,15 @@ void WarGrey::STEM::SelfAvoidWalk::construct(int argc, char* args[]) {
     this->grids[x][y] = 1;
     
     this->state = WalkState::Run;
+}
+
+void WarGrey::STEM::SelfAvoidWalk::reflow(int width, int height) {
+    // 确保游戏世界被绘制在屏幕中心
+    this->world_x = (width - WORLD_LENGTH) / 2;
+    this->world_y = (height - WORLD_LENGTH) / 2;
+    
+    this->grid_self.w = GRID_SIZE;
+    this->grid_self.h = GRID_SIZE;
 }
 
 void WarGrey::STEM::SelfAvoidWalk::update(uint32_t interval, uint32_t count, uint32_t uptime) {

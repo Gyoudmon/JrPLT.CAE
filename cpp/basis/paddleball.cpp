@@ -7,17 +7,18 @@ const int paddle_width = 128;
 const int paddle_height = 8;
 
 const int ball_speed = 4;
-const int paddle_speed = ball_speed * 2;
+const int paddle_speed = ball_speed * 3;
 
 /*************************************************************************************************/
-WarGrey::STEM::PaddleBall::PaddleBall(int width, int height)
-    : Universe("Paddle Ball", width, height, 60, 0x000000U, 0xFFFFFFU) { /* 什么都不做 */ }
+WarGrey::STEM::PaddleBall::PaddleBall()
+    : Universe("Paddle Ball", 60, 0x000000U, 0xFFFFFFU) { /* 什么都不做 */ }
 
 WarGrey::STEM::PaddleBall::~PaddleBall() { /* 什么都不做 */ }
 
 /*************************************************************************************************/
-void WarGrey::STEM::PaddleBall::construct(int argc, char* argv[]) {
-    this->fill_window_size(&this->screen_width, &this->screen_height);
+void WarGrey::STEM::PaddleBall::reflow(int width, int height) {
+    this->screen_width = width;
+    this->screen_height = height;
 
     // 确保球产生于屏幕上方的中间
     this->ball_x = this->screen_width / 2;

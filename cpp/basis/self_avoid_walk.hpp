@@ -10,10 +10,11 @@ namespace WarGrey::STEM {
 
     class SelfAvoidWalk : public WarGrey::STEM::DrawingPlayer {
         public:
-            SelfAvoidWalk(int width, int height);
+            SelfAvoidWalk();
         
         public:
             void construct(int argc, char* argv[]);
+            void reflow(int width, int height);
             void update(uint32_t interval, uint32_t count, uint32_t uptime);
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
 

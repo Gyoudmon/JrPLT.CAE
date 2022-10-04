@@ -8,14 +8,10 @@ using namespace WarGrey::STEM;
 static const int DROP_WIDTH = 32;
 
 /*************************************************************************************************/
-WarGrey::STEM::Diffusion::Diffusion(int width, int height) : DrawingPlayer("Diffusion", width, height) {
+WarGrey::STEM::Diffusion::Diffusion() : DrawingPlayer("Diffusion") {}
+
+void WarGrey::STEM::Diffusion::reflow(int width, int height) {
     this->ceiling = height / 4;
-}
-
-void WarGrey::STEM::Diffusion::construct(int argc, char* args[]) {
-    int width;
-
-    this->fill_window_size(&width, NULL);
 
     for (int i = 0; i < PARTICLE_COUNT; i++) {
         // 产生位于区间 [-DROP_WIDTH/2, DROP_WIDTH/2) 的偏移量

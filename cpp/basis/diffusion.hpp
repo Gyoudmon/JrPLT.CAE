@@ -8,10 +8,10 @@ namespace WarGrey::STEM {
     
     class Diffusion : public WarGrey::STEM::DrawingPlayer {
         public:
-            Diffusion(int width, int height);
+            Diffusion();
         
         public:
-            void construct(int argc, char* argv[]);
+            void reflow(int width, int height);
             void update(uint32_t interval, uint32_t count, uint32_t uptime);
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
 

@@ -6,9 +6,10 @@
 namespace WarGrey::STEM {
     class RandomWalk : public WarGrey::STEM::DrawingPlayer {
         public:
-            RandomWalk(int width, int height, const char* title = "Random Walk");
+            RandomWalk(const char* title = "Random Walk");
         
         public:
+            void reflow(int width, int height);
             void update(uint32_t interval, uint32_t count, uint32_t uptime);
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
 
@@ -19,7 +20,7 @@ namespace WarGrey::STEM {
     
     class DrunkardWalk : public WarGrey::STEM::RandomWalk {
         public:
-            DrunkardWalk(int width, int height);
+            DrunkardWalk();
         
         public:
             void update(uint32_t interval, uint32_t count, uint32_t uptime);

@@ -2,8 +2,7 @@
 #include "colorspace.hpp"
 
 /*************************************************************************************************/
-WarGrey::STEM::RGBBlock::RGBBlock(int width, int height)
-    : DrawingBoard("RGB Blocks", width, height) {}
+WarGrey::STEM::RGBBlock::RGBBlock() : DrawingBoard("RGB Blocks") {}
 
 void WarGrey::STEM::RGBBlock::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     int r = 100;
@@ -20,8 +19,8 @@ void WarGrey::STEM::RGBBlock::draw(SDL_Renderer* renderer, int x, int y, int wid
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::ContrastColorBlock::ContrastColorBlock(int width, int height)
-    : DrawingBoard("Contrast Color Blocks", width, height, 0xFFFFFFU, 0x000000U), hue0(0.0f) {}
+WarGrey::STEM::ContrastColorBlock::ContrastColorBlock()
+    : DrawingBoard("Contrast Color Blocks", 0xFFFFFFU, 0x000000U), hue0(0.0f) {}
 
 void WarGrey::STEM::ContrastColorBlock::construct(int argc, char* argv[]) {
     if (argc > 1) {

@@ -6,7 +6,7 @@
 namespace WarGrey::STEM {
     class RGBBlock : public WarGrey::STEM::DrawingBoard {
         public:
-            RGBBlock(int width, int height);
+            RGBBlock();
         
         public:
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
@@ -14,7 +14,7 @@ namespace WarGrey::STEM {
     
     class ContrastColorBlock : public WarGrey::STEM::DrawingBoard {
         public:
-            ContrastColorBlock(int width, int height);
+            ContrastColorBlock();
         
         public:
             void construct(int argc, char* argv[]);

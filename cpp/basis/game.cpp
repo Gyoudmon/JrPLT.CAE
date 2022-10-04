@@ -30,6 +30,15 @@ using namespace std::filesystem;
 #define Game_Close_Font(id) if (id != NULL) TTF_CloseFont(id); id = NULL
 
 /*************************************************************************************************/
+TTF_Font* WarGrey::STEM::GAME_DEFAULT_FONT = NULL;
+TTF_Font* WarGrey::STEM::game_sans_serif_font = NULL;
+TTF_Font* WarGrey::STEM::game_serif_font = NULL;
+TTF_Font* WarGrey::STEM::game_monospace_font = NULL;
+TTF_Font* WarGrey::STEM::game_math_font = NULL;
+TTF_Font* WarGrey::STEM::game_unicode_font = NULL;
+
+
+/*************************************************************************************************/
 static std::unordered_map<std::string, std::string> system_fonts;
 static std::string system_fontdirs[] = {
     "/System/Library/Fonts",
@@ -37,13 +46,6 @@ static std::string system_fontdirs[] = {
     "C:\\Windows\\Fonts",
     "/usr/share/fonts"
 };
-
-TTF_Font* WarGrey::STEM::GAME_DEFAULT_FONT = NULL;
-TTF_Font* WarGrey::STEM::game_sans_serif_font = NULL;
-TTF_Font* WarGrey::STEM::game_serif_font = NULL;
-TTF_Font* WarGrey::STEM::game_monospace_font = NULL;
-TTF_Font* WarGrey::STEM::game_math_font = NULL;
-TTF_Font* WarGrey::STEM::game_unicode_font = NULL;
 
 static void game_push_fonts_of_directory(std::filesystem::path& root) {
     for (auto entry : directory_iterator(root)) {
@@ -152,13 +154,29 @@ void WarGrey::STEM::game_initialize(uint32_t flags, int fontsize) {
 }
 
 SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window** window, SDL_Renderer** renderer) {
-    SDL_Texture* texture;
+    uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
-    Call_With_Error_Message(SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_SHOWN, window, renderer),
+    if ((width <= 0) || (height <= 0)) {
+        if ((width <= 0) && (height <= 0)) {
+            flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        } else {
+            flags |= SDL_WINDOW_MAXIMIZED;
+        }
+    }
+
+    Call_With_Error_Message(SDL_CreateWindowAndRenderer(width, height, flags, window, renderer),
         "SDL 窗体和渲染器创建失败: ", SDL_GetError);
 
+    return game_create_texture((*window), (*renderer));
+}
+
+SDL_Texture* WarGrey::STEM::game_create_texture(SDL_Window* window, SDL_Renderer* renderer) {
+    SDL_Texture* texture;
+    int width, height;
+
+    SDL_GetWindowSize(window, &width, &height);
     Call_For_Variable(texture,
-        SDL_CreateTexture((*renderer), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height),
+        SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height),
         NULL, "纹理创建失败: ", SDL_GetError);
 
     return texture;
@@ -275,20 +293,46 @@ void WarGrey::STEM::game_font_destroy(TTF_Font* font) {
     TTF_CloseFont(font);
 }
 
-/*************************************************************************************************/
-WarGrey::STEM::Universe::Universe() : Universe("Big Bang!", 1200, 800) {}
+const std::string* WarGrey::STEM::game_font_list(int* n, int fontsize) {
+    static std::string* font_list = new std::string[system_fonts.size()];
+    static int i = 0;
 
-WarGrey::STEM::Universe::Universe(const char *title, int width, int height, int fps, uint32_t fgc, uint32_t bgc)
+    if (i == 0) {
+        for (std::pair<std::string, std::string> k_v : system_fonts) {
+            TTF_Font* f = TTF_OpenFont(k_v.second.c_str(), fontsize);
+
+            if (f != NULL) {
+                font_list[i ++] = k_v.first;
+                
+                // Not enough resource to open all fonts
+                TTF_CloseFont(f);
+            }
+        }
+    }
+    
+    if (n != NULL) {
+        (*n) = i;
+    }
+
+    return (const std::string*)font_list;
+}
+
+/*************************************************************************************************/
+WarGrey::STEM::Universe::Universe() : Universe("Big Bang!") {}
+
+WarGrey::STEM::Universe::Universe(const char *title, int fps, uint32_t fgc, uint32_t bgc)
     : _fps(fps), _fgc(fgc), _bgc(bgc) {
     
     // 初始化游戏系统
     game_initialize(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     
     // 创建游戏世界
-    this->texture = game_create_world(width, height, &this->window, &this->renderer);
+    this->texture = game_create_world(1, 0, &this->window, &this->renderer);
 
     // 设置标题
     SDL_SetWindowTitle(this->window, title);
+
+    // 按指定颜色重置窗口
     game_world_reset(this->renderer, this->texture, this->_fgc, this->_bgc);
 
     this->set_blend_mode(SDL_BLENDMODE_NONE);
@@ -324,7 +368,7 @@ void WarGrey::STEM::Universe::big_bang() {
 
     this->fill_window_size(&width, &height);
     SDL_SetRenderTarget(this->renderer, this->texture);
-    
+    this->reflow(width, height);
     this->draw(this->renderer, 0, 0, width, height);
     game_world_refresh(this->renderer, this->texture);
 
@@ -358,6 +402,16 @@ void WarGrey::STEM::Universe::big_bang() {
             }; break;
             case SDL_KEYDOWN: {         // 按键按下事件
                 handled = this->on_keyboard_event(e.key, true);
+            }; break;
+            case SDL_WINDOWEVENT: {
+                switch (e.window.event) {
+                    case SDL_WINDOWEVENT_RESIZED: {
+                        width = e.window.data1;
+                        height = e.window.data2;
+
+                        handled = this->on_resize(width, height);
+                    }; break;
+                }
             }; break;
             case SDL_QUIT: {
                 if (this->timer > 0UL) {
@@ -434,6 +488,18 @@ bool WarGrey::STEM::Universe::on_keyboard_event(SDL_KeyboardEvent &keyboard, boo
     return this->on_char(key.sym, key.mod, keyboard.repeat, pressed);
 }
 
+bool WarGrey::STEM::Universe::on_resize(int width, int height) {
+    SDL_DestroyTexture(this->texture);
+    this->texture = game_create_texture(this->window, this->renderer);
+    
+    this->reflow(width, height);
+    game_world_reset(this->renderer, this->texture, this->_fgc, this->_bgc);
+    this->draw(this->renderer, 0, 0, width, height);
+    game_world_refresh(this->renderer, this->texture);
+    
+    return false;
+}
+
 /*************************************************************************************************/
 void WarGrey::STEM::Universe::set_blend_mode(SDL_BlendMode bmode) {
     SDL_SetRenderDrawBlendMode(this->renderer, bmode);
@@ -448,7 +514,25 @@ void WarGrey::STEM::Universe::set_window_title(const char* fmt, ...) {
     this->set_window_title(title);
 }
 
+void WarGrey::STEM::Universe::set_window_size(int width, int height, bool centerize) {
+    SDL_SetWindowSize(this->window, width, height);
+
+    if (centerize) {
+        SDL_SetWindowPosition(this->window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    }
+
+    this->on_resize(width, height);
+}
+
 void WarGrey::STEM::Universe::fill_window_size(int* width, int* height) {
     SDL_GetWindowSize(this->window, width, height);
+}
+
+void WarGrey::STEM::Universe::set_window_fullscreen(bool yes) {
+    if (yes) {
+        SDL_SetWindowFullscreen(this->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    } else {
+        SDL_SetWindowFullscreen(this->window, 0);
+    }
 }
 

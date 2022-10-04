@@ -28,8 +28,8 @@ static inline int count_neighbors(int *world[], int nx, int ny, int x, int y) {
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::GameOfLife::GameOfLife(const char* title, int width, int height)
-    : Universe(title, width, height, 8, 0x000000U, 0xFFFFFFU) {}
+WarGrey::STEM::GameOfLife::GameOfLife(const char* title)
+    : Universe(title, 8, 0x000000U, 0xFFFFFFU) {}
 
 WarGrey::STEM::GameOfLife::~GameOfLife() {
     /* 销毁世界 */ {
@@ -45,18 +45,20 @@ WarGrey::STEM::GameOfLife::~GameOfLife() {
 
 /*************************************************************************************************/
 void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[]) {
-    int width, height;
+    this->stage_width = 0;
 
-    this->fill_window_size(&width, &height);
+    if (argc > 1) {
+        this->stage_width = atoi(argv[1]);
+    }
 
-    this->screen_width = width;
-    this->screen_height = height;
-    this->stage_width = this->screen_height / GRID_SIZE - 1;
+    if ((this->stage_width < 8) || (this->stage_width > 64)) {
+        int width, height;
+
+        this->fill_window_size(&width, &height);
+        this->stage_width = height / GRID_SIZE - 1;
+    }
+
     this->stage_height = this->stage_width;
-
-    // 确保舞台被绘制在屏幕中心
-    this->stage_x = (this->screen_width - this->stage_width * GRID_SIZE) / 2;
-    this->stage_y = (this->screen_height - this->stage_height * GRID_SIZE) / 2;
 
     /* 创建世界网格 */ {
         this->shadow = new int[this->stage_width * this->stage_height];
@@ -75,6 +77,12 @@ void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[]) {
     
     this->generation = 0;
     this->switch_game_state(GameState::Run);
+}
+
+void WarGrey::STEM::GameOfLife::reflow(int width, int height) {
+    // 确保舞台被绘制在屏幕中心
+    this->stage_x = (width - this->stage_width * GRID_SIZE) / 2;
+    this->stage_y = (height - this->stage_height * GRID_SIZE) / 2;
 }
 
 void WarGrey::STEM::GameOfLife::update(uint32_t interval, uint32_t count, uint32_t uptime) {
@@ -105,34 +113,34 @@ void WarGrey::STEM::GameOfLife::draw(SDL_Renderer* renderer, int x, int y, int w
         std::string desc_generation = game_create_string("Generation: %d", this->generation);
     
         game_draw_blended_text(game_monospace_font, renderer, fgcolor,
-                this->screen_width - this->chwidth * int(desc_generation.size()), 0,
+                width - this->chwidth * int(desc_generation.size()), 0,
                 "%s", desc_generation.c_str());
 
-        this->display_instruction(renderer, "Play",    'p', 0);
-        this->display_instruction(renderer, "Stop",    's', 1);
-        this->display_instruction(renderer, "Edit",    'e', 2);
-        this->display_instruction(renderer, "Random",  'r', 3);
-        this->display_instruction(renderer, "Clear",   'c', 4);
-        this->display_instruction(renderer, "Forward", 'f', 5);
+        this->display_instruction(renderer, "Play",    'p', 0, width, height);
+        this->display_instruction(renderer, "Stop",    's', 1, width, height);
+        this->display_instruction(renderer, "Edit",    'e', 2, width, height);
+        this->display_instruction(renderer, "Random",  'r', 3, width, height);
+        this->display_instruction(renderer, "Clear",   'c', 4, width, height);
+        this->display_instruction(renderer, "Forward", 'f', 5, width, height);
     
         if (this->last_key_typed != '\0') {
-            int rx = this->screen_width - this->chwidth * 2;
-            int ry = this->screen_height - this->lineheight;
+            int rx = width - this->chwidth * 2;
+            int ry = height - this->lineheight;
 
             game_draw_blended_text(game_monospace_font, renderer, fgcolor, rx, ry, "%c", this->last_key_typed);
         }
 
-        this->display_user_message(renderer, this->user_message);
+        this->display_user_message(renderer, this->user_message, width, height);
     }
 }
 
-void WarGrey::STEM::GameOfLife::display_game_state(SDL_Renderer* renderer, const std::string &desc_state, uint32_t color) {
-    int x = this->screen_width - this->chwidth * (int(desc_state.size()) + 1);
+void WarGrey::STEM::GameOfLife::display_game_state(SDL_Renderer* renderer, const std::string &desc_state, uint32_t color, int width, int height) {
+    int x = width - this->chwidth * (int(desc_state.size()) + 1);
 
     game_draw_blended_text(game_monospace_font, renderer, color, x, 0, "%s", desc_state.c_str());
 }
 
-void WarGrey::STEM::GameOfLife::display_instruction(SDL_Renderer* renderer, const std::string &desc_state, char key, int index) {
+void WarGrey::STEM::GameOfLife::display_instruction(SDL_Renderer* renderer, const std::string &desc_state, char key, int index, int width, int height) {
     uint32_t color = this->get_foreground_color();
     int y = index * this->lineheight;
 
@@ -143,28 +151,34 @@ void WarGrey::STEM::GameOfLife::display_instruction(SDL_Renderer* renderer, cons
     game_draw_blended_text(game_monospace_font, renderer, color, 0, y, "[%c] %s", key, desc_state.c_str());
 }
 
-void WarGrey::STEM::GameOfLife::display_user_message(SDL_Renderer* renderer, const std::string &message) {
+void WarGrey::STEM::GameOfLife::display_user_message(SDL_Renderer* renderer, const std::string &message, int width, int height) {
     if (message.size() > 0) {
         game_draw_shaded_text(game_monospace_font, renderer, 0xFF0000FF, this->get_background_color(),
-            0, this->screen_height - this->lineheight,
+            0, height - this->lineheight,
             "[Error] %s", message.c_str());
     }
 }
 
 /*************************************************************************************************/
 bool WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
-    this->last_key_typed = key;
+    bool handled = false;
+        
+    if (!pressed) {
+        this->last_key_typed = key;
 
-    switch(key) {
-        case 's': this->switch_game_state(GameState::Stop); break;
-        case 'p': this->switch_game_state(GameState::Run); break;
-        case 'e': this->switch_game_state(GameState::Edit); break;
-        case 'r': this->construct_random_game_world(); break;
-        case 'c': this->reset_game_world(); break;
-        case 'f': this->forward_game_world(repeats, false); break;
+        switch(key) {
+            case 's': this->switch_game_state(GameState::Stop); break;
+            case 'p': this->switch_game_state(GameState::Run); break;
+            case 'e': this->switch_game_state(GameState::Edit); break;
+            case 'r': this->construct_random_game_world(); break;
+            case 'c': this->reset_game_world(); break;
+            case 'f': this->forward_game_world(repeats, false); break;
+        }
+
+        handled = true;
     }
 
-    return true;
+    return handled;
 }
 
 bool WarGrey::STEM::GameOfLife::on_click(int x, int y) {
@@ -276,7 +290,7 @@ void WarGrey::STEM::GameOfLife::switch_game_state(GameState new_state) {
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::ConwayLife::ConwayLife(int width, int height) : GameOfLife("Conway's Game of Life", width, height) {}
+WarGrey::STEM::ConwayLife::ConwayLife() : GameOfLife("Conway's Game of Life") {}
 
 void WarGrey::STEM::ConwayLife::evolve(int** world, int* shadow, int stage_width, int stage_height) {
     for (int x = 0; x < stage_height; x++) {
@@ -298,7 +312,7 @@ void WarGrey::STEM::ConwayLife::evolve(int** world, int* shadow, int stage_width
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::HighLife::HighLife(int width, int height) : GameOfLife("High Life", width, height) {}
+WarGrey::STEM::HighLife::HighLife() : GameOfLife("High Life") {}
 
 void WarGrey::STEM::HighLife::evolve(int** world, int* shadow, int stage_width, int stage_height) {
     for (int x = 0; x < stage_height; x++) {

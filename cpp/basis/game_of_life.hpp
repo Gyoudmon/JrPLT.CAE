@@ -9,11 +9,12 @@ namespace WarGrey::STEM {
     /** 声明游戏宇宙 **/
     class GameOfLife : public WarGrey::STEM::Universe {
         public:
-            GameOfLife(const char* title, int width, int height);
+            GameOfLife(const char* title);
             virtual ~GameOfLife();
 
         public:    // 覆盖游戏基本方法
             void construct(int argc, char* argv[]);
+            void reflow(int width, int height);
             void update(uint32_t interval, uint32_t count, uint32_t uptime);
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
 
@@ -26,9 +27,9 @@ namespace WarGrey::STEM {
 
         private:
             void switch_game_state(WarGrey::STEM::GameState new_state);
-            void display_game_state(SDL_Renderer* renderer, const std::string &desc_state, uint32_t color);
-            void display_instruction(SDL_Renderer* renderer, const std::string &desc_state, char key, int index);
-            void display_user_message(SDL_Renderer* renderer, const std::string &message);
+            void display_game_state(SDL_Renderer* renderer, const std::string &desc_state, uint32_t color, int width, int height);
+            void display_instruction(SDL_Renderer* renderer, const std::string &desc_state, char key, int index, int width, int height);
+            void display_user_message(SDL_Renderer* renderer, const std::string &message, int width, int height);
 
         private:
             void construct_random_game_world();
@@ -43,8 +44,6 @@ namespace WarGrey::STEM {
             int stage_y;
             int stage_width;
             int stage_height;
-            int screen_width;
-            int screen_height;
 
         private: // 游戏状态
             WarGrey::STEM::GameState state;           
@@ -59,7 +58,7 @@ namespace WarGrey::STEM {
 
     class ConwayLife : public WarGrey::STEM::GameOfLife {
         public:
-            ConwayLife(int width, int height);
+            ConwayLife();
 
         protected:
             void evolve(int** world, int* shadow, int stage_width, int stage_height);
@@ -67,7 +66,7 @@ namespace WarGrey::STEM {
 
     class HighLife : public WarGrey::STEM::GameOfLife {
         public:
-            HighLife(int width, int height);
+            HighLife();
 
         protected:
             void evolve(int** world, int* shadow, int stage_width, int stage_height);

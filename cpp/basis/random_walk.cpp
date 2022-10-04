@@ -5,8 +5,9 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-WarGrey::STEM::RandomWalk::RandomWalk(int width, int height, const char* title)
-    : DrawingPlayer(title, width, height) {
+WarGrey::STEM::RandomWalk::RandomWalk(const char* title) : DrawingPlayer(title) {}
+
+void WarGrey::STEM::RandomWalk::reflow(int width, int height) {
     // 初始位置在屏幕中心
     this->x = width / 2;
     this->y = height / 2;
@@ -29,9 +30,7 @@ void WarGrey::STEM::RandomWalk::draw(SDL_Renderer* renderer, int x, int y, int w
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::DrunkardWalk::DrunkardWalk(int width, int height)
-    : RandomWalk(width, height, "Drunkard Walk") {}
-
+WarGrey::STEM::DrunkardWalk::DrunkardWalk() : RandomWalk("Drunkard Walk") {}
 
 void WarGrey::STEM::DrunkardWalk::update(uint32_t interval, uint32_t count, uint32_t uptime) {
     int chance = random_raw() % 100 + 1; // 产生位于区间 [1, 100] 的随机数
