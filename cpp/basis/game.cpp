@@ -79,11 +79,13 @@ static void game_fonts_initialize(int fontsize = 16) {
     game_serif_font = game_create_font("times.ttf", fontsize); // Times New Roman
     game_monospace_font = game_create_font("cour.ttf", fontsize); // Courier New
     game_math_font = game_create_font("BOD_R.TTF", fontsize); // Bodoni MT
+    game_unicode_font = game_create_font("msyh.ttf", fontsize);
 #else /* the following fonts have not been tested */
     game_sans_serif_font = game_create_font("Nimbus Sans.ttc", fontsize);
     game_serif_font = game_create_font("DejaVu Serif.ttc", fontsize);
     game_monospace_font = game_create_font("Monospace.ttf", fontsize);
     game_math_font = game_create_font("URW Bookman.ttf", fontsize);
+    game_unicode_font = game_create_font("Arial Unicode.ttf", fontsize);
 #endif
 
     GAME_DEFAULT_FONT = game_sans_serif_font;
@@ -135,8 +137,11 @@ void WarGrey::STEM::game_initialize(uint32_t flags, int fontsize) {
         Call_With_Safe_Exit(SDL_Init(flags), "SDL 初始化失败: ", SDL_Quit, SDL_GetError);
         Call_With_Safe_Exit(TTF_Init(), "TTF 初始化失败: ", TTF_Quit, TTF_GetError);
 
+#if defined(__macosx__)
         IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
-
+#else
+        IMG_Init(IMG_INIT_PNG);
+#endif
         /* manually check errors */ {
             std::string err = std::string(IMG_GetError());
 

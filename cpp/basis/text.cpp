@@ -33,7 +33,7 @@ static SDL_Surface* game_text_surface(const std::string& text, ::TextRenderMode 
     }
 
     if (surface == NULL) {
-        fprintf(stderr, "无法渲染文本: %s\n", TTF_GetError());
+        fprintf(stderr, "无法渲染文本: %s with %s\n", TTF_GetError(), TTF_FontFaceStyleName(font));
     }
 
     return surface;
@@ -42,8 +42,10 @@ static SDL_Surface* game_text_surface(const std::string& text, ::TextRenderMode 
 static inline void safe_render_text_surface(SDL_Renderer* target, SDL_Surface* message, int x, int y) {
     /** TODO: Cache the textures of text **/
 
-    game_render_surface(target, message, x, y);
-    SDL_FreeSurface(message);
+    if (message != NULL) {
+        game_render_surface(target, message, x, y);
+        SDL_FreeSurface(message);
+    }
 }
 
 /*************************************************************************************************/
