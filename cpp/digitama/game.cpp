@@ -38,7 +38,6 @@ TTF_Font* WarGrey::STEM::game_monospace_font = NULL;
 TTF_Font* WarGrey::STEM::game_math_font = NULL;
 TTF_Font* WarGrey::STEM::game_unicode_font = NULL;
 
-
 /*************************************************************************************************/
 static std::unordered_map<std::string, std::string> system_fonts;
 static std::string system_fontdirs[] = {
@@ -329,7 +328,7 @@ const std::string* WarGrey::STEM::game_font_list(int* n, int fontsize) {
 WarGrey::STEM::Universe::Universe() : Universe("Big Bang!") {}
 
 WarGrey::STEM::Universe::Universe(const char *title, int fps, uint32_t fgc, uint32_t bgc)
-    : _fps(fps), _fgc(fgc), _bgc(bgc), in_editing(false), current_usrin(NULL) {
+    : _fps(fps), _fgc(fgc), _bgc(bgc), in_editing(false), current_usrin(NULL), echo_font(NULL) {
     
     // 初始化游戏系统
     game_initialize(SDL_INIT_VIDEO | SDL_INIT_TIMER);
@@ -377,7 +376,7 @@ void WarGrey::STEM::Universe::big_bang() {
     this->fill_window_size(&width, &height);
     SDL_SetRenderTarget(this->renderer, this->texture);
     this->reflow(width, height);
-    this->do_redraw(0, 0, width, height);
+    this->do_redraw(this->renderer, 0, 0, width, height);
     game_world_refresh(this->renderer, this->texture);
 
     /* 游戏主循环 */
@@ -440,7 +439,7 @@ void WarGrey::STEM::Universe::big_bang() {
             }
 
             if (handled) {
-                this->do_redraw(0, 0, width, height);
+                this->do_redraw(this->renderer, 0, 0, width, height);
                 game_world_refresh(this->renderer, this->texture);
                 handled = false;
             }
@@ -520,7 +519,7 @@ bool WarGrey::STEM::Universe::on_resize(int width, int height) {
     
     this->reflow(width, height);
     game_world_reset(this->renderer, this->texture, this->_fgc, this->_bgc);
-    this->do_redraw(0, 0, width, height);
+    this->do_redraw(this->renderer, 0, 0, width, height);
     game_world_refresh(this->renderer, this->texture);
     
     return false;
@@ -532,7 +531,7 @@ bool WarGrey::STEM::Universe::on_user_input(const char* text) {
     if (this->in_editing) {
         this->usrin.append(text);
         this->current_usrin = NULL;
-        handled = this->display_usr_input_and_caret(true);
+        handled = this->display_usr_input_and_caret(this->renderer, true);
     }
 
     return handled | this->on_text(text, false);
@@ -544,23 +543,28 @@ bool WarGrey::STEM::Universe::on_editing(const char* text, int pos, int span) {
     return this->on_text(text, pos, span);
 }
 
-void WarGrey::STEM::Universe::do_redraw(int x, int y, int width, int height) {
+void WarGrey::STEM::Universe::do_redraw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     if (this->in_editing) {
-        this->display_usr_input_and_caret(true);
+        this->display_usr_input_and_caret(renderer, true);
     }
 
-    this->draw(this->renderer, x, y, width, height);
+    this->draw(renderer, x, y, width, height);
 }
 
-bool WarGrey::STEM::Universe::display_usr_input_and_caret(bool yes) {
+bool WarGrey::STEM::Universe::display_usr_input_and_caret(SDL_Renderer* renderer, bool yes) {
     bool okay = false;
 
     if ((this->echo.w > 0) && (this->echo.h > 0)) {
         game_fill_rect(this->renderer, &this->echo, this->_ibgc, 0xFF);
 
         if (yes) {
-            game_draw_blended_text(game_unicode_font, this->renderer, this->_ifgc,
-                    this->echo.x, this->echo.y, this->usrin + "_", this->echo.w);
+            if (this->prompt.empty()) {
+                game_draw_blended_text(this->echo_font, renderer, this->_ifgc,
+                        this->echo.x, this->echo.y, this->usrin + "_", this->echo.w);
+            } else {
+                game_draw_blended_text(this->echo_font, renderer, this->_ifgc,
+                        this->echo.x, this->echo.y, this->prompt + this->usrin + "_", this->echo.w);
+            }
         }
 
         okay = true;
@@ -606,7 +610,7 @@ void WarGrey::STEM::Universe::set_window_fullscreen(bool yes) {
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::Universe::set_input_echo_area(int x, int y, int width, int height, int fgc, int bgc) {
+void WarGrey::STEM::Universe::set_input_echo_area(int x, int y, int width, int height, int fgc, int bgc, TTF_Font* font) {
     this->echo.x = x;
     this->echo.y = y;
     this->echo.w = width;
@@ -614,14 +618,25 @@ void WarGrey::STEM::Universe::set_input_echo_area(int x, int y, int width, int h
 
     this->_ifgc = (fgc < 0) ? this->_fgc : fgc;
     this->_ibgc = (bgc < 0) ? this->_bgc : bgc;
+    this->echo_font = font;
 
     SDL_SetTextInputRect(&this->echo);
 }
 
-bool WarGrey::STEM::Universe::start_input_text() {
+bool WarGrey::STEM::Universe::start_input_text(const char* fmt, ...) {
+    VSNPRINT(p, fmt);
+
+    return this->start_input_text(p);
+}
+
+bool WarGrey::STEM::Universe::start_input_text(const std::string& p) {
+    if (p.size() > 0) {
+        this->prompt = p;
+    }
+
     SDL_StartTextInput();
     this->in_editing = true;
-    this->display_usr_input_and_caret(true);
+    this->display_usr_input_and_caret(this->renderer, true);
 
     return true;
 }
@@ -631,7 +646,8 @@ bool WarGrey::STEM::Universe::stop_input_text() {
     SDL_StopTextInput();
     this->on_text(this->usrin.c_str(), true);
     this->usrin.erase();
-    this->display_usr_input_and_caret(false);
+    this->prompt.erase();
+    this->display_usr_input_and_caret(this->renderer, false);
 
     return true;
 }
@@ -672,10 +688,44 @@ bool WarGrey::STEM::Universe::popback_input_text() {
             this->usrin.erase(size);
         }
 
-        this->display_usr_input_and_caret(true);
+        this->display_usr_input_and_caret(this->renderer, true);
         handled = true;
     }
 
     return handled;
+}
+
+/*************************************************************************************************/
+void WarGrey::STEM::Universe::snapshot(std::string& path) {
+    this->snapshot(path.c_str());
+}
+
+void WarGrey::STEM::Universe::snapshot(const char* pname) {
+    SDL_Surface* snapshot = NULL;
+    SDL_Renderer* renderer = NULL;
+    int width, height;
+
+    this->fill_window_size(&width, &height);
+    snapshot = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+    renderer = SDL_CreateSoftwareRenderer(snapshot);
+
+    if ((snapshot != NULL) && (renderer != NULL)) {
+        this->do_redraw(renderer, 0, 0, width, height);
+
+        create_directories(path(pname).parent_path());
+        if (IMG_SavePNG(snapshot, pname) != 0) {
+            printf("fail to save snapshot: %s\n", SDL_GetError());
+        }
+    } else {
+        printf("fail to take snapshot: %s\n", SDL_GetError());
+    }
+
+    if (snapshot != NULL) {
+        SDL_FreeSurface(snapshot);
+    }
+
+    if (renderer != NULL) {
+        SDL_DestroyRenderer(renderer);
+    }
 }
 

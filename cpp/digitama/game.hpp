@@ -27,6 +27,18 @@
 
 namespace WarGrey::STEM {
     /**********************************************************************************************/
+    extern TTF_Font* GAME_DEFAULT_FONT;
+    extern TTF_Font* game_sans_serif_font;
+    extern TTF_Font* game_serif_font;
+    extern TTF_Font* game_monospace_font;
+    extern TTF_Font* game_math_font;
+    extern TTF_Font* game_unicode_font;
+
+    TTF_Font* game_create_font(const char* face, int fontsize);
+    void game_font_destroy(TTF_Font* font);
+    const std::string* game_font_list(int* n, int fontsize = 16);
+    
+    /**********************************************************************************************/
     class Universe {
         public:
             /* 构造函数，创建新对象时自动调用，默认创建一个黑底白字的窗口 */
@@ -59,6 +71,10 @@ namespace WarGrey::STEM {
 
             /* 告诉游戏主循环，是否游戏已经结束可以退出了，默认永久运行 */
             virtual bool can_exit() { return false; }
+
+        public:
+            void snapshot(std::string& path);
+            void snapshot(const char* path);
             
         public:
             void set_blend_mode(SDL_BlendMode bmode);
@@ -72,11 +88,10 @@ namespace WarGrey::STEM {
             uint32_t get_foreground_color() { return this->_fgc; }
 
         public:
-            void set_input_echo_area(int x, int y, int width, int height, int fgc = -1, int bgc = -1);
-            bool start_input_text();
+            void set_input_echo_area(int x, int y, int width, int height, int fgc = -1, int bgc = -1, TTF_Font* font = game_unicode_font);
+            bool start_input_text(const char* fmt, ...);
+            bool start_input_text(const std::string& prompt);
             bool stop_input_text();
-            bool enter_input_text();
-            bool popback_input_text();
 
         protected:
             virtual bool on_click(int x, int y) { return false; }                                               // 处理单击事件
@@ -112,8 +127,10 @@ namespace WarGrey::STEM {
             bool on_editing(const char* text, int pos, int span);
 
         private:
-            void do_redraw(int x, int y, int width, int height);
-            bool display_usr_input_and_caret(bool yes);
+            void do_redraw(SDL_Renderer* renderer, int x, int y, int width, int height);
+            bool display_usr_input_and_caret(SDL_Renderer* renderer, bool yes);
+            bool enter_input_text();
+            bool popback_input_text();
 
         private:
             uint32_t _fgc = 0xFFFFFFU;      // 窗体前景色
@@ -128,11 +145,13 @@ namespace WarGrey::STEM {
 
         private:
             const char* current_usrin;      // IME 原始输入
+            std::string prompt;             // 输入提示
             std::string usrin;              // 用户输入
             bool in_editing;                // 是否在输入期间
             SDL_Rect echo;                  // 输入回显区域
             uint32_t _ifgc;                 // 回显区前景色
             uint32_t _ibgc;                 // 回显区背景色
+            TTF_Font* echo_font;            // 回显字体
     };
 
     class DrawingBoard : public WarGrey::STEM::Universe {
@@ -166,18 +185,6 @@ namespace WarGrey::STEM {
 
     void game_render_surface(SDL_Renderer* target, SDL_Surface* surface, int x, int y);
     void game_render_surface(SDL_Renderer* target, SDL_Surface* surface, SDL_Rect* region);
-
-    /**********************************************************************************************/
-    extern TTF_Font* GAME_DEFAULT_FONT;
-    extern TTF_Font* game_sans_serif_font;
-    extern TTF_Font* game_serif_font;
-    extern TTF_Font* game_monospace_font;
-    extern TTF_Font* game_math_font;
-    extern TTF_Font* game_unicode_font;
-
-    TTF_Font* game_create_font(const char* face, int fontsize);
-    void game_font_destroy(TTF_Font* font);
-    const std::string* game_font_list(int* n, int fontsize = 16);
 }
 
 #endif
