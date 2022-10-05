@@ -650,11 +650,12 @@ bool WarGrey::STEM::Universe::enter_input_text() {
 }
 
 bool WarGrey::STEM::Universe::popback_input_text() {
-    const unsigned char* src = reinterpret_cast<const unsigned char*>(this->usrin.c_str());
     size_t size = this->usrin.size();
     bool handled = false;
 
     if (size > 0) {
+        const unsigned char* text = reinterpret_cast<const unsigned char*>(this->usrin.c_str());
+        
         /**
          * UTF-8 encodes characters in 1 to 4 bytes, and their binary forms are:
          *   0xxx xxxx
@@ -663,13 +664,12 @@ bool WarGrey::STEM::Universe::popback_input_text() {
          *   1111 xxxx  10xx xxxx  10xx xxxx  10xx xxxx
          */
         
-        if (src[size - 1] < 0b10000000U) {
+        if (text[size - 1] < 0b10000000U) {
             this->usrin.pop_back();
         } else {
-            size_t pos = size - 2;
-
-            while (src[pos] < 0b11000000) pos--;
-            this->usrin.erase(pos);
+            size -= 2;
+            while (text[size] < 0b11000000U) size--;
+            this->usrin.erase(size);
         }
 
         this->display_usr_input_and_caret(true);
