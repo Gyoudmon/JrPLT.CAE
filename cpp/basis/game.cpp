@@ -1,6 +1,7 @@
 #include "game.hpp"          // 放最前面以兼容 macOS
 #include "vsntext.hpp"
 #include "colorspace.hpp"
+#include "text.hpp"
 
 #include <iostream>
 #include <unordered_map>
@@ -73,7 +74,7 @@ static void game_fonts_initialize(int fontsize = 16) {
     game_serif_font = game_create_font("Times.ttc", fontsize);
     game_monospace_font = game_create_font("Courier.ttc", fontsize);
     game_math_font = game_create_font("Bodoni 72.ttc", fontsize);
-    game_unicode_font = game_create_font("Arial Unicode.ttf", fontsize);
+    game_unicode_font = game_create_font("PingFang.ttc", fontsize);
 #elif defined(__windows__) /* HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Fonts */
     game_sans_serif_font = game_create_font("msyh.ttc", fontsize); // Microsoft YaHei
     game_serif_font = game_create_font("times.ttf", fontsize); // Times New Roman
@@ -151,6 +152,8 @@ void WarGrey::STEM::game_initialize(uint32_t flags, int fontsize) {
             }
         }
     
+        // SDL_SetHint("SDL_IME_SHOW_UI", "1");
+
         game_fonts_initialize(fontsize);
 
         atexit(IMG_Quit);
@@ -159,7 +162,7 @@ void WarGrey::STEM::game_initialize(uint32_t flags, int fontsize) {
 }
 
 SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window** window, SDL_Renderer** renderer) {
-    uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+    uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 
     if ((width <= 0) || (height <= 0)) {
         if ((width <= 0) && (height <= 0)) {
@@ -326,7 +329,7 @@ const std::string* WarGrey::STEM::game_font_list(int* n, int fontsize) {
 WarGrey::STEM::Universe::Universe() : Universe("Big Bang!") {}
 
 WarGrey::STEM::Universe::Universe(const char *title, int fps, uint32_t fgc, uint32_t bgc)
-    : _fps(fps), _fgc(fgc), _bgc(bgc) {
+    : _fps(fps), _fgc(fgc), _bgc(bgc), in_editing(false), current_usrin(NULL) {
     
     // 初始化游戏系统
     game_initialize(SDL_INIT_VIDEO | SDL_INIT_TIMER);
@@ -374,7 +377,7 @@ void WarGrey::STEM::Universe::big_bang() {
     this->fill_window_size(&width, &height);
     SDL_SetRenderTarget(this->renderer, this->texture);
     this->reflow(width, height);
-    this->draw(this->renderer, 0, 0, width, height);
+    this->do_redraw(0, 0, width, height);
     game_world_refresh(this->renderer, this->texture);
 
     /* 游戏主循环 */
@@ -386,7 +389,6 @@ void WarGrey::STEM::Universe::big_bang() {
 
                 if (parcel->universe == this) {
                     this->on_elapse(parcel->interval, parcel->count, parcel->uptime);
-                    this->draw(this->renderer, 0, 0, width, height);
                     handled = true;
                 }
             }; break;
@@ -407,6 +409,12 @@ void WarGrey::STEM::Universe::big_bang() {
             }; break;
             case SDL_KEYDOWN: {         // 按键按下事件
                 handled = this->on_keyboard_event(e.key, true);
+            }; break;
+            case SDL_TEXTINPUT: {       // 用户输入文本
+                handled = this->on_user_input(e.text.text);
+            }; break;
+            case SDL_TEXTEDITING: {       // 用户输入文本
+                handled = this->on_editing(e.edit.text, e.edit.start, e.edit.length);
             }; break;
             case SDL_WINDOWEVENT: {
                 switch (e.window.event) {
@@ -432,6 +440,7 @@ void WarGrey::STEM::Universe::big_bang() {
             }
 
             if (handled) {
+                this->do_redraw(0, 0, width, height);
                 game_world_refresh(this->renderer, this->texture);
                 handled = false;
             }
@@ -489,8 +498,20 @@ bool WarGrey::STEM::Universe::on_mouse_event(SDL_MouseWheelEvent &mouse) {
 
 bool WarGrey::STEM::Universe::on_keyboard_event(SDL_KeyboardEvent &keyboard, bool pressed) {
     SDL_Keysym key = keyboard.keysym;
+    bool handled = false;
 
-    return this->on_char(key.sym, key.mod, keyboard.repeat, pressed);
+    if (this->in_editing) {
+        if (!pressed) {
+            switch (key.sym) {
+                case SDLK_RETURN: handled = this->enter_input_text(); break;
+                case SDLK_BACKSPACE: handled = this->popback_input_text(); break;
+            }
+        }
+    } else {
+        handled = this->on_char(key.sym, key.mod, keyboard.repeat, pressed);
+    }
+
+    return handled;
 }
 
 bool WarGrey::STEM::Universe::on_resize(int width, int height) {
@@ -499,10 +520,53 @@ bool WarGrey::STEM::Universe::on_resize(int width, int height) {
     
     this->reflow(width, height);
     game_world_reset(this->renderer, this->texture, this->_fgc, this->_bgc);
-    this->draw(this->renderer, 0, 0, width, height);
+    this->do_redraw(0, 0, width, height);
     game_world_refresh(this->renderer, this->texture);
     
     return false;
+}
+
+bool WarGrey::STEM::Universe::on_user_input(const char* text) {
+    bool handled = false;
+
+    if (this->in_editing) {
+        this->usrin.append(text);
+        this->current_usrin = NULL;
+        handled = this->display_usr_input_and_caret(true);
+    }
+
+    return handled | this->on_text(text, false);
+}
+
+bool WarGrey::STEM::Universe::on_editing(const char* text, int pos, int span) {
+    this->current_usrin = text;
+
+    return this->on_text(text, pos, span);
+}
+
+void WarGrey::STEM::Universe::do_redraw(int x, int y, int width, int height) {
+    if (this->in_editing) {
+        this->display_usr_input_and_caret(true);
+    }
+
+    this->draw(this->renderer, x, y, width, height);
+}
+
+bool WarGrey::STEM::Universe::display_usr_input_and_caret(bool yes) {
+    bool okay = false;
+
+    if ((this->echo.w > 0) && (this->echo.h > 0)) {
+        game_fill_rect(this->renderer, &this->echo, this->_ibgc, 0xFF);
+
+        if (yes) {
+            game_draw_blended_text(game_unicode_font, this->renderer, this->_ifgc,
+                    this->echo.x, this->echo.y, this->usrin + "_", this->echo.w);
+        }
+
+        okay = true;
+    }
+
+    return okay;
 }
 
 /*************************************************************************************************/
@@ -539,5 +603,79 @@ void WarGrey::STEM::Universe::set_window_fullscreen(bool yes) {
     } else {
         SDL_SetWindowFullscreen(this->window, 0);
     }
+}
+
+/*************************************************************************************************/
+void WarGrey::STEM::Universe::set_input_echo_area(int x, int y, int width, int height, int fgc, int bgc) {
+    this->echo.x = x;
+    this->echo.y = y;
+    this->echo.w = width;
+    this->echo.h = height;
+
+    this->_ifgc = (fgc < 0) ? this->_fgc : fgc;
+    this->_ibgc = (bgc < 0) ? this->_bgc : bgc;
+
+    SDL_SetTextInputRect(&this->echo);
+}
+
+bool WarGrey::STEM::Universe::start_input_text() {
+    SDL_StartTextInput();
+    this->in_editing = true;
+    this->display_usr_input_and_caret(true);
+
+    return true;
+}
+
+bool WarGrey::STEM::Universe::stop_input_text() {
+    this->in_editing = false;
+    SDL_StopTextInput();
+    this->on_text(this->usrin.c_str(), true);
+    this->usrin.erase();
+    this->display_usr_input_and_caret(false);
+
+    return true;
+}
+
+bool WarGrey::STEM::Universe::enter_input_text() {
+    bool handled = false;
+
+    if (this->current_usrin != NULL) {
+        handled = this->on_user_input(this->current_usrin);
+        this->current_usrin = NULL;
+    } else {
+        handled = this->stop_input_text();
+    }
+
+    return handled;
+}
+
+bool WarGrey::STEM::Universe::popback_input_text() {
+    const unsigned char* src = reinterpret_cast<const unsigned char*>(this->usrin.c_str());
+    size_t size = this->usrin.size();
+    bool handled = false;
+
+    if (size > 0) {
+        /**
+         * UTF-8 encodes characters in 1 to 4 bytes, and their binary forms are:
+         *   0xxx xxxx
+         *   110x xxxx  10xx xxxx
+         *   1110 xxxx  10xx xxxx  10xx xxxx
+         *   1111 xxxx  10xx xxxx  10xx xxxx  10xx xxxx
+         */
+        
+        if (src[size - 1] < 0b10000000U) {
+            this->usrin.pop_back();
+        } else {
+            size_t pos = size - 2;
+
+            while (src[pos] < 0b11000000) pos--;
+            this->usrin.erase(pos);
+        }
+
+        this->display_usr_input_and_caret(true);
+        handled = true;
+    }
+
+    return handled;
 }
 

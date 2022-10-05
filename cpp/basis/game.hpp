@@ -71,6 +71,13 @@ namespace WarGrey::STEM {
             uint32_t get_background_color() { return this->_bgc; }
             uint32_t get_foreground_color() { return this->_fgc; }
 
+        public:
+            void set_input_echo_area(int x, int y, int width, int height, int fgc = -1, int bgc = -1);
+            bool start_input_text();
+            bool stop_input_text();
+            bool enter_input_text();
+            bool popback_input_text();
+
         protected:
             virtual bool on_click(int x, int y) { return false; }                                               // 处理单击事件
             virtual bool on_right_click(int x, int y) { return false; }                                         // 处理右击事件
@@ -79,6 +86,8 @@ namespace WarGrey::STEM {
             virtual bool on_scroll(int horizon, int vertical, float hprecise, float vprecise) { return false; } // 处理滚轮事件
 
             virtual bool on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) { return false; } // 处理键盘事件
+            virtual bool on_text(const char* text, bool entire) { return false; }                               // 处理文本输入事件
+            virtual bool on_text(const char* text, int pos, int span) { return false; }                         // 处理文本输入事件
 
         protected:
             virtual void on_frame(uint32_t interval, uint32_t count, uint32_t uptime);
@@ -92,15 +101,23 @@ namespace WarGrey::STEM {
             bool on_mouse_event(SDL_MouseMotionEvent &mouse); 
             bool on_mouse_event(SDL_MouseWheelEvent &mouse);
 
-            /* 响应鼠标事件，并按需调用单击、右击、双击、移动、滚轮事件 */
+            /* 响应键盘事件，并按需调按下、松开事件 */
             bool on_keyboard_event(SDL_KeyboardEvent &key, bool pressed);
 
             /* 响应窗体事件，并按需调用尺寸改变事件 */
             bool on_resize(int width, int height);
 
+            /* 响应输入法事件，按需显示用户输入的内容 */
+            bool on_user_input(const char* text);
+            bool on_editing(const char* text, int pos, int span);
+
         private:
-            uint32_t _fgc = 0xFFFFFFU;    // 窗体前景色
-            uint32_t _bgc = 0x000000U;    // 窗体背景色
+            void do_redraw(int x, int y, int width, int height);
+            bool display_usr_input_and_caret(bool yes);
+
+        private:
+            uint32_t _fgc = 0xFFFFFFU;      // 窗体前景色
+            uint32_t _bgc = 0x000000U;      // 窗体背景色
             SDL_Window* window = NULL;      // 窗体对象
             SDL_Renderer* renderer = NULL;  // 渲染器对象
             SDL_Texture* texture = NULL;    // 纹理对象
@@ -108,6 +125,14 @@ namespace WarGrey::STEM {
         private:
             SDL_TimerID timer = 0;          // SDL 定时器
             int _fps = 60;                  // 帧频
+
+        private:
+            const char* current_usrin;      // IME 原始输入
+            std::string usrin;              // 用户输入
+            bool in_editing;                // 是否在输入期间
+            SDL_Rect echo;                  // 输入回显区域
+            uint32_t _ifgc;                 // 回显区前景色
+            uint32_t _ibgc;                 // 回显区背景色
     };
 
     class DrawingBoard : public WarGrey::STEM::Universe {

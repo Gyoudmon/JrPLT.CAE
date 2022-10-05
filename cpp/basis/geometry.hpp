@@ -12,6 +12,10 @@ namespace WarGrey::STEM {
     void game_draw_line(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t rgb, uint8_t alpha = 0xFFU);
     void game_draw_line(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, float hue, float saturation = 1.0f, float value = 1.0f, uint8_t alpha = 0xFFU);
     
+    void game_draw_rect(SDL_Renderer* renderer, SDL_Rect* box, uint32_t rgb, uint8_t alpha = 0xFFU);
+    void game_draw_rect(SDL_Renderer* renderer, SDL_Rect* box, float hue, float saturation = 1.0f, float value = 1.0f, uint8_t alpha = 0xFFU);
+    void game_fill_rect(SDL_Renderer* renderer, SDL_Rect* box, uint32_t rgb, uint8_t alpha = 0xFFU);
+    void game_fill_rect(SDL_Renderer* renderer, SDL_Rect* box, float hue, float saturation = 1.0f, float value = 1.0f, uint8_t alpha = 0xFFU);
     void game_draw_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t rgb, uint8_t alpha = 0xFFU);
     void game_draw_rect(SDL_Renderer* renderer, int x, int y, int width, int height, float hue, float saturation = 1.0f, float value = 1.0f, uint8_t alpha = 0xFFU);
     void game_fill_rect(SDL_Renderer* renderer, int x, int y, int width, int height, uint32_t rgb, uint8_t alpha = 0xFFU);
