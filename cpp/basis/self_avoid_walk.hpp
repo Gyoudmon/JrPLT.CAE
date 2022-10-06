@@ -1,14 +1,14 @@
 #ifndef _ANIMATED_SELF_AVOID_WALK_H // 确保只被 include 一次
 #define _ANIMATED_SELF_AVOID_WALK_H
 
-#include "game.hpp"
+#include "digitama/game.hpp"
 
 namespace WarGrey::STEM {
 #define WORLD_SIZE 48    // 方格单边数量
 
     enum class WalkState { Run, Succeed, Failed };
 
-    class SelfAvoidWalk : public WarGrey::STEM::DrawingPlayer {
+    class SelfAvoidWalk : public WarGrey::STEM::Universe {
         public:
             SelfAvoidWalk();
         

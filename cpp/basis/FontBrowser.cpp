@@ -1,13 +1,13 @@
-#include "game.hpp"
-#include "text.hpp"
+#include "digitama/game.hpp"
+#include "digitama/text.hpp"
 
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 namespace {
-    class FontBrowser : public DrawingBoard {
+    class FontBrowser : public Pasteboard {
         public:
-            FontBrowser() : DrawingBoard("字体浏览器") {}
+            FontBrowser() : Pasteboard("字体浏览器") {}
         
         public:
             void construct(int argc, char* argv[]) {

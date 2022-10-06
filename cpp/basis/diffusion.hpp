@@ -1,12 +1,12 @@
 #ifndef _ANIMATED_DIFFUSION_H // 确保只被 include 一次
 #define _ANIMATED_DIFFUSION_H
 
-#include "game.hpp"
+#include "digitama/game.hpp"
 
 namespace WarGrey::STEM {
 #define PARTICLE_COUNT 128
     
-    class Diffusion : public WarGrey::STEM::DrawingPlayer {
+    class Diffusion : public WarGrey::STEM::Universe {
         public:
             Diffusion();
         

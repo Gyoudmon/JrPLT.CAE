@@ -1,14 +1,14 @@
 #include "diffusion.hpp"
 
-#include "random.hpp"
+#include "digitama/random.hpp"
 
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-static const int DROP_WIDTH = 32;
+static const int DROP_WIDTH = 64;
 
 /*************************************************************************************************/
-WarGrey::STEM::Diffusion::Diffusion() : DrawingPlayer("Diffusion") {}
+WarGrey::STEM::Diffusion::Diffusion() : Universe("Diffusion", 24, 0x000000U, 0xFFFFFFU) {}
 
 void WarGrey::STEM::Diffusion::reflow(int width, int height) {
     this->ceiling = height / 4;
@@ -43,7 +43,7 @@ void WarGrey::STEM::Diffusion::draw(SDL_Renderer* renderer, int x, int y, int wi
     for (int i = 0; i < PARTICLE_COUNT; i++) {
         // 访问数组元素
         if ((this->xs[i] > 0) && (this->xs[i] < width) && (this->ys[i] > 0) && (this->ys[i] < height)) {
-            SDL_RenderDrawPoint(renderer, this->xs[i], this->ys[i]);
+            game_fill_circle(renderer, this->xs[i], this->ys[i], 1, this->get_foreground_color());
         }
     }
 }

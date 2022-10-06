@@ -1,7 +1,7 @@
 #include "self_avoid_walk.hpp"
 
-#include "text.hpp"
-#include "random.hpp"
+#include "digitama/text.hpp"
+#include "digitama/random.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -28,7 +28,7 @@ static inline bool is_inside_world(int x, int y) {
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::SelfAvoidWalk::SelfAvoidWalk() : DrawingPlayer("Self Avoid Walk") {
+WarGrey::STEM::SelfAvoidWalk::SelfAvoidWalk() : Universe("Self Avoid Walk", 24, 0x000000U, 0xFFFFFFU) {
     game_text_size(game_monospace_font, NULL, &this->lineheight, "em");
 }
 
@@ -108,7 +108,7 @@ void WarGrey::STEM::SelfAvoidWalk::draw(SDL_Renderer* renderer, int x, int y, in
 
     switch (this->state) {
         case WalkState::Run: {
-            game_draw_shaded_text(game_monospace_font, renderer, 0xFFA500FF, 0xFF,
+            game_draw_lcd_text(game_monospace_font, renderer, 0xFFA500FF, 0xFF,
                     this->lineheight / 2, this->lineheight / 2,
                     "Move to (%d, %d)  ", this->x, this->y);
         }; break;

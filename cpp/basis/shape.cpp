@@ -1,11 +1,11 @@
 #include "shape.hpp"
 
-#include "text.hpp"
+#include "digitama/text.hpp"
 
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-WarGrey::STEM::PrimitiveShape::PrimitiveShape() : DrawingBoard("Primitive Shapes") {}
+WarGrey::STEM::PrimitiveShape::PrimitiveShape() : Pasteboard("Primitive Shapes") {}
 
 void WarGrey::STEM::PrimitiveShape::construct(int argc, char* argv[]) {
     this->set_window_size(1200, 800);

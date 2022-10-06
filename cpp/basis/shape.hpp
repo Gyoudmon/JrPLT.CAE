@@ -1,10 +1,10 @@
 #ifndef _PRIMITIVE_SHAPE_H // 确保只被 include 一次
 #define _PRIMITIVE_SHAPE_H
 
-#include "game.hpp"
+#include "digitama/game.hpp"
 
 namespace WarGrey::STEM {
-    class PrimitiveShape : public WarGrey::STEM::DrawingBoard {
+    class PrimitiveShape : public WarGrey::STEM::Pasteboard {
         public:
             PrimitiveShape();
         

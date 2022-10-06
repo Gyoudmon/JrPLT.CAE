@@ -1,11 +1,11 @@
 #include "random_walk.hpp"
 
-#include "random.hpp"
+#include "digitama/random.hpp"
 
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-WarGrey::STEM::RandomWalk::RandomWalk(const char* title) : DrawingPlayer(title) {}
+WarGrey::STEM::RandomWalk::RandomWalk(const char* title) : Universe(title, 24, 0x000000U, 0xFFFFFFU) {}
 
 void WarGrey::STEM::RandomWalk::reflow(int width, int height) {
     // 初始位置在屏幕中心
@@ -25,7 +25,7 @@ void WarGrey::STEM::RandomWalk::update(uint32_t interval, uint32_t count, uint32
 
 void WarGrey::STEM::RandomWalk::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     if ((this->x > 0) && (this->x < width) && (this->y > 0) && (this->y < height)) {
-        SDL_RenderDrawPoint(renderer, this->x, this->y);
+        game_fill_circle(renderer, this->x, this->y, 2, this->get_foreground_color());
     }
 }
 

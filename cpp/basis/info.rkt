@@ -9,17 +9,14 @@
 
 (define native-launcher-names '(["BigBang.cpp" console ;desktop
                                  ((config SDL2)
-                                  (include "..\\digitama"
-                                           [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\include"])
+                                  (include [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\include"])
                                   (libpath [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\lib"]))]
                                 ["Pasteboard.cpp" console ;desktop
                                  ((config SDL2)
-                                  (include "..\\digitama"
-                                           [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\include"])
+                                  (include [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\include"])
                                   (libpath [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\lib"]))]
                                 ["FontBrowser.cpp" console ;desktop
                                  ((config SDL2)
-                                  (include "..\\digitama"
-                                           [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\include"])
+                                  (include [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\include"])
                                   (libpath [windows "C:\\opt\\vcpkg\\installed\\x64-windows\\lib"]))]))
 

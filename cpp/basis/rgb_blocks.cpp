@@ -1,8 +1,9 @@
 #include "rgb_blocks.hpp"
-#include "colorspace.hpp"
+
+#include "digitama/colorspace.hpp"
 
 /*************************************************************************************************/
-WarGrey::STEM::RGBBlock::RGBBlock() : DrawingBoard("RGB Blocks") {}
+WarGrey::STEM::RGBBlock::RGBBlock() : Pasteboard("RGB Blocks", 0xFFFFFFU, 0x000000U) {}
 
 void WarGrey::STEM::RGBBlock::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     int r = 100;
@@ -20,7 +21,7 @@ void WarGrey::STEM::RGBBlock::draw(SDL_Renderer* renderer, int x, int y, int wid
 
 /*************************************************************************************************/
 WarGrey::STEM::ContrastColorBlock::ContrastColorBlock()
-    : DrawingBoard("Contrast Color Blocks", 0xFFFFFFU, 0x000000U), hue0(0.0f) {}
+    : Pasteboard("Contrast Color Blocks", 0xFFFFFFU, 0x000000U), hue0(0.0f) {}
 
 void WarGrey::STEM::ContrastColorBlock::construct(int argc, char* argv[]) {
     if (argc > 1) {

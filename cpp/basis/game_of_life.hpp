@@ -1,7 +1,7 @@
 #ifndef _GAME_OF_LIFE_H // 确保只被 include 一次
 #define _GAME_OF_LIFE_H
 
-#include "game.hpp"
+#include "digitama/game.hpp"
 
 namespace WarGrey::STEM {
     enum class GameState { Run, Stop, Edit };
@@ -19,8 +19,8 @@ namespace WarGrey::STEM {
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
 
         protected: // 覆盖输入事件处理方法
-            bool on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed);  // 处理键盘事件
-            bool on_click(int x, int y);                                                // 处理单击事件
+            void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed);  // 处理键盘事件
+            void on_click(int x, int y);                                                // 处理单击事件
 
         protected: // 演化策略, 默认留给子类实现
             virtual void evolve(int** world, int* shadow, int stage_width, int stage_height) = 0;

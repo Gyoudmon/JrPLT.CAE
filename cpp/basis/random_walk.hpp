@@ -1,10 +1,10 @@
 #ifndef _RANDOM_WALK_H // 确保只被 include 一次
 #define _RANDOM_WALK_H
 
-#include "game.hpp"
+#include "digitama/game.hpp"
 
 namespace WarGrey::STEM {
-    class RandomWalk : public WarGrey::STEM::DrawingPlayer {
+    class RandomWalk : public WarGrey::STEM::Universe {
         public:
             RandomWalk(const char* title = "Random Walk");
         

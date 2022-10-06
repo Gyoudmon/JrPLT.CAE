@@ -1,8 +1,8 @@
 #include "game_of_life.hpp"
 
-#include "text.hpp"
-#include "random.hpp"
-#include "image.hpp"
+#include "digitama/text.hpp"
+#include "digitama/random.hpp"
+#include "digitama/image.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -114,7 +114,7 @@ void WarGrey::STEM::GameOfLife::draw(SDL_Renderer* renderer, int x, int y, int w
     
         game_draw_blended_text(game_monospace_font, renderer, fgcolor,
                 width - this->chwidth * int(desc_generation.size()), 0,
-                "%s", desc_generation.c_str());
+                desc_generation);
 
         this->display_instruction(renderer, "Play",    'p', 0, width, height);
         this->display_instruction(renderer, "Stop",    's', 1, width, height);
@@ -127,7 +127,7 @@ void WarGrey::STEM::GameOfLife::draw(SDL_Renderer* renderer, int x, int y, int w
             int rx = width - this->chwidth * 2;
             int ry = height - this->lineheight;
 
-            game_draw_blended_text(game_monospace_font, renderer, fgcolor, rx, ry, "%c", this->last_key_typed);
+            game_draw_blended_text(game_monospace_font, renderer, fgcolor, rx, ry, std::to_string(this->last_key_typed));
         }
 
         this->display_user_message(renderer, this->user_message, width, height);
@@ -160,9 +160,7 @@ void WarGrey::STEM::GameOfLife::display_user_message(SDL_Renderer* renderer, con
 }
 
 /*************************************************************************************************/
-bool WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
-    bool handled = false;
-        
+void WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
     if (!pressed) {
         this->last_key_typed = key;
 
@@ -175,13 +173,11 @@ bool WarGrey::STEM::GameOfLife::on_char(char key, uint16_t modifiers, uint8_t re
             case 'f': this->forward_game_world(repeats, false); break;
         }
 
-        handled = true;
+        this->notify_updated();
     }
-
-    return handled;
 }
 
-bool WarGrey::STEM::GameOfLife::on_click(int x, int y) {
+void WarGrey::STEM::GameOfLife::on_click(int x, int y) {
     if (this->state == GameState::Edit) {
         int sx = x - this->stage_x;
         int sy = y - this->stage_y;
@@ -194,11 +190,10 @@ bool WarGrey::STEM::GameOfLife::on_click(int x, int y) {
 
             if ((gx < this->stage_width) && (gy < this->stage_height)) {
                 this->world[gx][gy] = (this->world[gx][gy] == 0) ? 1 : 0;
+                this->notify_updated();
             }
         }
     }
-
-    return true;
 }
 
 /*************************************************************************************************/

@@ -1,10 +1,10 @@
 #ifndef _RAINBOW_H // 确保只被 include 一次
 #define _RAINBOW_H
 
-#include "game.hpp"
+#include "digitama/game.hpp"
 
 namespace WarGrey::STEM {
-    class ColorWheel : public WarGrey::STEM::DrawingBoard {
+    class ColorWheel : public WarGrey::STEM::Pasteboard {
         public:
             ColorWheel(float r = 256.0f, int blength = 32);
         
@@ -16,7 +16,7 @@ namespace WarGrey::STEM {
             int block_length;
     };
     
-    class Rainbow : public WarGrey::STEM::DrawingBoard {
+    class Rainbow : public WarGrey::STEM::Pasteboard {
         public:
             Rainbow(float r = 128.0f, float dh = 1.0f, float ds = 0.1f);
         
