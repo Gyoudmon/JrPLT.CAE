@@ -68,27 +68,22 @@ void WarGrey::STEM::PaddleBall::draw(SDL_Renderer* renderer, int x, int y, int w
 }
 
 /*************************************************************************************************/
-bool WarGrey::STEM::PaddleBall::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
-    bool handled = false;
-
+void WarGrey::STEM::PaddleBall::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
     if (pressed) {
         switch(key) {
             case 'a': {
                 if (this->paddle_x > 0) {
                     this->paddle_x -= paddle_speed;
-                    handled = true;
+                    // this->notify_updated();
                 }
             }; break;
             case 'd': {
                 if ((this->paddle_x + paddle_width) < this->screen_width) {
                     this->paddle_x += paddle_speed;
-                    handled = true;
+                    // this->notify_updated();
                 }
             }; break;
         }
     }
-
-    /* 思考，为什么这个始终返回 false 而不是 handled */
-    return false;
 }
 

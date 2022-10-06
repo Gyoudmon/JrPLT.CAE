@@ -68,13 +68,17 @@ std::string WarGrey::STEM::game_create_string(const char* fmt, ...) {
 /*************************************************************************************************/
 void WarGrey::STEM::game_text_size(TTF_Font* font, int* width, int* height, const char* fmt, ...) {
     VSNPRINT(text, fmt);
+    game_text_size(font, width, height, text);
+}
 
+void WarGrey::STEM::game_text_size(TTF_Font* font, int* width, int* height, const std::string& text) { 
     if (font == NULL) {
         font = GAME_DEFAULT_FONT;
     }
 
     unsafe_utf8_size(font, width, height, text);
 }
+
     
 void WarGrey::STEM::game_draw_solid_text(TTF_Font* font, SDL_Renderer* renderer, uint32_t rgb, int x, int y, const std::string& text, int wrap) {
     SDL_Color text_color;

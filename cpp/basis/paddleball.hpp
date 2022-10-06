@@ -16,7 +16,7 @@ namespace WarGrey::STEM {
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
 
         protected: // 覆盖输入事件处理方法
-            bool on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed);  // 处理键盘事件
+            void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed);  // 处理键盘事件
 
         private:
             int ball_x;

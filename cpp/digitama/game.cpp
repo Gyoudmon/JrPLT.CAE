@@ -132,7 +132,7 @@ static unsigned int trigger_timer_event(unsigned int interval, void* datum) {
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::game_initialize(uint32_t flags, int fontsize) {
+static void game_initialize(uint32_t flags, int fontsize = 16) {
     if (GAME_DEFAULT_FONT == NULL) {
         Call_With_Safe_Exit(SDL_Init(flags), "SDL 初始化失败: ", SDL_Quit, SDL_GetError);
         Call_With_Safe_Exit(TTF_Init(), "TTF 初始化失败: ", TTF_Quit, TTF_GetError);
@@ -160,7 +160,19 @@ void WarGrey::STEM::game_initialize(uint32_t flags, int fontsize) {
     }
 }
 
-SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window** window, SDL_Renderer** renderer) {
+static SDL_Texture* game_create_texture(SDL_Window* window, SDL_Renderer* renderer) {
+    SDL_Texture* texture;
+    int width, height;
+
+    SDL_GetWindowSize(window, &width, &height);
+    Call_For_Variable(texture,
+        SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height),
+        NULL, "纹理创建失败: ", SDL_GetError);
+
+    return texture;
+}
+
+static SDL_Texture* game_create_world(int width, int height, SDL_Window** window, SDL_Renderer** renderer) {
     uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 
     if ((width <= 0) || (height <= 0)) {
@@ -177,19 +189,7 @@ SDL_Texture* WarGrey::STEM::game_create_world(int width, int height, SDL_Window*
     return game_create_texture((*window), (*renderer));
 }
 
-SDL_Texture* WarGrey::STEM::game_create_texture(SDL_Window* window, SDL_Renderer* renderer) {
-    SDL_Texture* texture;
-    int width, height;
-
-    SDL_GetWindowSize(window, &width, &height);
-    Call_For_Variable(texture,
-        SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height),
-        NULL, "纹理创建失败: ", SDL_GetError);
-
-    return texture;
-}
-
-void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, uint32_t fgc, uint32_t bgc) {
+static inline void game_world_reset(SDL_Renderer* renderer, uint32_t fgc, uint32_t bgc) {
     unsigned char r, g, b;
 
     RGB_FromHexadecimal(bgc, &r, &g, &b);
@@ -200,82 +200,16 @@ void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, uint32_t fgc, uint3
     SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
 }
 
-void WarGrey::STEM::game_world_reset(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t fgc, uint32_t bgc) {
+static inline void game_world_reset(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t fgc, uint32_t bgc) {
     SDL_SetRenderTarget(renderer, texture);
     game_world_reset(renderer, fgc, bgc);
 }
 
-void WarGrey::STEM::game_world_refresh(SDL_Renderer* renderer, SDL_Texture* texture) {
+static inline void game_world_refresh(SDL_Renderer* renderer, SDL_Texture* texture) {
     SDL_SetRenderTarget(renderer, NULL);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
     SDL_SetRenderTarget(renderer, texture);
-}
-
-/*************************************************************************************************/
-void WarGrey::STEM::game_draw_frame(SDL_Renderer* renderer, int x, int y, int width, int height) {
-    SDL_Rect box;
-
-    box.x = x - 1;
-    box.y = y - 1;
-    box.w = width + 3;
-    box.h = height + 3;
-
-    SDL_RenderDrawRect(renderer, &box);
-}
-
-void WarGrey::STEM::game_draw_grid(SDL_Renderer* renderer, int nx, int ny, int grid_size, int xoff, int yoff) {
-    int xend = xoff + nx * grid_size;
-    int yend = yoff + ny * grid_size;
-
-    for (int i = 0; i <= nx; i++) {
-        int x = xoff + i * grid_size;
-
-        for (int j = 0; j <= ny; j++) {
-            int y = yoff + j * grid_size;
-
-            SDL_RenderDrawLine(renderer, xoff, y, xend, y);
-        }
-
-        SDL_RenderDrawLine(renderer, x, yoff, x, yend);
-    }
-}
-
-void WarGrey::STEM::game_fill_grid(SDL_Renderer* renderer, int* grids[], int nx, int ny, int grid_size, int xoff, int yoff) {
-    SDL_Rect grid_self;
-
-    grid_self.w = grid_size;
-    grid_self.h = grid_size;
-
-    for (int i = 0; i < nx; i++) {
-        for (int j = 0; j < ny; j++) {
-            if (grids[i][j] > 0) {
-                grid_self.x = xoff + i * grid_self.w;
-                grid_self.y = yoff + j * grid_self.h;
-                SDL_RenderFillRect(renderer, &grid_self);
-            }
-        }
-    }
-}
-
-void WarGrey::STEM::game_render_surface(SDL_Renderer* target, SDL_Surface* surface, int x, int y) {
-    SDL_Rect box;
-
-    box.x = x;
-    box.y = y;
-    box.w = surface->w;
-    box.h = surface->h;
-
-    game_render_surface(target, surface, &box);
-}
-
-void WarGrey::STEM::game_render_surface(SDL_Renderer* target, SDL_Surface* surface, SDL_Rect* region) {
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(target, surface);
-
-    if (texture != NULL) {
-        SDL_RenderCopy(target, texture, NULL, region);
-        SDL_DestroyTexture(texture);
-    }
 }
 
 /*************************************************************************************************/
@@ -311,7 +245,7 @@ const std::string* WarGrey::STEM::game_font_list(int* n, int fontsize) {
             if (f != NULL) {
                 font_list[i ++] = k_v.first;
                 
-                // Not enough resource to open all fonts
+                // insufficient resources to open all fonts
                 TTF_CloseFont(f);
             }
         }
@@ -328,7 +262,8 @@ const std::string* WarGrey::STEM::game_font_list(int* n, int fontsize) {
 WarGrey::STEM::Universe::Universe() : Universe("Big Bang!") {}
 
 WarGrey::STEM::Universe::Universe(const char *title, int fps, uint32_t fgc, uint32_t bgc)
-    : _fps(fps), _fgc(fgc), _bgc(bgc), in_editing(false), current_usrin(NULL), echo_font(NULL) {
+    : _fps(fps), _fgc(fgc), _bgc(bgc), in_editing(false), current_usrin(NULL), echo_font(NULL)
+      ,update_sequence_depth(0) ,update_is_needed(false) {
     
     // 初始化游戏系统
     game_initialize(SDL_INIT_VIDEO | SDL_INIT_TIMER);
@@ -358,9 +293,7 @@ WarGrey::STEM::Universe::~Universe() {
 void WarGrey::STEM::Universe::big_bang() {
     uint32_t quit_time = 0UL;           // 游戏退出时的在线时间
     SDL_Event e;                        // SDL 事件
-    int width, height;
     timer_parcel_t parcel;
-    bool handled = false;
     
     if (this->_fps > 0) {
         parcel.universe = this;
@@ -373,56 +306,36 @@ void WarGrey::STEM::Universe::big_bang() {
                 0, "定时器创建失败: ", SDL_GetError);
     }
 
-    this->fill_window_size(&width, &height);
+    this->fill_window_size(&this->window_width, &this->window_height);
     SDL_SetRenderTarget(this->renderer, this->texture);
-    this->reflow(width, height);
-    this->do_redraw(this->renderer, 0, 0, width, height);
-    game_world_refresh(this->renderer, this->texture);
+    this->begin_update_sequence();
+    this->reflow(this->window_width, this->window_height);
+    this->end_update_sequence();
 
     /* 游戏主循环 */
     while ((quit_time == 0UL) && !this->can_exit()) {
         if (SDL_WaitEvent(&e)) {        // 处理用户交互事件, SDL_PollEvent 多占用 4-7% CPU
+            this->begin_update_sequence();
+
             switch (e.type) {
             case SDL_USEREVENT: {       // 定时器到期通知，更新游戏
                 auto parcel = reinterpret_cast<timer_parcel_t*>(e.user.data1);
 
                 if (parcel->universe == this) {
                     this->on_elapse(parcel->interval, parcel->count, parcel->uptime);
-                    handled = true;
                 }
             }; break;
-            case SDL_MOUSEMOTION: {     // 鼠标移动事件
-                handled = this->on_mouse_event(e.motion);
-            }; break;
-            case SDL_MOUSEWHEEL: {      // 鼠标滚轮事件
-                handled = this->on_mouse_event(e.wheel);
-            }; break;
-            case SDL_MOUSEBUTTONUP: {   // 鼠标松开事件
-                handled = this->on_mouse_event(e.button, false);
-            }; break;
-            case SDL_MOUSEBUTTONDOWN: { // 鼠标按下事件
-                handled = this->on_mouse_event(e.button, true);
-            }; break;
-            case SDL_KEYUP: {           // 按键松开时间
-                handled = this->on_keyboard_event(e.key, false);
-            }; break;
-            case SDL_KEYDOWN: {         // 按键按下事件
-                handled = this->on_keyboard_event(e.key, true);
-            }; break;
-            case SDL_TEXTINPUT: {       // 用户输入文本
-                handled = this->on_user_input(e.text.text);
-            }; break;
-            case SDL_TEXTEDITING: {       // 用户输入文本
-                handled = this->on_editing(e.edit.text, e.edit.start, e.edit.length);
-            }; break;
+            case SDL_MOUSEMOTION: this->on_mouse_event(e.motion); break;
+            case SDL_MOUSEWHEEL: this->on_mouse_event(e.wheel); break;
+            case SDL_MOUSEBUTTONUP: this->on_mouse_event(e.button, false); break;
+            case SDL_MOUSEBUTTONDOWN: this->on_mouse_event(e.button, true);  break;
+            case SDL_KEYUP: this->on_keyboard_event(e.key, false); break;
+            case SDL_KEYDOWN: this->on_keyboard_event(e.key, true); break;
+            case SDL_TEXTINPUT: this->on_user_input(e.text.text); break;
+            case SDL_TEXTEDITING: this->on_editing(e.edit.text, e.edit.start, e.edit.length); break;
             case SDL_WINDOWEVENT: {
                 switch (e.window.event) {
-                    case SDL_WINDOWEVENT_RESIZED: {
-                        width = e.window.data1;
-                        height = e.window.data2;
-
-                        handled = this->on_resize(width, height);
-                    }; break;
+                    case SDL_WINDOWEVENT_RESIZED: this->on_resize(e.window.data1, e.window.data2); break;
                 }
             }; break;
             case SDL_QUIT: {
@@ -433,53 +346,39 @@ void WarGrey::STEM::Universe::big_bang() {
 
                 quit_time = e.quit.timestamp;
             }; break;
-            default: {
-                // std::cout << "Ignored unhandled event(type = " << e.type << ")" << std::endl;
+            default: /* std::cout << "Ignored unhandled event(type = " << e.type << ")" << std::endl; */ break;
             }
-            }
-
-            if (handled) {
-                this->do_redraw(this->renderer, 0, 0, width, height);
-                game_world_refresh(this->renderer, this->texture);
-                handled = false;
-            }
+   
+            this->end_update_sequence();
         }
     }
-}
-
-void WarGrey::STEM::Universe::on_frame(uint32_t interval, uint32_t count, uint32_t uptime) {
-    game_world_reset(this->renderer, this->_fgc, this->_bgc);
 }
 
 void WarGrey::STEM::Universe::on_elapse(uint32_t interval, uint32_t count, uint32_t uptime) {
     this->update(interval, count, uptime);
-    this->on_frame(interval, count, uptime);
+    this->notify_updated();
 }
 
-bool WarGrey::STEM::Universe::on_mouse_event(SDL_MouseButtonEvent &mouse, bool pressed) {
-    bool handled = false;
-
+void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseButtonEvent &mouse, bool pressed) {
     if (!pressed) {
         if (mouse.clicks == 1) {
             switch (mouse.button) {
-                case SDL_BUTTON_LEFT: handled = this->on_click(mouse.x, mouse.y); break;
-                case SDL_BUTTON_RIGHT: handled = this->on_right_click(mouse.x, mouse.y); break;
+                case SDL_BUTTON_LEFT: this->on_click(mouse.x, mouse.y); break;
+                case SDL_BUTTON_RIGHT: this->on_right_click(mouse.x, mouse.y); break;
             }
         } else {
             switch (mouse.button) {
-                case SDL_BUTTON_LEFT: handled = this->on_double_click(mouse.x, mouse.y); break;
+                case SDL_BUTTON_LEFT: this->on_double_click(mouse.x, mouse.y); break;
             }
         }
     }
-
-    return handled;
 }
 
-bool WarGrey::STEM::Universe::on_mouse_event(SDL_MouseMotionEvent &mouse) {
-    return this->on_mouse_move(mouse.state, mouse.x, mouse.y, mouse.xrel, mouse.yrel);
+void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseMotionEvent &mouse) {
+    this->on_mouse_move(mouse.state, mouse.x, mouse.y, mouse.xrel, mouse.yrel);
 }
 
-bool WarGrey::STEM::Universe::on_mouse_event(SDL_MouseWheelEvent &mouse) {
+void WarGrey::STEM::Universe::on_mouse_event(SDL_MouseWheelEvent &mouse) {
     int horizon = mouse.x;
     int vertical = mouse.y;
     float hprecise = float(horizon);  // mouse.preciseX;
@@ -492,67 +391,106 @@ bool WarGrey::STEM::Universe::on_mouse_event(SDL_MouseWheelEvent &mouse) {
         vprecise *= -1.0F;
     }
 
-    return this->on_scroll(horizon, vertical, hprecise, vprecise);
+    this->on_scroll(horizon, vertical, hprecise, vprecise);
 }
 
-bool WarGrey::STEM::Universe::on_keyboard_event(SDL_KeyboardEvent &keyboard, bool pressed) {
+void WarGrey::STEM::Universe::on_keyboard_event(SDL_KeyboardEvent &keyboard, bool pressed) {
     SDL_Keysym key = keyboard.keysym;
-    bool handled = false;
 
     if (this->in_editing) {
         if (!pressed) {
             switch (key.sym) {
-                case SDLK_RETURN: handled = this->enter_input_text(); break;
-                case SDLK_BACKSPACE: handled = this->popback_input_text(); break;
+                case SDLK_RETURN: this->enter_input_text(); break;
+                case SDLK_BACKSPACE: this->popback_input_text(); break;
             }
         }
     } else {
-        handled = this->on_char(key.sym, key.mod, keyboard.repeat, pressed);
-    }
+        if (!pressed) {
+            int ctrl_mod = KMOD_LCTRL | KMOD_RCTRL;
 
-    return handled;
+#if defined(__macosx__)
+            ctrl_mod = ctrl_mod | KMOD_LGUI | KMOD_RGUI;
+#endif
+
+            if (key.mod & ctrl_mod) {
+                this->send_message("released CTRL key!");
+                
+                switch (key.sym) {
+                    case SDLK_s: this->save(); break;
+                    case SDLK_p: this->save(); break;
+                    default: this->on_char(key.sym, key.mod, keyboard.repeat, pressed);
+                }
+            } else {
+                this->on_char(key.sym, key.mod, keyboard.repeat, pressed);
+            }
+        } else {
+            this->on_char(key.sym, key.mod, keyboard.repeat, pressed);
+        }
+    }
 }
 
-bool WarGrey::STEM::Universe::on_resize(int width, int height) {
+void WarGrey::STEM::Universe::on_resize(int width, int height) {
+    this->window_width = width;
+    this->window_height = height;
+
     SDL_DestroyTexture(this->texture);
     this->texture = game_create_texture(this->window, this->renderer);
     
-    this->reflow(width, height);
+    this->begin_update_sequence();
     game_world_reset(this->renderer, this->texture, this->_fgc, this->_bgc);
-    this->do_redraw(this->renderer, 0, 0, width, height);
-    game_world_refresh(this->renderer, this->texture);
-    
-    return false;
+    this->reflow(width, height);
+    this->end_update_sequence();
 }
 
-bool WarGrey::STEM::Universe::on_user_input(const char* text) {
-    bool handled = false;
-
+void WarGrey::STEM::Universe::on_user_input(const char* text) {
     if (this->in_editing) {
         this->usrin.append(text);
         this->current_usrin = NULL;
-        handled = this->display_usr_input_and_caret(this->renderer, true);
+        
+        if (this->display_usr_input_and_caret(this->renderer, true)) {
+            this->notify_updated();
+        }
     }
 
-    return handled | this->on_text(text, false);
+    this->on_text(text, false);
 }
 
-bool WarGrey::STEM::Universe::on_editing(const char* text, int pos, int span) {
+void WarGrey::STEM::Universe::on_editing(const char* text, int pos, int span) {
     this->current_usrin = text;
-
-    return this->on_text(text, pos, span);
+    this->on_text(text, pos, span);
 }
 
 void WarGrey::STEM::Universe::do_redraw(SDL_Renderer* renderer, int x, int y, int width, int height) {
+    game_world_reset(this->renderer, this->_fgc, this->_bgc);
+    
     if (this->in_editing) {
         this->display_usr_input_and_caret(renderer, true);
+    } else {
+        this->display_usr_message();
     }
 
     this->draw(renderer, x, y, width, height);
 }
 
+bool WarGrey::STEM::Universe::display_usr_message() {
+    bool updated = false;
+
+    if ((this->echo.w > 0) && (this->echo.h > 0)) {
+        game_fill_rect(this->renderer, &this->echo, this->_ibgc, 0xFF);
+
+        if (!this->message.empty()) {
+            game_draw_blended_text(this->echo_font, renderer, this->_mfgc,
+                    this->echo.x, this->echo.y, this->message, this->echo.w);
+        }
+
+        updated = true;
+    }
+
+    return updated;
+}
+
 bool WarGrey::STEM::Universe::display_usr_input_and_caret(SDL_Renderer* renderer, bool yes) {
-    bool okay = false;
+    bool updated = false;
 
     if ((this->echo.w > 0) && (this->echo.h > 0)) {
         game_fill_rect(this->renderer, &this->echo, this->_ibgc, 0xFF);
@@ -567,10 +505,10 @@ bool WarGrey::STEM::Universe::display_usr_input_and_caret(SDL_Renderer* renderer
             }
         }
 
-        okay = true;
+        updated = true;
     }
 
-    return okay;
+    return updated;
 }
 
 /*************************************************************************************************/
@@ -609,6 +547,11 @@ void WarGrey::STEM::Universe::set_window_fullscreen(bool yes) {
     }
 }
 
+void WarGrey::STEM::Universe::refresh() {
+    this->do_redraw(this->renderer, 0, 0, this->window_width, this->window_height);
+    game_world_refresh(this->renderer, this->texture);
+}
+
 /*************************************************************************************************/
 void WarGrey::STEM::Universe::set_input_echo_area(int x, int y, int width, int height, int fgc, int bgc, TTF_Font* font) {
     this->echo.x = x;
@@ -623,51 +566,67 @@ void WarGrey::STEM::Universe::set_input_echo_area(int x, int y, int width, int h
     SDL_SetTextInputRect(&this->echo);
 }
 
-bool WarGrey::STEM::Universe::start_input_text(const char* fmt, ...) {
-    VSNPRINT(p, fmt);
-
-    return this->start_input_text(p);
+void WarGrey::STEM::Universe::send_message(const char* fmt, ...) {
+    VSNPRINT(text, fmt);
+    this->send_message(this->_fgc, text);
 }
 
-bool WarGrey::STEM::Universe::start_input_text(const std::string& p) {
+void WarGrey::STEM::Universe::send_message(uint32_t fgc, const char* fmt, ...) {
+    VSNPRINT(text, fmt);
+    this->send_message(fgc, text);
+}
+
+void WarGrey::STEM::Universe::send_message(uint32_t fgc, const std::string& msg) {
+    this->message = msg;
+    this->_mfgc = fgc;
+
+    if (this->display_usr_message()){
+        this->notify_updated();
+    }
+}
+
+void WarGrey::STEM::Universe::start_input_text(const char* fmt, ...) {
+    VSNPRINT(p, fmt);
+    this->start_input_text(p);
+}
+
+void WarGrey::STEM::Universe::start_input_text(const std::string& p) {
     if (p.size() > 0) {
         this->prompt = p;
     }
 
     SDL_StartTextInput();
     this->in_editing = true;
-    this->display_usr_input_and_caret(this->renderer, true);
-
-    return true;
+    this->message.erase();
+    
+    if (this->display_usr_input_and_caret(this->renderer, true)) {
+        this->notify_updated();
+    }
 }
 
-bool WarGrey::STEM::Universe::stop_input_text() {
+void WarGrey::STEM::Universe::stop_input_text() {
     this->in_editing = false;
     SDL_StopTextInput();
     this->on_text(this->usrin.c_str(), true);
     this->usrin.erase();
     this->prompt.erase();
-    this->display_usr_input_and_caret(this->renderer, false);
 
-    return true;
+    if (this->display_usr_input_and_caret(this->renderer, false)) {
+        this->notify_updated();
+    }
 }
 
-bool WarGrey::STEM::Universe::enter_input_text() {
-    bool handled = false;
-
+void WarGrey::STEM::Universe::enter_input_text() {
     if (this->current_usrin != NULL) {
-        handled = this->on_user_input(this->current_usrin);
+        this->on_user_input(this->current_usrin);
         this->current_usrin = NULL;
     } else {
-        handled = this->stop_input_text();
+        this->stop_input_text();
     }
-
-    return handled;
 }
 
-bool WarGrey::STEM::Universe::popback_input_text() {
+void WarGrey::STEM::Universe::popback_input_text() {
     size_t size = this->usrin.size();
-    bool handled = false;
 
     if (size > 0) {
         const unsigned char* text = reinterpret_cast<const unsigned char*>(this->usrin.c_str());
@@ -688,11 +647,10 @@ bool WarGrey::STEM::Universe::popback_input_text() {
             this->usrin.erase(size);
         }
 
-        this->display_usr_input_and_caret(this->renderer, true);
-        handled = true;
+        if (this->display_usr_input_and_caret(this->renderer, true)) {
+            this->notify_updated();
+        }
     }
-
-    return handled;
 }
 
 /*************************************************************************************************/
@@ -701,23 +659,26 @@ void WarGrey::STEM::Universe::snapshot(std::string& path) {
 }
 
 void WarGrey::STEM::Universe::snapshot(const char* pname) {
-    SDL_Surface* snapshot = NULL;
     SDL_Renderer* renderer = NULL;
-    int width, height;
+    SDL_Surface* snapshot = NULL;
 
-    this->fill_window_size(&width, &height);
-    snapshot = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
-    renderer = SDL_CreateSoftwareRenderer(snapshot);
+    snapshot = SDL_CreateRGBSurface(0, this->window_width, this->window_height, 32, 0, 0, 0, 0);
 
-    if ((snapshot != NULL) && (renderer != NULL)) {
-        this->do_redraw(renderer, 0, 0, width, height);
+    if (snapshot != NULL) {
+        renderer = SDL_CreateSoftwareRenderer(snapshot);
+        
+        if (renderer != NULL) {
+            this->do_redraw(renderer, 0, 0, this->window_width, this->window_height);
 
-        create_directories(path(pname).parent_path());
-        if (IMG_SavePNG(snapshot, pname) != 0) {
-            printf("fail to save snapshot: %s\n", SDL_GetError());
+            create_directories(path(pname).parent_path());
+            if (IMG_SavePNG(snapshot, pname) != 0) {
+                printf("fail to save snapshot: %s\n", SDL_GetError());
+            }
+        } else {
+            printf("fail to take snapshot: %s\n", SDL_GetError());
         }
     } else {
-        printf("fail to take snapshot: %s\n", SDL_GetError());
+         printf("fail to take snapshot: %s\n", SDL_GetError());
     }
 
     if (snapshot != NULL) {
@@ -727,5 +688,30 @@ void WarGrey::STEM::Universe::snapshot(const char* pname) {
     if (renderer != NULL) {
         SDL_DestroyRenderer(renderer);
     }
+}
+
+
+/*************************************************************************************************/
+void WarGrey::STEM::Universe::notify_updated() {
+    if (this->in_update_sequence()) {
+        this->update_is_needed = true;
+    } else {
+        this->refresh();
+        this->update_is_needed = false;
+    }
+}
+
+void WarGrey::STEM::Universe::end_update_sequence() {
+    this->update_sequence_depth -= 1;
+
+    if (this->update_sequence_depth < 1) {
+        this->update_sequence_depth = 0;
+
+        if (this->update_is_needed) {
+            this->refresh();
+            this->update_is_needed = false;
+        }
+    }
+
 }
 
