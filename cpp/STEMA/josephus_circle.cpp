@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 
+/*************************************************************/
 std::vector<int> make_josephus_circle(int n) {
     std::vector<int> ls;
 
@@ -19,6 +20,7 @@ int count_off(std::vector<int>& ls, int idx) {
     return (idx + 3 - 1) % ls.size();
 }
 
+/*************************************************************/
 int main(int argc, char* argv[]) {
     std::vector<int> ls;
     int idx = 0;

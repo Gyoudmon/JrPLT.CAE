@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+###############################################################
 def make_josephus_circle(n):
     ls = []
     for i in range(1, n + 1):
@@ -12,6 +13,7 @@ def can_finish(ls):
 def count_off(ls, idx):
     return (idx + 3 - 1) % len(ls)
 
+###############################################################
 def main():
     n = int(input())
     ls = make_josephus_circle(n)
@@ -26,6 +28,7 @@ def main():
 
 
 
+###############################################################
 if __name__ == "__main__":
     main()
 
