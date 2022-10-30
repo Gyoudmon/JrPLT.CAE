@@ -2,7 +2,7 @@
 
 ###############################################################
 def make_stat_dict():
-    return { '英文字母': 0, '数字': 0, '空格': 0, '其他字符': 0 }
+    return { '英文字母': 0, '空格': 0, '数字': 0, '其他字符': 0 }
 
 def categorize_char(ds, c):
     if c.isalpha():
@@ -15,11 +15,8 @@ def categorize_char(ds, c):
         ds['其他字符'] += 1
 
 def display_stats(ds):
-    print(ds.values())
-    print(ds['英文字母'])
-    print(ds['空格'])
-    print(ds['数字'])
-    print(ds['其他字符'])
+    for key in ['英文字母', '空格', '数字', '其他字符']:
+        print(ds[key])
 
 ###############################################################
 def main():
@@ -29,7 +26,6 @@ def main():
         categorize_char(ds, c)
     display_stats(ds)
     
-
 
 
 ###############################################################
