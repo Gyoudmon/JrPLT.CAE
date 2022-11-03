@@ -1,6 +1,6 @@
 #include "rainbow.hpp"
 
-#include "digitama/flonum.hpp"
+#include "digitama/datum/flonum.hpp"
 #include "digitama/mathematics.hpp"
 #include "digitama/colorspace.hpp"
 
