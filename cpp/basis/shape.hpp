@@ -1,4 +1,4 @@
-#pragma // 确保只被 include 一次
+#pragma once // 确保只被 include 一次
 
 #include "digitama/game.hpp"
 
