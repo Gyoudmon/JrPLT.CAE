@@ -117,6 +117,9 @@ class Universe(object):
     def set_window_title(self, title):
         sdl2.SDL_SetWindowTitle(self.window, title.encode("utf-8"))
 
+    def set_window_size(self, width, height):
+        sdl2.SDL_SetWindowSize(self.window, width, height)
+
     def get_window_size(self):
         w = ctypes.c_int()
         h = ctypes.c_int()
@@ -136,17 +139,9 @@ class Universe(object):
         self._on_frame(interval, count, uptime)
 
 ###############################################################################
-class DrawingBoard(Universe):
+class Pasteboard(Universe):
     def __init__(self, title, width = 1200, height = 800, fgc = 0x000000FF, bgc = 0xFFFFFFFF):
-        super(DrawingBoard, self).__init__(title, width, height, 0, fgc, bgc)
-
-class DrawingPlayer(Universe):
-    def __init__(self, title, width = 1200, height = 800, fps = 24, fgc = 0xFFFFFFFF, bgc = 0x000000FF):
-        super(DrawingPlayer, self).__init__(title, width, height, fps, fgc, bgc)
-
-    def _on_frame():
-        """ 更新游戏时不重置窗体 """
-        pass
+        super(Pasteboard, self).__init__(title, width, height, 0, fgc, bgc)
 
 ###############################################################################
 def _Call_With_Error_Message(init, message, GetError):

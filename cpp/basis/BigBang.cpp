@@ -1,4 +1,4 @@
-#include "paddleball.hpp" /* 当前要启动的游戏头文件 */
+#include "paddleball.hpp" /* 导入当前要启动的游戏头文件 */
 
 using namespace WarGrey::STEM;
 
