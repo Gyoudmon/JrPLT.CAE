@@ -1,5 +1,4 @@
-#ifndef _ANIMATED_DIFFUSION_H // 确保只被 include 一次
-#define _ANIMATED_DIFFUSION_H
+#pragma once // 确保只被 include 一次
 
 #include "digitama/game.hpp"
 
@@ -23,6 +22,4 @@ namespace WarGrey::STEM {
             int ceiling;
     };
 }
-
-#endif
 

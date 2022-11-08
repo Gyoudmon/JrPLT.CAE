@@ -1,5 +1,4 @@
-#ifndef _RGB_BLOCKS_H // 确保只被 include 一次
-#define _RGB_BLOCKS_H
+#pragma once // 确保只被 include 一次
 
 #include "digitama/game.hpp"
 
@@ -24,6 +23,4 @@ namespace WarGrey::STEM {
             float hue0;
     };
 }
-
-#endif
 

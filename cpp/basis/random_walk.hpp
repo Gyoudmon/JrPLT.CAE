@@ -1,5 +1,4 @@
-#ifndef _RANDOM_WALK_H // 确保只被 include 一次
-#define _RANDOM_WALK_H
+#pragma once // 确保只被 include 一次
 
 #include "digitama/game.hpp"
 
@@ -26,6 +25,4 @@ namespace WarGrey::STEM {
             void update(uint32_t interval, uint32_t count, uint32_t uptime);
     };
 }
-
-#endif
 
