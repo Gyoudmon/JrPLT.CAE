@@ -63,6 +63,22 @@ def game_fill_circle(renderer, cx, cy, radius, cs, alpha = 0xFF):
 
     _fill_circle(renderer, cx, cy, radius)
 
+def game_draw_ellipse(renderer, cx, cy, aradius, bradius, cs, alpha = 0xFF):
+    if isinstance(cs, int):
+        RGB_SetRenderDrawColor(renderer, cs, alpha)
+    else:
+        HSV_SetRenderDrawColor(renderer, cs[0], cs[1], cs[2], alpha)
+
+    _draw_ellipse(renderer, cx, cy, aradius, bradius)
+
+def game_fill_ellipse(renderer, cx, cy, aradius, bradius, cs, alpha = 0xFF):
+    if isinstance(cs, int):
+        RGB_SetRenderDrawColor(renderer, cs, alpha)
+    else:
+        HSV_SetRenderDrawColor(renderer, cs[0], cs[1], cs[2], alpha)
+
+    _fill_ellipse(renderer, cx, cy, aradius, bradius)
+
 ###############################################################################
 def _draw_circle(renderer, cx, cy, radius):
     err = 2 - 2 * radius
@@ -106,6 +122,76 @@ def _fill_circle(renderer, cx, cy, radius):
             err += x * 2 + 1
     
         if x >= 0: break
+
+def _draw_ellipse(renderer, cx, cy, ar, br):
+    # II. quadrant from bottom left to top right */
+    x = -ar
+    y = 0
+    a2 = ar * ar
+    b2 = br * br
+    e2 = br
+    dx = (1 + 2 * x) * e2 * e2
+    dy = x * x
+    err = dx + dy
+
+    while True:
+        sdl2.SDL_RenderDrawPoint(renderer, cx - x, cy + y)
+        sdl2.SDL_RenderDrawPoint(renderer, cx + x, cy + y)
+        sdl2.SDL_RenderDrawPoint(renderer, cx + x, cy - y)
+        sdl2.SDL_RenderDrawPoint(renderer, cx - x, cy - y)
+
+        e2 = 2 * err
+        if e2 >= dx: # x step
+            x += 1
+            dx += 2 * b2
+            err += dx
+        if e2 <= dy: # y step
+            y += 1
+            dy += 2 * a2
+            err += dy
+    
+        if x > 0: break
+
+    # to early stop for flat ellipses with a = 1, finish tip of ellipse
+    y += 1
+    while y < br:
+        sdl2.SDL_RenderDrawPoint(renderer, cx, cy + y)
+        sdl2.SDL_RenderDrawPoint(renderer, cx, cy - y)
+        y += 1
+
+def _fill_ellipse(renderer, cx, cy, ar, br):
+    # II. quadrant from bottom left to top right */
+    x = -ar
+    y = 0
+    a2 = ar * ar
+    b2 = br * br
+    e2 = br
+    dx = (1 + 2 * x) * e2 * e2
+    dy = x * x
+    err = dx + dy
+
+    while True:
+        sdl2.SDL_RenderDrawLine(renderer, cx + x, cy + y, cx - x, cy + y) # Q I, Q II
+        sdl2.SDL_RenderDrawLine(renderer, cx + x, cy,     cx + x, cy - y) # Q III
+        sdl2.SDL_RenderDrawLine(renderer, cx - x, cy - y, cx,     cy - y) # Q I
+
+        e2 = 2 * err
+        if e2 >= dx: # x step
+            x += 1
+            dx += 2 * b2
+            err += dx
+        if e2 <= dy: # y step
+            y += 1
+            dy += 2 * a2
+            err += dy
+    
+        if x > 0: break
+
+    # to early stop for flat ellipses with a = 1, finish tip of ellipse
+    y += 1
+    while y < br:
+        sdl2.SDL_RenderDrawPoint(renderer, cx, cy + y, cx, cy - y)
+        y += 1
 
 ###############################################################################
 BISQUE = 0xffe4c4
