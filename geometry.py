@@ -2,7 +2,7 @@ import sdl2                 # 原始 SDL2 函数
 import sdl2.rect as sdlr    # 原始 SDL2 矩形结构体
 import ctypes as ffi        # 外语接口函数
 
-from colorspace import *    # 色彩空间相关函数
+from .colorspace import *   # 色彩空间相关函数, 前面那个点指代相对本文件的路径
 
 ###############################################################################
 def game_draw_point(renderer, x, y, cs, alpha = 0xFF):
