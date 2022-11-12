@@ -9,18 +9,28 @@ import sdl2.sdlimage    # 原始 (C 风格) SDL2_Image 函数
 
 import sdl2.ext         # Python 风格的 SDL2 函数
 
+from .font import *
+
 ###############################################################################
 def game_initialize(flags, fontsize = 16):
-    _Call_With_Safe_Exit(sdl2.SDL_Init(flags), "SDL 初始化失败：", sdl2.SDL_Quit)
-    _Call_With_Safe_Exit(sdl2.sdlttf.TTF_Init(), "TTF 初始化失败：", sdl2.sdlttf.TTF_Quit, sdl2.sdlttf.TTF_GetError)
-    sdl2.sdlimage.IMG_Init(sdl2.sdlimage.IMG_INIT_JPG | sdl2.sdlimage.IMG_INIT_PNG)
-    
-    maybe_err = sdl2.sdlimage.IMG_GetError()
-    if len(maybe_err):
-        print("IMG 初始化失败：" + maybe_err)
-        os._exit(1)
+    if game_font.DEFAULT == None:
+        _Call_With_Safe_Exit(sdl2.SDL_Init(flags), "SDL 初始化失败：", sdl2.SDL_Quit)
+        _Call_With_Safe_Exit(sdl2.sdlttf.TTF_Init(), "TTF 初始化失败：", sdl2.sdlttf.TTF_Quit, sdl2.sdlttf.TTF_GetError)
 
-    atexit.register(sdl2.sdlimage.IMG_Quit)
+        if sys.platform == "darwin":
+            sdl2.sdlimage.IMG_Init(sdl2.sdlimage.IMG_INIT_JPG | sdl2.sdlimage.IMG_INIT_PNG)
+        else:
+            sdl2.sdlimage.IMG_Init(sdl2.sdlimage.IMG_INIT_PNG)
+    
+        maybe_err = sdl2.sdlimage.IMG_GetError()
+        if len(maybe_err):
+            print("IMG 初始化失败：" + maybe_err)
+            os._exit(1)
+
+        game_fonts_initialize(fontsize)
+
+        atexit.register(sdl2.sdlimage.IMG_Quit)
+        atexit.register(game_fonts_destroy)
 
 def game_world_create(title, width, height):
     cpos = sdl2.SDL_WINDOWPOS_CENTERED

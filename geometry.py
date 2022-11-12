@@ -79,6 +79,17 @@ def game_fill_ellipse(renderer, cx, cy, aradius, bradius, cs, alpha = 0xFF):
 
     _fill_ellipse(renderer, cx, cy, aradius, bradius)
 
+def game_render_surface_at(target, surface, x, y):
+    region = sdlr.SDL_Rect(x, y, surface.w, surface.h)
+    game_render_surface(target, surface, region)
+
+def game_render_surface(target, surface, region):
+    texture = sdl2.SDL_CreateTextureFromSurface(target, surface)
+
+    if not texture:
+        sdl2.SDL_RenderCopy(target, texture, None, region)
+        sdl2.SDL_DestroyTexture(texture)
+
 ###############################################################################
 def _draw_circle(renderer, cx, cy, radius):
     err = 2 - 2 * radius
