@@ -1,4 +1,5 @@
 import sys              # 系统相关参数和函数
+import os               # 操作系统相关函数
 import ctypes           # 外语接口
 import atexit           # 用于管理程序退出时执行的函数
 
