@@ -1,3 +1,6 @@
 [submodule "cpp/basis/digitama"]
 	path = cpp/basis/digitama
 	url = https://github.com/Gyoudmon/digitama.cpp.git
+[submodule "python/basis/digitama.py"]
+	path = python/basis/digitama.py
+	url = https://github.com/Gyoudmon/digitama.py.git
