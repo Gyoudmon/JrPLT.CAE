@@ -29,7 +29,7 @@ static inline bool is_inside_world(int x, int y) {
 
 /*************************************************************************************************/
 WarGrey::STEM::SelfAvoidWalk::SelfAvoidWalk() : Universe("Self Avoid Walk", 24, 0x000000U, 0xFFFFFFU) {
-    game_text_size(game_monospace_font, NULL, &this->lineheight, "em");
+    game_text_size(game_font::monospace, NULL, &this->lineheight, "em");
 }
 
 void WarGrey::STEM::SelfAvoidWalk::construct(int argc, char* args[]) {
@@ -108,20 +108,20 @@ void WarGrey::STEM::SelfAvoidWalk::draw(SDL_Renderer* renderer, int x, int y, in
 
     switch (this->state) {
         case WalkState::Run: {
-            game_draw_lcd_text(game_monospace_font, renderer, 0xFFA500FF, 0xFF,
+            game_draw_lcd_text(game_font::monospace, renderer, 0xFFA500FF, 0xFF,
                     this->lineheight / 2, this->lineheight / 2,
                     "Move to (%d, %d)  ", this->x, this->y);
         }; break;
         case WalkState::Succeed: {
             SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-            game_draw_blended_text(game_sans_serif_font, renderer, 0x00FF00FF,
+            game_draw_blended_text(game_font::sans_serif, renderer, 0x00FF00FF,
                     this->lineheight / 2, this->lineheight * 3 / 2,
                     "Succeed!");
 
         }; break;
         case WalkState::Failed: {
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-            game_draw_blended_text(game_sans_serif_font, renderer, 0xFF0000FF,
+            game_draw_blended_text(game_font::sans_serif, renderer, 0xFF0000FF,
                     this->lineheight / 2, this->lineheight * 3 / 2,
                     "Failed!");
         }; break;

@@ -16,7 +16,7 @@ void WarGrey::STEM::PrimitiveShape::construct(int argc, char* argv[]) {
 
 // 实现 PrimitiveShape::draw 函数，本例中绘制一系列几何图形
 void WarGrey::STEM::PrimitiveShape::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
-    game_draw_blended_text(game_unicode_font, renderer,
+    game_draw_blended_text(game_font::unicode, renderer,
             this->get_foreground_color(), 10, 10, "基本图形陈列馆");
 
     game_draw_point(renderer, 600, 300, ROYALBLUE);             // 画皇家蓝点
