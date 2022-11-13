@@ -80,7 +80,7 @@ def game_fill_ellipse(renderer, cx, cy, aradius, bradius, cs, alpha = 0xFF):
     _fill_ellipse(renderer, cx, cy, aradius, bradius)
 
 def game_render_surface_at(target, surface, x, y):
-    region = sdlr.SDL_Rect(x, y, surface.w, surface.h)
+    region = sdlr.SDL_Rect(int(x), int(y), surface.w, surface.h)
     game_render_surface(target, surface, region)
 
 def game_render_surface(target, surface, region):

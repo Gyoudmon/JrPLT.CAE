@@ -13,7 +13,7 @@ from .font import *
 
 ###############################################################################
 def game_initialize(flags, fontsize = 16):
-    if game_font.DEFAULT == None:
+    if game_font.DEFAULT is None:
         _Call_With_Safe_Exit(sdl2.SDL_Init(flags), "SDL 初始化失败：", sdl2.SDL_Quit)
         _Call_With_Safe_Exit(sdl2.sdlttf.TTF_Init(), "TTF 初始化失败：", sdl2.sdlttf.TTF_Quit, sdl2.sdlttf.TTF_GetError)
 
@@ -30,7 +30,7 @@ def game_initialize(flags, fontsize = 16):
         game_fonts_initialize(fontsize)
 
         atexit.register(sdl2.sdlimage.IMG_Quit)
-        atexit.register(game_fonts_destroy)
+        # atexit.register(game_fonts_destroy) # leave it to TTF_Quit
 
 def game_world_create(title, width, height):
     cpos = sdl2.SDL_WINDOWPOS_CENTERED
@@ -138,6 +138,12 @@ class Universe(object):
         sdl2.SDL_GetWindowSize(self.window, ctypes.byref(w), ctypes.byref(h))
 
         return w, h
+
+    def get_foreground_color(self):
+        return self.fgc
+
+    def get_background_color(self):
+        return self.bgc
 
 # protected
     def _on_frame(self, interval, count, uptime):

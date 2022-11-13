@@ -29,7 +29,7 @@ def game_fonts_initialize(fontsize = _default_fontsize):
         if os.path.isdir(rootdir):
             for parent, _subdirs, fontfiles in os.walk(rootdir):
                 for fontfile in fontfiles:
-                    _system_fonts[fontfile] = (parent + fontfile).encode('utf-8')
+                    _system_fonts[fontfile] = (parent + os.sep + fontfile).encode('utf-8')
 
     if sys.platform == 'darwin':
         game_font.sans_serif = game_create_font("LucidaGrande.ttc", fontsize)
@@ -87,7 +87,7 @@ def game_create_font(face, fontsize = _default_fontsize):
         font = sdl2.sdlttf.TTF_OpenFont(face.encode('utf-8'), fontsize)
 
     if font == None:
-        print("无法加载字体 '%s': %s" % (face, TTF_GetError()))
+        print("无法加载字体 '%s': %s" % (face, sdl2.sdlttf.TTF_GetError().decode('utf-8')))
 
     return font;
 
