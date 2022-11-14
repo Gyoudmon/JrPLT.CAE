@@ -10,6 +10,7 @@ import sdl2.sdlimage    # 原始 (C 风格) SDL2_Image 函数
 import sdl2.ext         # Python 风格的 SDL2 函数
 
 from .font import *
+from .colorspace import *
 
 ###############################################################################
 def game_initialize(flags, fontsize = 16):
@@ -47,15 +48,15 @@ def game_world_create(title, width, height):
     return w, r, t
 
 def game_world_reset(renderer, fgc, bgc, texture = None):
-    fc = sdl2.ext.color.RGBA(fgc)
-    bc = sdl2.ext.color.RGBA(bgc)
+    fcr, fcg, fcb = RGB_FromHexadecimal(fgc)
+    bcr, bcg, bcb = RGB_FromHexadecimal(bgc)
 
     if not (texture is None):
         sdl2.SDL_SetRenderTarget(renderer, texture)
 
-    sdl2.SDL_SetRenderDrawColor(renderer, bc.r, bc.g, bc.b, bc.a)
+    sdl2.SDL_SetRenderDrawColor(renderer, bcr, bcg, bcb, 255)
     sdl2.SDL_RenderClear(renderer)
-    sdl2.SDL_SetRenderDrawColor(renderer, fc.r, fc.g, fc.b, fc.a)
+    sdl2.SDL_SetRenderDrawColor(renderer, fcr, fcg, fcb, 255)
 
 def game_world_refresh(renderer, texture):
     sdl2.SDL_SetRenderTarget(renderer, None)
@@ -65,7 +66,7 @@ def game_world_refresh(renderer, texture):
 
 ###############################################################################
 class Universe(object):
-    def __init__(self, title, width = 1200, height = 800, fps = 60, fgc = 0xFFFFFFFF, bgc = 0x000000FF):
+    def __init__(self, title, width = 1200, height = 800, fps = 60, fgc = 0xFFFFFF, bgc = 0x000000):
         """ 构造函数，在创建游戏世界时自动调用，以设置帧频、窗口标题、前背景色和混色模式 """
         game_initialize(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_TIMER)
         
@@ -157,7 +158,7 @@ class Universe(object):
 
 ###############################################################################
 class Pasteboard(Universe):
-    def __init__(self, title, width = 1200, height = 800, fgc = 0x000000FF, bgc = 0xFFFFFFFF):
+    def __init__(self, title, width = 1200, height = 800, fgc = 0x000000, bgc = 0xFFFFFF):
         super(Pasteboard, self).__init__(title, width, height, 0, fgc, bgc)
 
 ###############################################################################
