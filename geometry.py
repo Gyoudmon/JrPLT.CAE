@@ -80,13 +80,13 @@ def game_fill_ellipse(renderer, cx, cy, aradius, bradius, cs, alpha = 0xFF):
     _fill_ellipse(renderer, cx, cy, aradius, bradius)
 
 def game_render_surface_at(target, surface, x, y):
-    region = sdlr.SDL_Rect(int(x), int(y), surface.w, surface.h)
+    region = sdlr.SDL_Rect(int(x), int(y), surface.contents.w, surface.contents.h)
     game_render_surface(target, surface, region)
 
 def game_render_surface(target, surface, region):
     texture = sdl2.SDL_CreateTextureFromSurface(target, surface)
 
-    if not texture:
+    if texture:
         sdl2.SDL_RenderCopy(target, texture, None, region)
         sdl2.SDL_DestroyTexture(texture)
 

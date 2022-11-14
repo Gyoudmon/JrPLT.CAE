@@ -78,11 +78,10 @@ def game_draw_blended_text(font, renderer, rgb, x, y, text, wrap = 0):
 
 ###################################################################################################
 def _unsafe_utf8_size(font, text):
-    w = c_int(0)
-    h = c_int(0)
+    w = ffi.c_int(0)
+    h = ffi.c_int(0)
 
-
-    if TTF_SizeUTF8(font, text.encode('utf-8'), byref(w), byref(h)) == -1:
+    if sdl2.sdlttf.TTF_SizeUTF8(font, text.encode('utf-8'), ffi.byref(w), ffi.byref(h)) == -1:
         print("无法计算文本尺寸: " + sdl2.sdlttf.TTF_GetError().decode('utf-8'))
 
     return (w.value, h.value)
@@ -93,7 +92,7 @@ def _hex_rgb_to_color(rgb):
     return sdlp.SDL_Color(r, g, b, 255)
 
 def _safe_render_text_surface(target, message, x, y):
-    if not message == None:
+    if message:
         game_render_surface_at(target, message, x, y)
         sdl2.SDL_FreeSurface(message)
 
