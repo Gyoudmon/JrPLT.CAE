@@ -37,6 +37,11 @@ void WarGrey::STEM::PrimitiveShape::draw(SDL_Renderer* renderer, int x, int y, i
     /** 绘制椭圆 **/
     game_fill_ellipse(renderer, 900, 600, 64, 32, KHAKI);       // 画卡其色椭圆
     game_draw_ellipse(renderer, 900, 600, 64, 32, SKYBLUE);     // 画天蓝色轮廓
-}
 
+    /** 绘制正多边形 **/
+    for (int n = 1; n < 11; n++) {
+        game_fill_regular_polygon(renderer, n, 100 * (n - 1), 750, 32, -90.0, ROYALBLUE);
+        game_draw_regular_polygon(renderer, n, 100 * (n - 1), 750, 32, -90.0, FIREBRICK);
+    }
+}
 
