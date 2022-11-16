@@ -93,7 +93,7 @@ def _hex_rgb_to_color(rgb):
 
 def _safe_render_text_surface(target, message, x, y):
     if message:
-        game_render_surface_at(target, message, x, y)
+        game_render_surface(target, message, [x, y])
         sdl2.SDL_FreeSurface(message)
 
 def _solid_text_surface(font, rgb, text, wrap):
