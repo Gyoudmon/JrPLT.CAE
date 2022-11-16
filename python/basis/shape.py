@@ -37,4 +37,7 @@ class PrimitiveShape(Pasteboard):
         game_fill_ellipse(renderer, 900, 600, 64, 32, KHAKI)        # 画卡其色椭圆
         game_draw_ellipse(renderer, 900, 600, 64, 32, SKYBLUE)      # 画天蓝色轮廓
 
+        for n in range(1, 11):
+            game_fill_regular_polygon(renderer, n, 100 * (n - 1), 750, 32, -90.0, ROYALBLUE)
+            game_draw_regular_polygon(renderer, n, 100 * (n - 1), 750, 32, -90.0, FIREBRICK)
 
