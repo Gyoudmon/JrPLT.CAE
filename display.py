@@ -1,6 +1,6 @@
 from abc import *       # abstract base class
 
-from .image import game_save_image
+from .image import *
 
 ###############################################################
 class IDisplay(ABC):
@@ -21,7 +21,12 @@ class IDisplay(ABC):
     def snapshot(self): pass
 
     def save_snapshot(self, pname):
-        game_save_image(self.snapshot(), pname)
+        snapshot_png = self.snapshot()
+        okay = game_save_image(snapshot_png, pname)
+        
+        game_unload_image(snapshot_png)
+
+        return okay
 
     def begin_update_sequence(self):
         self.__update_sequence_depth += 1
@@ -35,7 +40,7 @@ class IDisplay(ABC):
         if self.__update_sequence_depth < 1:
             self.__update_sequence_depth = 0
 
-            if self.update_is_needed:
+            if self.__update_is_needed:
                 self.refresh()
                 self.__update_is_needed = False
 
