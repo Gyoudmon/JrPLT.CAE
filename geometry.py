@@ -98,11 +98,12 @@ def game_fill_regular_polygon(renderer, n, cx, cy, radius, rotation, cs, alpha =
     _fill_regular_polygon(renderer, n, cx, cy, radius, rotation)
 
 ###############################################################################
-def game_render_surface(target, surface, region):
-    texture = sdl2.SDL_CreateTextureFromSurface(target, surface)
+def game_render_surface(target, psurface, region):
+    texture = sdl2.SDL_CreateTextureFromSurface(target, psurface)
 
     if not isinstance(region, sdlr.SDL_Rect):
-        region = sdlr.SDL_Rect(int(region[0]), int(region[1]), surface.contents.w, surface.contents.h)
+        surface = psurface.contents # `contents` creates new instance every time
+        region = sdlr.SDL_Rect(int(region[0]), int(region[1]), surface.w, surface.h)
 
     if texture:
         sdl2.SDL_RenderCopy(target, texture, None, region)

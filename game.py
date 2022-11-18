@@ -151,6 +151,12 @@ class Universe(IDisplay):
         """ 宇宙大爆炸，开启游戏主循环，返回游戏运行时间 """
         quit_time = 0
 
+        if self.__fps > 0:
+            parcel = _TimerParcel(ffi.py_object(self), 1000 // self.__fps, 0, 0)
+            p_parcel = ffi.cast(ffi.pointer(parcel), ffi.c_void_p)
+            self.__timer = sdl2.SDL_AddTimer(parcel.interval, sdl2.SDL_TimerCallback(_trigger_timer_event), p_parcel)
+            _Check_Variable_Validity(self.__timer, 0, "定时器创建失败: ")
+
         self.__window_width, self.__window_height = self.get_window_size()
         self.begin_update_sequence()
         self._on_big_bang(self.__window_width, self.__window_height)
@@ -163,6 +169,10 @@ class Universe(IDisplay):
                 self.begin_update_sequence()
 
                 match e.type:
+                    case sdl2.SDL_USEREVENT:
+                        parcel = ffi.cast(e.user.data1, ffi.POINTER(_TimerParcel)).contents
+                        if parcel.master is self:
+                            self.__on_elapse(parcel.interval, parcel.count, parcel.uptime)
                     case sdl2.SDL_MOUSEMOTION: self._on_mouse_motion_event(e.motion)
                     case sdl2.SDL_MOUSEWHEEL: self._on_mouse_wheel_event(e.wheel)
                     case sdl2.SDL_MOUSEBUTTONUP: self._on_mouse_button_event(e.button, False)
@@ -306,7 +316,7 @@ class Universe(IDisplay):
 
     def _on_char(self, key, modifiers, repeats, pressed): pass              # 处理键盘事件
     def _on_text(self, text, size, entire): pass                            # 处理文本输入事件
-    def _on_edit(self, text, pos, span): pass                               # 处理文本输入事件
+    def _on_editing_text(self, text, pos, span): pass                               # 处理文本输入事件
             
     def _on_save(self): pass                                                # 处理保存事件
 
@@ -317,10 +327,6 @@ class Universe(IDisplay):
 # protected
     # 大爆炸之前最后的初始化宇宙机会，默认什么都不做
     def _on_big_bang(self, width, height): pass
-
-    # 响应定时器事件，刷新游戏世界
-    def _on_frame(self, interval, count, uptime):
-        game_world_reset(self.__renderer, self.__fgc, self.__bgc)
 
     # 响应鼠标事件，并按需触发单击、右击、双击、移动、滚轮事件
     def _on_mouse_button_event(self, mouse, pressed):
@@ -371,9 +377,11 @@ class Universe(IDisplay):
                     match key.sym:
                         case sdl2.SDLK_s: self._on_save()
                         case sdl2.SDLK_p: self._take_snapshot()
-                        case _: self._on_char(key.sym, key.mod, keyboard.repeat, pressed)
+                        case _: self._on_char(chr(key.sym), key.mod, keyboard.repeat, pressed)
                 else:
-                    self._on_char(key.sym, key.mod, keyboard.repeat, pressed)
+                    self._on_char(chr(key.sym), key.mod, keyboard.repeat, pressed)
+            else:
+                self._on_char(chr(key.sym), key.mod, keyboard.repeat, pressed)
 
     # 响应窗体事件，并按需触发尺寸改变事件
     def _on_resize(self, width, height):
@@ -407,7 +415,7 @@ class Universe(IDisplay):
 
     def _on_editing(self, text, pos, span):
         self.__current_usrin = text
-        self._on_edit(text, pos, span)
+        self._on_editing_text(text, pos, span)
 
     # 处理预设事件
     def _take_snapshot(self):
@@ -428,8 +436,8 @@ class Universe(IDisplay):
 # private
     def __on_elapse(self, interval, count, uptime):
         """ 响应定时器事件，刷新游戏世界 """
-        self.uptime(interval, count, uptime)
-        self._on_frame(interval, count, uptime)
+        self.update(interval, count, uptime)
+        self.notify_updated()
             
     def __do_redraw(self, renderer, x, y, width, height):
         game_world_reset(renderer, self.__fgc, self.__bgc)
@@ -451,10 +459,10 @@ class Universe(IDisplay):
 
             if yes:
                 if self.__prompt:
-                    game_draw_blended_text(self.__echo_font, renderer, self.__mfgc,
+                    game_draw_blended_text(self.__echo_font, renderer, self.__ifgc,
                         self.__echo.x, self.__echo.y, self.__prompt + self.__usrin + "_", self.__echo.w)
                 else:
-                    game_draw_blended_text(self.__echo_font, renderer, self.__mfgc,
+                    game_draw_blended_text(self.__echo_font, renderer, self.__ifgc,
                         self.__echo.x, self.__echo.y, self.__usrin + "_", self.__echo.w)
 
         return updated
@@ -506,7 +514,7 @@ def _Call_With_Safe_Exit(init, message, fquit, GetError = sdl2.SDL_GetError):
     atexit.register(fquit)
 
 def _Check_Variable_Validity(init, failure, message, GetError = sdl2.SDL_GetError):
-    if (init == failure):
+    if init == failure:
         print(message + GetError().decode("utf-8"))
         os._exit(1)
 
@@ -517,4 +525,39 @@ def _get_window_size(window):
     sdl2.SDL_GetWindowSize(window, ctypes.byref(w), ctypes.byref(h))
 
     return w.value, h.value
+
+###############################################################################
+class _TimerParcel(ffi.Structure):
+    _fields_ = [("master", ffi.py_object),
+                ("interval", ffi.c_int),
+                ("count", ffi.c_int),
+                ("uptime", ffi.c_int)]
+
+def _trigger_timer_event(interval, datum):
+    """ 本函数在定时器到期时执行, 并将该事件报告给事件系统，以便绘制下一帧动画
+    
+    :param interval: 定时器等待时长，以 ms 为单位
+    :param datum:    用户数据，传递给 SDL_AddTimer 的第三个参数会出现在这
+    
+    :returns: 返回定时器下次等待时间。注意定时器的实际等待时间是该返回值减去执行该函数所花时间
+    """
+
+    parcel = ffi.cast(datum, ffi.POINTER(_TimerParcel)).contents
+    parcel.count += 1
+    parcel.interval = interval
+    parcel.uptime = sdl2.SDL_GetTicks()    
+
+    user_event = sdl2.SDL_UserEvent()
+    timer_event = sdl2.SDL_Event()
+
+    user_event.type = sdl2.SDL_USEREVENT
+    user_event.code = 0
+    user_event.data1 = ffi.cast(ffi.pointer(parcel), ffi.c_void_p)
+
+    # 将该事件报告给事件系统
+    timer_event.type = user_event.type
+    timer_event.user = user_event
+    sdl2.SDL_PushEvent(ffi.byref(timer_event))
+
+    return interval
 
