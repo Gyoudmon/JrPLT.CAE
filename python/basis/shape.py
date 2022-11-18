@@ -1,8 +1,9 @@
-from digitama.game import *         # 游戏模块
-from digitama.geometry import *     # 基本图形模块
+### shape.py
+from digitama.game import *          # 游戏模块
+from digitama.geometry import *      # 基本图形模块
 
-from digitama.font import *
-from digitama.text import *         # 还用到了“画文字”函数
+from digitama.font import *          # 导入预定义字体
+from digitama.text import *          # 还用到了“画文字”函数
 
 ###############################################################################
 # 创建自定义数据类型，并命名为 PrimitiveShape，继承自 Pasteboard
@@ -11,9 +12,11 @@ class PrimitiveShape(Pasteboard):
         # 通过父类的构造函数设置窗口标题
         super(PrimitiveShape, self).__init__("Primitive Shapes")
 
-        # 设置窗口大小
+    # 实现 PrimitiveShape::construct 函数，设置窗口大小
+    def construct(self, argv):
         self.set_window_size(1200, 800)
 
+    # 实现 PrimitiveShape::draw 函数，本例中绘制一系列几何图形
     def draw(self, renderer, x, y, width, height):
         game_draw_blended_text(game_font.unicode, renderer,
             self.get_foreground_color(), 10, 10, "基本图形陈列馆")
