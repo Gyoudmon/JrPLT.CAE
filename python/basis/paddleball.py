@@ -5,15 +5,21 @@ from digitama.font import *         # 导入预定义字体
 from digitama.text import *         # 还用到了“画文字”函数
 
 ###############################################################################
+# 定义一个类型，并命名为 Ball（球）
 class Ball(object):
     def __init__(self):
+        # 球的位置
         self.x = 0
         self.y = 0
+
+        # 球的速度
         self.dx = 0
         self.dy = 0
 
+# 定义一个字典，用来搜集 Paddle（桨）的属性
 def make_paddle():
-    return { 'x': 0, 'y': 0 }
+    # 桨的位置，以键值对的形式表达
+    return { 'x': 0, 'y': 0, 'speed': 0 }
 
 ###############################################################################
 ball_radius = 8
@@ -52,7 +58,8 @@ class PaddleBallGame(Universe):
     def update(self, interval, count, uptime):
         dead_y = self.screen_height - ball_radius
 
-        if self.ball.y < dead_y:
+        if self.ball.y < dead_y: # 球未脱板
+            # 移动球，碰到左右边界、上边界反弹
             self.ball.x = self.ball.x + self.ball.dx
             self.ball.y = self.ball.y + self.ball.dy
 
@@ -61,6 +68,15 @@ class PaddleBallGame(Universe):
 
             if self.ball.y <= ball_radius:
                 self.ball.dy = -self.ball.dy
+
+            # 移动桨，碰到边界停止
+            if self.paddle['speed'] != 0:
+                self.paddle['x'] += self.paddle['speed']
+
+                if self.paddle['x'] < 0:
+                    self.paddle['x'] = 0
+                elif self.paddle['x'] + paddle_width > self.screen_width:
+                    self.paddle['x'] = self.screen_width - paddle_width
 
             # 检测小球是否被捕获
             ball_bottom = self.ball.y + ball_radius
@@ -78,13 +94,15 @@ class PaddleBallGame(Universe):
         game_fill_rect(renderer, self.paddle['x'], self.paddle['y'], paddle_width, paddle_height, FORESTGREEN)
 
     def _on_char(self, key, modifiers, repeats, pressed):
-        if pressed:
-            match key:
-                case 'a':
-                    if self.paddle['x'] > 0:
-                        self.paddle['x'] -= paddle_speed
-                        # self.notify_updated()
-                case 'd':
-                    if self.paddle['x'] + paddle_width < self.screen_width:
-                        self.paddle['x'] += paddle_speed
-                        # self.notify_updated()
+        match key:
+            case 'a':
+                if pressed:
+                    self.paddle['speed'] = -paddle_speed
+                else:
+                    self.paddle['speed'] = 0
+            case 'd':
+                if pressed:
+                    self.paddle['speed'] = +paddle_speed
+                else:
+                    self.paddle['speed'] = 0
+
