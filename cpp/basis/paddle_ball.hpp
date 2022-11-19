@@ -10,8 +10,7 @@ namespace WarGrey::STEM {
     /** 声明游戏世界 **/
     class PaddleBallGame : public WarGrey::STEM::Planet {
         public:
-            PaddleBallGame();
-            virtual ~PaddleBallGame();
+            PaddleBallGame() : Planet("Paddle Ball") {}
 
         public:    // 覆盖游戏基本方法
             void load(float width, float height) override;
@@ -21,7 +20,7 @@ namespace WarGrey::STEM {
         protected: // 覆盖键盘事件处理方法
             void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) override;
 
-        private:   // 游戏宇宙中的物体
+        private:   // 游戏世界中的物体
             WarGrey::STEM::IShapelet* ball;
             WarGrey::STEM::IShapelet* paddle;
     };
@@ -33,7 +32,6 @@ namespace WarGrey::STEM {
 
         public:
             void construct(int argc, char* argv[]) override {
-                this->set_cmdwin_height(0);
                 this->push_planet(new PaddleBallGame());
             }
     };

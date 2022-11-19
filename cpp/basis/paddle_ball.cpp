@@ -12,10 +12,6 @@ const float ball_speed = 4.0F;
 const float paddle_speed = ball_speed * 3.0F;
 
 /*************************************************************************************************/
-WarGrey::STEM::PaddleBallGame::PaddleBallGame() : Planet("Paddle Ball") { /* 什么都不做 */ }
-WarGrey::STEM::PaddleBallGame::~PaddleBallGame() { /* 什么都不做 */ }
-
-/*************************************************************************************************/
 void WarGrey::STEM::PaddleBallGame::load(float width, float height) {
     this->ball = this->insert_one(new Circlelet(ball_radius, ORANGE));
     this->paddle = this->insert_one(new Rectanglet(paddle_width, paddle_height, FORESTGREEN));
@@ -30,7 +26,7 @@ void WarGrey::STEM::PaddleBallGame::reflow(float width, float height) {
     // 确保球产生于屏幕上方的中间
     this->move_to(this->ball, width * 0.5F, ball_radius, GraphletAnchor::CT);
     this->ball->set_speed(ball_speed, ball_speed);
-    this->ball->set_color(RED);
+    this->ball->set_color(ORANGE);
 
     // 确保桨产生在靠近屏幕下方的中间
     this->move_to(this->paddle, width * 0.5F, height - paddle_height * 3.0F);
