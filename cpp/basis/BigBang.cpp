@@ -1,10 +1,10 @@
-#include "paddleball.hpp" /* 导入当前要启动的游戏头文件 */
+#include "paddle_ball.hpp" /* 导入当前要启动的游戏头文件 */
 
 using namespace WarGrey::STEM;
 
 int main(int argc, char* args[]) {
     /* 混沌初开，宇宙诞生 */
-    PaddleBallGame universe;
+    PaddleBallCosmos universe;
 
     /* 创造游戏世界 */
     universe.construct(argc, args);
