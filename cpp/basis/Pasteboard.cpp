@@ -1,4 +1,4 @@
-#include "shape_cosmos.hpp"  /* 当前要启动的游戏头文件 */
+#include "shape_cosmos.cpp"  /* 当前要启动的游戏头文件 */
 
 using namespace WarGrey::STEM;
 

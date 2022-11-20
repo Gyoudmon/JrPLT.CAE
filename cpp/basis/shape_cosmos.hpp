@@ -23,6 +23,11 @@ namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
             void load(float width, float height) override;
             void reflow(float width, float height) override;
 
+        public:
+            bool can_select(WarGrey::STEM::IGraphlet* g) override {
+                return true;
+            } 
+
         private: // 游戏世界中的物体
             WarGrey::STEM::Labellet* label;
             WarGrey::STEM::IShapelet* lines[3];
