@@ -1,16 +1,16 @@
 #pragma once // 确保只被 include 一次
 
 #include "digitama/game.hpp"
-#include "digitama/cosmos.hpp"
+#include "digitama/world.hpp"
 
 #include "digitama/graphlet/shapelet.hpp"
 
 namespace WarGrey::STEM {
     /**********************************************************************************************/
     /** 声明游戏世界 **/
-    class PaddleBallPlanet : public WarGrey::STEM::Planet {
+    class PaddleBallCosmos : public WarGrey::STEM::World {
         public:
-            PaddleBallPlanet() : Planet("Paddle Ball Cosmos") {}
+            PaddleBallCosmos() : World("Paddle Ball Cosmos") {}
 
         public:    // 覆盖游戏基本方法
             void load(float width, float height) override;
@@ -23,17 +23,6 @@ namespace WarGrey::STEM {
         private:   // 游戏世界中的物体
             WarGrey::STEM::IShapelet* ball;
             WarGrey::STEM::IShapelet* paddle;
-    };
-
-    /** 声明游戏宇宙 **/
-    class PaddleBallCosmos : public WarGrey::STEM::Cosmos {
-        public:
-            PaddleBallCosmos() : Cosmos(60) { /* 什么都不做 */ }
-
-        public:
-            void construct(int argc, char* argv[]) override {
-                this->push_planet(new PaddleBallPlanet());
-            }
     };
 }
 
