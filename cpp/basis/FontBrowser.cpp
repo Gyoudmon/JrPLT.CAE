@@ -5,9 +5,9 @@ using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 namespace {
-    class FontBrowser : public Pasteboard {
+    class FontBrowser : public Universe {
         public:
-            FontBrowser() : Pasteboard("字体浏览器") {}
+            FontBrowser() : Universe("字体浏览器", 0) {}
         
         public:
             void construct(int argc, char* argv[]) {

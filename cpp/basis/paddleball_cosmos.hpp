@@ -8,9 +8,9 @@
 namespace WarGrey::STEM {
     /**********************************************************************************************/
     /** 声明游戏世界 **/
-    class PaddleBallGame : public WarGrey::STEM::Planet {
+    class PaddleBallPlanet : public WarGrey::STEM::Planet {
         public:
-            PaddleBallGame() : Planet("Paddle Ball") {}
+            PaddleBallPlanet() : Planet("Paddle Ball Cosmos") {}
 
         public:    // 覆盖游戏基本方法
             void load(float width, float height) override;
@@ -28,11 +28,11 @@ namespace WarGrey::STEM {
     /** 声明游戏宇宙 **/
     class PaddleBallCosmos : public WarGrey::STEM::Cosmos {
         public:
-            PaddleBallCosmos() : Cosmos(60, 0x000000U, 0xFFFFFFU) { /* 什么都不做 */ }
+            PaddleBallCosmos() : Cosmos(60) { /* 什么都不做 */ }
 
         public:
             void construct(int argc, char* argv[]) override {
-                this->push_planet(new PaddleBallGame());
+                this->push_planet(new PaddleBallPlanet());
             }
     };
 }

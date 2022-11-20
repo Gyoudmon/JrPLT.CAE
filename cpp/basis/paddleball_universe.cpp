@@ -1,4 +1,4 @@
-#include "paddleball.hpp"
+#include "paddleball_universe.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -10,13 +10,7 @@ const int ball_speed = 4;
 const int paddle_speed = ball_speed * 3;
 
 /*************************************************************************************************/
-WarGrey::STEM::PaddleBallGame::PaddleBallGame()
-    : Universe("Paddle Ball", 60, 0x000000U, 0xFFFFFFU) { /* 什么都不做 */ }
-
-WarGrey::STEM::PaddleBallGame::~PaddleBallGame() { /* 什么都不做 */ }
-
-/*************************************************************************************************/
-void WarGrey::STEM::PaddleBallGame::reflow(int width, int height) {
+void WarGrey::STEM::PaddleBallUniverse::reflow(int width, int height) {
     this->screen_width = width;
     this->screen_height = height;
 
@@ -32,7 +26,7 @@ void WarGrey::STEM::PaddleBallGame::reflow(int width, int height) {
     this->paddle.y = this->screen_height - paddle_height * 3;
 }
 
-void WarGrey::STEM::PaddleBallGame::update(uint32_t interval, uint32_t count, uint32_t uptime) {
+void WarGrey::STEM::PaddleBallUniverse::update(uint32_t interval, uint32_t count, uint32_t uptime) {
     int dead_y = this->screen_height - ball_radius;
 
     if (this->ball.y < dead_y) { // 球未脱板
@@ -73,7 +67,7 @@ void WarGrey::STEM::PaddleBallGame::update(uint32_t interval, uint32_t count, ui
     }
 }
 
-void WarGrey::STEM::PaddleBallGame::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
+void WarGrey::STEM::PaddleBallUniverse::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     uint32_t ball_color = ORANGE;
 
     if (this->ball.y >= this->paddle.y) {
@@ -85,7 +79,7 @@ void WarGrey::STEM::PaddleBallGame::draw(SDL_Renderer* renderer, int x, int y, i
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::PaddleBallGame::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
+void WarGrey::STEM::PaddleBallUniverse::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
     switch(key) {
         case 'a': this->paddle.speed = (pressed ? -paddle_speed : 0); break;
         case 'd': this->paddle.speed = (pressed ? +paddle_speed : 0); break;

@@ -1,21 +1,18 @@
 // shape.cpp 文件
-#include "shape.hpp" // 导入自己的头文件
+#include "shape_universe.hpp" // 导入自己的头文件
 
 #include "digitama/text.hpp" // 还用到了“画文字”函数
 
 using namespace WarGrey::STEM; // 声明本模块的类和函数默认以 WarGrey::STEM 的名义使用
 
 /*************************************************************************************************/
-// 实现构造函数，默认什么都不做，除了通过父类构造函数设置窗口标题栏
-WarGrey::STEM::PrimitiveShape::PrimitiveShape() : Pasteboard("Primitive Shapes") {}
-
-// 实现 PrimitiveShape::construct 函数，设置窗口大小
-void WarGrey::STEM::PrimitiveShape::construct(int argc, char* argv[]) {
+// 实现 ShapeUniverse::construct 方法，设置窗口大小
+void WarGrey::STEM::ShapeUniverse::construct(int argc, char* argv[]) {
     this->set_window_size(1200, 800);
 }
 
-// 实现 PrimitiveShape::draw 函数，本例中绘制一系列几何图形
-void WarGrey::STEM::PrimitiveShape::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
+// 实现 ShapeUniverse::draw 方法，本例中绘制一系列几何图形
+void WarGrey::STEM::ShapeUniverse::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     game_draw_blended_text(game_font::unicode, renderer,
             this->get_foreground_color(), 10, 10, "基本图形陈列馆");
 

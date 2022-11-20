@@ -1,4 +1,4 @@
-#include "paddle_ball.hpp"
+#include "paddleball_cosmos.hpp"
 
 #include "digitama/graphlet/shapelet.hpp"
 
@@ -12,7 +12,7 @@ const float ball_speed = 4.0F;
 const float paddle_speed = ball_speed * 3.0F;
 
 /*************************************************************************************************/
-void WarGrey::STEM::PaddleBallGame::load(float width, float height) {
+void WarGrey::STEM::PaddleBallPlanet::load(float width, float height) {
     this->ball = this->insert_one(new Circlelet(ball_radius, ORANGE));
     this->paddle = this->insert_one(new Rectanglet(paddle_width, paddle_height, FORESTGREEN));
 
@@ -22,7 +22,7 @@ void WarGrey::STEM::PaddleBallGame::load(float width, float height) {
     this->paddle->set_border_collision_strategy(BorderCollisionStrategy::IGNORE, BorderCollisionStrategy::STOP);
 }
 
-void WarGrey::STEM::PaddleBallGame::reflow(float width, float height) {
+void WarGrey::STEM::PaddleBallPlanet::reflow(float width, float height) {
     // 确保球产生于屏幕上方的中间
     this->move_to(this->ball, width * 0.5F, ball_radius, GraphletAnchor::CT);
     this->ball->set_speed(ball_speed, ball_speed);
@@ -32,7 +32,7 @@ void WarGrey::STEM::PaddleBallGame::reflow(float width, float height) {
     this->move_to(this->paddle, width * 0.5F, height - paddle_height * 3.0F);
 }
 
-void WarGrey::STEM::PaddleBallGame::update(uint32_t interval, uint32_t count, uint32_t uptime) {
+void WarGrey::STEM::PaddleBallPlanet::update(uint32_t interval, uint32_t count, uint32_t uptime) {
     float paddle_lx, paddle_ty, paddle_rx, paddle_by;
     float ball_lx, ball_ty, ball_rx, ball_by;
 
@@ -52,7 +52,7 @@ void WarGrey::STEM::PaddleBallGame::update(uint32_t interval, uint32_t count, ui
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::PaddleBallGame::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
+void WarGrey::STEM::PaddleBallPlanet::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
     switch(key) {
         case 'a': this->paddle->set_speed((pressed ? -paddle_speed : 0.0F), 0.0F); break;
         case 'd': this->paddle->set_speed((pressed ? +paddle_speed : 0.0F), 0.0F); break;

@@ -31,10 +31,10 @@ namespace WarGrey::STEM {
 
     /**********************************************************************************************/
     /** 声明游戏宇宙 **/
-    class PaddleBallGame : public WarGrey::STEM::Universe {
+    class PaddleBallUniverse : public WarGrey::STEM::Universe {
         public:
-            PaddleBallGame();
-            virtual ~PaddleBallGame();
+            PaddleBallUniverse() : Universe("Paddle Ball Universe") { /* 什么都不做 */ }
+            virtual ~PaddleBallUniverse() { /* 什么都不做 */ }
 
         public:    // 覆盖游戏基本方法
             void reflow(int width, int height) override;
