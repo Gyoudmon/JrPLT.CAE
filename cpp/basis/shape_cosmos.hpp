@@ -24,9 +24,7 @@ namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
             void reflow(float width, float height) override;
 
         public:
-            bool can_select(WarGrey::STEM::IGraphlet* g) override {
-                return true;
-            } 
+            bool can_select(WarGrey::STEM::IMatter* g) override { return true; }
 
         private: // 游戏世界中的物体
             WarGrey::STEM::Labellet* label;
