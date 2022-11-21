@@ -6,8 +6,8 @@ const float ball_radius = 8.0F;
 const float paddle_width = 128.0F;
 const float paddle_height = 8.0F;
 
-const float ball_speed = 4.0F;
-const float paddle_speed = ball_speed * 3.0F;
+const float ball_speed = 6.0F;
+const float paddle_speed = ball_speed * 1.5F;
 
 /*************************************************************************************************/
 void WarGrey::STEM::PaddleBallCosmos::load(float width, float height) {
@@ -16,14 +16,14 @@ void WarGrey::STEM::PaddleBallCosmos::load(float width, float height) {
 
     this->ball->set_border_strategy(BorderStrategy::BOUNCE, BorderStrategy::BOUNCE, BorderStrategy::STOP, BorderStrategy::BOUNCE);
     this->paddle->set_border_strategy(BorderStrategy::IGNORE, BorderStrategy::STOP);
+    
+    this->ball->set_speed(ball_speed, 45.0F);
 }
 
 void WarGrey::STEM::PaddleBallCosmos::reflow(float width, float height) {
     // 确保球产生于屏幕上方的中间
     self->move_to(this->ball, width * 0.5F, ball_radius, MatterAnchor::CT);
-    this->ball->set_speed(ball_speed, ball_speed);
-    this->ball->set_color(ORANGE);
-
+    
     // 确保桨产生在靠近屏幕下方的中间
     self->move_to(this->paddle, width * 0.5F, height - paddle_height * 3.0F);
 }
@@ -51,8 +51,8 @@ void WarGrey::STEM::PaddleBallCosmos::update(uint32_t interval, uint32_t count, 
 /*************************************************************************************************/
 void WarGrey::STEM::PaddleBallCosmos::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
     switch(key) {
-        case 'a': this->paddle->set_speed((pressed ? -paddle_speed : 0.0F), 0.0F); break;
-        case 'd': this->paddle->set_speed((pressed ? +paddle_speed : 0.0F), 0.0F); break;
+        case 'a': this->paddle->set_speed(pressed ? paddle_speed : 0.0F, 180.0F); break;
+        case 'd': this->paddle->set_speed(pressed ? paddle_speed : 0.0F, 000.0F); break;
     }
 }
 
