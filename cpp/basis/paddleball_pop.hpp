@@ -1,6 +1,6 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/game.hpp"
+#include "digitama/world.hpp"
 
 namespace WarGrey::STEM {
     /**********************************************************************************************/
@@ -31,13 +31,13 @@ namespace WarGrey::STEM {
 
     /**********************************************************************************************/
     /** 声明游戏宇宙 **/
-    class PaddleBallUniverse : public WarGrey::STEM::Universe {
+    class PaddleBall : public WarGrey::STEM::World {
         public:
-            PaddleBallUniverse() : Universe("Paddle Ball Universe") { /* 什么都不做 */ }
-            virtual ~PaddleBallUniverse() { /* 什么都不做 */ }
+            PaddleBall() : World("Paddle Ball") { /* 什么都不做 */ }
+            virtual ~PaddleBall() { /* 什么都不做 */ }
 
         public:    // 覆盖游戏基本方法
-            void reflow(int width, int height) override;
+            void reflow(float width, float height) override;
             void update(uint32_t interval, uint32_t count, uint32_t uptime) override;
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height) override;
 

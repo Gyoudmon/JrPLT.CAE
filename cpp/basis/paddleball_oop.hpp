@@ -1,6 +1,5 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/game.hpp"
 #include "digitama/world.hpp"
 
 #include "digitama/graphlet/shapelet.hpp"
@@ -8,9 +7,9 @@
 namespace WarGrey::STEM {
     /**********************************************************************************************/
     /** 声明游戏世界 **/
-    class PaddleBallCosmos : public WarGrey::STEM::World {
+    class PaddleBall : public WarGrey::STEM::World {
         public:
-            PaddleBallCosmos() : World("Paddle Ball Cosmos") {}
+            PaddleBall() : World("Paddle Ball") {}
 
         public:    // 覆盖游戏基本方法
             void load(float width, float height) override;
