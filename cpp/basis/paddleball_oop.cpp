@@ -1,4 +1,4 @@
-#include "paddleball_cosmos.hpp"
+#include "paddleball_pop.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -11,8 +11,8 @@ const float paddle_speed = ball_speed * 1.5F;
 
 /*************************************************************************************************/
 void WarGrey::STEM::PaddleBallCosmos::load(float width, float height) {
-    this->ball = self->insert_one(new Circlet(ball_radius, ORANGE));
-    this->paddle = self->insert_one(new Rectanglet(paddle_width, paddle_height, FORESTGREEN));
+    this->ball = plane->insert(new Circlet(ball_radius, ORANGE));
+    this->paddle = plane->insert(new Rectanglet(paddle_width, paddle_height, FORESTGREEN));
 
     this->ball->set_border_strategy(BorderStrategy::BOUNCE, BorderStrategy::BOUNCE, BorderStrategy::STOP, BorderStrategy::BOUNCE);
     this->paddle->set_border_strategy(BorderStrategy::IGNORE, BorderStrategy::STOP);
@@ -22,21 +22,21 @@ void WarGrey::STEM::PaddleBallCosmos::load(float width, float height) {
 
 void WarGrey::STEM::PaddleBallCosmos::reflow(float width, float height) {
     // 确保球产生于屏幕上方的中间
-    self->move_to(this->ball, width * 0.5F, ball_radius, MatterAnchor::CT);
+    this->move_to(this->ball, width * 0.5F, ball_radius, MatterAnchor::CT);
     
     // 确保桨产生在靠近屏幕下方的中间
-    self->move_to(this->paddle, width * 0.5F, height - paddle_height * 3.0F);
+    this->move_to(this->paddle, width * 0.5F, height - paddle_height * 3.0F);
 }
 
 void WarGrey::STEM::PaddleBallCosmos::update(uint32_t interval, uint32_t count, uint32_t uptime) {
     float paddle_lx, paddle_ty, paddle_rx, paddle_by;
     float ball_lx, ball_ty, ball_rx, ball_by;
 
-    self->fill_graphlet_location(this->paddle, &paddle_lx, &paddle_ty, MatterAnchor::LT);
-    self->fill_graphlet_location(this->paddle, &paddle_rx, &paddle_by, MatterAnchor::RB);
+    this->fill_graphlet_location(this->paddle, &paddle_lx, &paddle_ty, MatterAnchor::LT);
+    this->fill_graphlet_location(this->paddle, &paddle_rx, &paddle_by, MatterAnchor::RB);
     
-    self->fill_graphlet_location(this->ball, &ball_lx, &ball_ty, MatterAnchor::LT);
-    self->fill_graphlet_location(this->ball, &ball_rx, &ball_by, MatterAnchor::RB);
+    this->fill_graphlet_location(this->ball, &ball_lx, &ball_ty, MatterAnchor::LT);
+    this->fill_graphlet_location(this->ball, &ball_rx, &ball_by, MatterAnchor::RB);
 
     if (ball_ty < paddle_by) { // 球未脱板, 检测小球是否被捕获
         if ((ball_by >= paddle_ty) && (ball_by <= paddle_by)

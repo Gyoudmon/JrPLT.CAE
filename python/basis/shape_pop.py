@@ -1,25 +1,25 @@
 ### shape.py
-from digitama.game import *          # 游戏模块
-from digitama.geometry import *      # 基本图形模块
+from digitama.world import *         # 导入 World 类
+from digitama.geometry import *      # 导入"画图形“模块
+from digitama.text import *          # 导入“画文字”模块
 
 from digitama.font import *          # 导入预定义字体
-from digitama.text import *          # 还用到了“画文字”函数
 
 ###############################################################################
-# 创建自定义数据类型，并命名为 PrimitiveShape，继承自 Pasteboard
-class PrimitiveShape(Pasteboard):
+# 创建自定义数据类型，并命名为 ShapeWorld，继承自 World
+class ShapeWorld(World):
     def __init__(self):
-        # 通过父类的构造函数设置窗口标题
-        super(PrimitiveShape, self).__init__("Primitive Shapes")
+        # 通过父类的构造函数设置窗口标题和帧频
+        super(ShapeWorld, self).__init__("Primitive Shapes", 0)
 
-    # 实现 PrimitiveShape::construct 函数，设置窗口大小
+    # 实现 ShapeWorld::construct 函数，设置窗口大小
     def construct(self, argv):
         self.set_window_size(1200, 800)
 
-    # 实现 PrimitiveShape::draw 函数，本例中绘制一系列几何图形
+    # 实现 ShapeWorld::draw 函数，本例中绘制一系列几何图形
     def draw(self, renderer, x, y, width, height):
         game_draw_blended_text(game_font.unicode, renderer,
-            self.get_foreground_color(), 10, 10, "基本图形陈列馆")
+            self.get_foreground_color(), 10, 10, "基本图形陈列馆(过程式)")
 
         game_draw_point(renderer, 600, 300, ROYALBLUE)              # 画皇家蓝点
     

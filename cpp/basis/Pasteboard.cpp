@@ -1,10 +1,10 @@
-#include "shape_cosmos.hpp"  /* 当前要启动的游戏头文件 */
+#include "shape_pop.hpp"  /* 当前要启动的游戏头文件 */
 
 using namespace WarGrey::STEM;
 
 int main(int argc, char* args[]) {
     /* 混沌初开，宇宙诞生 */
-    ShapeCosmos universe;
+    ShapeWorld universe;
 
     /* 创造游戏世界 */
     universe.construct(argc, args);

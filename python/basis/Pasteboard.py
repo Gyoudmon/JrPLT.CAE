@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from shape import *  # 导入当前要启动的游戏
+from shape_pop import *  # 导入当前要启动的游戏
 
-import sys
+import sys               # 导入系统相关函数
 
 # __name__ 是一个特殊变量
 # 可用于提示是否从这行代码启动应用程序
@@ -12,7 +12,7 @@ if __name__=="__main__":
 
     # 混沌初开，宇宙诞生，游戏世界就绪
     # Python 设计在惯例上无需 C++ 那样的“两步初始化”
-    universe = PrimitiveShape()
+    universe = ShapeWorld()
 
     # 宇宙大爆炸
     # 开启游戏主循环，直到玩家关闭游戏

@@ -1,20 +1,21 @@
 // shape.cpp 文件
-#include "shape_universe.hpp" // 导入自己的头文件
+#include "shape_pop.hpp"        // 导入本模块自己的头文件
 
-#include "digitama/text.hpp" // 还用到了“画文字”函数
+#include "digitama/game.hpp"    // 导入游戏开发常用函数
+#include "digitama/text.hpp"    // 还用到了“画文字”函数
 
-using namespace WarGrey::STEM; // 声明本模块的类和函数默认以 WarGrey::STEM 的名义使用
+using namespace WarGrey::STEM;  // 声明本模块的类和函数默认以 WarGrey::STEM 的名义使用
 
 /*************************************************************************************************/
-// 实现 ShapeUniverse::construct 方法，设置窗口大小
-void WarGrey::STEM::ShapeUniverse::construct(int argc, char* argv[]) {
+// 实现 ShapeWorld::construct 方法，设置窗口大小
+void WarGrey::STEM::ShapeWorld::construct(int argc, char* argv[]) {
     this->set_window_size(1200, 800);
 }
 
-// 实现 ShapeUniverse::draw 方法，本例中绘制一系列几何图形
-void WarGrey::STEM::ShapeUniverse::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
+// 实现 ShapeWorld::draw 方法，本例中绘制一系列几何图形
+void WarGrey::STEM::ShapeWorld::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     game_draw_blended_text(game_font::unicode, renderer,
-            this->get_foreground_color(), 10, 10, "基本图形陈列馆");
+            this->get_foreground_color(), 10, 10, "基本图形陈列馆(过程式)");
 
     game_draw_point(renderer, 600, 300, ROYALBLUE);             // 画皇家蓝点
 
