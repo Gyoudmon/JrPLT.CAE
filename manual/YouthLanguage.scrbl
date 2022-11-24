@@ -13,7 +13,6 @@
 又不能铺垫太长导致初学者耐心耗尽被动劝退。而且，这个问题的解决只能从更高纬度入手(比如课程的整体设计和教学过程的实施)，
 而不是简单地带学生读懂每一行代码的语法细节。}
 
-@; The preface will always be displayed after the table of contents if it is `include-section`ed.
 @handbook-smart-table[]
 
 @include-section{literacy/preface.scrbl}

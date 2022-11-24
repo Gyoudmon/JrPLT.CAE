@@ -2,12 +2,13 @@
 
 @(require "literacy.rkt")
 
+@;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-root-story{配置开发环境}
 
 @bold{注意，建议诸位在自己的电脑里备好梯子。
 这样不仅本次安装过程无硬伤，后续我们内部协作也会顺畅很多。}
 
-@(define figure-scale 0.2)
+@(define figure-scale 0.20)
 
 @handbook-scenario{git}
 
@@ -28,13 +29,14 @@ git 是目前应用最广泛的版本管理工具。建议大家有空了熟悉�
 
 @itemlist[#:style 'compact
           @item{按 @exec{Win+R} 快捷键打开 Run，输入 @exec{sysdm.cpl} 回车打开@tamer-figure-ref{sysdm}的“系统属性”窗口。
-                @tamer-figure-here["sysdm" "系统属性"]{@image["stone/installation/sysdm_cpl.png" #:scale figure-scale]}}
+                  @tamer-figure-here["sysdm" "系统属性"]{@image["stone/installation/sysdm_cpl.png" #:scale figure-scale]}}
 
-          @item{在“高级”标签页最下方有个“环境变量”，点击打开@tamer-figure-ref{env}。
-                @tamer-figure-here["env" "环境变量"]{@image["stone/installation/env.png" #:scale figure-scale]}}
+          @item{在“高级”标签页最下方有个“环境变量”，点击打开 @tamer-figure-ref{env}。
+                  @tamer-figure-here["env" "环境变量"]{@image["stone/installation/env.png" #:scale figure-scale]}}
 
           @item{编辑“系统变量”里的 @envvar{Path}，对照@tamer-figure-ref{path}，检查是否有 git 项，如果没有就新建一个，把
-                @filepath{C:\Program Files\Git\cmd} 加进去。@tamer-figure-here["path" "编辑环境变量"]{@image["stone/installation/path.png" #:scale figure-scale]}}]
+                @filepath{C:\Program Files\Git\cmd} 加进去。
+                @tamer-figure-here["path" "编辑环境变量"]{@image["stone/installation/path.png" #:scale figure-scale]}}]
 
 至此，关闭 PowerShell 再重新打开就可以运行 git 命令了。可以用@exec{where.exe}（后缀@exec{.exe}不能省略）命令来确定某个程序能不能被找到：
 
@@ -80,7 +82,7 @@ Racket 在本系列课程中充当 C++ 构建工具，一行简短的命令搞�
 
 @handbook-scenario{SDL2}
 
-SDL2 是 Simple DirectMedia Layer 2.0，一个跨平台的 2D 游戏引擎，也是 Python 自带的 PyGame 的内核。
+SDL2 是 Simple DirectMedia Layer 2.0，一个跨平台的 2D 游戏引擎，也是 Python 的游戏库也以它为基石。
 
 在本系列课程中，SDL2 是 C++ 和 Python 代码库的底层接口，用于显示窗口并在里面播放动画或运行游戏，
 不需要下载源码，需要用操作系统的软件包管理工具(不同于软件商店)安装二进制动态链接库。
