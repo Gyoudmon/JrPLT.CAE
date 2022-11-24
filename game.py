@@ -44,7 +44,7 @@ def game_create_texture(window, renderer):
 
     return t
 
-def game_world_create(title, width, height):
+def game_world_create(width, height):
     cpos = sdl2.SDL_WINDOWPOS_CENTERED
     flags = sdl2.SDL_WINDOW_SHOWN | sdl2.SDL_WINDOW_RESIZABLE | sdl2.SDL_WINDOW_ALLOW_HIGHDPI
 
@@ -54,7 +54,7 @@ def game_world_create(title, width, height):
         else:
             flags |= sdl2.SDL_WINDOW_MAXIMIZED
 
-    w = sdl2.SDL_CreateWindow(title.encode("utf-8"), cpos, cpos, width, height, flags)
+    w = sdl2.SDL_CreateWindow("The Big Bang".encode("utf-8"), cpos, cpos, width, height, flags)
     _Check_Variable_Validity(w, None, "SDL 窗体创建失败：")
 
     r = sdl2.SDL_CreateRenderer(w, -1, sdl2.SDL_RENDERER_ACCELERATED)
@@ -82,7 +82,7 @@ def game_world_refresh(renderer, texture):
 ###############################################################################
 class Universe(IDisplay):
 # public
-    def __init__(self, title, fps = 60, fgc = 0xFFFFFF, bgc = 0x000000):
+    def __init__(self, fps = 60, fgc = 0x0000000, bgc = 0xFFFFFF):
         """ 构造函数，在创建游戏世界时自动调用，以设置帧频、窗口标题、前背景色和混色模式 """
         
         # The constructors of base classes must be invoked explicitly
@@ -92,7 +92,7 @@ class Universe(IDisplay):
         game_initialize(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_TIMER)
         
         # Please search "Python sequence unpacking"(序列解包)
-        self.__window, self.__renderer = game_world_create(title, 1, 0)
+        self.__window, self.__renderer = game_world_create(1, 0)
         self.__texture = None
         self.__window_width, self.__window_height = 0, 0
         self.__fgc, self.__bgc = fgc, bgc
@@ -316,7 +316,7 @@ class Universe(IDisplay):
 
     def _on_char(self, key, modifiers, repeats, pressed): pass              # 处理键盘事件
     def _on_text(self, text, size, entire): pass                            # 处理文本输入事件
-    def _on_editing_text(self, text, pos, span): pass                               # 处理文本输入事件
+    def _on_editing_text(self, text, pos, span): pass                       # 处理文本输入事件
             
     def _on_save(self): pass                                                # 处理保存事件
 
@@ -497,11 +497,6 @@ class Universe(IDisplay):
 
             if self.__display_usr_input_and_caret(self.__renderer, True):
                 self.notify_updated()
-
-###############################################################################
-class Pasteboard(Universe):
-    def __init__(self, title, fgc = 0x000000, bgc = 0xFFFFFF):
-        super(Pasteboard, self).__init__(title, 0, fgc, bgc)
 
 ###############################################################################
 def _Call_With_Error_Message(init, message, GetError):
