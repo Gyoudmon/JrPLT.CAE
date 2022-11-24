@@ -13,7 +13,7 @@
 ;;; Just in case for README.md
 (enter-digimon-zone!)
 
-(tamer-indexed-block-hide-chapter-index #true)
+;(tamer-indexed-block-hide-chapter-index #true)
 
 (tamer-default-figure-label "图")
 (tamer-default-figure-label-separator #false)
