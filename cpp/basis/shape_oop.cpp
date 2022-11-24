@@ -30,18 +30,18 @@ void WarGrey::STEM::ShapeWorld::load(float width, float height) {
 // 实现 ShapeWorld::reflow 方法，重新排列几何图形在舞台上的位置
 void WarGrey::STEM::ShapeWorld::reflow(float width, float height) {
     // 排列线段以组成三角形
-    this->move_to(this->lines[0], 200, 400, MatterAnchor::LB); // 左下角对齐
-    this->move_to(this->lines[1], 200, 400, MatterAnchor::LT); // 左上角对齐
-    this->move_to(this->lines[2], 600, 400, MatterAnchor::RB); // 右下角对齐
+    this->move_to(this->lines[0], 200.0F, 400.0F, MatterAnchor::LB); // 左下角对齐
+    this->move_to(this->lines[1], 200.0F, 400.0F, MatterAnchor::LT); // 左上角对齐
+    this->move_to(this->lines[2], 600.0F, 400.0F, MatterAnchor::RB); // 右下角对齐
 
     // 排列长方形和椭圆
-    this->move_to(this->rectangle, 800, 100, MatterAnchor::LT);
-    this->move_to(this->circle, 900, 400, MatterAnchor::CC);
-    this->move_to(this->ellipse, 900, 600, MatterAnchor::CC);
+    this->move_to(this->rectangle, 800.0F, 100.0F, MatterAnchor::LT);
+    this->move_to(this->circle, 900.0F, 400.0F, MatterAnchor::CC);
+    this->move_to(this->ellipse, 900.0F, 600.0F, MatterAnchor::CC);
 
     // 排列正多边形
     for (int i = 0; i < sizeof(this->regular_polygons) / sizeof(IShapelet*); i++) {
-        this->move_to(this->regular_polygons[i], 100 * i, 750, MatterAnchor::CC);
+        this->move_to(this->regular_polygons[i], 100.0F * float(i), 750.0F, MatterAnchor::CC);
     }
 }
 

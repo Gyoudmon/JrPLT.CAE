@@ -1,7 +1,5 @@
 #include "paddleball_oop.hpp"
 
-#include "digitama/game.hpp"
-
 using namespace WarGrey::STEM;
 
 const float ball_radius = 8.0F;

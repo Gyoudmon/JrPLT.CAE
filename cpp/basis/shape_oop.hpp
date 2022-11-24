@@ -1,7 +1,7 @@
 // shape.hpp 文件
 #pragma once // 确保只被 include 一次
 
-#include "digitama/world.hpp"  // 导入 Cosmos 和 World 模块
+#include "digitama/game.hpp"
 
 #include "digitama/graphlet/shapelet.hpp"   // 导入基本图形模块
 #include "digitama/graphlet/ui/textlet.hpp" // 导入UI文本模块

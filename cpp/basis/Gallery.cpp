@@ -1,4 +1,4 @@
-#include "digitama/world.hpp"
+#include "digitama/game.hpp"
 
 #include "digitama/graphlet/shapelet.hpp"
 #include "digitama/graphlet/ui/textlet.hpp"
@@ -31,9 +31,9 @@ namespace {
 
             void reflow(float width, float height) override {
                 // 排列线段以组成三角形
-                this->move_to(this->lines[0], 200, 400, MatterAnchor::LB); // 左下角对齐
-                this->move_to(this->lines[1], 200, 400, MatterAnchor::LT); // 左上角对齐
-                this->move_to(this->lines[2], 600, 400, MatterAnchor::RB); // 右下角对齐
+                this->move_to(this->lines[0], 200.0F, 400.0F, MatterAnchor::LB); // 左下角对齐
+                this->move_to(this->lines[1], 200.0F, 400.0F, MatterAnchor::LT); // 左上角对齐
+                this->move_to(this->lines[2], 600.0F, 400.0F, MatterAnchor::RB); // 右下角对齐
 
                 // 排列长方形和椭圆
                 this->move_to(this->rectangle, 800, 100, MatterAnchor::LT);
@@ -42,7 +42,7 @@ namespace {
 
                 // 排列正多边形
                 for (int i = 0; i < sizeof(this->regular_polygons) / sizeof(IShapelet*); i++) {
-                    this->move_to(this->regular_polygons[i], 100 * i, 750, MatterAnchor::CC);
+                    this->move_to(this->regular_polygons[i], 100.0F * float(i), 750.0F, MatterAnchor::CC);
                 }
             }
 
