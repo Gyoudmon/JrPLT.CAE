@@ -119,7 +119,7 @@ Visual Studio 是微软自己的标准IDE(集成开发环境，包括编辑、�
 去@hyperlink["https://visualstudio.microsoft.com/downloads/"]{官方网站}下载免费的 Community 版，然后对照
 @tamer-figure-ref{vs}至少勾选@onscreen{Desktop Development with C++}一项。如果你想在 Visual Studio 里折腾
 Python，可以再勾选@onscreen{Python Development}，然后在右侧的@onscreen{optional}栏里第一项手动勾选 Python 解释器。
-@tamer-figure-here["vs" "安装 Visual Studio（含 C++ 和 Python）"]{@image["stone/installation/vs.jpg" #:scale 0.32]}
+@tamer-figure*["vs" "安装 Visual Studio（含 C++ 和 Python）"]{@image["stone/installation/vs.jpg" #:scale 0.36]}
 安装过程比较漫长，耐心等待即可。之后继续配置@envvar{Path}环境变量，详细过程见 @secref{env-conf}，
 将@filepath{C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build}加进去。
 将来 Visual Studio 出新版本了不会影响这个2022版的，除非你自己把它删了。
@@ -170,7 +170,11 @@ Python 才跟 C++ 处于同一起跑线上，我的代码库的 Python 版就从
 执行以下命令安装 PySDL2
 
 @itemlist[#:style 'compact
-          @commandline{python -m pip install pysdl2 pysdl2-dll}]
+          @commandline{python -m pip install pysdl2 pysdl2-dll pygame}]
+
+那个 PyGame 是 Python 自己提供的建立在 PySDL2 基础之上的游戏引擎。
+按理说，不装它也没有问题，但实际情况是不装它我们的程序也运行不起来。
+大概是这几个软件包的依赖关系比较混乱，凑合着用把。
 
 @handbook-scenario{Scratch}
 
