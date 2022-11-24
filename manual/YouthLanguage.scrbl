@@ -4,7 +4,7 @@
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-title/pkg-desc[]
-@;texbook-frontmatter[]
+@authorsaddresses{学府路83-1号@hspace[1]洛克白科学空间}
 
 @abstract{程序设计对于未成年人和成年人来说，都是足够新颖的技能，
 零基础的这两个群体在初学阶段没有太大的认知差别。核心问题在于，如何帮助学生(包括成年人和未成年人)
@@ -15,12 +15,9 @@
 
 @; The preface will always be displayed after the table of contents if it is `include-section`ed.
 @handbook-smart-table[]
-@;texbook-mainmatter[]
 
 @include-section{literacy/preface.scrbl}
 @include-section{literacy/installation.scrbl}
-
-@;texbook-backmatter[]
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-appendix[#:index-section? #false #:numbered? #false]
