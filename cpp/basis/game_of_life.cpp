@@ -1,8 +1,9 @@
 #include "game_of_life.hpp"
 
-#include "digitama/text.hpp"
-#include "digitama/random.hpp"
-#include "digitama/image.hpp"
+#include "digitama/graphics/text.hpp"
+#include "digitama/graphics/image.hpp"
+
+#include "digitama/physics/random.hpp"
 
 using namespace WarGrey::STEM;
 

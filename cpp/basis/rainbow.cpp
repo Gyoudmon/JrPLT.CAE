@@ -1,14 +1,14 @@
 #include "rainbow.hpp"
 
 #include "digitama/datum/flonum.hpp"
-#include "digitama/mathematics.hpp"
-#include "digitama/colorspace.hpp"
+#include "digitama/graphics/colorspace.hpp"
+#include "digitama/physics/mathematics.hpp"
 
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 WarGrey::STEM::ColorWheel::ColorWheel(float r, int blength)
-    : Pasteboard("Color Wheel"), radius(r), block_length(blength) {}
+    : Universe("Color Wheel", 0), radius(r), block_length(blength) {}
 
 void WarGrey::STEM::ColorWheel::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     SDL_Rect hsb; // 色块变量（矩形
@@ -27,7 +27,7 @@ void WarGrey::STEM::ColorWheel::draw(SDL_Renderer* renderer, int x, int y, int w
 
 /*************************************************************************************************/
 WarGrey::STEM::Rainbow::Rainbow(float r, float dh, float ds)
-    : Pasteboard("Rainbow"), radius(r), hue_delta(dh), sample_delta(ds) {}
+    : Universe("Rainbow", 0), radius(r), hue_delta(dh), sample_delta(ds) {}
 
 void WarGrey::STEM::Rainbow::draw(SDL_Renderer* renderer, int x, int y, int width, int height) {
     float rainbow_width = this->radius * 2.0f;

@@ -1,7 +1,8 @@
 #include "self_avoid_walk.hpp"
 
-#include "digitama/text.hpp"
-#include "digitama/random.hpp"
+#include "digitama/graphics/text.hpp"
+
+#include "digitama/physics/random.hpp"
 
 using namespace WarGrey::STEM;
 

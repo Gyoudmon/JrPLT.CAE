@@ -1,6 +1,6 @@
 #include "random_walk.hpp"
 
-#include "digitama/random.hpp"
+#include "digitama/physics/random.hpp"
 
 using namespace WarGrey::STEM;
 

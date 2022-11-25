@@ -3,7 +3,7 @@
 #include "digitama/game.hpp"
 
 namespace WarGrey::STEM {
-    class ColorWheel : public WarGrey::STEM::Pasteboard {
+    class ColorWheel : public WarGrey::STEM::Universe {
         public:
             ColorWheel(float r = 256.0f, int blength = 32);
         
@@ -15,7 +15,7 @@ namespace WarGrey::STEM {
             int block_length;
     };
     
-    class Rainbow : public WarGrey::STEM::Pasteboard {
+    class Rainbow : public WarGrey::STEM::Universe {
         public:
             Rainbow(float r = 128.0f, float dh = 1.0f, float ds = 0.1f);
         

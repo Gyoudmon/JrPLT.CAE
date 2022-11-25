@@ -1,6 +1,6 @@
 #include "diffusion.hpp"
 
-#include "digitama/random.hpp"
+#include "digitama/physics/random.hpp"
 
 using namespace WarGrey::STEM;
 

@@ -1,10 +1,10 @@
 // shape.cpp 文件
-#include "shape_pop.hpp"        // 导入本模块自己的头文件
+#include "shape_pop.hpp"                // 导入本模块自己的头文件
 
-#include "digitama/game.hpp"    // 导入游戏开发常用函数
-#include "digitama/text.hpp"    // 还用到了“画文字”函数
+#include "digitama/game.hpp"            // 导入游戏开发常用函数
+#include "digitama/graphics/text.hpp"   // 还用到了“画文字”函数
 
-using namespace WarGrey::STEM;  // 声明本模块的类和函数默认以 WarGrey::STEM 的名义使用
+using namespace WarGrey::STEM;          // 声明本模块的类和函数默认以 WarGrey::STEM 的名义使用
 
 /*************************************************************************************************/
 // 实现 ShapeWorld::construct 方法，设置窗口大小

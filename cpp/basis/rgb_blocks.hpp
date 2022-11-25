@@ -3,7 +3,7 @@
 #include "digitama/game.hpp"
 
 namespace WarGrey::STEM {
-    class RGBBlock : public WarGrey::STEM::Pasteboard {
+    class RGBBlock : public WarGrey::STEM::Universe {
         public:
             RGBBlock();
         
@@ -11,7 +11,7 @@ namespace WarGrey::STEM {
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
     };
     
-    class ContrastColorBlock : public WarGrey::STEM::Pasteboard {
+    class ContrastColorBlock : public WarGrey::STEM::Universe {
         public:
             ContrastColorBlock();
         
