@@ -55,7 +55,7 @@ void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[]) {
     if ((this->stage_width < 8) || (this->stage_width > 64)) {
         int width, height;
 
-        this->fill_window_size(&width, &height);
+        this->feed_window_size(&width, &height);
         this->stage_width = height / GRID_SIZE - 1;
     }
 

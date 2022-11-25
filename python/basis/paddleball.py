@@ -1,8 +1,8 @@
-from digitama.game import *         # 游戏模块
-from digitama.geometry import *     # 基本图形模块
+from digitama.game import *                 # 游戏模块
 
-from digitama.font import *         # 导入预定义字体
-from digitama.text import *         # 还用到了“画文字”函数
+from digitama.graphics.geometry import *    # 基本图形模块
+from digitama.graphics.font import *        # 导入预定义字体
+from digitama.graphics.text import *        # 还用到了“画文字”函数
 
 ###############################################################################
 # 定义一个类型，并命名为 Ball（球）

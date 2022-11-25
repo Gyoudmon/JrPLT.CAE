@@ -1,9 +1,9 @@
 ### shape.py
-from digitama.world import *         # 导入 World 类
-from digitama.geometry import *      # 导入"画图形“模块
-from digitama.text import *          # 导入“画文字”模块
+from digitama.world import *                # 导入 World 类
 
-from digitama.font import *          # 导入预定义字体
+from digitama.graphics.geometry import *    # 导入"画图形“模块
+from digitama.graphics.text import *        # 导入“画文字”模块
+from digitama.graphics.font import *        # 导入预定义字体
 
 ###############################################################################
 # 创建自定义数据类型，并命名为 ShapeWorld，继承自 World

@@ -4,7 +4,7 @@ from digitama.world import *                # 导入 World 类
 from digitama.graphlet.shapelet import *    # 导入基本图形模块
 from digitama.graphlet.ui.textlet import *  # 导入UI文本模块
 
-from digitama.font import *                 # 导入预定义字体
+from digitama.graphics.font import *        # 导入预定义字体
 
 ###############################################################################
 # 创建自定义数据类型，并命名为 ShapeWorld，继承自 World

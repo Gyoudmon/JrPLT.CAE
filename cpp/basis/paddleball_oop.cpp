@@ -32,11 +32,11 @@ void WarGrey::STEM::PaddleBall::update(uint32_t interval, uint32_t count, uint32
     float paddle_lx, paddle_ty, paddle_rx, paddle_by;
     float ball_lx, ball_ty, ball_rx, ball_by;
 
-    this->fill_matter_location(this->paddle, &paddle_lx, &paddle_ty, MatterAnchor::LT);
-    this->fill_matter_location(this->paddle, &paddle_rx, &paddle_by, MatterAnchor::RB);
+    this->feed_matter_location(this->paddle, &paddle_lx, &paddle_ty, MatterAnchor::LT);
+    this->feed_matter_location(this->paddle, &paddle_rx, &paddle_by, MatterAnchor::RB);
     
-    this->fill_matter_location(this->ball, &ball_lx, &ball_ty, MatterAnchor::LT);
-    this->fill_matter_location(this->ball, &ball_rx, &ball_by, MatterAnchor::RB);
+    this->feed_matter_location(this->ball, &ball_lx, &ball_ty, MatterAnchor::LT);
+    this->feed_matter_location(this->ball, &ball_rx, &ball_by, MatterAnchor::RB);
 
     if (ball_ty < paddle_by) { // 球未脱板, 检测小球是否被捕获
         if ((ball_by >= paddle_ty) && (ball_by <= paddle_by)
