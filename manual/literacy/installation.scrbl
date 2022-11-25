@@ -101,7 +101,7 @@ vcpkg 没有现成的可执行文件，而是直接提供源码用 git 来安装
 
           @item{安装 64bit SDL2
                  @itemlist[#:style 'compact
-                           @commandline{C:\opt\vcpkg\vcpkg install sdl2 sdl2_ttf sdl2_image sdl2_gfx sdl2_mixer sdl2_net --triplet=x64-windows}]}
+                           @commandline{C:\opt\vcpkg\vcpkg install sdl2 sdl2-ttf sdl2-image sdl2-gfx sdl2-mixer sdl2-net --triplet=x64-windows}]}
           
           @item{用管理员身份运行(普通用户运行时可现场授权，无需另开终端)
                  @itemlist[#:style 'compact
