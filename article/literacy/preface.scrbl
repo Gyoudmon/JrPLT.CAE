@@ -2,7 +2,7 @@
 
 @(require "literacy.rkt")
 
-@handbook-root-story{研课理念}
+@handbook-root-story{理念与思路}
 
 本手册的主要读者是青少年计算机科学课系列课程的所有教师，目前课程规划上覆盖 C++、Python 和 Scratch 三门语言。
 
