@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from digitama.datum.uuid import *
+from digitama.forward import *
 
 import sys
 
@@ -15,7 +16,7 @@ def main(argv):
                 print("Retrying due to a hash conflict: %s" % id)
             ids.append(id)
 
-        print("class %s(object):" % argv[1])
+        print("class %s(enum.Enum):" % argv[1])
         for i in range(0, len(ids)):
             print("    %s = 0x%x" % (argv[i + 2], ids[i]))
 
