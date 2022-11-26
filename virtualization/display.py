@@ -1,6 +1,6 @@
-from abc import *       # abstract base class
+from abc import *               # abstract base class
 
-from .image import *
+from ..graphics.image import *
 
 ###############################################################
 class IDisplay(ABC):

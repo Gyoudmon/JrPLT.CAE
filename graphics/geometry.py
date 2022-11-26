@@ -1,10 +1,10 @@
-import sdl2                 # 原始 SDL2 函数
-import sdl2.rect as sdlr    # 原始 SDL2 矩形结构体
-import ctypes as ffi        # 外语接口函数
-import math                 # 基础数学函数
+import sdl2                             # 原始 SDL2 函数
+import sdl2.rect as sdlr                # 原始 SDL2 矩形结构体
+import ctypes as ffi                    # 外语接口函数
+import math                             # 基础数学函数
 
-from .colorspace import *   # 色彩空间相关函数, 前面那个点指代相对本文件的路径
-from .mathematics import *  # 图形学、线性代数相关函数
+from .colorspace import *               # 色彩空间相关函数, 前面那个点指代相对本文件的路径
+from ..physics.mathematics import *     # 图形学、线性代数相关函数
 
 ###############################################################################
 def game_draw_point(renderer, x, y, cs, alpha = 0xFF):

@@ -1,6 +1,6 @@
 from abc import *       # Abstract Base Class
 
-from ..display import IDisplay
+from .display import IDisplay
 
 ###############################################################
 class IScreen(ABC):

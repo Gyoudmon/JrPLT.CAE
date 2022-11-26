@@ -11,10 +11,11 @@ import sdl2.sdlimage    # 原始 (C 风格) SDL2_Image 函数
 
 import sdl2.ext         # Python 风格的 SDL2 函数
 
-from .font import *
-from .text import *
-from .colorspace import *
-from .display import *
+from .graphics.font import *
+from .graphics.text import *
+from .graphics.colorspace import *
+
+from .virtualization.display import *
 
 ###############################################################################
 def game_initialize(flags, fontsize = 16):
