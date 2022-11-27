@@ -39,6 +39,15 @@ def RGB_FromHexadecimal(hex):
 def RGBA_FromHexadecimal(hex):
     return (hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF
 
+def RGB_FillColor(c, hex, alpha):
+    c.r, c.g, c.b = RGB_FromHexadecimal(hex)
+    a = alpha
+
+    if isinstance(a, float):
+        a = _UCHAR(a)
+
+    c.a = a
+
 ###############################################################################
 _R = 1
 _G = 2
