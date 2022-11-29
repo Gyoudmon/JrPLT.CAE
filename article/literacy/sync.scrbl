@@ -121,7 +121,7 @@
 
 Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文件即可。
 
-@handbook-scenario{学生作业目录}
+@handbook-scenario{学生目录}
 
 一般来说，不建议学生直接修改教师的源码，学生应该另外找一个目录，保持目录结构不变，创建好自己的课程目录。
 比如@filepath{G:\Course\YouthLanguage\cpp\basis}，然后把教师目录下的@filepath{info.rkt}
