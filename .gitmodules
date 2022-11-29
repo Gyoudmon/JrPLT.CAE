@@ -4,3 +4,6 @@
 [submodule "python/basis/digitama"]
 	path = python/basis/digitama
 	url = https://github.com/Gyoudmon/digitama.py
+[submodule "cpp/basis/village/vcso"]
+	path = cpp/basis/village/vcso
+	url = https://github.com/Gyoudmon/vcso.git
