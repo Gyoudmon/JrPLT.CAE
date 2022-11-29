@@ -59,7 +59,7 @@ Racket 是我最常用的语言，它是现代 Lisp 最前卫的方言之一，�
 但又不希望过于大众，因为...那就庸俗了呀。
 
 Racket 在本系列课程中充当 C++ 构建工具，一行简短的命令搞定所有恼人的编译细节，特别是解决了“一个项目只能有一个main”问题。
-此外，我自己研课时也经常用它写小程序以提高工作效率，包括写出这篇文档。
+此外，我自己研课时也经常用它写小程序以提高工作效率，包括写出这篇手册。
 
 顺便说一句，用我自己写的软件来教学生，肯定有家长会质疑这个做法。
 嗯，初学编程真的麻烦且枯燥，如果你不希望你的孩子在第一个月就被各种烦人的细节劝退，那就放宽心。
@@ -72,7 +72,7 @@ Racket 在本系列课程中充当 C++ 构建工具，一行简短的命令搞�
 
 @itemlist[#:style 'compact
           @item{去@hyperlink["https://racket-lang.org/download/"]{官方网站}下载、安装，这一步比较简单。}
-          @item{回顾@secref{env-conf}，将@filepath{C:\Program Files\Racket}加到环境变量@envvar{Path}中。
+          @item{回顾@seclink["env-conf"]{环境变量}，将@filepath{C:\Program Files\Racket}加到环境变量@envvar{Path}中。
                   碰巧@tamer-figure-ref{path}里第一条就是。}
           @item{关闭 PowerShell 再重新打开，安装我的软件包。
                  @itemlist[#:style 'compact
@@ -107,9 +107,9 @@ vcpkg 没有现成的可执行文件，而是直接提供源码用 git 来安装
                  @itemlist[#:style 'compact
                            @commandline{C:\opt\vcpkg\vcpkg integrate install}]}
           
-          @item{回顾@secref{env-conf}，将@filepath{C:\opt\vcpkg}和@filepath{C:\opt\vcpkg\installed\x64-windows\bin}两项分别加到环境变量@envvar{Path}中。}]
+          @item{回顾@seclink["env-conf"]{环境变量}，将@filepath{C:\opt\vcpkg}和@filepath{C:\opt\vcpkg\installed\x64-windows\bin}两项分别加到环境变量@envvar{Path}中。}]
 
-自此，SDL2 安装完毕。
+完毕。
 
 @handbook-scenario{Visual Studio}
 
@@ -120,7 +120,7 @@ Visual Studio 是微软自己的标准IDE(集成开发环境，包括编辑、�
 @tamer-figure-ref{vs}至少勾选@onscreen{Desktop Development with C++}一项。如果你想在 Visual Studio 里折腾
 Python，可以再勾选@onscreen{Python Development}，然后在右侧的@onscreen{optional}栏里第一项手动勾选 Python 解释器。
 @tamer-figure*["vs" "安装 Visual Studio（含 C++ 和 Python）"]{@image["stone/installation/vs.jpg" #:scale 0.36]}
-安装过程比较漫长，耐心等待即可。之后继续配置@envvar{Path}环境变量，详细过程见 @secref{env-conf}，
+安装过程比较漫长，耐心等待即可。之后继续配置@envvar{Path}环境变量，详细过程见 @seclink["env-conf"]{环境变量}，
 将@filepath{C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build}加进去。
 将来 Visual Studio 出新版本了不会影响这个2022版的，除非你自己把它删了。
 

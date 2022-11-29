@@ -17,6 +17,7 @@
 
 @include-section{literacy/preface.scrbl}
 @include-section{literacy/installation.scrbl}
+@include-section{literacy/sync.scrbl}
 @include-section{literacy/contrastive_linguistics.scrbl}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

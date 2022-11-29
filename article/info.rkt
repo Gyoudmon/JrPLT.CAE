@@ -11,3 +11,6 @@
 (define test-omit-paths 'all)
 
 (define typesettings '(["YouthLanguage.scrbl" xelatex]))
+
+(define samples '(["literacy/sync.scrbl" 1]))
+
