@@ -84,6 +84,8 @@ Racket 在本系列课程中充当 C++ 构建工具，一行简短的命令搞�
 
 SDL2 是 Simple DirectMedia Layer 2.0，一个跨平台的 2D 游戏引擎，也是 Python 的游戏库也以它为基石。
 
+@centered{@bold{本节可以跳过，课程源码库已经自带 SDL2。}}
+
 在本系列课程中，SDL2 是 C++ 和 Python 代码库的底层接口，用于显示窗口并在里面播放动画或运行游戏，
 不需要下载源码，需要用操作系统的软件包管理工具(不同于软件商店)安装二进制动态链接库。
 
@@ -113,16 +115,37 @@ vcpkg 没有现成的可执行文件，而是直接提供源码用 git 来安装
 
 @handbook-scenario{Visual Studio}
 
+@tamer-figure-here["vs" "安装 Visual Studio（含 C++ 和 Python）"]{@image["stone/installation/vs.jpg" #:scale 0.32]}
 Visual Studio 是微软自己的标准IDE(集成开发环境，包括编辑、编译、合作等一系列专业软件开发的工作流)。
+
+@centered{@bold{如果你不想安装如此庞大的 IDE，可以跳到@seclink["vc_BuildTools"]{vs_BuildTools}，安装纯命令行工具。}}
 
 对学生而言 Visual Studio 可能过于庞杂了，但在本系列课程中，安装它主要是为了跟它一起安装的 C++ 编译器。
 去@hyperlink["https://visualstudio.microsoft.com/downloads/"]{官方网站}下载免费的 Community 版，然后对照
 @tamer-figure-ref{vs}至少勾选@onscreen{Desktop Development with C++}一项。如果你想在 Visual Studio 里折腾
 Python，可以再勾选@onscreen{Python Development}，然后在右侧的@onscreen{optional}栏里第一项手动勾选 Python 解释器。
-@tamer-figure*["vs" "安装 Visual Studio（含 C++ 和 Python）"]{@image["stone/installation/vs.jpg" #:scale 0.36]}
-安装过程比较漫长，耐心等待即可。之后继续配置@envvar{Path}环境变量，详细过程见 @seclink["env-conf"]{环境变量}，
-将@filepath{C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build}加进去。
+安装过程比较漫长，耐心等待即可。之后回顾@seclink["env-conf"]{环境变量}，
+将@filepath{C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build}加进@envvar{Path}里去。
 将来 Visual Studio 出新版本了不会影响这个2022版的，除非你自己把它删了。
+
+@handbook-action[#:tag "vc_BuildTools"]{仅安装 vs_BuildTools}
+
+@tamer-figure-here["vsbt" "安装 VS Build Tools"]{@image["stone/installation/vs_buildtools.png" #:scale 0.24]}
+安装 Visual Studio 时会自动安装一份 vs_BuildTools，但其实这套工具也可以单独安装，可以省下不少硬盘空间（因为它不提供图形界面）。
+对于本系列课程，Visual Studio 并不是必须的。
+
+直接点这个@hyperlink["https://aka.ms/vs/17/release/vs_BuildTools.exe"]{隐藏连接}下载。
+注意，它的安装界面跟 Visual Studio 极其相似，所以别被骗了，或觉得自己下载错了。
+
+一切从简，只需勾选@onscreen{Desktop Development with C++}一项即可，
+并同时去掉@tamer-figure-ref{vsbt}右侧@onscreen{optional}栏除第一项以外的所有选项。
+这次安装过程不长，之后回顾@seclink["env-conf"]{环境变量}，
+将@filepath{C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build}加进@envvar{Path}里去。
+注意，这个路径跟 Visual Studio 自带的那个不一样。
+
+这个工具实际上也能在@hyperlink["https://visualstudio.microsoft.com/downloads/"]{官方下载页面}找到，
+只不过它默认被折叠了。拉到最下面，点开@onscreen{Tools for Visual Studio}，找到@onscreen{Build Tools for Visual Studio 2022}，
+后面那个@onscreen{Download}按钮就是。以后Visual Studio 更新了，这个连接的名字也会跟着变的，到时重新安装即可。
 
 @handbook-scenario{Visual Studio Code}
 
@@ -136,7 +159,7 @@ Visual Studio Code，下载安装一气呵成。
 
 之后，当你打开一个明显是代码的文件时，它会提醒你安装相应语言的扩展，然后就可以愉快地编码了。要运行 C++ 有点麻烦，可能是因为微软的编译器
 依赖一大堆环境变量，而这些变量又随时可能变化，普遍程序员的配置成本太高了。前面我们配置的那个环境变量并不能直接运行 C++ 编译器，
-但里面有得到所有环境变量的程序。后面我们再细说运行的事。
+但里面有得到所有环境变量的程序。运行细节见@secref{wisemon}。
 
 @handbook-scenario{Python}
 

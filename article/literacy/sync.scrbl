@@ -94,7 +94,7 @@
 
 @handbook-scenario[#:tag "lan_sync"]{局域网同步}
 
-@handbook-scenario{C++ 的编译和运行}
+@handbook-scenario[#:tag "wisemon"]{C++ 的编译和运行}
 
 在开发软件的过程中，打开 PowerShell 并且 @exec{cd} 到当前项目目录是个好习惯，本系列课程里，一般就是指有 @tech{info.rkt} 的目录。
 如果涉及多个项目，每个项目单独开一个 PowerShell 比较合理，不用来回切换了。
