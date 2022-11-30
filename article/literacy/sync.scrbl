@@ -6,7 +6,7 @@
 @handbook-root-story{源码库同步}
 
 这是暂定方案，如有更方便的方法，随时更新。
-教师之间推荐@seclink["wan_sync"]{广域网同步}方法，也可以像学生一样使用@seclink["lan_sync"]{局域网同步}方法。
+教师之间推荐@seclink["wan_sync"]{广域网同步}方法，也可以像学生一样使用@seclink["student_workspace"]{学生目录}法。
 
 @handbook-scenario{源码库结构}
 
@@ -71,7 +71,7 @@
 
 此外，Python 目录本身也有一系列约定俗成的规则，但目前我们的课程不会涉及相关概念，暂且不表。
 
-@handbook-scenario[#:tag "wan_sync"]{广域网同步}
+@handbook-scenario[#:tag "wan_sync"]{完整同步}
 
 本系列所有课程的源码都组织在一个版本库(repository)里，其中共享源码(也就是前文一再提及的“配套的软件库”)以子库(submodule)的形式独立存在，以方便单独共享，
 比如我自己的项目也会用到它。于是，初次同步，先选一个用于存放源码的目录，比如 @filepath{G:\Laboratory}，然后打开 PowerShell 执行以下命令：
@@ -89,16 +89,18 @@
           @commandline{git submodule foreach git pull}
           @commandline{git pull}]
 
-建议大家平时学一下 git 的基本用法，避免你不小心改了这的源码，然后 @exec{pull} 时冲突没法正常同步。
-如果不想麻烦，那就删掉这个文件夹，从头开始重新 @exec{clone}。
+建议大家平时学一下 git 的基本用法，避免不小心修改了来回来的代码，导致下次 @exec{pull} 时冲突没法正常同步。
+如果真碰到这事了，又嫌学 git 麻烦，那就删掉这个文件夹，从头开始重新 @exec{clone}。
 
-@handbook-scenario[#:tag "lan_sync"]{局域网同步}
+@handbook-action{将你的电脑配置成 git 服务器}
 
-@handbook-scenario[#:tag "wisemon"]{C++ 的编译和运行}
+@handbook-scenario[#:tag "wisemon"]{C++ 代码的编译和运行}
 
-在开发软件的过程中，打开 PowerShell 并且 @exec{cd} 到当前项目目录是个好习惯，本系列课程里，一般就是指有 @tech{info.rkt} 的目录。
+在开发软件的过程中，打开 PowerShell 并且 @exec{cd} 到当前项目目录是个好习惯。
+在本系列课程中，一般就是指 @tech{info.rkt} 文件所在的目录。
 如果涉及多个项目，每个项目单独开一个 PowerShell 比较合理，不用来回切换了。
-如果使用 Visual Studio Code，也可以直接启动它的终端，不过那个终端是命令提示符，但在编译这件事上差别不大。
+如果使用 Visual Studio Code，也可以直接启动它的终端，
+不过那个终端是 @exec{cmd.exe} 而非 PowerShell，虽说在编译这件事上差别不大。
 这样可以以假乱真，假装是在用 IDE。
 
 对于 @tt{sketch} 这种草稿性质的代码，一般不需要特别复杂的编译参数，可以直接编译
@@ -121,16 +123,20 @@
 
 Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文件即可。
 
-@handbook-scenario{学生目录}
+@handbook-scenario[#:tag "student_workspace"]{学生目录}
 
 一般来说，不建议学生直接修改教师的源码，学生应该另外找一个目录，保持目录结构不变，创建好自己的课程目录。
 比如@filepath{G:\Course\YouthLanguage\cpp\basis}，然后把教师目录下的@filepath{info.rkt}
 和已经配置好的入口文件复制到该目录下，最后单独@exec{clone}配套的源码库：
 
 @itemlist[#:style 'compact
-          @commandline{git clone https://github.com/Gyoudmon/digitama.cpp.git G:\Course\YouthLanguage\cpp\basis\digitama}]
+          @commandline{git clone https://github.com/Gyoudmon/digitama.cpp.git G:\Course\YouthLanguage\cpp\basis\digitama}
+          @commandline{git clone https://github.com/Gyoudmon/vcso.git G:\Course\YouthLanguage\cpp\basis\village}]
 
-Python 学生将其中的 @tt{digitama.cpp.git} 替换成 @tt{digitama.py.git} 即可：
+其中@tt{vcso.git}是 Windows 共享库，有这个就不用另外安装 vcpkg 了（就是那个可以跳过的@Secref{vcpkg}）。
+因此，使用其他操作系统的学生无需同步这个。
+
+Python 学生将其中的 @tt{digitama.cpp.git} 替换成 @tt{digitama.py.git} 即可，也不需要 @tt{vcso.git}：
 
 @itemlist[#:style 'compact
           @commandline{git clone https://github.com/Gyoudmon/digitama.py.git G:\Course\YouthLanguage\python\basis\digitama}]

@@ -64,7 +64,7 @@ Racket 在本系列课程中充当 C++ 构建工具，一行简短的命令搞�
 @itemlist[#:style 'compact
           @commandline{raco pkg install -i --auto digimon}]
 
-详细的构建过程见@secref{wisemon}。
+详细的构建过程见@Secref{wisemon}。
 
 下面这几个软件包可能对大家有点用，如果感兴趣可以继续安装，没兴趣就跳过。
 这些工具用得好可以提高研课效率，但肯定需要额外花时间去学。
@@ -110,7 +110,7 @@ SDL2 是 Simple DirectMedia Layer 2.0，一个跨平台的 2D 游戏引擎，也
 在本系列课程中，SDL2 是 C++ 和 Python 代码库的底层接口，用于显示窗口并在里面播放动画或运行游戏，
 不需要下载源码，需要用操作系统的软件包管理工具(不同于软件商店)安装二进制动态链接库。
 
-@handbook-action{Windows 下使用 vcpkg 安装 SDL2}
+@handbook-action[#:tag "vcpkg"]{Windows 下使用 vcpkg 安装 SDL2}
 
 vcpkg 是微软自己的软件包管理工具，用于安装与自己的编译器兼容的第三方软件库，其中就包括我们需要的 SDL2。
 
@@ -180,7 +180,7 @@ Visual Studio Code，下载安装一气呵成。
 
 之后，当你打开一个明显是代码的文件时，它会提醒你安装相应语言的扩展，然后就可以愉快地编码了。要运行 C++ 有点麻烦，可能是因为微软的编译器
 依赖一大堆环境变量，而这些变量又随时可能变化，普遍程序员的配置成本太高了。前面我们配置的那个环境变量并不能直接运行 C++ 编译器，
-但里面有得到所有环境变量的程序。详细构建过程见@secref{wisemon}。
+但里面有得到所有环境变量的程序。详细构建过程见@Secref{wisemon}。
 
 @handbook-scenario{Python}
 
