@@ -21,4 +21,4 @@
 @include-section{literacy/contrastive_linguistics.scrbl}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-@handbook-appendix[#:index-section? #false #:numbered? #false]
+@handbook-appendix[#:index-section? #true #:numbered? #false]

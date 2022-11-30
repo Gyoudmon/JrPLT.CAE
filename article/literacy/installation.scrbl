@@ -5,48 +5,7 @@
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-root-story{配置开发环境}
 
-@bold{注意，建议诸位在自己的电脑里备好梯子。
-这样不仅本次安装过程无硬伤，后续我们内部协作也会顺畅很多。}
-
 @(define figure-scale 0.20)
-
-@handbook-scenario{git}
-
-git 是目前应用最广泛的版本管理工具。建议大家有空了熟悉一下 git 的基本用法。
-
-在本系列课程中，git 既用于管理我们自己的代码库，也用于管理和安装依赖的第三方库。
-这个安装比较简单，去@hyperlink["https://git-scm.com/download/win"]{官方网站}下载自己系统的版本即可。
-
-@handbook-action[#:tag "env-conf"]{环境变量}
-
-环境变量是操作系统推送给每一个应用程序的特殊变量，用以告诉应用程序自己正运行在什么环境里，
-比如系统是 Windows 还是 macOS、启动自己的用户是谁，等等。其中最重要的是，
-程序知道要去哪里找别的程序以便在需要的时候协作完成一项任务。
-
-命令提示符或 PowerShell 是两个最典型的程序，用户使用它们的大部分时间都在启动、执行别的程序。
-当你随便输入一个不存在的命令名字时，它们会抱怨找不到这个程序。但是现在，你输入 git 它依然还是抱怨找不到，
-而你明明才刚刚安装上。这是因为还没有配置环境变量，它们不知道去哪找到 git。
-
-@itemlist[#:style 'compact
-          @item{按 @exec{Win+R} 快捷键打开 Run，输入 @exec{sysdm.cpl} 回车打开@tamer-figure-ref{sysdm}的“系统属性”窗口。
-                  @tamer-figure-here["sysdm" "系统属性"]{@image["stone/installation/sysdm_cpl.png" #:scale figure-scale]}}
-
-          @item{在“高级”标签页最下方有个“环境变量”，点击打开 @tamer-figure-ref{env}。
-                  @tamer-figure-here["env" "环境变量"]{@image["stone/installation/env.png" #:scale figure-scale]}}
-
-          @item{编辑“系统变量”里的 @envvar{Path}，对照@tamer-figure-ref{path}，检查是否有 git 项，如果没有就新建一个，把
-                @filepath{C:\Program Files\Git\cmd} 加进去。
-                @tamer-figure-here["path" "编辑环境变量"]{@image["stone/installation/path.png" #:scale figure-scale]}}]
-
-至此，关闭 PowerShell 再重新打开就可以运行 git 命令了。可以用@exec{where.exe}（后缀@exec{.exe}不能省略）命令来确定某个程序能不能被找到：
-
-@itemlist[#:style 'compact
-          @commandline{where.exe git}]
-
-这个命令会告诉你 git 存放的完整路径。
-
-另外，修改环境变量的过程对于软件工程师来说很重要，后续安装过程中还会多次往@envvar{Path}里面加东西。
-
 
 @handbook-scenario{Racket}
 
@@ -58,25 +17,87 @@ Racket 是我最常用的语言，它是现代 Lisp 最前卫的方言之一，�
 我们这个社区的活跃用户在全世界也就两千人，创始人是该领域的顶级计算机科学家，他们既希望自己的语言能得到大范围应用，
 但又不希望过于大众，因为...那就庸俗了呀。
 
-Racket 在本系列课程中充当 C++ 构建工具，一行简短的命令搞定所有恼人的编译细节，特别是解决了“一个项目只能有一个main”问题。
-此外，我自己研课时也经常用它写小程序以提高工作效率，包括写出这篇手册。
+安装过程分三步。第一步简单，去@hyperlink["https://racket-lang.org/download/"]{官方网站}下载跟你系统一致的版本、安装即可，
+后面两步分别各花一个小节来详细说明。
 
-顺便说一句，用我自己写的软件来教学生，肯定有家长会质疑这个做法。
+@handbook-action[#:tag "env-conf"]{配置环境变量}
+
+环境变量是操作系统推送给每一个应用程序的特殊变量，用以告诉应用程序自己正运行在什么环境里，
+比如系统是 Windows 还是 macOS、启动自己的用户是谁，等等。其中最重要的是，
+程序知道要去哪里找别的程序以便在需要的时候协作完成一项任务。
+
+命令提示符（cmd.exe）或 PowerShell 是两个最典型的程序，用户使用它们的大部分时间都在启动、执行别的程序。
+当你随便输入一个不存在的命令名字时，它们会抱怨找不到这个程序。
+但是现在，你输入 racket 它依然还是抱怨找不到，而你明明才刚刚安装上。
+这是因为还没有配置环境变量，它们不知道去哪找到 racket。
+
+对于我们用得到的部分，cmd.exe 和 PowerShell 差不多。
+但方便起见，建议大家熟练使用 PowerShell 常用命令。
+接下来开始配置环境变量：
+
+@itemlist[#:style 'compact
+          @item{在 PowerShell 里输入 @exec{sysdm.cpl} 回车打开@tamer-figure-ref{sysdm}的“系统属性”窗口。
+           @tamer-figure-here["sysdm" "系统属性"]{@image["stone/installation/sysdm_cpl.png" #:scale figure-scale]}}
+
+          @item{在“高级”标签页最下方有个“环境变量”，点击打开 @tamer-figure-ref{env}。
+           @tamer-figure-here["env" "环境变量"]{@image["stone/installation/env.png" #:scale figure-scale]}}
+          
+          @item{编辑“系统变量”里的 @envvar{Path}，对照@tamer-figure-ref{path}，把 @filepath{C:\Program Files\Racket} 加进去。
+           越靠上的路径优先级越高。@tamer-figure-here["path" "编辑环境变量"]{@image["stone/installation/path.png" #:scale 0.36]}}]
+
+至此，关闭 PowerShell 再重新打开就可以运行 racket 命令了。
+可以用@exec{where.exe}（后缀@exec{.exe}不能省略）命令来确定某个程序能不能被找到，
+比如：
+
+@itemlist[#:style 'compact
+          @commandline{where.exe racket}]
+
+这个命令会告诉你 racket 存放的完整路径，如果你安装了多个版本，它也会把其他版本的路径都列出来，默认情况运行第一个。
+
+@centered{@bold{环境变量对于软件工程师来说很重要，后续安装过程中还会多次往@envvar{Path}里面加东西。}}
+
+@handbook-action{安装我写的构建工具}
+
+Racket 在本系列课程中充当 C++ 构建工具，一行简短的命令搞定所有恼人的编译细节，特别是解决了“一个项目只能有一个main”问题。
+在 PowerShell 里运行如下命令：
+
+@itemlist[#:style 'compact
+          @commandline{raco pkg install -i --auto digimon}]
+
+详细的构建过程见@secref{wisemon}。
+
+下面这几个软件包可能对大家有点用，如果感兴趣可以继续安装，没兴趣就跳过。
+这些工具用得好可以提高研课效率，但肯定需要额外花时间去学。
+
+@itemlist[#:style 'compact
+          @commandline{raco pkg install -i --auto graphics w3s mox}]
+
+最后说一句，用我自己写的软件来教学生，肯定有家长会质疑这个做法。
 嗯，初学编程真的麻烦且枯燥，如果你不希望你的孩子在第一个月就被各种烦人的细节劝退，那就放宽心。
 先入门激活了兴趣再考虑别的，比如竞赛组学生会专门培训标准工具链以应付考试。
 再说了，我的代码质量经过真实世界的检验，你觉得亏的可能性只有一种：格局低了。
 
 悄悄地说一声，你可以在 Racket 某些版本的致谢名单里看到我的英文名（嘘）。
 
-安装过程分三步：
+@handbook-scenario{git}
+
+@tamer-figure-here["git_path" "git 环境变量"]{@image["stone/installation/git_path.png" #:scale 0.42]}
+git 是目前应用最广泛的版本管理工具。建议大家有空了熟悉一下 git 的基本用法。
+
+在本系列课程中，git 既用于管理我们自己的代码库，也用于管理和安装依赖的第三方库。
+安装过程不算复杂，去@hyperlink["https://git-scm.com/download/win"]{官方网站}下载自己系统的版本。
+但在一路@onscreen{下一步}的过程中，注意@tamer-figure-ref{git_path}界面，是给 git 配置
+@envvar{Path} 环境变量的，它默认选了第二项，但我建议大家选第三项。那个可以让大家在 PowerShell
+里使用 Linux 命令，比 Windows 自己的同名命令好用一些。后续课程里针对竞赛班的培训，命令行肯定是以
+Linux 的为准。实际上，很多好用的工具都没有 Windows 版，移植到 Windows 上去的时候都会自带一个微型的
+Linux 环境。这也是为什么明明是个很小的工具，安装起来却动辄几百兆的原因。
+
+如果已经安装了 git，但没有选第三项的，只需回顾@seclink["env-conf"]{环境变量}，
+把以下两个路径也加到 @envvar{Path} 里，顺序不要错：
 
 @itemlist[#:style 'compact
-          @item{去@hyperlink["https://racket-lang.org/download/"]{官方网站}下载、安装，这一步比较简单。}
-          @item{回顾@seclink["env-conf"]{环境变量}，将@filepath{C:\Program Files\Racket}加到环境变量@envvar{Path}中。
-                  碰巧@tamer-figure-ref{path}里第一条就是。}
-          @item{关闭 PowerShell 再重新打开，安装我的软件包。
-                 @itemlist[#:style 'compact
-                           @commandline{raco pkg install -i --auto digimon graphics w3s mox}]}]
+          @item{@filepath{C:\Program Files\Git\mingw64\bin}}
+          @item{@filepath{C:\Program Files\Git\usr\bin}}]
 
 完毕。
 
@@ -159,7 +180,7 @@ Visual Studio Code，下载安装一气呵成。
 
 之后，当你打开一个明显是代码的文件时，它会提醒你安装相应语言的扩展，然后就可以愉快地编码了。要运行 C++ 有点麻烦，可能是因为微软的编译器
 依赖一大堆环境变量，而这些变量又随时可能变化，普遍程序员的配置成本太高了。前面我们配置的那个环境变量并不能直接运行 C++ 编译器，
-但里面有得到所有环境变量的程序。运行细节见@secref{wisemon}。
+但里面有得到所有环境变量的程序。详细构建过程见@secref{wisemon}。
 
 @handbook-scenario{Python}
 
