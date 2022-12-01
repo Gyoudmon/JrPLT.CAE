@@ -20,7 +20,7 @@ def main(argv):
         for i in range(0, len(ids)):
             print("    %s = 0x%x" % (argv[i + 2], ids[i]))
 
+
 if __name__=="__main__":
     sys.exit(main(sys.argv))
-
 
