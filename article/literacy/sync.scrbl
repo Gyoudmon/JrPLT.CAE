@@ -6,7 +6,7 @@
 @handbook-root-story{源码库同步}
 
 这是暂定方案，如有更方便的方法，随时更新。
-教师之间推荐@seclink["wan_sync"]{广域网同步}方法，也可以像学生一样使用@seclink["student_workspace"]{学生目录}法。
+教师之间推荐@seclink["wan_sync"]{完整同步}方法，也可以像学生一样使用@seclink["student_workspace"]{学生目录}法。
 
 @handbook-scenario{源码库结构}
 
@@ -34,24 +34,24 @@
 接下来以 @tt{basis} 目录为例说明课程内容组织（把一个软件假想为一只数字生物会更容易理解）。
 
 @itemlist[#:style 'compact
-          @item{@deftech[#:key "digivice"]{.}: 源码根目录，相当于常规的 @tt{src}，存放最直接的源码，包括带 @italic{main} 的程序入口文件、
+          @item{@tamer-deftech[#:key "digivice"]{.}: 源码根目录，相当于常规的 @tt{src}，存放最直接的源码，包括带 @italic{main} 的程序入口文件、
            你愿意共享给别人使用的模块文件和头文件。软件一旦发布，你修改这些文件必须保证兼容性，或以较为正式的方式告知别人为什么要放弃兼容性。
            顺便说一句，用我自己的构建工具编译 C++ 项目，可以存在多个 @italic{main}，一般一个 @italic{main} 代表一个程序。}
-          @item{@deftech{digitama}: 私有源码目录，表示这个目录里的源码不对外开放。你修改这些文件无需保证兼容性，
+          @item{@tamer-deftech{digitama}: 私有源码目录，表示这个目录里的源码不对外开放。你修改这些文件无需保证兼容性，
            如果别人非要直接使用这些源码，后果自负。比如因你修改源码而导致他们程序崩溃，他们怨不得你。
            @tt{digitama} 是“数码蛋”的意思，意为我们的软件是从这个蛋里孵出来的。}
-          @item{@deftech{stone}: 资源目录，相当于常规的 @tt{res} 或 @tt{Assets}，存放资源和(静态)配置信息，
+          @item{@tamer-deftech{stone}: 资源目录，相当于常规的 @tt{res} 或 @tt{Assets}，存放资源和(静态)配置信息，
            比如图片素材、界面文字的多语言翻译等。@tt{stone} 源自“罗赛塔石碑(Rosetta Stone)”，石碑上刻着对于任务而言至关重要的信息，
            这些信息只可读不可写。}
-          @item{@deftech{tamer}: 测试目录，是常规的 @tt{tests} 和 @tt{docs} 的结合，用于存放测试程序和项目文档。
+          @item{@tamer-deftech{tamer}: 测试目录，是常规的 @tt{tests} 和 @tt{docs} 的结合，用于存放测试程序和项目文档。
            这个更像是我的个人偏好，项目文档应当与软件的实际运行情况一致，因此一种做法是把文档以注释的形式写在源码里，
            但对于大项目仅仅因为修改了注释就要重新编译整个项目，这想想都不划算(大项目的编译相当耗费时间)。
            于是，我喜欢将文档和测试结合，这样我提供的文档，既包含了函数签名，还包含用法举例，以及算法的正确性验证等信息。
           @tt{tamer}是“驯兽师”的意思，寓意明显。}
-          @item{@deftech{literacy}: 出版物源码目录。这也是我的个人偏好，在软件项目里没有对应的标准目录。相对于上面提到的项目文档，
+          @item{@tamer-deftech{literacy}: 出版物源码目录。这也是我的个人偏好，在软件项目里没有对应的标准目录。相对于上面提到的项目文档，
            这个目录里面的内容要正式一些，作品可能是一本书、一篇论文等，以 pdf (而非网页)形式提供，比如你现在正在读的这份手册。
            @tt{literacy} 就是字面意思“文字能力”，无寓意。}
-          @item{@deftech{village}: 协作目录，相当于开源项目的 @tt{contrib}。如果你的软件需要其他软件的源码，或者你想对其他软件提供支持，
+          @item{@tamer-deftech{village}: 协作目录，相当于开源项目的 @tt{contrib}。如果你的软件需要其他软件的源码，或者你想对其他软件提供支持，
            或者别人扩展了你的软件，这些源码都可以放在这里。@tt{village} 源自“创始村(Primary Village)”，数码宝贝出生的地方。}]
 
 以上条目未必都会出现在同一课程目录里，如果出现，一定符合上述解释。比如 @tt{literacy} 就只出现在 @tt{article} 里。
@@ -59,12 +59,12 @@
 此外，还有两个特殊文件(夹)，文件名不可更改。
 
 @itemlist[#:style 'compact
-          @item{@deftech{info.rkt}: Racket 软件包的信息文件。用来配置我的 C++ 构建工具，比如哪些文件需要编译，怎么编译等。}
-          @item{@deftech{compiled}: Racket 编译缓存文件目录，用于存放所有编译过程中可以自动生成的文件。以下几个子目录在我们的课程中也可能用到：
+          @item{@tamer-deftech{info.rkt}: Racket 软件包的信息文件。用来配置我的 C++ 构建工具，比如哪些文件需要编译，怎么编译等。}
+          @item{@tamer-deftech{compiled}: Racket 编译缓存文件目录，用于存放所有编译过程中可以自动生成的文件。以下几个子目录在我们的课程中也可能用到：
                  
            @itemlist[#:style 'compact
-                     @item{@deftech{typesetting}: 存放 @tech{literacy}的输出，比如本手册 @filepath{compiled/typesettings/YouLanguage.pdf}。}
-                     @item{@deftech{native}: 存放 C++ 二进制文件的输出，比如 @filepath{compiled/native/win32/x86_64/BigBang}。
+                     @item{@tamer-deftech{typesetting}: 存放 @tech{literacy}的输出，比如本手册 @filepath{compiled/typesettings/YouLanguage.pdf}。}
+                     @item{@tamer-deftech{native}: 存放 C++ 二进制文件的输出，比如 @filepath{compiled/native/win32/x86_64/BigBang}。
                                  注意，它这里面会根据体系结构和操作系统划分子目录。}]}]
 
 @tt{compiled} 和 Python 源码目录里的 @tt{__pycache__} 功能相同。
@@ -91,8 +91,6 @@
 
 建议大家平时学一下 git 的基本用法，避免不小心修改了来回来的代码，导致下次 @exec{pull} 时冲突没法正常同步。
 如果真碰到这事了，又嫌学 git 麻烦，那就删掉这个文件夹，从头开始重新 @exec{clone}。
-
-@handbook-action{将你的电脑配置成 git 服务器}
 
 @handbook-scenario[#:tag "wisemon"]{C++ 代码的编译和运行}
 
