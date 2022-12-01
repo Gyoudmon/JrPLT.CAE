@@ -138,12 +138,13 @@ class Plane(object):
 
         return found
 
-    def get_matter_location(self, m, fx, fy):
+    def get_matter_location(self, m, anchor):
         info = __plane_matter_info(self, m)
         x, y = False, 0.0
 
         if info and __unsafe_matter_unmasked(info, self.__mode):
             sx, sy, sw, sh = __unsafe_get_matter_bound(m, info)
+            fx, fy = __matter_anchor_fraction(anchor)
             x = sx + sw * fx
             y = sy + sh * fy
 
@@ -166,7 +167,41 @@ class Plane(object):
 
         return self.__mleft, self.__mtop, w, h
 
-    def insert_at(self, m, target, anchor, delta): pass
+    def insert(self, m, x = 0.0, y = 0.0, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
+        if m.info is None:
+            fx, fy = __matter_anchor_fraction(anchor)
+            
+            info = __bind_matter_owership(self, self.__mode, m)
+            if self.__head_matter:
+                self.__head_matter = m
+                info.prev = self.__head_matter
+            else:
+                head_info = self.__head_matter.info
+                prev_info = self.__head_matter.info
+
+                info.prev = head_info.prev
+                prev_info.next = m
+                head_info.prev = m
+            info.next = self.__head_matter
+
+            self.begin_update_sequence()
+            m.pre_construct()
+            m.construct()
+            m.post_construct()
+            __unsafe_move_matter_via_info(self, m, info, x, y, fx, fy, dx, dy)
+            
+            if m.ready():
+                if self.__scale_x != 1.0 or self.__scale_y != 1.0:
+                    __do_resize(self, m, info, self.__scale_x, self.__scale_y)
+
+                self.notify_updated()
+                self.on_matter_ready(m)
+            else:
+                self.notify_updated()
+            
+            self.end_update_sequence()
+
+        return m
 
     def move(self, m, x, y):
         info = __plane_matter_info(self, m)
@@ -190,7 +225,63 @@ class Plane(object):
             
             self.notify_update()
     
-    def move_to(self, m, target, anchor, delta): pass
+    def move_to(self, matter, target, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
+        '''
+        Move the game object to the target position, aligned by the anchor
+
+        :param matter: the game object
+        :param target: the target position, which can be shaped as one of
+                            (x, y)
+                            (target_matter, target_anchor)
+                            (target_matter, target_x_fraction, target_y_fraction)
+                            (target_matter_for_x, x_fraction, target_matter_for_y, y_fraction)
+        :param anchor: the aligning anchor of the game object, which can be shaped as one of
+                            anchor
+                            (width_fraction, height_fraction)
+        :param dx: the final translation of x
+        :param dy: the final translation of y
+        '''
+
+        info = __plane_matter_info(self, matter)
+        x, y = False, False
+        
+        if info and __unsafe_matter_unmasked(self, matter):
+            target_shape = len(target)
+            
+            if target_shape == 2:
+                if isinstance(target[0], Matter):
+                    tinfo = __plane_matter_info(self, target[0])
+
+                    if tinfo and __unsafe_matter_unmasked(tinfo, self.__mode):
+                        tx, ty, tw, th = __unsafe_get_matter_bound(target[0], tinfo)
+                        tfx, tfy = __matter_anchor_fraction(target[1])
+                        x = tx + tw * tfx
+                        y = ty + th * tfy
+                else:
+                    x, y = target[0], target[1]
+            elif target_shape == 3:
+                tinfo = __plane_matter_info(self, target[0])
+
+                if tinfo and __unsafe_matter_unmasked(tinfo, self.__mode):
+                    tx, ty, tw, th = __unsafe_get_matter_bound(target[0], tinfo)
+                    x = tx + tw * target[1]
+                    y = ty + th * target[2]
+            else:
+                xinfo = __plane_matter_info(self, target[0])
+                yinfo = __plane_matter_info(self, target[2])
+
+                if xinfo and __unsafe_matter_unmasked(xinfo, self.__mode):
+                    if yinfo and __unsafe_matter_unmasked(yinfo, self.__mode):
+                        xtx, _, xtw, _ = __unsafe_get_matter_bound(target[0], xinfo)
+                        _, yty, _, yth = __unsafe_get_matter_bound(target[2], yinfo)
+                        x = xtx + xtw * target[1]
+                        y = yty + yth * target[2]
+
+        if x and y:
+            fx, fy = __matter_anchor_fraction(anchor)
+            
+            if __unsafe_move_matter_via_info(self, matter, info, x, y, fx, fy, dx, dy):
+                self.notify_updated()
     
     def remove(self, m):
         info = __plane_matter_info(self, m)
@@ -683,15 +774,18 @@ def __unsafe_set_selected(master, m, info):
 def __matter_anchor_fraction(a):
     fx, fy = 0.0, 0.0
 
-    if a == MatterAnchor.LT: pass
-    elif a == MatterAnchor.LC: fy = 0.5
-    elif a == MatterAnchor.LB: fy = 1.0
-    elif a == MatterAnchor.CT: fx = 0.5          
-    elif a == MatterAnchor.CC: fx, fy = 0.5, 0.5
-    elif a == MatterAnchor.CB: fx, fy = 0.5, 1.0
-    elif a == MatterAnchor.RT: fx = 1.0
-    elif a == MatterAnchor.RC: fx, fy = 1.0, 0.5
-    elif a == MatterAnchor.RB: fx, fy = 1.0, 1.0
+    if isinstance(a, enum.Enum): 
+        if a == MatterAnchor.LT: pass
+        elif a == MatterAnchor.LC: fy = 0.5
+        elif a == MatterAnchor.LB: fy = 1.0
+        elif a == MatterAnchor.CT: fx = 0.5          
+        elif a == MatterAnchor.CC: fx, fy = 0.5, 0.5
+        elif a == MatterAnchor.CB: fx, fy = 0.5, 1.0
+        elif a == MatterAnchor.RT: fx = 1.0
+        elif a == MatterAnchor.RC: fx, fy = 1.0, 0.5
+        elif a == MatterAnchor.RB: fx, fy = 1.0, 1.0
+    else:
+        fx, fy = a[0], a[1]
 
     return fx, fy
 
@@ -733,7 +827,7 @@ def __unsafe_move_async_matter_when_ready(master, m, info):
     asi = info.iasync
     info.iasync = None
 
-    __unsafe_move_matter_via_info(master, m, info, asi['x0'], asi['y0'], asi['fx0'], asi['fy0'], asi['dx0'], asi['dy0'])
+    return __unsafe_move_matter_via_info(master, m, info, asi['x0'], asi['y0'], asi['fx0'], asi['fy0'], asi['dx0'], asi['dy0'])
 
 def __do_search_selected_matter(start, mode, terminator):
     found = None
