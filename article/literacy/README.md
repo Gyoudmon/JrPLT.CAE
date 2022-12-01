@@ -74,3 +74,74 @@
 `compiled` 和 Python 源码目录里的 `__pycache__` 功能相同。
 
 此外，Python 目录本身也有一系列约定俗成的规则，但目前我们的课程不会涉及相关概念，暂且不表。
+
+## 2. 完整同步
+
+本系列所有课程的源码都组织在一个版本库(repository)里，其中共享源码(也就是前文一再提及的“配套的软件库”)以子库(submodule)的形式独立存在，以方便单独共享，
+比如我自己的项目也会用到它。于是，初次同步，先选一个用于存放源码的目录，比如 `"G:\Laboratory"`，然后打开 PowerShell
+执行以下命令：
+
+*   `git clone --recurse-submodules
+  https://github.com/Gyoudmon/YouthLanguage.git
+  G:\Laboratory\YouthLanguage`
+
+*   `cd G:\Laboratory\YouthLanguage`
+
+*   `git submodule foreach git checkout master`
+
+第三步很重要，要不然拉过来的子库源码不属于任何分支，这是 git submodule 经常被人诟病的地方。 以后需要更新时，只需
+
+*   `cd G:\Laboratory\YouthLanguage`
+
+*   `git submodule foreach git pull`
+
+*   `git pull`
+
+建议大家平时学一下 git 的基本用法，避免不小心修改了来回来的代码，导致下次 `pull` 时冲突没法正常同步。 如果真碰到这事了，又嫌学
+git 麻烦，那就删掉这个文件夹，从头开始重新 `clone`。
+
+## 3. C++ 代码的编译和运行
+
+在开发软件的过程中，打开 PowerShell 并且 `cd` 到当前项目目录是个好习惯。 在本系列课程中，一般就是指 info.rkt
+文件所在的目录。 如果涉及多个项目，每个项目单独开一个 PowerShell 比较合理，不用来回切换了。 如果使用 Visual Studio
+Code，也可以直接启动它的终端， 不过那个终端是 `cmd.exe` 而非 PowerShell，虽说在编译这件事上差别不大。
+这样可以以假乱真，假装是在用 IDE。
+
+对于 `sketch` 这种草稿性质的代码，一般不需要特别复杂的编译参数，可以直接编译
+
+*   `raco wisemon -d cc [入口文件.cpp]`
+
+其中，`raco` 是 Racket 提供的命令行；`wisemon` 是我的构建工具； `---d`
+表示输出编译过程，但不要太啰嗦；`cc`是 C/C++ 编译器（C Compiler）的首字母缩写。
+
+对于 `basis` 这样的复杂项目，编译参数通常都会很复杂，因为我会在 `"info.rkt"` 里配置好，然后直接编译
+
+*   `raco wisemon -d cc`
+
+这次连带入口文件都不用指定，它会自己解析 info.rkt 文件找到要编译的文件，并设置好相应的参数。
+无论用哪种方式，编译完了之后的可执行文件，都在与入口文件相同目录的 `"compiled/native"` 子目录里。 比如，
+`cpp/basis` 课程目录中有个 `"FontBrowser.cpp"` 文件，它已被配置在 info.rkt 中。
+于是，它对应的可执行文件名是`"cpp/basis/compiled/native/win32/x86_64/FontBrowser.exe"`。
+
+Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文件即可。
+
+## 4. 学生目录
+
+一般来说，不建议学生直接修改教师的源码，学生应该另外找一个目录，保持目录结构不变，创建好自己的课程目录。
+比如`"G:\Course\YouthLanguage\cpp\basis"`，然后把教师目录下的`"info.rkt"`
+和已经配置好的入口文件复制到该目录下，最后单独`clone`配套的源码库：
+
+*   `git clone https://github.com/Gyoudmon/digitama.cpp.git
+  G:\Course\YouthLanguage\cpp\basis\digitama`
+
+*   `git clone https://github.com/Gyoudmon/vcso.git
+  G:\Course\YouthLanguage\cpp\basis\village`
+
+其中`vcso.git`是 Windows 共享库，有这个就不用另外安装 vcpkg 了（就是那个可以跳过的\[missing\]）。
+因此，使用其他操作系统的学生无需同步这个。
+
+Python 学生将其中的 `digitama.cpp.git` 替换成 `digitama.py.git` 即可，也不需要
+`vcso.git`：
+
+*   `git clone https://github.com/Gyoudmon/digitama.py.git
+  G:\Course\YouthLanguage\python\basis\digitama`
