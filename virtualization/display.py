@@ -9,6 +9,9 @@ class IDisplay(ABC):
         self.__update_is_needed = False
 
     @abstractmethod
+    def get_extent(self): pass
+
+    @abstractmethod
     def refresh(self): pass
 
     @abstractmethod
@@ -31,7 +34,7 @@ class IDisplay(ABC):
     def begin_update_sequence(self):
         self.__update_sequence_depth += 1
 
-    def in_update_sequence(self):
+    def is_in_update_sequence(self):
         return self.__update_sequence_depth > 0
 
     def end_update_sequence(self):
@@ -40,15 +43,15 @@ class IDisplay(ABC):
         if self.__update_sequence_depth < 1:
             self.__update_sequence_depth = 0
 
-            if self.__update_is_needed:
+            if self.should_update():
                 self.refresh()
                 self.__update_is_needed = False
 
-    def needs_update(self):
+    def should_update(self):
         return self.__update_is_needed
 
     def notify_updated(self):
-        if self.in_update_sequence():
+        if self.is_in_update_sequence():
             self.__update_is_needed = True
         else:
             self.refresh()

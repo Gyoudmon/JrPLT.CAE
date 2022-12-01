@@ -248,6 +248,9 @@ class Universe(IDisplay):
         return self.__fps
 
 # public
+    def get_extent(self):
+        return self.get_window_size()
+
     def refresh(self):
         self.__do_redraw(self.__renderer, 0, 0, self.__window_width, self.__window_height)
         game_world_refresh(self.__renderer, self.__texture)

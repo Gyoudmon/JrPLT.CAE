@@ -1,6 +1,14 @@
+import sdl2
+import sdl2.rect as sdlr
+import math
+
 from .virtualization.iscreen import *
 from .graphics.colorspace import *
+
 from .matter import *
+from .matter.movable import *
+
+from .physics.mathematics import *
 
 ###############################################################################
 class IPlanetInfo(object):
@@ -25,6 +33,17 @@ class Plane(object):
         self.erase()
 
 # public
+    def name(self):
+        return self.__caption
+
+    def master(self):
+        screen = None
+
+        if self.info:
+            screen = self.info.master
+
+        return screen
+
     def change_mode(self, mode):
         if mode != self.__mode:
             self.no_selected()
@@ -45,9 +64,50 @@ class Plane(object):
     def load(self, Width, Height): pass
     def reflow(self, width, height): pass
     def update(self, count, interval, uptime): pass
-    def draw(self, renderer, X, Y, Width, Height): pass
     def can_exit(self): return False
 
+    def draw(self, renderer, X, Y, Width, Height):
+        dsX, dsY = math.max(0.0, X), math.max(0.0, Y)
+        dsWidth, dsHeight = X + Width, Y + Height
+
+        if self.__bg_alpha > 0.0:
+            game_fill_rect(renderer, dsX, dsY, dsWidth, dsHeight, self.__background, self.__bg_alpha)
+
+        if self.__head_matter:
+            clip = sdlr.SDL_Rect(0, 0, 0, 0)
+            child = self.__head_matter
+
+            while True:
+                info = child.info
+
+                if __unsafe_matter_unmasked(info, self.__mode):
+                    gwidth, gheight = child.get_extent(info.x, info.y)
+
+                    gx = (info.x + self.__translate_x) * self.__scale_x + X
+                    gy = (info.y + self.__translate_y) * self.__scale_y + Y
+
+                    if rectangle_overlay(gx, gy, gx + gwidth, gy + gheight, dsX, dsY, dsWidth, dsHeight):
+                        clip.x = int(math.floor(gx))
+                        clip.y = int(math.floor(gy))
+                        clip.w = int(math.ceil(gwidth))
+                        clip.h = int(math.ceil(gheight))
+
+                        sdl2.SDL_RenderSetClipRect(renderer, clip)
+                        child.draw(renderer, gx, gy, gwidth, gheight)
+
+                        if info.selected:
+                            sdl2.SDL_RenderSetClipRect(renderer, None)
+                            self.draw_visible_selection(renderer, gx, gy, gwidth, gheight)
+
+                child = info.next
+                if child == self.__head_matter:
+                    break
+            
+            sdl2.SDL_RenderSetClipRect(renderer, None)
+
+    def draw_visible_selection(self, renderer, x, y, width, height):
+        game_draw_rect(renderer, x, y, width, height, 0x00FFFF)
+    
 # public
     def find_matter(self, x, y):
         found = None
@@ -107,9 +167,52 @@ class Plane(object):
         return self.__mleft, self.__mtop, w, h
 
     def insert_at(self, m, target, anchor, delta): pass
-    def move(self, m, x, y): pass
+
+    def move(self, m, x, y):
+        info = __plane_matter_info(self, m)
+
+        if info:
+            if __unsafe_matter_unmasked(info, self.__mode):
+                if __unsafe_do_moving_via_info(self, info, x, y, False):
+                    self.notify_updated()
+        elif self.__head_matter:
+            child = self.__head_matter
+
+            while True:
+                info = child.info
+
+                if info.selected and __unsafe_matter_unmasked(info, self.__mode):
+                    __unsafe_do_moving_via_info(self, info, x, y, False)
+
+                child = info.next
+                if child == self.__head_matter:
+                    break
+            
+            self.notify_update()
+    
     def move_to(self, m, target, anchor, delta): pass
-    def remove(self, m): pass
+    
+    def remove(self, m):
+        info = __plane_matter_info(self, m)
+
+        if info and __unsafe_matter_unmasked(info, self.__mode):
+            prev_info = info.prev
+            next_info = info.next
+
+            prev_info.next = info.next
+            next_info.prev = info.prev
+
+            if self.__head_matter == m:
+                if self.__head_matter == info.next:
+                    self.__head_matter = None
+                else:
+                    self.__head_matter = info.next
+
+            if self.__hovering_matter == m:
+                self.__hovering_matter = None
+            
+            self.notify_updated()
+            self.size_cache_invalid()
     
     def erase(self):
         self.__head_matter = None
@@ -119,8 +222,6 @@ class Plane(object):
         self.__mright = self.__mleft - 1.0
 
 # public
-    def draw_visible_selection(self, renderer, x, y, width, height): pass
-    
     def find_next_selected_matter(self, start = None):
         found = None
 
@@ -135,7 +236,7 @@ class Plane(object):
 
         return found
     
-    def thumbnail_matter(self): pass
+    def thumbnail_matter(self): return None
 
     def add_selected(self, m):
         if self.can_select_multiple():
@@ -216,24 +317,169 @@ class Plane(object):
             self.info.log_message(message)
 
 # public
-    def on_pointer_pressed(self, button, x, y, clicks, touch): return False
-    def on_pointer_released(self, button, x, y, clicks, touch): return False
-    def on_pointer_move(self, state, x, y, dx, dy, touch): return False
-    def on_scroll(self, horizon, vertical, hprecise, vprecise): return False
+    def on_pointer_pressed(self, button, x, y, clicks, touch):
+        handled = False
+
+        if clicks == 1:
+            if button == sdl2.SDL_BUTTON_LEFT:
+                unmasked_matter = self.find_matter(x, y)
+
+                self.set_caret_owner(unmasked_matter)
+                self.no_selected()
+
+                if unmasked_matter and unmasked_matter.low_level_events_allowed():
+                    info = unmasked_matter.info
+                    local_x = x - info.x
+                    local_y = y - info.y
+                    handled = unmasked_matter.on_pointer_pressed(button, local_x, local_y)
+
+        return handled
+
+    def on_pointer_released(self, button, x, y, clicks, touch):
+        handled = False
+
+        if clicks == 1:
+            if button == sdl2.SDL_BUTTON_LEFT:
+                unmasked_matter = self.find_matter(x, y)
+
+                if unmasked_matter:
+                    info = unmasked_matter.info
+                    local_x = x - info.x
+                    local_y = y - info.y
+                    
+                    if unmasked_matter.events_allowed():
+                        unmasked_matter.on_tap(local_x, local_y)
+
+                        if unmasked_matter.low_level_events_allowed():
+                            unmasked_matter.on_pointer_released(button, local_x, local_y)
+
+                    self.on_tap(unmasked_matter, local_x, local_y)
+
+                    if info.selected:
+                        self.on_tap_selected(unmasked_matter, local_x, local_y)
+
+                    handled = info.selected
+
+        return handled
+
+    def on_pointer_move(self, state, x, y, dx, dy, touch):
+        handled = False
+
+        if state == 0:
+            unmasked_matter = self.find_matter(x, y)
+
+            if unmasked_matter is not self.__hovering_matter:
+                self.__say_goodbye_to_hover_matter(state, x, y, dx, dy)
+
+            if unmasked_matter:
+                self.__hovering_matter = unmasked_matter
+                info = unmasked_matter.info
+                local_x = x - info.x
+                local_y = y - info.y
+                
+                if unmasked_matter.events_allowed():
+                    unmasked_matter.on_havor(local_x, local_y)
+
+                    if unmasked_matter.low_level_events_allowed():
+                        unmasked_matter.on_pointer_move(state, local_x, local_y)
+                
+                self.on_hover(self.__hovering_matter, local_x, local_y)
+                handled = True
+
+        return handled
+
+    def on_scroll(self, horizon, vertical, hprecise, vprecise):
+        return False
 
 # public
+    # do nothing by default
     def on_focus(self, m, on_off): pass
-    def on_char(self, key, modifiers, repeats, pressed): pass
-    def on_text(self, text, size, entire): pass
-    def on_editing_text(self, text, pos, span): pass
-    def on_elapse(self, count, interval, uptime): pass
+    def on_tap_selected(self, m, local_x, local_y): pass
     def on_hover(self, m, local_x, local_y): pass
     def on_goodbye(self, m, local_x, local_y): pass
-    def on_tap(self, m, local_x, local_y): pass
-    def on_tap_selected(self, m, local_x, local_y): pass
     def on_save(self): pass
 
-# public
+    def on_char(self, key, modifiers, repeats, pressed):
+        if self.__focused_matter:
+            self.__focused_matter.on_char(key, modifiers, repeats, pressed)
+
+    def on_text(self, text, size, entire):
+        if self.__focused_matter:
+            self.__focused_matter.on_char(text, size, entire)
+
+    def on_editing_text(self, text, pos, span):
+        if self.__focused_matter:
+            self.__focused_matter.on_editing_text(self, text, pos, span)
+
+    def on_tap(self, m, local_x, local_y):
+        if m:
+            info = m.info
+
+            if not info.selected:
+                if self.can_select(m):
+                    __unsafe_set_selected(self, m, info)
+
+                    if m.events_allowed():
+                        self.set_caret_owner(m)
+                else:
+                    self.no_selected()
+
+    def on_elapse(self, count, interval, uptime):
+        if self.__head_matter:
+            child = self.__head_matter
+
+            while True:
+                dwidth, dheight = self.info.master.get_extent()
+                info = child.info
+                
+                if __unsafe_matter_unmasked(info, self.__mode):
+                    child.update(count, interval, uptime)
+
+                    if isinstance(child, IMovable):
+                        xspd, yspd = child.x_speed(), child.y_speed()
+                        hdist, vdist = 0.0, 0.0
+
+                        if xspd != 0.0 or yspd != 0.0:
+                            info.x += xspd
+                            info.y += yspd
+
+                            cwidth, cheight = child.get_extent(info.x, info.y)
+                            
+                            if info.x < 0:
+                                hdist = info.x
+                            elif info.x + cwidth > dwidth:
+                                hdist = info.x + cwidth - dwidth
+
+                            if info.y < 0:
+                                vdist = info.y
+                            elif info.y + cheight > dheight:
+                                vdist = info.y + cheight - dheight
+
+                            if hdist != 0.0 or vdist != 0.0:
+                                child.on_border(hdist, vdist)
+                                xspd = child.x_speed()
+                                yspd = child.y_speed()
+
+                                if xspd == 0.0 or yspd == 0.0:
+                                    if info.x < 0.0:
+                                        info.x = 0.0
+                                    elif info.x + cwidth > dwidth:
+                                        info.x = dwidth - cwidth
+
+                                    if info.y < 0.0:
+                                        info.y = 0.0
+                                    elif info.y + cheight > dheight:
+                                        info.y = dheight - cheight
+
+                            self.notify_updated()
+                child = info.next
+
+                if child == self.__head_matter:
+                    break
+        
+        self.update(count, interval, uptime)
+    
+# public, do nothing by default
     def can_interactive_move(self, m, local_x, local_y): return False
     def can_select(self, m): return False
     def can_select_multiple(self): return False
@@ -286,18 +532,62 @@ class Plane(object):
     def on_matter_ready(self, m): pass
 
 # public
-    def begin_update_sequence(self): pass
-    def in_update_sequence(self): pass
-    def end_update_sequence(self): pass
-    def needs_update(self): pass
-    def notify_updated(self): pass
+    def begin_update_sequence(self):
+        if self.info:
+            self.info.master.begin_update_sequence()
+
+    def is_in_update_sequence(self):
+        if self.info:
+            self.info.master.is_in_update_sequence()
+        
+    def end_update_sequence(self):
+        if self.info:
+            self.info.master.end_update_sequence()
+        
+    def should_update(self):
+        if self.info:
+            self.info.master.should_update()
+        
+    def notify_updated(self):
+        if self.info:
+            self.info.master.notify_updated()
 
 # public
-    def snapshot(self, width, height, bgcolor = 0, alpha = 0.0): pass
-    def snapshot(self, x, y, width, height, bgcolor = 0, alpha = 0.0): pass
+    def snapshot(self, width, height, bgcolor = 0, alpha = 0.0, translation = (0.0, 0.0)):
+        saved_bgc, saved_alpha = self.__background, self.__bg_alpha
+        x, y = translation
+
+        if x != 0.0:
+            width += x
+
+        if y != 0.0:
+            height += y
+
+        photograph = game_blank_image(width, height)
+
+        if photograph:
+            renderer = sdl2.SDL_CreateSoftwareRenderer(photograph)
+
+            if renderer:
+                self.__background = bgcolor
+                self.__bg_alpha = alpha
+
+                self.draw(renderer, -x, -y, width, height)
+                sdl2.SDL_RenderPresent(renderer)
+                sdl2.DestroyRenderer(renderer)
+
+                self.__background = saved_bgc
+                self.__bg_alpha = saved_alpha
+
+        return photograph
         
-    def save_snapshot(self, pname, width, height, bgcolor = 0, alpha = 0.0): pass
-    def save_snapshot(self, pname, x, y, width, height, bgcolor = 0, alpha = 0.0): pass
+    def save_snapshot(self, pname, width, height, bgcolor = 0, alpha = 0.0, translation = (0.0, 0.0)):
+        photograph = self.snapshot(width, height, bgcolor, alpha, translation)
+        okay = game_save_image(photograph, pname)
+
+        sdl2.SDL_FreeSurface(photograph)
+
+        return okay
 
 # private
     def __recalculate_matters_extent_when_invalid(self):
@@ -324,7 +614,24 @@ class Plane(object):
                 self.__mleft, self.__mtop = 0.0, 0.0
                 self.__mright, self.__mbottom = 0.0, 0.0
 
-    def __say_goodbye_to_hover_matter(self, state, x, y, dx, dy): pass
+    def __say_goodbye_to_hover_matter(self, state, x, y, dx, dy):
+        done = False
+
+        if self.__hovering_matter:
+            info = self.__hovering_matter.info
+            local_x = x - info.x
+            local_y = y - info.y
+
+            if self.__hovering_matter.events_allowed():
+                done |= self.__hovering_matter.on_goodbye(local_x, local_y)
+
+                if self.__hovering_matter.low_level_events_allowed():
+                    done |= self.__hovering_matter.on_pointer_move(state, local_x, local_y)
+
+                self.on_goodbye(self.__hovering_matter, local_x, local_y)
+                self.__hovering_matter = None
+
+        return done
 
 ###################################################################################################
 class __MatterInfo(IMatterInfo):
