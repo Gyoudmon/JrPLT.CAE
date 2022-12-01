@@ -115,7 +115,7 @@
 @itemlist[#:style 'compact
           @commandline{raco wisemon -d cc}]
 
-这次连带入口文件都不用指定，它会自己解析 @tech{info.rkt} 文件找到要编译的文件，并设置好相应的参数。
+这次连入口文件都不用指定，它会自己解析 @tech{info.rkt} 文件找到要编译的文件，并设置好相应的参数。
 无论用哪种方式，编译完了之后的可执行文件，都在与入口文件相同目录的 @filepath{compiled/native} 子目录里。
 比如， @tt{cpp/basis} 课程目录中有个 @filepath{FontBrowser.cpp} 文件，它已被配置在 @tech{info.rkt} 中。
 于是，它对应的可执行文件名是@filepath{cpp/basis/compiled/native/win32/x86_64/FontBrowser.exe}。

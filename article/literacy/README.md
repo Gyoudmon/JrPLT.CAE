@@ -118,7 +118,7 @@ Code，也可以直接启动它的终端， 不过那个终端是 `cmd.exe` 而�
 
 *   `raco wisemon -d cc`
 
-这次连带入口文件都不用指定，它会自己解析 info.rkt 文件找到要编译的文件，并设置好相应的参数。
+这次连入口文件都不用指定，它会自己解析 info.rkt 文件找到要编译的文件，并设置好相应的参数。
 无论用哪种方式，编译完了之后的可执行文件，都在与入口文件相同目录的 `"compiled/native"` 子目录里。 比如，
 `cpp/basis` 课程目录中有个 `"FontBrowser.cpp"` 文件，它已被配置在 info.rkt 中。
 于是，它对应的可执行文件名是`"cpp/basis/compiled/native/win32/x86_64/FontBrowser.exe"`。
