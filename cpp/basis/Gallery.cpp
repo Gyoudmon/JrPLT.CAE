@@ -13,7 +13,7 @@ namespace {
 
         public:
             void load(float width, float height) override {
-                this->label = this->insert(new Labellet(game_font::unicode, 0U, "精灵和图元陈列馆"));
+                this->label = this->insert(new Labellet(game_font::unicode, BLACK, "精灵和图元陈列馆"));
 
                 // 三角形的三条边
                 this->lines[0] = this->insert(new Linelet(-200, +200, RED));
