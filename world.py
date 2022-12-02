@@ -5,6 +5,7 @@ class World(Cosmos):
     def __init__(this, title, fps = 60, fgc = 0x000000, bgc = 0xFFFFFF, initial_mode = 0):
         super(World, this).__init__(fps, fgc, bgc)
         this._plane = _WorldPlane(this, title, initial_mode)
+        this._push_plane(this._plane)
 
 # public
     def change_mode(this, mode):

@@ -92,7 +92,7 @@ def game_create_font(face, fontsize = _default_fontsize):
     return font;
 
 def game_font_destroy(font, usr_only = True):
-    if not font == None:
+    if font:
         if not usr_only:
             sdl2.sdlttf.TTF_CloseFont(font)
         elif font == game_font.DEFAULT: pass
@@ -103,4 +103,3 @@ def game_font_destroy(font, usr_only = True):
         elif font == game_font.unicode: pass
         else:
             sdl2.sdlttf.TTF_CloseFont(font)
-

@@ -1,17 +1,20 @@
 import sdl2                 # 原始 SDL2 函数
 import sdl2.pixels as sdlp  # 原始 SDL2 像素结构体
 import ctypes as ffi        # 外语接口
+
 import sys
+import enum
 
 from .font import *
 from .colorspace import *
 from .geometry import *
 
 ###################################################################################################
-TextRenderMode_Solid = 1
-TextRenderMode_Shaded = 2
-TextRenderMode_LCD = 3
-TextRenderMode_Blender = 4
+class TextRenderMode(enum.Enum):
+    Solid = 0x44215fc76574b744
+    Shaded = 0x457cf9960addbe59
+    LCD = 0x4873c4e96fb8ba72
+    Blender = 0x470c7b0ea6e5d96f
 
 ###################################################################################################
 def game_text_size(font, width, height, text):
@@ -28,28 +31,28 @@ def game_text_surface(rtext, font, mode, fgc, bgc, wrap = 0):
         font = game_font.DEFAULT
     
     if sys.platform == 'win32':
-        if mode == TextRenderMode_Solid:
+        if mode == TextRenderMode.Solid:
             surface = sdl2.sdlttf.TTF_RenderUTF8_Solid(font, text, fgc)
-        elif mode == TextRenderMode_Blender:
+        elif mode == TextRenderMode.Blender:
             surface = sdl2.sdlttf.TTF_RenderUTF8_Blended(font, text, fgc)
         else:
             surface = sdl2.sdlttf.TTF_RenderUTF8_Shaded(font, text, fgc, bgc)
     else:
         if wrap >= 0: # will wrap by newline for 0
-            if mode == TextRenderMode_Solid:
+            if mode == TextRenderMode.Solid:
                 surface = sdl2.sdlttf.TTF_RenderUTF8_Solid_Wrapped(font, text, fgc, wrap)
-            elif mode == TextRenderMode_Blender:
+            elif mode == TextRenderMode.Blender:
                 surface = sdl2.sdlttf.TTF_RenderUTF8_Blended_Wrapped(font, text, fgc, wrap)
-            elif mode == TextRenderMode_LCD:
+            elif mode == TextRenderMode.LCD:
                 surface = sdl2.sdlttf.TTF_RenderUTF8_LCD_Wrapped(font, text, fgc, bgc, wrap)
             else:
                 surface = sdl2.sdlttf.TTF_RenderUTF8_Shaded_Wrapped(font, text, fgc, bgc, wrap)
         else:
-            if mode == TextRenderMode_Solid:
+            if mode == TextRenderMode.Solid:
                 surface = sdl2.sdlttf.TTF_RenderUTF8_Solid(font, text, fgc)
-            elif mode == TextRenderMode_Blender:
+            elif mode == TextRenderMode.Blender:
                 surface = sdl2.sdlttf.TTF_RenderUTF8_Blended(font, text, fgc)
-            elif mode == TextRenderMode_LCD:
+            elif mode == TextRenderMode.LCD:
                 surface = sdl2.sdlttf.TTF_RenderUTF8_LCD(font, text, fgc, bgc)
             else:
                 surface = sdl2.sdlttf.TTF_RenderUTF8_Shaded(font, text, fgc, bgc)
@@ -99,22 +102,21 @@ def _safe_render_text_surface(target, message, x, y):
 def _solid_text_surface(font, rgb, text, wrap):
     text_color = _hex_rgb_to_color(rgb)
 
-    return game_text_surface(text, font, TextRenderMode_Solid, text_color, text_color, wrap)
+    return game_text_surface(text, font, TextRenderMode.Solid, text_color, text_color, wrap)
 
 def _shaded_text_surface(font, fgc, bgc, text, wrap):
     text_color = _hex_rgb_to_color(fgc)
     background_color = _hex_rgb_to_color(bgc)
 
-    return game_text_surface(text, font, TextRenderMode_Shaded, text_color, background_color, wrap)
+    return game_text_surface(text, font, TextRenderMode.Shaded, text_color, background_color, wrap)
 
 def _lcd_text_surface(font, fgc, bgc, text, wrap):
     text_color = _hex_rgb_to_color(fgc)
     background_color = _hex_rgb_to_color(bgc)
 
-    return game_text_surface(text, font, TextRenderMode_LCD, text_color, background_color, wrap)
+    return game_text_surface(text, font, TextRenderMode.LCD, text_color, background_color, wrap)
 
 def _blended_text_surface(font, rgb, text, wrap):
     text_color = _hex_rgb_to_color(rgb)
 
-    return game_text_surface(text, font, TextRenderMode_Blender, text_color, text_color, wrap)
-
+    return game_text_surface(text, font, TextRenderMode.Blender, text_color, text_color, wrap)
