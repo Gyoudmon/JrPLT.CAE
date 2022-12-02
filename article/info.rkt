@@ -12,5 +12,5 @@
 
 (define typesettings '(["YouthLanguage.scrbl" xelatex]))
 
-(define literacy-samples '(["literacy/sync.scrbl" 0 _]))
+(define literacy-samples '(["literacy/sync.scrbl"]))
 
