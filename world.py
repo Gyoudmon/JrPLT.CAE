@@ -4,7 +4,7 @@ from .cosmos import *
 class World(Cosmos):
     def __init__(this, title, fps = 60, fgc = 0x000000, bgc = 0xFFFFFF, initial_mode = 0):
         super(World, this).__init__(fps, fgc, bgc)
-        this._plane = __WorldPlane(this, title, initial_mode)
+        this._plane = _WorldPlane(this, title, initial_mode)
 
 # public
     def change_mode(this, mode):
@@ -48,9 +48,9 @@ class World(Cosmos):
         this._plane.erase()
 
 ###############################################################################
-class __WorldPlane(Plane):
+class _WorldPlane(Plane):
     def __init__(this, master, title, mode = 0):
-        super(__WorldPlane, this).__init__(title, mode)
+        super(_WorldPlane, this).__init__(title, mode)
         this.__master = master
 
     def load(this, width, height):
@@ -70,4 +70,3 @@ class __WorldPlane(Plane):
 
     def after_select(this, m, on_or_off):
         return this.__master.after_select(m, on_or_off)
-

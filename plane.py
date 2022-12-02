@@ -6,7 +6,7 @@ import math
 from .virtualization.iscreen import *
 from .graphics.colorspace import *
 
-from .matter import *
+from .imatter import *
 from .matter.movable import *
 
 from .physics.mathematics import *
@@ -859,4 +859,3 @@ def __do_resize(master, m, info, scale_x, scale_y, prev_scale_x = 1.0, prev_scal
         ny = sy + (sh - nh) * fy
 
         __unsafe_do_moving_via_info(master, info, nx, ny, True)
-

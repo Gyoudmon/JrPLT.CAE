@@ -10,9 +10,9 @@ class IMatterInfo(object):
     def __init__(self, master):
         self.master = master
 
-class Matter(object):
+class IMatter(object):
     def __init__(self):
-        super(Matter, self).__init__()
+        super(IMatter, self).__init__()
         self.info = None
         self.__resize_anchor, self.__resizable = MatterAnchor.LT, False
         self.__anchor, self.__anchor_x, self.__anchor_y = MatterAnchor.LT, 0.0, 0.0
@@ -147,4 +147,3 @@ class Matter(object):
         sdl2.SDL_FreeSurface(photograph)
 
         return okay
-
