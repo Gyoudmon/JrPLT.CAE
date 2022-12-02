@@ -58,4 +58,3 @@ def lines_intersection(x11, y11, x12, y12, x21, y21, x22, y22):
         px = py = T1 = T2 = math.nan
 
     return px, py, T1, T2
-
