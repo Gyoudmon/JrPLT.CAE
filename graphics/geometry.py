@@ -34,7 +34,7 @@ def game_draw_rect(renderer, x, y, width, height, cs, alpha = 0xFF):
     sdl2.SDL_RenderDrawRect(renderer, ffi.byref(box))
 
 def game_fill_rect(renderer, x, y, width, height, cs, alpha = 0xFF):
-    box = sdlr.SDL_Rect(x, y, width, height)
+    box = sdlr.SDL_Rect(round(x), round(y), round(width), round(height))
 
     if isinstance(cs, int):
         RGB_SetRenderDrawColor(renderer, cs, alpha)
@@ -103,7 +103,7 @@ def game_render_surface(target, psurface, region):
 
     if not isinstance(region, sdlr.SDL_Rect):
         surface = psurface.contents # `contents` creates new instance every time
-        region = sdlr.SDL_Rect(int(region[0]), int(region[1]), surface.w, surface.h)
+        region = sdlr.SDL_Rect(round(region[0]), round(region[1]), surface.w, surface.h)
 
     if texture:
         sdl2.SDL_RenderCopy(target, texture, None, region)
@@ -460,4 +460,3 @@ LEMONCHIFFON = 0xfffacd
 GOLDENROD = 0xdaa520
 MEDIUMSPRINGGREEN = 0xfa9a
 MINTCREAM = 0xf5fffa
-

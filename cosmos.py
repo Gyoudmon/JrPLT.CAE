@@ -23,7 +23,7 @@ class Cosmos(Universe):
 
                 while True:
                     info = child.info
-                    __reflow_plane(child, width, height)
+                    _reflow_plane(child, width, height)
                     child = info.next
 
                     if child == self.__head_plane:
@@ -34,7 +34,7 @@ class Cosmos(Universe):
     
     def draw(self, renderer, x, y, width, height):
         if self.__recent_plane:
-            __draw_plane(renderer, self.__recent_plane, x, y, width, height)
+            _draw_plane(renderer, self.__recent_plane, x, y, width, height)
     
     def can_exit(self):
         return self.__recent_plane and self.__recent_plane.can_exit()
@@ -94,7 +94,7 @@ class Cosmos(Universe):
 
             while True:
                 info = child.info
-                __construct_plane(child, width, height)
+                _construct_plane(child, width, height)
                 child = info.next
 
                 if child == self.__head_plane:
@@ -122,8 +122,8 @@ class Cosmos(Universe):
 
 # protected
     def _push_plane(self, plane):
-        if plane.info:
-            info = __bind_plane_owership(self.__screen, plane)
+        if plane.info is None:
+            info = _bind_plane_owership(self.__screen, plane)
 
             if not self.__head_plane:
                 self.__head_plane = plane
@@ -145,18 +145,18 @@ class Cosmos(Universe):
         self.__recent_plane = None
 
 ###################################################################################################
-class __LinkedPlaneInfo(IPlaneInfo):
+class _LinkedPlaneInfo(IPlaneInfo):
     def __init__(self, master):
-        super().__init__(master)
+        super(_LinkedPlaneInfo, self).__init__(master)
         self.next = None
         self.prev = None
 
-def __bind_plane_owership(master, plane):
-    plane.info = __LinkedPlaneInfo(master)
+def _bind_plane_owership(master, plane):
+    plane.info = _LinkedPlaneInfo(master)
     
     return plane.info
 
-def __construct_plane(plane, flwidth, flheight):
+def _construct_plane(plane, flwidth, flheight):
     plane.begin_update_sequence()
 
     plane.construct(flwidth, flheight)
@@ -164,9 +164,8 @@ def __construct_plane(plane, flwidth, flheight):
 
     plane.end_update_sequence()
 
-def __reflow_plane(plane, width, height):
+def _reflow_plane(plane, width, height):
     plane.reflow(width, height)
 
-def __draw_plane(renderer, plane, x, y, width, height):
+def _draw_plane(renderer, plane, x, y, width, height):
     plane.draw(renderer, x, y, width, height)
-

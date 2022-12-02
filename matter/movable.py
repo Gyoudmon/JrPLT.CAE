@@ -37,15 +37,15 @@ class IMovable(object):
                 self.__yspeed *= -1.0
 
     def set_border_strategy(self, strategy):
-        if isinstance(strategy, int):
-            self.__set_border_strategy(self, strategy, strategy, strategy, strategy)
+        if isinstance(strategy, enum.Enum):
+            self.__set_border_strategy(strategy, strategy, strategy, strategy)
         else:
             c = len(strategy)
 
             if c == 2:
-                self.__set_border_strategy(self, strategy[0], strategy[1], strategy[0], strategy[1])
+                self.__set_border_strategy(strategy[0], strategy[1], strategy[0], strategy[1])
             else:
-                self.__set_border_strategy(self, strategy[0], strategy[1], strategy[2], strategy[3])
+                self.__set_border_strategy(strategy[0], strategy[1], strategy[2], strategy[3])
     
 # public
     def set_speed(self, speed, degree):
@@ -81,4 +81,3 @@ class IMovable(object):
         self.__border_strategies[BorderEdge.RIGHT] = rs
         self.__border_strategies[BorderEdge.BOTTOM] = bs
         self.__border_strategies[BorderEdge.LEFT] = ls
-

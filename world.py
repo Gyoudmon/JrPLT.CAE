@@ -33,8 +33,8 @@ class World(Cosmos):
     def get_matter_location(this, matter):
         return this._plane.get_matter_location(matter)
 
-    def insert(this, matter, x, y, anchor, dx, dy):
-        this._plane.insert(matter, x, y, anchor, dx, dy)
+    def insert(this, matter, x = 0.0, y = 0.0, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
+        return this._plane.insert(matter, x, y, anchor, dx, dy)
 
     def move(this, matter, x, y):
         this._plane.move(matter, x, y)

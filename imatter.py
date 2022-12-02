@@ -1,9 +1,9 @@
-from .virtualization.iscreen import *
-from .forward import *
-
-from .graphics.image import *
-
 import sdl2
+
+from .forward import *
+from .graphics.image import *
+from .virtualization.iscreen import *
+
 
 ###############################################################################
 class IMatterInfo(object):
@@ -40,7 +40,7 @@ class IMatter(object):
     def resize(self, width, height): pass
     def update(self, count, interval, uptime): pass
     def draw(self, renderer, X, Y, Width, Height): pass
-    def ready(): return True
+    def ready(self): return True
 
 # public
     def own_caret(self, x, y): pass

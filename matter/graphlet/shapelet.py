@@ -1,7 +1,6 @@
 import sdl2
 import sdl2.sdlgfx
 
-import math
 import ctypes
 
 from ..igraphlet import *
@@ -10,13 +9,14 @@ from ..movable import *
 from ...graphics.image import *
 from ...graphics.colorspace import *
 
+###################################################################################################
 class IShapelet(IGraphlet, IMovable):
     def __init__(self, color = -1, border_color = -1):
-        super().__init__()
+        super(IShapelet, self).__init__()
         self.enable_resizing(True)
         self.__geometry = None
-        self.__color = -1
-        self.__border_color = -1
+        self.__color = color
+        self.__border_color = border_color
         self.__alpha_color_key = 0xFFFFFF
 
     def __del__(self):
@@ -52,15 +52,15 @@ class IShapelet(IGraphlet, IMovable):
         w, h = 0.0, 0.0
 
         if self.__geometry:
-            w = self.__geometry.w
-            h = self.__geometry.h
+            g = self.__geometry.contents
+            w, h = g.w, g.h
         
         return w, h
 
     def draw(self, renderer, x, y, Width, Height):
         if self.__geometry:
             ox, oy = self.get_shape_origin()
-            game_render_surface(renderer, self.__geometry, x - ox, y - oy)
+            game_render_surface(renderer, self.__geometry, (x - ox, y - oy))
 
 # public
     def set_color(self, color):
@@ -117,8 +117,8 @@ class Linelet(IShapelet):
                 self.construct()
 
     def _get_shape_extent(self):
-        w = math.max(math.abs(self.__epx), 1.0)
-        h = math.max(math.abs(self.__epy), 1.0)
+        w = max(abs(self.__epx), 1.0)
+        h = max(abs(self.__epy), 1.0)
 
         return w, h
 
@@ -140,7 +140,7 @@ class HLinelet(Linelet):
 
 class VLinelet(Linelet):
     def __init__(self, height, color):
-        super(HLinelet, self).__init__(0.0, height, color)
+        super(VLinelet, self).__init__(0.0, height, color)
 
 ###################################################################################################
 class Rectanglet(IShapelet):
@@ -166,11 +166,11 @@ class Rectanglet(IShapelet):
 
 class Squarelet(Rectanglet):
     def __init__(self, edge_size, color, border_color=-1):
-        super().__init__(edge_size, edge_size, color, border_color)
+        super(Squarelet, self).__init__(edge_size, edge_size, color, border_color)
 
 class RoundedRectanglet(IShapelet):
     def __init__(self, width, height, radius, color, border_color = -1):
-        super(Rectanglet, self).__init__(color, border_color)
+        super(RoundedRectanglet, self).__init__(color, border_color)
         self.__width, self.__height = width, height
         self.__radius = radius
 
@@ -202,11 +202,11 @@ class RoundedRectanglet(IShapelet):
 
 class RoundedSquarelet(RoundedRectanglet):
     def __init__(self, edge_size, radius, color, border_color = -1):
-        super().__init__(edge_size, edge_size, radius, color, border_color)
+        super(RoundedSquarelet, self).__init__(edge_size, edge_size, radius, color, border_color)
 
 class Ellipselet(IShapelet):
     def __init__(self, aradius, bradius, color, border_color = -1):
-        super(Rectanglet, self).__init__(color, border_color)
+        super(Ellipselet, self).__init__(color, border_color)
         self.__aradius, self.__bradius = aradius, bradius
 
     def resize(self, width, height):
@@ -227,7 +227,7 @@ class Ellipselet(IShapelet):
         ry = round(self.__bradius) - 1
 
         if rx == ry:
-            sdl2.sdlgfx.aacricleRGBA(renderer, rx, ry, rx, r, g, b, a)
+            sdl2.sdlgfx.aacircleRGBA(renderer, rx, ry, rx, r, g, b, a)
         else:
             sdl2.sdlgfx.aaellipseRGBA(renderer, rx, ry, rx, ry, r, g, b, a)
 
@@ -237,14 +237,14 @@ class Ellipselet(IShapelet):
 
         if rx == ry:
             sdl2.sdlgfx.filledCircleRGBA(renderer, rx, ry, rx, r, g, b, a)
-            sdl2.sdlgfx.aacricleRGBA(renderer, rx, ry, rx, r, g, b, a)
+            sdl2.sdlgfx.aacircleRGBA(renderer, rx, ry, rx, r, g, b, a)
         else:
             sdl2.sdlgfx.filledEllipseRGBA(renderer, rx, ry, rx, ry, r, g, b, a)
             sdl2.sdlgfx.aaellipseRGBA(renderer, rx, ry, rx, ry, r, g, b, a)
 
-class Circlelet(Ellipselet):
+class Circlet(Ellipselet):
     def __init__(self, radius, color, border_color = -1):
-        super().__init__(radius, radius, color, border_color)
+        super(Circlet, self).__init__(radius, radius, color, border_color)
 
 ###################################################################################################
 class RegularPolygonlet(IShapelet):
@@ -287,8 +287,8 @@ class RegularPolygonlet(IShapelet):
 
         for idx in range(0, self.__n):
             theta = start + delta * float(idx)
-            xs.append(rx * math.cos(theta) + rx)
-            ys.append(ry * math.sin(theta) + ry)
+            xs.append(round(rx * math.cos(theta) + rx))
+            ys.append(round(ry * math.sin(theta) + ry))
 
         self.__xs = (ctypes.c_int16 * self.__n)(*xs)
         self.__ys = (ctypes.c_int16 * self.__n)(*ys)

@@ -9,7 +9,7 @@ from .colorspace import *
 def game_blank_image(width, height, alpha_color_key = 0xFFFFFF):
     surface = sdl2.SDL_CreateRGBSurface(0, round(width), round(height), 32, 0, 0, 0, 0)
     r, g, b = RGB_FromHexadecimal(alpha_color_key)
-    sdl2.SDL_SetColorKey(surface, 1, sdl2.SDL_MapRGB(surface.format, r, g, b))
+    sdl2.SDL_SetColorKey(surface, 1, sdl2.SDL_MapRGB(surface.contents.format, r, g, b))
     
     return surface
 
@@ -20,7 +20,7 @@ def game_unload_image(image):
     sdl2.SDL_FreeSurface(image)
 
 def game_draw_image(renderer, image, x, y):
-    game_render_surface(renderer, image, [x, y])
+    game_render_surface(renderer, image, (x, y))
     
 def game_draw_image(renderer, file, x, y):
     image = game_load_image(file)
@@ -31,7 +31,7 @@ def game_draw_image(renderer, file, x, y):
 
 def game_draw_image(renderer, image, x, y, width, height):
     if image.w == width and image.h == height:
-        game_render_surface(renderer, image, [round(x), round(y)])
+        game_render_surface(renderer, image, (x, y))
     else:
         region = sdlimg.SDL_Rect(round(x), round(y), round(width), round(height))
 
