@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from shape_oop import *  # 导入当前要启动的游戏
+from shape_pop import *  # 导入当前要启动的游戏
 
 import sys
 
@@ -21,5 +21,3 @@ if __name__=="__main__":
     # Python 心满意足地退出
     # 顺便销毁游戏宇宙，回归虚无
     sys.exit(0)
-
-

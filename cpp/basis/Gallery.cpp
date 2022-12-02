@@ -1,7 +1,7 @@
 #include "digitama/game.hpp"
 
-#include "digitama/graphlet/shapelet.hpp"
-#include "digitama/graphlet/ui/textlet.hpp"
+#include "digitama/matter/graphlet/shapelet.hpp"
+#include "digitama/matter/graphlet/ui/textlet.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -70,4 +70,3 @@ int main(int argc, char* args[]) {
 
     return 0;
 }
-

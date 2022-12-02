@@ -3,8 +3,8 @@
 
 #include "digitama/game.hpp"
 
-#include "digitama/graphlet/shapelet.hpp"   // 导入基本图形模块
-#include "digitama/graphlet/ui/textlet.hpp" // 导入UI文本模块
+#include "digitama/matter/graphlet/shapelet.hpp"   // 导入基本图形模块
+#include "digitama/matter/graphlet/ui/textlet.hpp" // 导入UI文本模块
 
 namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
     // 创建自定义数据类型，并命名为 ShapeWorld，继承自 World
@@ -38,4 +38,3 @@ namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
             WarGrey::STEM::IShapelet* regular_polygons[10];
     };
 }
-

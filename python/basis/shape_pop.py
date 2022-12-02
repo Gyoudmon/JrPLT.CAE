@@ -43,4 +43,3 @@ class ShapeWorld(World):
         for n in range(1, 11):
             game_fill_regular_polygon(renderer, n, 100 * (n - 1), 750, 32, -90.0, ROYALBLUE)
             game_draw_regular_polygon(renderer, n, 100 * (n - 1), 750, 32, -90.0, FIREBRICK)
-

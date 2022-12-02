@@ -42,4 +42,3 @@ void WarGrey::STEM::ShapeWorld::draw(SDL_Renderer* renderer, int x, int y, int w
         game_draw_regular_polygon(renderer, n, 100 * (n - 1), 750, 32, -90.0, FIREBRICK);
     }
 }
-

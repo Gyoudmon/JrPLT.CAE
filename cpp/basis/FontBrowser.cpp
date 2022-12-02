@@ -66,5 +66,3 @@ int main(int argc, char* args[]) {
     delete universe;
     return 0;
 }
-
-

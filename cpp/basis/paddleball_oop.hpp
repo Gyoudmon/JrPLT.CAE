@@ -2,7 +2,7 @@
 
 #include "digitama/game.hpp"
 
-#include "digitama/graphlet/shapelet.hpp"
+#include "digitama/matter/graphlet/shapelet.hpp"
 
 namespace WarGrey::STEM {
     /**********************************************************************************************/
@@ -24,4 +24,3 @@ namespace WarGrey::STEM {
             WarGrey::STEM::IShapelet* paddle;
     };
 }
-
