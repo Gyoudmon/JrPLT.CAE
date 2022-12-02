@@ -159,10 +159,10 @@ class Rectanglet(IShapelet):
         return self.__width, self.__height
 
     def _draw_shape(self, renderer, width, height, r, g, b, a):
-        sdl2.sdlgfx.rectangleRGBA(renderer, 1, 1, width - 1, height - 1, r, g, b, a)
+        sdl2.sdlgfx.rectangleRGBA(renderer, 0, 0, width, height, r, g, b, a)
 
     def _fill_shape(self, renderer, width, height, r, g, b, a):
-        sdl2.sdlgfx.boxRGBA(renderer, 1, 1, width - 1, height - 1, r, g, b, a)
+        sdl2.sdlgfx.boxRGBA(renderer, 0, 0, width, height, r, g, b, a)
 
 class Squarelet(Rectanglet):
     def __init__(self, edge_size, color, border_color=-1):
@@ -190,7 +190,7 @@ class RoundedRectanglet(IShapelet):
         if rad < 0.0:
             rad = -math.min(self.__width, self.__height) * rad
 
-        sdl2.sdlgfx.roundedRectangleRGBA(renderer, 1, 1, width - 1, height - 1, round(rad), r, g, b, a)
+        sdl2.sdlgfx.roundedRectangleRGBA(renderer, 0, 0, width, height, round(rad), r, g, b, a)
 
     def _fill_shape(self, renderer, width, height, r, g, b, a):
         rad = self.__radius
@@ -198,7 +198,7 @@ class RoundedRectanglet(IShapelet):
         if rad < 0.0:
             rad = -math.min(self.__width, self.__height) * rad
 
-        sdl2.sdlgfx.roundedBoxRGBA(renderer, 1, 1, width - 1, height - 1, round(rad), r, g, b, a)
+        sdl2.sdlgfx.roundedBoxRGBA(renderer, 0, 0, width, height, round(rad), r, g, b, a)
 
 class RoundedSquarelet(RoundedRectanglet):
     def __init__(self, edge_size, radius, color, border_color = -1):

@@ -123,7 +123,7 @@ class IMatter(object):
         self.__findable = yes_or_no
     
     def concealled(self):
-        return self.__findable
+        return not self.__findable
 
 # public
     def snapshot(self):

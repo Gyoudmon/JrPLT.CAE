@@ -84,23 +84,23 @@ class Plane(object):
                 info = child.info
 
                 if _unsafe_matter_unmasked(info, self.__mode):
-                    gwidth, gheight = child.get_extent(info.x, info.y)
+                    mwidth, mheight = child.get_extent(info.x, info.y)
 
-                    gx = (info.x + self.__translate_x) * self.__scale_x + X
-                    gy = (info.y + self.__translate_y) * self.__scale_y + Y
+                    mx = (info.x + self.__translate_x) * self.__scale_x + X
+                    my = (info.y + self.__translate_y) * self.__scale_y + Y
 
-                    if rectangle_overlay(gx, gy, gx + gwidth, gy + gheight, dsX, dsY, dsWidth, dsHeight):
-                        clip.x = int(math.floor(gx))
-                        clip.y = int(math.floor(gy))
-                        clip.w = int(math.ceil(gwidth))
-                        clip.h = int(math.ceil(gheight))
+                    if rectangle_overlay(mx, my, mx + mwidth, my + mheight, dsX, dsY, dsWidth, dsHeight):
+                        clip.x = int(math.floor(mx))
+                        clip.y = int(math.floor(my))
+                        clip.w = int(math.ceil(mwidth))
+                        clip.h = int(math.ceil(mheight))
 
                         sdl2.SDL_RenderSetClipRect(renderer, clip)
-                        child.draw(renderer, gx, gy, gwidth, gheight)
+                        child.draw(renderer, mx, my, mwidth, mheight)
 
                         if info.selected:
                             sdl2.SDL_RenderSetClipRect(renderer, None)
-                            self.draw_visible_selection(renderer, gx, gy, gwidth, gheight)
+                            self.draw_visible_selection(renderer, mx, my, mwidth, mheight)
 
                 child = info.next
                 if child == self.__head_matter:
@@ -126,11 +126,11 @@ class Plane(object):
                     if not child.concealled():
                         sx, sy, sw, sh = _unsafe_get_matter_bound(child, info)
 
-                        sx += self.__translate_x * self.__scale_x
-                        sy += self.__translate_y * self.__scale_y
+                        sx += (self.__translate_x * self.__scale_x)
+                        sy += (self.__translate_y * self.__scale_y)
 
-                        if sx <= x and x <= (sx + sw) and sy <= y and y <= (sy + sh):
-                            if child.is_colliding_width_mouse(x - sx, y - sy):
+                        if flin(sx, x, sx + sw) and flin(sy, y, sy + sh):
+                            if child.is_colliding_with_mouse(x - sx, y - sy):
                                 found = child
                                 break
 
@@ -180,7 +180,7 @@ class Plane(object):
                 info.prev = self.__head_matter
             else:
                 head_info = self.__head_matter.info
-                prev_info = self.__head_matter.info
+                prev_info = head_info.prev.info
 
                 info.prev = head_info.prev
                 prev_info.next = m
@@ -747,7 +747,7 @@ def _bind_matter_owership(master, mode, m):
 def _plane_matter_info(master, m):
     info = None
 
-    if m and m.info and m.info.master == master:
+    if m.info and m.info.master == master:
         info = m.info
     
     return info
