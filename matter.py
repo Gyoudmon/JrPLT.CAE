@@ -18,6 +18,9 @@ class Matter(object):
         self.__anchor, self.__anchor_x, self.__anchor_y = MatterAnchor.LT, 0.0, 0.0
         self.__deal_with_events, self.__deal_with_low_level_events = False, False
         self.__findable = True
+
+    def __del__(self):
+        self.info = None
         
     def pre_construct(self): pass
     def post_construct(self): pass

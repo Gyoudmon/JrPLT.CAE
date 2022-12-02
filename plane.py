@@ -1,5 +1,6 @@
 import sdl2
 import sdl2.rect as sdlr
+
 import math
 
 from .virtualization.iscreen import *
@@ -11,11 +12,12 @@ from .matter.movable import *
 from .physics.mathematics import *
 
 ###############################################################################
-class IPlanetInfo(object):
+class IPlaneInfo(object):
     def __init__(self, master):
-        super(IPlanetInfo, self).__init__()
+        super(IPlaneInfo, self).__init__()
         self.master = master
 
+###############################################################################
 class Plane(object):
     def __init__(self, name, initial_mode = 0):
         super(Plane, self).__init__()
@@ -31,6 +33,7 @@ class Plane(object):
 
     def __del__(self):
         self.erase()
+        self.info = None
 
 # public
     def name(self):
@@ -172,7 +175,7 @@ class Plane(object):
             fx, fy = __matter_anchor_fraction(anchor)
             
             info = __bind_matter_owership(self, self.__mode, m)
-            if self.__head_matter:
+            if not self.__head_matter:
                 self.__head_matter = m
                 info.prev = self.__head_matter
             else:
@@ -408,7 +411,7 @@ class Plane(object):
             self.info.log_message(message)
 
 # public
-    def on_pointer_pressed(self, button, x, y, clicks, touch):
+    def on_pointer_pressed(self, button, x, y, clicks):
         handled = False
 
         if clicks == 1:
@@ -426,7 +429,7 @@ class Plane(object):
 
         return handled
 
-    def on_pointer_released(self, button, x, y, clicks, touch):
+    def on_pointer_released(self, button, x, y, clicks):
         handled = False
 
         if clicks == 1:
@@ -453,7 +456,7 @@ class Plane(object):
 
         return handled
 
-    def on_pointer_move(self, state, x, y, dx, dy, touch):
+    def on_pointer_move(self, state, x, y, dx, dy):
         handled = False
 
         if state == 0:
@@ -737,11 +740,9 @@ class __MatterInfo(IMatterInfo):
         self.next, self.prev = None, None
 
 def __bind_matter_owership(master, mode, m):
-    info = __MatterInfo(master, mode)
-
-    m.info = info
-
-    return info
+    m.info = __MatterInfo(master, mode)
+    
+    return m.info
 
 def __plane_matter_info(master, m):
     info = None
