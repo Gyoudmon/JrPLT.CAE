@@ -51,7 +51,7 @@ class Gallery(World):
         for n in range(0, len(this.regular_polygons)):
             this.move_to(this.regular_polygons[n], (100.0 * float(n), 750.0), MatterAnchor.CC)
 
-    def can_select(this, g): return True
+    def can_select(this, m): return True
 
 
 ###################################################################################################

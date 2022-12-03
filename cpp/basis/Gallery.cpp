@@ -47,7 +47,7 @@ namespace {
             }
 
         public:
-            bool can_select(WarGrey::STEM::IMatter* g) override {
+            bool can_select(WarGrey::STEM::IMatter* m) override {
                 return true;
             }
 
