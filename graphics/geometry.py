@@ -13,7 +13,7 @@ def game_draw_point(renderer, x, y, cs, alpha = 0xFF):
     else:
         HSV_SetRenderDrawColor(renderer, cs[0], cs[1], cs[2], alpha)
 
-    sdl2.SDL_RenderDrawPoint(renderer, x, y)
+    sdl2.SDL_RenderDrawPoint(renderer, round(x), round(y))
 
 def game_draw_line(renderer, x1, y1, x2, y2, cs, alpha = 0xFF):
     if isinstance(cs, int):
@@ -21,10 +21,10 @@ def game_draw_line(renderer, x1, y1, x2, y2, cs, alpha = 0xFF):
     else:
         HSV_SetRenderDrawColor(renderer, cs[0], cs[1], cs[2], alpha)
 
-    sdl2.SDL_RenderDrawLine(renderer, x1, y1, x2, y2)
+    sdl2.SDL_RenderDrawLine(renderer, round(x1), round(y1), round(x2), round(y2))
 
 def game_draw_rect(renderer, x, y, width, height, cs, alpha = 0xFF):
-    box = sdlr.SDL_Rect(x, y, width, height)
+    box = sdlr.SDL_Rect(round(x), round(y), round(width), round(height))
 
     if isinstance(cs, int):
         RGB_SetRenderDrawColor(renderer, cs, alpha)
@@ -111,6 +111,7 @@ def game_render_surface(target, psurface, region):
 
 ###############################################################################
 def _draw_circle(renderer, cx, cy, radius):
+    cx, cy, radius = round(cx), round(cy), round(radius)
     err = 2 - 2 * radius
     x = -radius
     y = 0
@@ -133,6 +134,7 @@ def _draw_circle(renderer, cx, cy, radius):
         if x >= 0: break
 
 def _fill_circle(renderer, cx, cy, radius):
+    cx, cy, radius = round(cx), round(cy), round(radius)
     err = 2 - 2 * radius
     x = -radius
     y = 0
@@ -155,6 +157,7 @@ def _fill_circle(renderer, cx, cy, radius):
 
 def _draw_ellipse(renderer, cx, cy, ar, br):
     # II. quadrant from bottom left to top right */
+    cx, cy, ar, br = round(cx), round(cy), round(ar), round(br)
     x = -ar
     y = 0
     a2 = ar * ar
@@ -191,6 +194,7 @@ def _draw_ellipse(renderer, cx, cy, ar, br):
 
 def _fill_ellipse(renderer, cx, cy, ar, br):
     # II. quadrant from bottom left to top right */
+    cx, cy, ar, br = round(cx), round(cy), round(ar), round(br)
     x = -ar
     y = 0
     a2 = ar * ar

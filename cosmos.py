@@ -40,7 +40,7 @@ class Cosmos(Universe):
         return self.__recent_plane and self.__recent_plane.can_exit()
 
 # protected
-    def _on_mouse_event(self, m, pressed):
+    def _on_mouse_button_event(self, m, pressed):
         if self.__recent_plane:
             self.begin_update_sequence()
             

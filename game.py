@@ -559,4 +559,3 @@ def _trigger_timer_event(interval, datum):
     sdl2.SDL_PushEvent(ffi.byref(timer_event))
 
     return interval
-
