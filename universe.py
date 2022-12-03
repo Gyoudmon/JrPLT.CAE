@@ -364,6 +364,10 @@ class Universe(IDisplay):
     # 响应键盘事件，并按需触发按下、松开事件
     def _on_keyboard_event(self, keyboard, pressed):
         key = keyboard.keysym
+        keycode = key.sym
+
+        if keycode <= 0x110000:
+            keycode = chr(keycode)
 
         if self.__in_editing:
             if not pressed:
@@ -381,11 +385,11 @@ class Universe(IDisplay):
                     match key.sym:
                         case sdl2.SDLK_s: self._on_save()
                         case sdl2.SDLK_p: self._take_snapshot()
-                        case _: self._on_char(chr(key.sym), key.mod, keyboard.repeat, pressed)
+                        case _: self._on_char(keycode, key.mod, keyboard.repeat, pressed)
                 else:
-                    self._on_char(chr(key.sym), key.mod, keyboard.repeat, pressed)
+                    self._on_char(keycode, key.mod, keyboard.repeat, pressed)
             else:
-                self._on_char(chr(key.sym), key.mod, keyboard.repeat, pressed)
+                self._on_char(keycode, key.mod, keyboard.repeat, pressed)
 
     # 响应窗体事件，并按需触发尺寸改变事件
     def _on_resize(self, width, height):
