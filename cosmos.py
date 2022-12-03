@@ -1,4 +1,4 @@
-from .game import *
+from .universe import *
 from .plane import *
 
 from .virtualization.screen.onionskin import *

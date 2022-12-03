@@ -188,7 +188,7 @@ class RoundedRectanglet(IShapelet):
         rad = self.__radius
 
         if rad < 0.0:
-            rad = -math.min(self.__width, self.__height) * rad
+            rad = -min(self.__width, self.__height) * rad
 
         sdl2.sdlgfx.roundedRectangleRGBA(renderer, 0, 0, width, height, round(rad), r, g, b, a)
 
@@ -196,7 +196,7 @@ class RoundedRectanglet(IShapelet):
         rad = self.__radius
 
         if rad < 0.0:
-            rad = -math.min(self.__width, self.__height) * rad
+            rad = -min(self.__width, self.__height) * rad
 
         sdl2.sdlgfx.roundedBoxRGBA(renderer, 0, 0, width, height, round(rad), r, g, b, a)
 
