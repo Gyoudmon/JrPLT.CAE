@@ -21,7 +21,7 @@ void WarGrey::STEM::ShapeWorld::load(float width, float height) {
     this->wall = this->insert(new Rectanglet(200, 180, WHITESMOKE, SNOW));                      // 白色墙壁
     this->door = this->insert(new Rectanglet(42, 84, KHAKI, DARKKHAKI));                        // 卡其色门
     this->lock = this->insert(new Circlet(4, CHOCOLATE));                                       // 巧克力色门锁
-    this->window = this->insert(new RoundedSquarelet(64, -0.15F, LIGHTSKYBLUE, SKYBLUE));       // 天蓝色窗口
+    this->window = this->insert(new RoundedSquarelet(64, -0.15F, LIGHTSKYBLUE, SKYBLUE));       // 天蓝色窗户
 }
 
 // 实现 ShapeWorld::reflow 方法，重新排列几何图形在舞台上的位置

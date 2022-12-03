@@ -8,6 +8,8 @@ class ShapeWorld(World):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题和帧频
         super(ShapeWorld, self).__init__("Primitive Shapes", 0)
+
+        # 本游戏世界有以下物体
         self.label = None
         self.roof = None
         self.wall = None

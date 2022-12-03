@@ -30,7 +30,7 @@ namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
         public: // 为演示该设计思路的优点，运行游戏里的物体可以被选中
             bool can_select(WarGrey::STEM::IMatter* m) override { return true; }
 
-        private: // 本游戏世界中的有以下物体
+        private: // 本游戏世界有以下物体
             WarGrey::STEM::Labellet* label;
             WarGrey::STEM::IShapelet* roof;
             WarGrey::STEM::IShapelet* wall;
