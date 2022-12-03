@@ -1,14 +1,8 @@
 #!/usr/bin/env python3
 
-import sys
-
-from digitama.forward import *
-from digitama.world import *
-from digitama.graphics.font import *
-from digitama.graphics.colorspace import *
+from digitama.game import *
 
 from digitama.matter.graphlet.shapelet import *
-from digitama.matter.graphlet.ui.textlet import *
 
 ###################################################################################################
 class Gallery(World):

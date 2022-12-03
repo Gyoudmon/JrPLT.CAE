@@ -1,10 +1,11 @@
 // shape.hpp 文件
 #pragma once // 确保只被 include 一次
 
+// 导入游戏模块，内含 World 类和常用函数，包含自己项目里的头文件要用双引号
 #include "digitama/game.hpp"
 
-#include "digitama/matter/graphlet/shapelet.hpp"   // 导入基本图形模块
-#include "digitama/matter/graphlet/ui/textlet.hpp" // 导入UI文本模块
+// 导入基本图形模块
+#include "digitama/matter/graphlet/shapelet.hpp"
 
 namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
     // 创建自定义数据类型，并命名为 ShapeWorld，继承自 World
@@ -27,14 +28,15 @@ namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
             void reflow(float width, float height) override;
 
         public: // 为演示该设计思路的优点，运行游戏里的物体可以被选中
-            bool can_select(WarGrey::STEM::IMatter* g) override { return true; }
+            bool can_select(WarGrey::STEM::IMatter* m) override { return true; }
 
         private: // 本游戏世界中的有以下物体
             WarGrey::STEM::Labellet* label;
-            WarGrey::STEM::IShapelet* lines[3];
-            WarGrey::STEM::IShapelet* rectangle;
-            WarGrey::STEM::IShapelet* circle;
-            WarGrey::STEM::IShapelet* ellipse;
-            WarGrey::STEM::IShapelet* regular_polygons[10];
+            WarGrey::STEM::IShapelet* roof;
+            WarGrey::STEM::IShapelet* wall;
+            WarGrey::STEM::IShapelet* door;
+            WarGrey::STEM::IShapelet* lock;
+            WarGrey::STEM::IShapelet* window;
+            WarGrey::STEM::IShapelet* garden;
     };
 }

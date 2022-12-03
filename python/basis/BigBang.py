@@ -2,8 +2,6 @@
 
 from shape_pop import *  # 导入当前要启动的游戏
 
-import sys
-
 # __name__ 是一个特殊变量
 # 可用于提示是否从这行代码启动应用程序
 # 效果上相当于 C++ 的 main 函数，用以启动游戏

@@ -1,7 +1,8 @@
 // shape.hpp 文件
 #pragma once // 确保只被 include 一次
 
-#include "digitama/world.hpp" // 导入 World 类，包含自己项目里的头文件要用双引号
+// 导入游戏模块，内含 World 类和常用函数，包含自己项目里的头文件要用双引号
+#include "digitama/game.hpp"
 
 namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
     // 创建自定义数据类型，并命名为 ShapeWorld，继承自 World
@@ -21,4 +22,3 @@ namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height); 
     };
 }
-
