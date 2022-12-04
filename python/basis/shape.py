@@ -26,14 +26,14 @@ class ShapeWorld(World):
         self.label = self.insert(Labellet("基本图形陈列馆(对象版)", game_font.unicode, BLACK))
 
         # 苍绿色院子
-        self.garden = self.insert(Ellipselet(200, 80, PALEGREEN, KHAKI))
+        self.garden = self.insert(Ellipselet(200.0, 80.0, PALEGREEN, KHAKI))
     
         # 房屋的组成
-        self.roof = self.insert(RegularPolygonlet(3, 140, DEEPSKYBLUE, ROYALBLUE, -90.0)) # 深天蓝色屋顶
-        self.wall = self.insert(Rectanglet(200, 180, WHITESMOKE, SNOW));                  # 白色墙壁
-        self.door = self.insert(Rectanglet(42, 84, KHAKI, DARKKHAKI));                    # 卡其色门
-        self.lock = self.insert(Circlet(4, CHOCOLATE));                                   # 巧克力色门锁
-        self.window = self.insert(RoundedSquarelet(64, -0.15, LIGHTSKYBLUE, SKYBLUE));    # 淡天蓝色窗口
+        self.roof = self.insert(RegularPolygonlet(3, 140.0, DEEPSKYBLUE, ROYALBLUE, -90.0)) # 深天蓝色屋顶
+        self.wall = self.insert(Rectanglet(200.0, 180.0, WHITESMOKE, SNOW));                  # 白色墙壁
+        self.door = self.insert(Rectanglet(42.0, 84.0, KHAKI, DARKKHAKI));                    # 卡其色门
+        self.lock = self.insert(Circlet(4.0, CHOCOLATE));                                   # 巧克力色门锁
+        self.window = self.insert(RoundedSquarelet(64.0, -0.15, LIGHTSKYBLUE, SKYBLUE));    # 淡天蓝色窗口
 
     # 实现 ShapeWorld::reflow 方法，重新排列几何图形在舞台上的位置
     def reflow(self, width, height):

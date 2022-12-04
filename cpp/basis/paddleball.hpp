@@ -5,11 +5,10 @@
 #include "digitama/matter/graphlet/shapelet.hpp"
 
 namespace WarGrey::STEM {
-    /**********************************************************************************************/
-    /** 声明游戏世界 **/
-    class PaddleBall : public WarGrey::STEM::World {
+    /******************************************* 声明游戏世界 ******************************************/
+    class PaddleBallWorld : public WarGrey::STEM::World {
         public:
-            PaddleBall() : World("Paddle Ball") {}
+            PaddleBallWorld() : World("Paddle Ball") {}
 
         public:    // 覆盖游戏基本方法
             void load(float width, float height) override;
@@ -19,7 +18,7 @@ namespace WarGrey::STEM {
         protected: // 覆盖键盘事件处理方法
             void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) override;
 
-        private:   // 游戏世界中的物体
+        private:   // 本游戏世界中的物体
             WarGrey::STEM::IShapelet* ball;
             WarGrey::STEM::IShapelet* paddle;
     };

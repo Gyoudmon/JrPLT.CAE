@@ -1,10 +1,10 @@
-#include "shape_oop.hpp" /* 导入当前要启动的游戏头文件 */
+#include "paddleball.hpp" /* 导入当前要启动的游戏头文件 */
 
 using namespace WarGrey::STEM;
 
 int main(int argc, char* args[]) {
     /* 混沌初开，宇宙诞生 */
-    ShapeWorld universe;
+    PaddleBallWorld universe;
 
     /* 创造游戏世界 */
     universe.construct(argc, args);

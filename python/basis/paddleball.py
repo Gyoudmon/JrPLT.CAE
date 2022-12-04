@@ -1,108 +1,65 @@
-from digitama.game import *                 # 游戏模块
+from digitama.game import *
+from digitama.matter.graphlet.shapelet import *
 
-from digitama.graphics.geometry import *    # 基本图形模块
-from digitama.graphics.font import *        # 导入预定义字体
-from digitama.graphics.text import *        # 还用到了“画文字”函数
+################################ 定义游戏世界的常量 ##############################
+ball_radius = 8.0
+paddle_width = 128.0
+paddle_height = 8.0
 
-###############################################################################
-# 定义一个类型，并命名为 Ball（球）
-class Ball(object):
-    def __init__(self):
-        # 球的位置
-        self.x = 0
-        self.y = 0
-
-        # 球的速度
-        self.dx = 0
-        self.dy = 0
-
-# 定义一个字典，用来搜集 Paddle（桨）的属性
-def make_paddle():
-    # 桨的位置，以键值对的形式表达
-    return { 'x': 0, 'y': 0, 'speed': 0 }
+ball_speed = 6.0
+paddle_speed = ball_speed * 1.5
 
 ###############################################################################
-ball_radius = 8
-paddle_width = 128
-paddle_height = 8
-
-ball_speed = 4
-paddle_speed = ball_speed * 3
-
-class PaddleBallGame(Universe):
+class PaddleBallWorld(World):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题
-        super(PaddleBallGame, self).__init__("Paddle Ball", 60, 0x000000, 0xFFFFFF)
+        super(PaddleBallWorld, self).__init__("Paddle Ball")
 
-        self.ball = Ball()
-        self.paddle = make_paddle()
-        
-        self.screen_width = 0
-        self.screen_height = 0
+        # 本游戏世界中的物体
+        self.ball = None
+        self.paddle = None
 
+    # 实现 PaddleBallWorld::load 方法，加载球和桨，设置相关边界碰撞策略和速度
+    def load(self, width, height):
+        self.ball = self.insert(Circlet(ball_radius, ORANGE))
+        self.paddle = self.insert(Rectanglet(paddle_width, paddle_height, FORESTGREEN))
+
+        self.ball.set_border_strategy((BorderStrategy.BOUNCE, BorderStrategy.BOUNCE, BorderStrategy.STOP, BorderStrategy.BOUNCE))
+        self.paddle.set_border_strategy((BorderStrategy.IGNORE, BorderStrategy.STOP))
+
+        self.ball.set_speed(ball_speed, 45.0)
+
+    # 实现 PaddleBallWorld::reflow 方法，调整球和桨的初始位置
     def reflow(self, width, height):
-        self.screen_width = width
-        self.screen_height = height
-
         # 确保球产生与屏幕上方的中间
-        self.ball.x = self.screen_width // 2
-        self.ball.y = ball_radius
-
-        self.ball.dx = ball_speed * 1
-        self.ball.dy = ball_speed * 1
+        self.move_to(self.ball, (width * 0.5, ball_radius), MatterAnchor.CT)
 
         # 确保桨产生在靠近屏幕下方的中间
-        self.paddle['x'] = self.ball.x - paddle_width // 2
-        self.paddle['y'] = self.screen_height - paddle_height * 3
+        self.move_to(self.paddle, (width * 0.5, height - paddle_height * 3.0), MatterAnchor.CC)
 
+    # 实现 PaddleBallWorld::update 方法，根据当前球和桨的当前位置判断是否有碰撞，无需考虑运动细节
     def update(self, interval, count, uptime):
-        dead_y = self.screen_height - ball_radius
+        paddle_lx, paddle_ty = self.get_matter_location(self.paddle, MatterAnchor.LT)
+        paddle_rx, paddle_by = self.get_matter_location(self.paddle, MatterAnchor.RB)
 
-        if self.ball.y < dead_y: # 球未脱板
-            # 移动球，碰到左右边界、上边界反弹
-            self.ball.x = self.ball.x + self.ball.dx
-            self.ball.y = self.ball.y + self.ball.dy
+        ball_lx, ball_ty = self.get_matter_location(self.ball, MatterAnchor.LT)
+        ball_rx, ball_by = self.get_matter_location(self.ball, MatterAnchor.RB)
 
-            if self.ball.x <= ball_radius or self.ball.x >= self.screen_width - ball_radius:
-                self.ball.dx = -self.ball.dx
-
-            if self.ball.y <= ball_radius:
-                self.ball.dy = -self.ball.dy
-
-            # 移动桨，碰到边界停止
-            if self.paddle['speed'] != 0:
-                self.paddle['x'] += self.paddle['speed']
-
-                if self.paddle['x'] < 0:
-                    self.paddle['x'] = 0
-                elif self.paddle['x'] + paddle_width > self.screen_width:
-                    self.paddle['x'] = self.screen_width - paddle_width
-
-            # 检测小球是否被捕获
-            ball_bottom = self.ball.y + ball_radius
-
-            if ball_bottom >= self.paddle['y'] and self.ball.x >= self.paddle['x'] and self.ball.x <= self.paddle['x'] + paddle_width:
-                self.ball.dy = -self.ball.dy
-
-    def draw(self, renderer, x, y, width, height):
-        if self.ball.y >= self.paddle['y']:
-            ball_color = RED
+        if ball_ty < paddle_by: # 球未脱板, 检测小球是否被捕获
+            if ball_by >= paddle_ty and ball_by <= paddle_by and ball_lx >= paddle_lx and ball_rx <= paddle_rx:
+                self.ball.motion_bounce(False, True) # 正常，反弹球
         else:
-            ball_color = ORANGE
+            self.ball.set_color(RED)
 
-        game_fill_circle(renderer, self.ball.x, self.ball.y, ball_radius, ball_color)
-        game_fill_rect(renderer, self.paddle['x'], self.paddle['y'], paddle_width, paddle_height, FORESTGREEN)
-
+    # 实现 PaddleBallWorld::on_char 方法，处理键盘事件，用于控制桨的移动
     def _on_char(self, key, modifiers, repeats, pressed):
-        match key:
-            case 'a':
-                if pressed:
-                    self.paddle['speed'] = -paddle_speed
-                else:
-                    self.paddle['speed'] = 0
-            case 'd':
-                if pressed:
-                    self.paddle['speed'] = +paddle_speed
-                else:
-                    self.paddle['speed'] = 0
-
+        if key == 'a':
+            if pressed:
+                self.paddle.set_speed(paddle_speed, 180.0)
+            else:
+                self.paddle.set_speed(0.0, 180.0)
+        elif key == 'd':
+            if pressed:
+                self.paddle.set_speed(paddle_speed, 0.0)
+            else:
+                self.paddle.set_speed(0.0, 0.0)
