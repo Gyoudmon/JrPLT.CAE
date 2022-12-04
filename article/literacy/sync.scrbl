@@ -130,7 +130,7 @@ Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文�
 
 @itemlist[#:style 'compact
           @commandline{git clone https://github.com/Gyoudmon/big-bang.cpp.git G:\Course\YouthLanguage\cpp\basis\digitama}
-          @commandline{git clone https://github.com/Gyoudmon/vcso.git G:\Course\YouthLanguage\cpp\basis\village}]
+          @commandline{git clone https://github.com/Gyoudmon/vcso.git G:\Course\YouthLanguage\cpp\basis\village\vcso}]
 
 其中@tt{vcso.git}是 Windows 共享库，有这个就不用另外安装 vcpkg 了（就是那个可以跳过的@Secref{vcpkg}）。
 因此，使用其他操作系统的学生无需同步这个。
