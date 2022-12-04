@@ -173,7 +173,7 @@ class Universe(IDisplay):
                     case sdl2.SDL_USEREVENT:
                         parcel = ffi.cast(e.user.data1, ffi.POINTER(_TimerParcel)).contents
                         if parcel.master is self:
-                            self.__on_elapse(parcel.interval, parcel.count, parcel.uptime)
+                            self._on_elapse(parcel.interval, parcel.count, parcel.uptime)
                     case sdl2.SDL_MOUSEMOTION: self._on_mouse_motion_event(e.motion)
                     case sdl2.SDL_MOUSEWHEEL: self._on_mouse_wheel_event(e.wheel)
                     case sdl2.SDL_MOUSEBUTTONUP: self._on_mouse_button_event(e.button, False)
@@ -332,6 +332,12 @@ class Universe(IDisplay):
     # 大爆炸之前最后的初始化宇宙机会，默认什么都不做
     def _on_big_bang(self, width, height): pass
 
+    # 响应定时器事件，刷新游戏世界
+    def _on_elapse(self, interval, count, uptime):
+        """ 响应定时器事件，刷新游戏世界 """
+        self.update(interval, count, uptime)
+        self.notify_updated()
+
     # 响应鼠标事件，并按需触发单击、右击、双击、移动、滚轮事件
     def _on_mouse_button_event(self, mouse, pressed):
         if not pressed:
@@ -442,11 +448,6 @@ class Universe(IDisplay):
             self.log_message((0xFF0000, "Failed to save snapshot: %s." % sdl2.SDL_GetError().decode("utf-8")))
 
 # private
-    def __on_elapse(self, interval, count, uptime):
-        """ 响应定时器事件，刷新游戏世界 """
-        self.update(interval, count, uptime)
-        self.notify_updated()
-            
     def __do_redraw(self, renderer, x, y, width, height):
         game_world_reset(renderer, self.__fgc, self.__bgc)
         self.draw(renderer, x, y, width, height - self.get_cmdwin_height())
