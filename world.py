@@ -30,8 +30,8 @@ class World(Cosmos):
     def after_select(this, m, on_or_off): pass
 
 # public
-    def get_matter_location(this, matter):
-        return this._plane.get_matter_location(matter)
+    def get_matter_location(this, matter, anchor):
+        return this._plane.get_matter_location(matter, anchor)
 
     def insert(this, matter, x = 0.0, y = 0.0, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
         return this._plane.insert(matter, x, y, anchor, dx, dy)
