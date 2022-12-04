@@ -90,7 +90,7 @@
           @commandline{git submodule foreach git pull}
           @commandline{git pull}]
 
-建议大家平时学一下 git 的基本用法，避免不小心修改了来回来的代码，导致下次 @exec{pull} 时冲突没法正常同步。
+建议大家平时学一下 git 的基本用法，避免不小心修改了拉回来的代码，导致下次 @exec{pull} 时冲突没法正常同步。
 如果真碰到这事了，又嫌学 git 麻烦，那就删掉这个文件夹，从头开始重新 @exec{clone}。
 
 @handbook-scenario[#:tag "wisemon"]{C++ 代码的编译和运行}
@@ -129,16 +129,16 @@ Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文�
 和已经配置好的入口文件复制到该目录下，最后单独@exec{clone}配套的源码库：
 
 @itemlist[#:style 'compact
-          @commandline{git clone https://github.com/Gyoudmon/digitama.cpp.git G:\Course\YouthLanguage\cpp\basis\digitama}
+          @commandline{git clone https://github.com/Gyoudmon/big-bang.cpp.git G:\Course\YouthLanguage\cpp\basis\digitama}
           @commandline{git clone https://github.com/Gyoudmon/vcso.git G:\Course\YouthLanguage\cpp\basis\village}]
 
 其中@tt{vcso.git}是 Windows 共享库，有这个就不用另外安装 vcpkg 了（就是那个可以跳过的@Secref{vcpkg}）。
 因此，使用其他操作系统的学生无需同步这个。
 
-Python 学生将其中的 @tt{digitama.cpp.git} 替换成 @tt{digitama.py.git} 即可，也不需要 @tt{vcso.git}：
+Python 学生将其中的 @tt{big-bang.cpp.git} 替换成 @tt{big-bang.py.git} 即可，也不需要 @tt{vcso.git}：
 
 @itemlist[#:style 'compact
-          @commandline{git clone https://github.com/Gyoudmon/digitama.py.git G:\Course\YouthLanguage\python\basis\digitama}]
+          @commandline{git clone https://github.com/Gyoudmon/big-bang.py.git G:\Course\YouthLanguage\python\basis\digitama}]
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-reference[]
