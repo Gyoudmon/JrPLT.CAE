@@ -33,7 +33,6 @@ class PaddleBallWorld(World):
     def reflow(self, width, height):
         # 确保球产生与屏幕上方的中间
         self.move_to(self.ball, (width * 0.5, ball_radius), MatterAnchor.CT)
-
         # 确保桨产生在靠近屏幕下方的中间
         self.move_to(self.paddle, (width * 0.5, height - paddle_height * 3.0), MatterAnchor.CC)
 

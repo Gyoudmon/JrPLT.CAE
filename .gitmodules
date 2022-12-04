@@ -1,9 +1,9 @@
 [submodule "cpp/basis/digitama"]
 	path = cpp/basis/digitama
-	url = https://github.com/Gyoudmon/digitama.cpp
+	url = https://github.com/Gyoudmon/big-bange.cpp.git
 [submodule "python/basis/digitama"]
 	path = python/basis/digitama
-	url = https://github.com/Gyoudmon/digitama.py
+	url = https://github.com/Gyoudmon/big-bang.py.git
 [submodule "cpp/basis/village/vcso"]
 	path = cpp/basis/village/vcso
 	url = https://github.com/Gyoudmon/vcso.git
