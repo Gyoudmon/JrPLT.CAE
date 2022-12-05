@@ -8,42 +8,52 @@ from digitama.matter.graphlet.shapelet import *
 class Gallery(World):
     def __init__(this):
         super(Gallery, this).__init__("The Gallery of Sprites and Graphlets")
+        
         this.label = None
-        this.lines = []
-        this.rectangle = None
-        this.circle = None
-        this.ellipse = None
-        this.regular_polygons = []
+        this.caption = None
+        this.raft = None
+        this.bow = None
+        this.stern = None
+        this.flag = None
+        this.mast = None
+        this.post = None
+        this.paddle = None
+        this.sea = None
 
     def load(this, width, height):
         this.label = this.insert(Labellet("精灵和图元陈列馆", game_font.unicode, BLACK))
+        raft_width, raft_height = this.label.get_extent(0.0, 0.0)
 
-        # 三角形的三条边
-        this.lines.append(this.insert(Linelet(-200, +200, RED)))
-        this.lines.append(this.insert(Linelet(+400, +000, GREEN)))
-        this.lines.append(this.insert(Linelet(+200, +200, BLUE)))
+        raft_width *= 2.0
+        raft_height *= 2.0
 
-        this.rectangle = this.insert(Rectanglet(200, 100, YELLOWGREEN, ORANGE)) # 橘边黄绿色长方形
-        this.circle = this.insert(Circlet(50, PINK, PURPLE))                    # 紫边粉红色圆
-        this.ellipse = this.insert(Ellipselet(64, 32, KHAKI, SKYBLUE))          # 天蓝色边卡其色椭圆
-    
-        for n in range(1, 11):
-            this.regular_polygons.append(this.insert(RegularPolygonlet(n, 32, ROYALBLUE, FIREBRICK, rotation = -90.0)))
+        this.sea = this.insert(Ellipselet(raft_width * 1.618, raft_height, DEEPSKYBLUE))
+                
+        this.mast = this.insert(Rectanglet(4.0, raft_width, BURLYWOOD, SADDLEBROWN))
+        this.flag = this.insert(RegularPolygonlet(3, raft_height * 0.618, ROYALBLUE, DODGERBLUE))
+
+        this.post = this.insert(RoundedRectanglet(raft_height * 0.618, raft_height * 2.0, -0.45, BURLYWOOD, BURLYWOOD))
+        this.paddle = this.insert(Linelet(raft_width * 0.618, raft_height * 1.5, BROWN))
+        this.raft = this.insert(RoundedRectanglet(raft_width, raft_height, -0.1, BURLYWOOD, BURLYWOOD))
+        this.bow = this.insert(RegularPolygonlet(3, raft_height * 0.5, KHAKI, BURLYWOOD, 180.0))
+        this.stern = this.insert(RegularPolygonlet(3, raft_height * 0.5, KHAKI, BURLYWOOD))
+                
+        this.caption = this.insert(Labellet(this.get_renderer_name(), game_font.DEFAULT, BLACK))
 
     def reflow(this, width, height):
-        # 排列线段以组成三角形
-        this.move_to(this.lines[0], (200.0, 400.0), MatterAnchor.LB) # 左下角对齐
-        this.move_to(this.lines[1], (200.0, 400.0), MatterAnchor.LT) # 左上角对齐
-        this.move_to(this.lines[2], (600.0, 400.0), MatterAnchor.RB) # 右下角对齐
+        _, raft_height = this.label.get_extent(0.0, 0.0)
 
-        # 排列长方形和椭圆
-        this.move_to(this.rectangle, (800.0, 100.0), MatterAnchor.LT)
-        this.move_to(this.circle, (900.0, 400.0), MatterAnchor.CC)
-        this.move_to(this.ellipse, (900.0, 600.0), MatterAnchor.CC)
+        this.move_to(this.sea, (width * 0.5, height * 0.5), MatterAnchor.CT)
+                
+        this.move_to(this.raft, (this.sea, MatterAnchor.CT), MatterAnchor.CC)
+        this.move_to(this.caption, (this.raft, MatterAnchor.CC), MatterAnchor.CC)
+        this.move_to(this.bow, (this.raft, MatterAnchor.LC), MatterAnchor.RC)
+        this.move_to(this.stern, (this.raft, MatterAnchor.RC), MatterAnchor.LC)
+        this.move_to(this.post, (this.raft, MatterAnchor.RB), MatterAnchor.RB, -raft_height)
+        this.move_to(this.paddle, (this.post, MatterAnchor.CT), MatterAnchor.LT, -raft_height, raft_height)
 
-        # 排列正多边形
-        for n in range(0, len(this.regular_polygons)):
-            this.move_to(this.regular_polygons[n], (100.0 * float(n), 750.0), MatterAnchor.CC)
+        this.move_to(this.mast, (this.raft, MatterAnchor.LB), MatterAnchor.LB, raft_height)
+        this.move_to(this.flag, (this.mast, MatterAnchor.RT), MatterAnchor.LT, 0.0, raft_height * 0.5)
 
     def can_select(this, m): return True
 

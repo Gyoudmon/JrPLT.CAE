@@ -30,16 +30,16 @@ class ShapeWorld(World):
     
         # 房屋的组成
         self.roof = self.insert(RegularPolygonlet(3, 140.0, DEEPSKYBLUE, ROYALBLUE, -90.0)) # 深天蓝色屋顶
-        self.wall = self.insert(Rectanglet(200.0, 180.0, WHITESMOKE, SNOW));                  # 白色墙壁
-        self.door = self.insert(Rectanglet(42.0, 84.0, KHAKI, DARKKHAKI));                    # 卡其色门
+        self.wall = self.insert(Rectanglet(200.0, 180.0, WHITESMOKE, SNOW));                # 白色墙壁
+        self.door = self.insert(Rectanglet(42.0, 84.0, KHAKI, DARKKHAKI));                  # 卡其色门
         self.lock = self.insert(Circlet(4.0, CHOCOLATE));                                   # 巧克力色门锁
         self.window = self.insert(RoundedSquarelet(64.0, -0.15, LIGHTSKYBLUE, SKYBLUE));    # 淡天蓝色窗口
 
     # 实现 ShapeWorld::reflow 方法，重新排列几何图形在舞台上的位置
     def reflow(self, width, height):
         # 排列基本图形以组装房屋
-        self.move_to(self.roof, (width * 0.5, height * 0.64), MatterAnchor.CB)
-        self.move_to(self.wall, (self.roof, MatterAnchor.CB), MatterAnchor.CT, 0.0, -70.0)
+        self.move_to(self.roof, (width * 0.5, height * 0.5), MatterAnchor.CB)
+        self.move_to(self.wall, (self.roof, MatterAnchor.CB), MatterAnchor.CT)
         self.move_to(self.door, (self.wall, MatterAnchor.LB), MatterAnchor.LB, 24.0)
         self.move_to(self.lock, (self.door, MatterAnchor.RC), MatterAnchor.RC, -4.0)
         self.move_to(self.window, (self.wall, MatterAnchor.CC), MatterAnchor.LC)

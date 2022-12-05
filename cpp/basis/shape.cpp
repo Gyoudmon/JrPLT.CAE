@@ -27,8 +27,8 @@ void WarGrey::STEM::ShapeWorld::load(float width, float height) {
 // 实现 ShapeWorld::reflow 方法，重新排列几何图形在舞台上的位置
 void WarGrey::STEM::ShapeWorld::reflow(float width, float height) {
     // 排列基本图形以组装房屋
-    this->move_to(this->roof, width * 0.5F, height * 0.64F, MatterAnchor::CB);
-    this->move_to(this->wall, this->roof, MatterAnchor::CB, MatterAnchor::CT, 0.0F, -70.0F);
+    this->move_to(this->roof, width * 0.5F, height * 0.50F, MatterAnchor::CB);
+    this->move_to(this->wall, this->roof, MatterAnchor::CB, MatterAnchor::CT);
     this->move_to(this->door, this->wall, MatterAnchor::LB, MatterAnchor::LB, 24.0F);
     this->move_to(this->lock, this->door, MatterAnchor::RC, MatterAnchor::RC, -4.0F);
     this->move_to(this->window, this->wall, MatterAnchor::CC, MatterAnchor::LC);

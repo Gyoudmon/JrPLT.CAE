@@ -82,3 +82,15 @@ void WarGrey::STEM::PaddleBallWorld::on_char(char key, uint16_t modifiers, uint8
         case 'd': this->paddle.speed = (pressed ? +paddle_speed : 0.0F); break;
     }
 }
+
+
+
+/*************************************************************************************************/
+int main(int argc, char* args[]) {
+    PaddleBallWorld universe;
+
+    universe.construct(argc, args);
+    universe.big_bang();
+
+    return 0;
+}

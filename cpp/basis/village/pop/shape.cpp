@@ -38,3 +38,15 @@ void WarGrey::STEM::ShapeWorld::draw(SDL_Renderer* renderer, int x, int y, int w
     game_fill_rect(renderer, 400, 388, 64, 64, LIGHTSKYBLUE);                   // 画淡天蓝色矩形
     game_draw_rect(renderer, 400, 388, 64, 64, SKYBLUE);                        // 画天蓝色边框
 }
+
+
+
+/*************************************************************************************************/
+int main(int argc, char* args[]) {
+    ShapeWorld universe;
+
+    universe.construct(argc, args);
+    universe.big_bang();
+
+    return 0;
+}

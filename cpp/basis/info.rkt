@@ -18,5 +18,12 @@
                                 ["FontBrowser.cpp" console ;desktop
                                  ((config SDL2)
                                   (include [windows "village\\vcso\\include"])
+                                  (libpath [windows "village\\vcso\\lib"]))]
+                                ["village/pop/shape.cpp" console ;desktop
+                                 ((config SDL2)
+                                  (include [windows "village\\vcso\\include"])
+                                  (libpath [windows "village\\vcso\\lib"]))]
+                                ["village/pop/paddleball.cpp" console ;desktop
+                                 ((config SDL2)
+                                  (include [windows "village\\vcso\\include"])
                                   (libpath [windows "village\\vcso\\lib"]))]))
-
