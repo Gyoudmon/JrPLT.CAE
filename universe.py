@@ -39,7 +39,7 @@ def game_initialize(flags, fontsize = 16):
         # atexit.register(game_fonts_destroy) # leave it to ctypes
 
 def game_create_texture(window, renderer):
-    width, height = _get_window_size(window)
+    width, height = _get_window_size(window, renderer)
     t = sdl2.SDL_CreateTexture(renderer, sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET, width, height)
     _Check_Variable_Validity(t, None, "SDL 纹理创建失败：")
 
@@ -47,7 +47,7 @@ def game_create_texture(window, renderer):
 
 def game_world_create(width, height):
     cpos = sdl2.SDL_WINDOWPOS_CENTERED
-    flags = sdl2.SDL_WINDOW_SHOWN | sdl2.SDL_WINDOW_RESIZABLE | sdl2.SDL_WINDOW_ALLOW_HIGHDPI
+    flags = sdl2.SDL_WINDOW_SHOWN | sdl2.SDL_WINDOW_RESIZABLE
 
     if width <= 0 or height <= 0:
         if width <= 0 and height <= 0:
@@ -235,8 +235,15 @@ class Universe(IDisplay):
         else:
             sdl2.SDL_SetWindowFullscreen(self.__window, 0)
 
-    def get_window_size(self):
-        return _get_window_size(self.__window)
+    def get_window_size(self, logical = True):
+        return _get_window_size(self.__window, self.__renderer, logical)
+
+    def get_renderer_name(self):
+        rinfo = sdl2.render.SDL_RendererInfo()
+
+        sdl2.SDL_GetRendererInfo(self.__renderer, ctypes.byref(rinfo))
+
+        return rinfo.name.decode('utf-8')
 
     def get_foreground_color(self):
         return self.__fgc
@@ -256,7 +263,7 @@ class Universe(IDisplay):
         game_world_refresh(self.__renderer, self.__texture)
 
     def set_cmdwin_height(self, cmdwinheight, fgc = -1, bgc = -1, font = game_font.unicode):
-        width, height = _get_window_size(self.__window)
+        _, height = _get_window_size(self.__window, self.__renderer)
         self.__echo.y = height - cmdwinheight
         self.__echo.h = cmdwinheight
 
@@ -522,11 +529,14 @@ def _Check_Variable_Validity(init, failure, message, GetError = sdl2.SDL_GetErro
         print(message + GetError().decode("utf-8"))
         os._exit(1)
 
-def _get_window_size(window):
+def _get_window_size(window, renderer, logical = True):
     w = ctypes.c_int()
     h = ctypes.c_int()
-        
-    sdl2.SDL_GetWindowSize(window, ctypes.byref(w), ctypes.byref(h))
+    
+    if logical:
+        sdl2.SDL_GetRendererOutputSize(renderer, ctypes.byref(w), ctypes.byref(h))
+    else:
+        sdl2.SDL_GetWindowSize(window, ctypes.byref(w), ctypes.byref(h))
 
     return w.value, h.value
 

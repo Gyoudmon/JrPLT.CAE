@@ -254,22 +254,21 @@ class RegularPolygonlet(IShapelet):
         self.__aradius, self.__bradius = radius, radius
         self.__rotation = rotation
         self.__xs, self.__ys = None, None
+        self.__lx, self.__rx, self.__ty, self.__by = 0.0, 0.0, 0.0, 0.0
         self.__initialize_vertice()
 
     def resize(self, width, height):
         if width > 0.0 and height > 0.0:
-            ar = width * 0.5
-            br = height * 0.5
-
-            if self.__aradius != ar or self.__bradius != br:
-                self.__aradius = ar
-                self.__bradius = br
+            this_w, this_h = self._get_shape_extent()
+            
+            if this_w != width or this_h != height:
+                self.__aradius = (width / this_w)
+                self.__bradius = (height / this_h)
                 self.__initialize_vertice()
                 self.construct()
 
-
     def _get_shape_extent(self):
-        return self.__aradius * 2.0, self.__bradius * 2.0
+        return self.__rx - self.__lx + 1, self.__by - self.__ty + 1
     
     def _draw_shape(self, renderer, width, height, r, g, b, a):
         sdl2.sdlgfx.aapolygonRGBA(renderer, self.__xs, self.__ys, self.__n, r, g, b, a)
@@ -281,14 +280,33 @@ class RegularPolygonlet(IShapelet):
     def __initialize_vertice(self):
         start = math.radians(self.__rotation)
         delta = 2.0 * math.pi / float(self.__n)
-        rx = self.__aradius - 0.5
-        ry = self.__bradius - 0.5
         xs, ys = [], []
+
+        self.__lx = round(self.__aradius) * 2
+        self.__ty = round(self.__bradius) * 2
+        self.__rx = 0
+        self.__by = 0
 
         for idx in range(0, self.__n):
             theta = start + delta * float(idx)
-            xs.append(round(rx * math.cos(theta) + rx))
-            ys.append(round(ry * math.sin(theta) + ry))
+            this_x = round(self.__aradius * math.cos(theta) + self.__aradius)
+            this_y = round(self.__bradius * math.sin(theta) + self.__bradius)
+            xs.append(this_x)
+            ys.append(this_y)
+
+            if self.__rx < this_x:
+                self.__rx = this_x
+            elif self.__lx > this_x:
+                self.__lx = this_x
+
+            if self.__by < this_y:
+                self.__by = this_y
+            elif self.__ty > this_y:
+                self.__ty = this_y
+
+        for idx in range(0, self.__n):
+            xs[idx] -= self.__lx
+            ys[idx] -= self.__ty
 
         self.__xs = (ctypes.c_int16 * self.__n)(*xs)
         self.__ys = (ctypes.c_int16 * self.__n)(*ys)
