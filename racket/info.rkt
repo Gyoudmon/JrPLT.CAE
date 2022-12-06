@@ -1,9 +1,11 @@
 #lang info
 
-(define collection 'multi)
+(define collection 'use-pkg-name)
+
+(define pkg-desc "Elementary Concepts of Programming")
 (define pkg-authors '(wargrey))
 
-(define pkg-desc "Programming Courses Designed for Youths")
 (define version "1.0")
+(define test-omit-paths 'all)
 
-(define deps '("base" "digimon" "graphics"))
+(define deps '("base" "digimon"))
