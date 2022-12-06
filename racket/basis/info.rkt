@@ -8,4 +8,4 @@
 (define version "1.0")
 (define test-omit-paths 'all)
 
-(define deps '("base"))
+(define deps '("base" "digimon"))

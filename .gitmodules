@@ -7,3 +7,6 @@
 [submodule "cpp/basis/village/vcso"]
 	path = cpp/basis/village/vcso
 	url = https://github.com/Gyoudmon/vcso.git
+[submodule "racket/basis/digitama"]
+	path = racket/basis/digitama
+	url = https://github.com/Gyoudmon/big-bang.rkt
