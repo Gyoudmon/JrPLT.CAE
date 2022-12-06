@@ -1,6 +1,7 @@
 import sdl2
 import sdl2.sdlgfx
 
+import math
 import ctypes
 
 from ..igraphlet import *
@@ -14,59 +15,32 @@ class IShapelet(IGraphlet, IMovable):
     def __init__(self, color = -1, border_color = -1):
         super(IShapelet, self).__init__()
         self.enable_resizing(True)
-        self.__geometry = None
+        self.__last_pos = (math.nan, math.nan)
         self.__color = color
         self.__border_color = border_color
-        self.__alpha_color_key = 0xFFFFFF
-
-    def __del__(self):
-        if self.__geometry:
-            sdl2.SDL_FreeSurface(self.__geometry)
             
 # public
-    def construct(self):
-        width, height = self._get_shape_extent()
-        geometry = game_blank_image(width, height, self.__alpha_color_key)
-
-        if geometry:
-            renderer = sdl2.SDL_CreateSoftwareRenderer(geometry)
-
-            if renderer:
-                RGB_SetRenderDrawColor(renderer, self.__alpha_color_key)
-                sdl2.SDL_RenderClear(renderer)
-
-                if self.__color >= 0:
-                    r, g, b = RGB_FromHexadecimal(self.__color)
-                    self._fill_shape(renderer, width, height, r, g, b, 0xFF)
-
-                if self.__border_color >= 0:
-                    r, g, b = RGB_FromHexadecimal(self.__border_color)
-                    self._draw_shape(renderer, width, height, r, g, b, 0xFF)
-                
-                sdl2.SDL_RenderPresent(renderer)
-                sdl2.SDL_DestroyRenderer(renderer)
-
-        self._on_shape_changed(geometry)
-
-    def get_extent(self, x, y):
-        w, h = 0.0, 0.0
-
-        if self.__geometry:
-            g = self.__geometry.contents
-            w, h = g.w, g.h
+    def draw(self, renderer, flx, fly, flWidth, flHeight):
+        x, y = round(flx), round(fly)
+        width, height = round(flWidth), round(flHeight)
         
-        return w, h
+        if self.__last_pos[0] != flx or (self.__last_pos[1]) != fly:
+            self.__last_pos = (flx, fly)
+            self._on_moved(flx, fly)
+        
+        if self.__color >= 0:
+            r, g, b = RGB_FromHexadecimal(self.__color)
+            self._fill_shape(renderer, x, y, width, height, r, g, b, 0xFF)
 
-    def draw(self, renderer, x, y, Width, Height):
-        if self.__geometry:
-            ox, oy = self.get_shape_origin()
-            game_render_surface(renderer, self.__geometry, (x - ox, y - oy))
-
+        if self.__border_color >= 0:
+            r, g, b = RGB_FromHexadecimal(self.__border_color)
+            self._draw_shape(renderer, x, y, width, height, r, g, b, 0xFF)
+                
 # public
     def set_color(self, color):
         if self.__color != color:
             self.__color = color
-            self.construct()
+            self.notify_updated()
 
     def get_color(self):
         return self.__color
@@ -74,31 +48,22 @@ class IShapelet(IGraphlet, IMovable):
     def set_border_color(self, color):
         if self.__border_color != color:
             self.__border_color = color
-            self.construct()
+            self.notify_updated()
     
     def get_border_color(self):
         return self.__border_color
-
-    def set_alpha_key_color(self, color):
-        if self.__alpha_color_key != color:
-            self.__alpha_color_key = color
-            self.construct()
 
     def get_shape_origin(self):
         return 0.0, 0.0
 
 # protected
-    def _on_shape_changed(self, geometry):
-        if self.__geometry:
-            sdl2.SDL_FreeSurface(self.__geometry)
-
-        self.__geometry = geometry
-        self.notify_updated()
+    def _on_moved(self, new_x, new_y): pass
+    def _draw_shape(self, renderer, x, y, width, height, r, g, b, a): pass
+    def _fill_shape(self, renderer, x, y, width, height, r, g, b, a): pass
 
 # protected
-    def _get_shape_extent(self): return 0.0, 0.0
-    def _draw_shape(self, renderer, width, height, r, g, b, a): pass
-    def _fill_shape(self, renderer, width, height, r, g, b, a): pass
+    def _dirty_cached_position(self):
+        self.__last_pos = (math.nan, math.nan)
 
 ###################################################################################################
 class Linelet(IShapelet):
@@ -107,32 +72,23 @@ class Linelet(IShapelet):
         self.__epx = ex
         self.__epy = ey
         
-    def resize(self, width, height):
-        if width > 0.0 and height > 0.0:
-            w, h = self._get_shape_extent()
+    def get_extent(self, x, y):
+        return abs(self.__epx), abs(self.__epy)
 
-            if width != w or height != h:
-                self.__epx *= width / w
-                self.__epy *= height / h
-                self.construct()
+    def _on_resize(self, w, h, width, height):
+        self.__epx *= w / width
+        self.__epy *= h / height
 
-    def _get_shape_extent(self):
-        w = max(abs(self.__epx), 1.0)
-        h = max(abs(self.__epy), 1.0)
-
-        return w, h
-
-    def _fill_shape(self, renderer, width, height, r, g, b, a):
-        x0, y0 = 0, 0
+    def _fill_shape(self, renderer, x, y, width, height, r, g, b, a):
         xn, yn = round(self.__epx), round(self.__epy)
 
-        if self.__epx < 0.0:
-            x0 = -self.__epx
+        if xn < 0:
+            x = x - xn
         
-        if self.__epy < 0.0:
-            y0 = -self.__epy
+        if yn < 0:
+            y = y - yn
 
-        sdl2.sdlgfx.aalineRGBA(renderer, x0, y0, x0 + xn, y0 + yn, r, g, b, a)        
+        sdl2.sdlgfx.aalineRGBA(renderer, x, y, x + xn, y + yn, r, g, b, a)        
 
 class HLinelet(Linelet):
     def __init__(self, width, color):
@@ -148,21 +104,18 @@ class Rectanglet(IShapelet):
         super(Rectanglet, self).__init__(color, border_color)
         self.__width, self.__height = width, height
 
-    def resize(self, width, height):
-        if width > 0.0 and height > 0.0:
-            if self.__width != width or self.__height != height:
-                self.__width = width
-                self.__height = height
-                self.construct()
-    
-    def _get_shape_extent(self):
+    def get_extent(self, x, y):
         return self.__width, self.__height
 
-    def _draw_shape(self, renderer, width, height, r, g, b, a):
-        sdl2.sdlgfx.rectangleRGBA(renderer, 0, 0, round(width), round(height), r, g, b, a)
+    def _on_resize(self, w, h, width, height):
+        self.__width = w
+        self.__height = h
+    
+    def _draw_shape(self, renderer, x, y, width, height, r, g, b, a):
+        sdl2.sdlgfx.rectangleRGBA(renderer, x + width, y, x, y + height, r, g, b, a)
 
-    def _fill_shape(self, renderer, width, height, r, g, b, a):
-        sdl2.sdlgfx.boxRGBA(renderer, 0, 0, round(width), round(height), r, g, b, a)
+    def _fill_shape(self, renderer, x, y, width, height, r, g, b, a):
+        sdl2.sdlgfx.boxRGBA(renderer, x + width, y, x, y + height, r, g, b, a)
 
 class Squarelet(Rectanglet):
     def __init__(self, edge_size, color, border_color=-1):
@@ -174,31 +127,28 @@ class RoundedRectanglet(IShapelet):
         self.__width, self.__height = width, height
         self.__radius = radius
 
-    def resize(self, width, height):
-        if width > 0.0 and height > 0.0:
-            if self.__width != width or self.__height != height:
-                self.__width = width
-                self.__height = height
-                self.construct()
-    
-    def _get_shape_extent(self):
+    def get_extent(self, x, y):
         return self.__width, self.__height
 
-    def _draw_shape(self, renderer, width, height, r, g, b, a):
+    def _on_resize(self, w, h, width, height):
+        self.__width = w
+        self.__height = h
+    
+    def _draw_shape(self, renderer, x, y, width, height, r, g, b, a):
         rad = self.__radius
 
         if rad < 0.0:
             rad = -min(self.__width, self.__height) * rad
 
-        sdl2.sdlgfx.roundedRectangleRGBA(renderer, 0, 0, round(width), round(height), round(rad), r, g, b, a)
+        sdl2.sdlgfx.roundedRectangleRGBA(renderer, x + width, y, x, y + height, round(rad), r, g, b, a)
 
-    def _fill_shape(self, renderer, width, height, r, g, b, a):
+    def _fill_shape(self, renderer, x, y, width, height, r, g, b, a):
         rad = self.__radius
 
         if rad < 0.0:
             rad = -min(self.__width, self.__height) * rad
 
-        sdl2.sdlgfx.roundedBoxRGBA(renderer, 0, 0, round(width), round(height), round(rad), r, g, b, a)
+        sdl2.sdlgfx.roundedBoxRGBA(renderer, x + width, y, x, y + height, round(rad), r, g, b, a)
 
 class RoundedSquarelet(RoundedRectanglet):
     def __init__(self, edge_size, radius, color, border_color = -1):
@@ -209,38 +159,36 @@ class Ellipselet(IShapelet):
         super(Ellipselet, self).__init__(color, border_color)
         self.__aradius, self.__bradius = aradius, bradius
 
-    def resize(self, width, height):
-        if width > 0.0 and height > 0.0:
-            ar = width * 0.5
-            br = height * 0.5
-
-            if self.__aradius != ar or self.__bradius != br:
-                self.__aradius = ar
-                self.__bradius = br
-                self.construct()
-    
-    def _get_shape_extent(self):
+    def get_extent(self, x, y):
         return self.__aradius * 2.0, self.__bradius * 2.0
 
-    def _draw_shape(self, renderer, width, height, r, g, b, a):
+    def _on_resize(self, w, h, width, height):
+        self.__aradius = w * 0.5
+        self.__bradius = h * 0.5
+    
+    def _draw_shape(self, renderer, x, y, width, height, r, g, b, a):
         rx = round(self.__aradius) - 1
         ry = round(self.__bradius) - 1
+        cx = rx + x
+        cy = ry + y
 
         if rx == ry:
-            sdl2.sdlgfx.aacircleRGBA(renderer, rx, ry, rx, r, g, b, a)
+            sdl2.sdlgfx.aacircleRGBA(renderer, cx, cy, rx, r, g, b, a)
         else:
-            sdl2.sdlgfx.aaellipseRGBA(renderer, rx, ry, rx, ry, r, g, b, a)
+            sdl2.sdlgfx.aaellipseRGBA(renderer, cx, cy, rx, ry, r, g, b, a)
 
-    def _fill_shape(self, renderer, width, height, r, g, b, a):
+    def _fill_shape(self, renderer, x, y, width, height, r, g, b, a):
         rx = round(self.__aradius) - 1
         ry = round(self.__bradius) - 1
+        cx = rx + x
+        cy = ry + y
 
         if rx == ry:
-            sdl2.sdlgfx.filledCircleRGBA(renderer, rx, ry, rx, r, g, b, a)
-            sdl2.sdlgfx.aacircleRGBA(renderer, rx, ry, rx, r, g, b, a)
+            sdl2.sdlgfx.filledCircleRGBA(renderer, cx, cy, rx, r, g, b, a)
+            sdl2.sdlgfx.aacircleRGBA(renderer, cx, cy, rx, r, g, b, a)
         else:
-            sdl2.sdlgfx.filledEllipseRGBA(renderer, rx, ry, rx, ry, r, g, b, a)
-            sdl2.sdlgfx.aaellipseRGBA(renderer, rx, ry, rx, ry, r, g, b, a)
+            sdl2.sdlgfx.filledEllipseRGBA(renderer, cx, cy, rx, ry, r, g, b, a)
+            sdl2.sdlgfx.aaellipseRGBA(renderer, cx, cy, rx, ry, r, g, b, a)
 
 class Circlet(Ellipselet):
     def __init__(self, radius, color, border_color = -1):
@@ -250,49 +198,58 @@ class Circlet(Ellipselet):
 class RegularPolygonlet(IShapelet):
     def __init__(self, n, radius, color, border_color = -1, rotation = 0.0):
         super(RegularPolygonlet, self).__init__(color, border_color)
+        self.__PTArray = ctypes.c_int16 * n
         self.__n = n
         self.__aradius, self.__bradius = radius, radius
         self.__rotation = rotation
-        self.__xs, self.__ys = None, None
         self.__lx, self.__rx, self.__ty, self.__by = 0.0, 0.0, 0.0, 0.0
+        self.__pts = []
+        self.__xs = self.__PTArray()
+        self.__ys = self.__PTArray()
         self.__initialize_vertice()
 
-    def resize(self, width, height):
-        if width > 0.0 and height > 0.0:
-            this_w, this_h = self._get_shape_extent()
-            
-            if this_w != width or this_h != height:
-                self.__aradius = (width / this_w)
-                self.__bradius = (height / this_h)
-                self.__initialize_vertice()
-                self.construct()
-
-    def _get_shape_extent(self):
+    def get_extent(self, x, y):
         return self.__rx - self.__lx + 1, self.__by - self.__ty + 1
     
-    def _draw_shape(self, renderer, width, height, r, g, b, a):
+    def _on_resize(self, w, h, width, height):
+        self.__aradius = w / width
+        self.__bradius = h / height
+        self.__initialize_vertice()
+
+    def _on_moved(self, new_x, new_y):
+        xoff = new_x - self.__lx
+        yoff = new_y - self.__ty
+
+        for idx in range(0, self.__n):
+            pt = self.__pts[idx]
+
+            self.__xs[idx] = round(pt[0] + xoff)
+            self.__ys[idx] = round(pt[1] + yoff)
+
+    def _draw_shape(self, renderer, x, y, width, height, r, g, b, a):
         sdl2.sdlgfx.aapolygonRGBA(renderer, self.__xs, self.__ys, self.__n, r, g, b, a)
     
-    def _fill_shape(self, renderer, width, height, r, g, b, a):
+    def _fill_shape(self, renderer, x, y, width, height, r, g, b, a):
         sdl2.sdlgfx.filledPolygonRGBA(renderer, self.__xs, self.__ys, self.__n, r, g, b, a)
         sdl2.sdlgfx.aapolygonRGBA(renderer, self.__xs, self.__ys, self.__n, r, g, b, a)
     
     def __initialize_vertice(self):
         start = math.radians(self.__rotation)
         delta = 2.0 * math.pi / float(self.__n)
-        xs, ys = [], []
 
-        self.__lx = round(self.__aradius) * 2
-        self.__ty = round(self.__bradius) * 2
-        self.__rx = 0
-        self.__by = 0
+        self.__lx = self.__aradius
+        self.__ty = self.__bradius
+        self.__rx = -self.__lx
+        self.__by = -self.__ty
+
+        self.__pts.clear()
 
         for idx in range(0, self.__n):
             theta = start + delta * float(idx)
-            this_x = round(self.__aradius * math.cos(theta) + self.__aradius)
-            this_y = round(self.__bradius * math.sin(theta) + self.__bradius)
-            xs.append(this_x)
-            ys.append(this_y)
+            this_x = round(self.__aradius * math.cos(theta))
+            this_y = round(self.__bradius * math.sin(theta))
+            
+            self.__pts.append((this_x, this_y))
 
             if self.__rx < this_x:
                 self.__rx = this_x
@@ -303,10 +260,3 @@ class RegularPolygonlet(IShapelet):
                 self.__by = this_y
             elif self.__ty > this_y:
                 self.__ty = this_y
-
-        for idx in range(0, self.__n):
-            xs[idx] -= self.__lx
-            ys[idx] -= self.__ty
-
-        self.__xs = (ctypes.c_int16 * self.__n)(*xs)
-        self.__ys = (ctypes.c_int16 * self.__n)(*ys)

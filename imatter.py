@@ -37,7 +37,6 @@ class IMatter(object):
     def construct(self): pass
     def get_extent(self, x, y): return 0.0, 0.0
     def get_margin(self, x, y): return 0.0, 0.0, 0.0, 0.0
-    def resize(self, width, height): pass
     def update(self, count, interval, uptime): pass
     def draw(self, renderer, X, Y, Width, Height): pass
     def ready(self): return True
@@ -115,6 +114,17 @@ class IMatter(object):
             
             self.info.master.notify_updated()
 
+    def resize(self, w, h):
+        if self.__resizable:
+            if w > 0.0 and h > 0.0:
+                x, y = self.get_location(MatterAnchor.LT)
+                width, height = self.get_extent(x, y)
+
+                if width != w or height != h:
+                    self.moor(self.__resize_anchor)
+                    self._on_resize(w, h, width, height)
+                    self.notify_updated()
+
     def log_message(self, message):
         if self.info:
             self.info.master.log_message(message)
@@ -147,3 +157,7 @@ class IMatter(object):
         sdl2.SDL_FreeSurface(photograph)
 
         return okay
+
+# proteceted
+    def _on_resized(self, width, height, old_width, old_height):
+        pass
