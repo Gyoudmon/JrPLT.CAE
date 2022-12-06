@@ -18,20 +18,10 @@
 @itemlist[#:style 'compact
           @item{@tt{cpp}: C++ 课程源码。}
           @item{@tt{python}: Python 课程源码。}
-          @item{@tt{racket}: Racket 课程源码。这是我自己的私有课程，为我女儿和徒弟级学生准备。诸位有兴趣可以自行学习。}
-          @item{@tt{article}: 这篇手册的源码。这可以作为例子告诉学生，编程和写作是同类活动；即使将来只想做作家，懂编程也将如虎添翼。}
-          @item{@tt{utility}: 实用工具源码。这是我自己在研课过程中用的脚本，比如画出适合放在课件里的示意图。}]
+          @item{@tt{racket}: Racket 课程源码。这是我自己的私有课程，为我女儿和徒弟级学生准备。诸位有兴趣可以自行学习。
+           此外，此目录下也包含这篇手册的源码。这可以作为例子告诉学生，编程和写作是同类活动；即使将来只想做作家，懂编程也将如虎添翼。}]
 
-
-接下来以 @tt{cpp} 目录为例说明课程目录组织，@tt{cpp} 和 @tt{racket} 同理。若无特殊情况，一门课只有一个根目录。
-
-@itemlist[#:style 'compact
-          @item{@tt{basis}: 语言基础课源码，这是所有后续课程的基础。除第一阶段，源码不会完整出现在课件里。目前的培训内容都在这里面。}
-          @item{@tt{STEMA}: STEM 能力测试赛题源码。学生考前冲刺用的，也可作为非比赛学生夯实基本功的作业题。}
-          @item{@tt{sketch}: 草稿源码，每个文件都自带 main，用于演示语言的某一个细节。比如众所周知的 @racket{Hello, World!}。
-           这是个特殊的目录，@tt{basis}肯定会用到，其他课可能会用到，可以现场发给学生，也可以把源码包含在课件里。}]
-
-接下来以 @tt{basis} 目录为例说明课程内容组织（把一个软件假想为一只数字生物会更容易理解）。
+接下来以 @tt{cpp} 目录为例说明课程内容组织（先把课程假想成软件，再把软件假想成数字生物，这样会更容易理解）。
 
 @itemlist[#:style 'compact
           @item{@tamer-deftech[#:key "digivice"]{.}: 源码根目录，相当于常规的 @tt{src}，存放最直接的源码，包括带 @italic{main} 的程序入口文件、
@@ -51,11 +41,18 @@
           @item{@tamer-deftech{literacy}: 出版物源码目录。这也是我的个人偏好，在软件项目里没有对应的标准目录。相对于上面提到的项目文档，
            这个目录里面的内容要正式一些，作品可能是一本书、一篇论文等，以 pdf (而非网页)形式提供，比如你现在正在读的这份手册。
            @tt{literacy} 就是字面意思“文字能力”，无寓意。}
-          @item{@tamer-deftech{village}: 协作目录，相当于开源项目的 @tt{contrib}。如果你的软件用到了其他软件(比如 Windows 里特殊的 SDL2)，
-           或者你想对其他软件提供支持，或者别人扩展了你的软件，这些源码（或二进制文件）都可以放在这里。
-           @tt{village} 源自“创始村(Primary Village)”，数码宝贝出生的地方。}]
+          @item{@tamer-deftech{village}: 协作目录，相当于开源项目的 @tt{contrib}。总体上说，这个目录里面的东西比较包罗万象。
+           比如，你的软件用到了其他软件、你想编写额外代码以支持其他软件、别人与你协作开发并扩展了你的软件， 这些源码（或二进制文件）都可以放在这里。
+           @tt{village} 源自“创始村(Primary Village)”，数码宝贝出生的地方。
 
-以上条目未必都会出现在同一课程目录里，如果出现，一定符合上述解释。比如 @tt{literacy} 就只出现在 @tt{article} 里。
+           
+           在本系列课程中，其他类型的课程代码也放在这里了。比如
+           @itemlist[#:style 'compact
+                     @item{@tt{STEMA}: STEM 能力测试赛题源码。学生考前冲刺用的，也可作为非比赛学生夯实基本功的作业题。}
+                     @item{@tt{sketch}: 草稿源码，每个文件都自带 main，用于演示语言的某一个细节。比如众所周知的 @racket{Hello, World!}。
+                                 这是个特殊的目录，@tt{basis}肯定会用到，其他课可能会用到，可以现场发给学生，也可以把源码包含在课件里。}]}]
+
+以上条目未必都会出现在同一课程目录里，如果出现，一定符合上述解释。比如 @tt{literacy} 就只出现在 @tt{racket} 里，手册只需写一份就行。
 
 此外，还有两个特殊文件(夹)，文件名不可更改。
 
@@ -87,8 +84,8 @@
 
 @itemlist[#:style 'compact
           @commandline{cd G:\Laboratory\YouthLanguage}
-          @commandline{git submodule foreach git pull}
-          @commandline{git pull}]
+          @commandline{git pull}
+          @commandline{git submodule foreach git pull}]
 
 建议大家平时学一下 git 的基本用法，避免不小心修改了拉回来的代码，导致下次 @exec{pull} 时冲突没法正常同步。
 如果真碰到这事了，又嫌学 git 麻烦，那就删掉这个文件夹，从头开始重新 @exec{clone}。
@@ -125,20 +122,22 @@ Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文�
 @handbook-scenario[#:tag "student_workspace"]{学生目录}
 
 一般来说，不建议学生直接修改教师的源码，学生应该另外找一个目录，保持目录结构不变，创建好自己的课程目录。
-比如@filepath{G:\Course\YouthLanguage\cpp\basis}，然后把教师目录下的@filepath{info.rkt}
+比如@filepath{G:\Course\YouthLanguage\cpp}，然后把教师目录下的@filepath{info.rkt}
 和已经配置好的入口文件复制到该目录下，最后单独@exec{clone}配套的源码库：
 
 @itemlist[#:style 'compact
-          @commandline{git clone https://github.com/Gyoudmon/big-bang.cpp.git G:\Course\YouthLanguage\cpp\basis\digitama}
-          @commandline{git clone https://github.com/Gyoudmon/vcso.git G:\Course\YouthLanguage\cpp\basis\village\vcso}]
+          @commandline{git clone https://github.com/Gyoudmon/big-bang.cpp.git G:\Course\YouthLanguage\cpp\digitama\big-bang}]
 
-其中@tt{vcso.git}是 Windows 共享库，有这个就不用另外安装 vcpkg 了（就是那个可以跳过的@Secref{vcpkg}）。
-因此，使用其他操作系统的学生无需同步这个。
+使用 Windows 的学生还需要再同步一个@tt{vcso.git}，有这个就不用另外安装 vcpkg 了（就是那个可以跳过的@Secref{vcpkg}）。
+使用其他操作系统的学生无需同步这个共享库。
+
+@itemlist[#:style 'compact
+          @commandline{git clone https://github.com/Gyoudmon/vcso.git G:\Course\YouthLanguage\cpp\village\vcso}]
 
 Python 学生将其中的 @tt{big-bang.cpp.git} 替换成 @tt{big-bang.py.git} 即可，也不需要 @tt{vcso.git}：
 
 @itemlist[#:style 'compact
-          @commandline{git clone https://github.com/Gyoudmon/big-bang.py.git G:\Course\YouthLanguage\python\basis\digitama}]
+          @commandline{git clone https://github.com/Gyoudmon/big-bang.py.git G:\Course\YouthLanguage\python\digitama\big-bang}]
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-reference[]

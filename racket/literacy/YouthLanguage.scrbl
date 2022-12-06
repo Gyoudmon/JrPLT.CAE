@@ -1,6 +1,6 @@
 #lang scribble/acmart @manuscript @nonacm @screen @timestamp
 
-@(require "literacy/literacy.rkt")
+@(require "literacy.rkt")
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-title/pkg-desc[]
@@ -15,10 +15,10 @@
 
 @handbook-smart-table[]
 
-@include-section{literacy/preface.scrbl}
-@include-section{literacy/installation.scrbl}
-@include-section{literacy/sync.scrbl}
-@include-section{literacy/contrastive_linguistics.scrbl}
+@include-section{preface.scrbl}
+@include-section{installation.scrbl}
+@include-section{sync.scrbl}
+@include-section{contrastive_linguistics.scrbl}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-appendix[#:index-section? #true #:numbered? #false]

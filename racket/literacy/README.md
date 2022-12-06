@@ -14,21 +14,9 @@
 * `python`: Python 课程源码。
 
 * `racket`: Racket 课程源码。这是我自己的私有课程，为我女儿和徒弟级学生准备。诸位有兴趣可以自行学习。
+  此外，此目录下也包含这篇手册的源码。这可以作为例子告诉学生，编程和写作是同类活动；即使将来只想做作家，懂编程也将如虎添翼。
 
-* `article`: 这篇手册的源码。这可以作为例子告诉学生，编程和写作是同类活动；即使将来只想做作家，懂编程也将如虎添翼。
-
-* `utility`: 实用工具源码。这是我自己在研课过程中用的脚本，比如画出适合放在课件里的示意图。
-
-接下来以 `cpp` 目录为例说明课程目录组织，`cpp` 和 `racket` 同理。若无特殊情况，一门课只有一个根目录。
-
-* `basis`: 语言基础课源码，这是所有后续课程的基础。除第一阶段，源码不会完整出现在课件里。目前的培训内容都在这里面。
-
-* `STEMA`: STEM 能力测试赛题源码。学生考前冲刺用的，也可作为非比赛学生夯实基本功的作业题。
-
-* `sketch`: 草稿源码，每个文件都自带 main，用于演示语言的某一个细节。比如众所周知的 `"Hello, World!"`。
-  这是个特殊的目录，`basis`肯定会用到，其他课可能会用到，可以现场发给学生，也可以把源码包含在课件里。
-
-接下来以 `basis` 目录为例说明课程内容组织（把一个软件假想为一只数字生物会更容易理解）。
+接下来以 `cpp` 目录为例说明课程内容组织（先把课程假想成软件，再把软件假想成数字生物，这样会更容易理解）。
 
 * _._: 源码根目录，相当于常规的 `src`，存放最直接的源码，包括带 _main_ 的程序入口文件、
   你愿意共享给别人使用的模块文件和头文件。软件一旦发布，你修改这些文件必须保证兼容性，或以较为正式的方式告知别人为什么要放弃兼容性。
@@ -52,11 +40,19 @@
   这个目录里面的内容要正式一些，作品可能是一本书、一篇论文等，以 pdf (而非网页)形式提供，比如你现在正在读的这份手册。
   `literacy` 就是字面意思“文字能力”，无寓意。
 
-* _village_: 协作目录，相当于开源项目的 `contrib`。如果你的软件用到了其他软件(比如 Windows 里特殊的
-  SDL2)， 或者你想对其他软件提供支持，或者别人扩展了你的软件，这些源码（或二进制文件）都可以放在这里。 `village`
-  源自“创始村(Primary Village)”，数码宝贝出生的地方。
+* _village_: 协作目录，相当于开源项目的 `contrib`。总体上说，这个目录里面的东西比较包罗万象。
+  比如，你的软件用到了其他软件、你想编写额外代码以支持其他软件、别人与你协作开发并扩展了你的软件， 这些源码（或二进制文件）都可以放在这里。
+  `village` 源自“创始村(Primary Village)”，数码宝贝出生的地方。
 
-以上条目未必都会出现在同一课程目录里，如果出现，一定符合上述解释。比如 `literacy` 就只出现在 `article` 里。
+  在本系列课程中，其他类型的课程代码也放在这里了。比如
+
+  * `STEMA`: STEM 能力测试赛题源码。学生考前冲刺用的，也可作为非比赛学生夯实基本功的作业题。
+
+  * `sketch`: 草稿源码，每个文件都自带 main，用于演示语言的某一个细节。比如众所周知的 `"Hello, World!"`。
+    这是个特殊的目录，`basis`肯定会用到，其他课可能会用到，可以现场发给学生，也可以把源码包含在课件里。
+
+以上条目未必都会出现在同一课程目录里，如果出现，一定符合上述解释。比如 `literacy` 就只出现在 `racket`
+里，手册只需写一份就行。
 
 此外，还有两个特殊文件(夹)，文件名不可更改。
 
@@ -93,11 +89,11 @@
 
 *   `cd G:\Laboratory\YouthLanguage`
 
-*   `git submodule foreach git pull`
-
 *   `git pull`
 
-建议大家平时学一下 git 的基本用法，避免不小心修改了来回来的代码，导致下次 `pull` 时冲突没法正常同步。 如果真碰到这事了，又嫌学
+*   `git submodule foreach git pull`
+
+建议大家平时学一下 git 的基本用法，避免不小心修改了拉回来的代码，导致下次 `pull` 时冲突没法正常同步。 如果真碰到这事了，又嫌学
 git 麻烦，那就删掉这个文件夹，从头开始重新 `clone`。
 
 ## 3. C++ 代码的编译和运行
@@ -131,17 +127,17 @@ Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文�
 比如`"G:\Course\YouthLanguage\cpp\basis"`，然后把教师目录下的`"info.rkt"`
 和已经配置好的入口文件复制到该目录下，最后单独`clone`配套的源码库：
 
-*   `git clone https://github.com/Gyoudmon/digitama.cpp.git
-  G:\Course\YouthLanguage\cpp\basis\digitama`
+*   `git clone https://github.com/Gyoudmon/big-bang.cpp.git
+  G:\Course\YouthLanguage\cpp\digitama\big-bang`
 
 *   `git clone https://github.com/Gyoudmon/vcso.git
-  G:\Course\YouthLanguage\cpp\basis\village`
+  G:\Course\YouthLanguage\cpp\village\vcso`
 
 其中`vcso.git`是 Windows 共享库，有这个就不用另外安装 vcpkg 了（就是那个可以跳过的\[missing\]）。
 因此，使用其他操作系统的学生无需同步这个。
 
-Python 学生将其中的 `digitama.cpp.git` 替换成 `digitama.py.git` 即可，也不需要
+Python 学生将其中的 `big-bang.cpp.git` 替换成 `big-bang.py.git` 即可，也不需要
 `vcso.git`：
 
-*   `git clone https://github.com/Gyoudmon/digitama.py.git
-  G:\Course\YouthLanguage\python\basis\digitama`
+*   `git clone https://github.com/Gyoudmon/big-bang.py.git
+  G:\Course\YouthLanguage\python\digitama\big-bang`
