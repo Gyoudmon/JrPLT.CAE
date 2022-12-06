@@ -1,6 +1,6 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/game.hpp"
+#include "digitama/big_bang/game.hpp"
 
 namespace WarGrey::STEM {
     class RGBBlock : public WarGrey::STEM::Universe {
@@ -23,4 +23,3 @@ namespace WarGrey::STEM {
             float hue0;
     };
 }
-

@@ -1,8 +1,8 @@
 #include "self_avoid_walk.hpp"
 
-#include "digitama/graphics/text.hpp"
+#include "digitama/big_bang/graphics/text.hpp"
 
-#include "digitama/physics/random.hpp"
+#include "digitama/big_bang/physics/random.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -139,4 +139,3 @@ void WarGrey::STEM::SelfAvoidWalk::draw(SDL_Renderer* renderer, int x, int y, in
         }
     }
 }
-

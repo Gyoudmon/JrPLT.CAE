@@ -1,6 +1,6 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/game.hpp"
+#include "digitama/big_bang/game.hpp"
 
 namespace WarGrey::STEM {
     class RandomWalk : public WarGrey::STEM::Universe {
@@ -25,4 +25,3 @@ namespace WarGrey::STEM {
             void update(uint32_t interval, uint32_t count, uint32_t uptime);
     };
 }
-

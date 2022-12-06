@@ -1,8 +1,8 @@
 [submodule "cpp/basis/digitama"]
-	path = cpp/digitama
+	path = cpp/digitama/big_bang
 	url = https://github.com/Gyoudmon/big-bang.cpp.git
 [submodule "python/basis/digitama"]
-	path = python/digitama
+	path = python/digitama/big_bang
 	url = https://github.com/Gyoudmon/big-bang.py.git
 [submodule "cpp/basis/village/vcso"]
 	path = cpp/village/vcso

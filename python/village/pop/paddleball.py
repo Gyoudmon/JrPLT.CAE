@@ -1,5 +1,5 @@
 ### paddleball.py
-from digitama.game import *    # 导入游戏模块
+from digitama.big_bang.game import *    # 导入游戏模块
 
 ############################### 定义游戏世界里的物体 ##############################
 # 定义一个类型，并命名为 Ball（球）

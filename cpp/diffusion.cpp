@@ -1,6 +1,6 @@
 #include "diffusion.hpp"
 
-#include "digitama/physics/random.hpp"
+#include "digitama/big_bang/physics/random.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -47,4 +47,3 @@ void WarGrey::STEM::Diffusion::draw(SDL_Renderer* renderer, int x, int y, int wi
         }
     }
 }
-

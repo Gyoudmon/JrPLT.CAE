@@ -1,5 +1,5 @@
-from digitama.game import *
-from digitama.matter.graphlet.shapelet import *
+from digitama.big_bang.game import *
+from digitama.big_bang.matter.graphlet.shapelet import *
 
 ################################ 定义游戏世界的常量 ##############################
 ball_radius = 8.0

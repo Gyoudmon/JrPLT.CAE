@@ -1,8 +1,8 @@
 #include "rainbow.hpp"
 
-#include "digitama/datum/flonum.hpp"
-#include "digitama/graphics/colorspace.hpp"
-#include "digitama/physics/mathematics.hpp"
+#include "digitama/big_bang/datum/flonum.hpp"
+#include "digitama/big_bang/graphics/colorspace.hpp"
+#include "digitama/big_bang/physics/mathematics.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -46,4 +46,3 @@ void WarGrey::STEM::Rainbow::draw(SDL_Renderer* renderer, int x, int y, int widt
         }
     }
 }
-

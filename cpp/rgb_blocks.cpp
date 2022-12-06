@@ -1,6 +1,6 @@
 #include "rgb_blocks.hpp"
 
-#include "digitama/graphics/colorspace.hpp"
+#include "digitama/big_bang/graphics/colorspace.hpp"
 
 /*************************************************************************************************/
 WarGrey::STEM::RGBBlock::RGBBlock() : Universe("RGB Blocks", 0, 0xFFFFFFU, 0x000000U) {}
@@ -41,4 +41,3 @@ void WarGrey::STEM::ContrastColorBlock::draw(SDL_Renderer* renderer, int x, int 
     game_fill_square(renderer, (width - apothem) / 2, (height + apothem) / 2, apothem, this->hue0 + 120.0f);
     game_fill_square(renderer, (width + apothem) / 2, (height + apothem) / 2, apothem, this->hue0 + 240.0f);
 }
-

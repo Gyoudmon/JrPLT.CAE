@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from digitama.datum.uuid import *
-from digitama.forward import *
+from digitama.big_bang.datum.uuid import *
+from digitama.big_bang.forward import *
 
 import sys
 
@@ -23,4 +23,3 @@ def main(argv):
 
 if __name__=="__main__":
     sys.exit(main(sys.argv))
-

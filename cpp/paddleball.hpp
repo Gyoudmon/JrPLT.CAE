@@ -1,8 +1,8 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/game.hpp"
+#include "digitama/big_bang/game.hpp"
 
-#include "digitama/matter/graphlet/shapelet.hpp"
+#include "digitama/big_bang/matter/graphlet/shapelet.hpp"
 
 namespace WarGrey::STEM {
     /******************************************* 声明游戏世界 ******************************************/

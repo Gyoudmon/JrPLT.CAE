@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from digitama.game import *
+from digitama.big_bang.game import *
 
-from digitama.matter.graphlet.shapelet import *
+from digitama.big_bang.matter.graphlet.shapelet import *
 
 ###################################################################################################
 class Gallery(World):

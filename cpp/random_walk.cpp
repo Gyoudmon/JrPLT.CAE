@@ -1,6 +1,6 @@
 #include "random_walk.hpp"
 
-#include "digitama/physics/random.hpp"
+#include "digitama/big_bang/physics/random.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -45,4 +45,3 @@ void WarGrey::STEM::DrunkardWalk::update(uint32_t interval, uint32_t count, uint
         this->y--; // y = y - 1;
     }
 }
-

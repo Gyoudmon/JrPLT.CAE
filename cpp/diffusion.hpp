@@ -1,6 +1,6 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/game.hpp"
+#include "digitama/big_bang/game.hpp"
 
 namespace WarGrey::STEM {
 #define PARTICLE_COUNT 128
@@ -22,4 +22,3 @@ namespace WarGrey::STEM {
             int ceiling;
     };
 }
-

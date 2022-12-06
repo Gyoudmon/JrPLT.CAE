@@ -2,7 +2,7 @@
 
 (define collection 'use-pkg-name)
 
-(define pkg-desc "Handly Utilities")
+(define pkg-desc "Handy Utilities")
 (define pkg-authors '(wargrey))
 
 (define version "1.0")

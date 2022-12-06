@@ -1,9 +1,9 @@
 #include "game_of_life.hpp"
 
-#include "digitama/graphics/text.hpp"
-#include "digitama/graphics/image.hpp"
+#include "digitama/big_bang/graphics/text.hpp"
+#include "digitama/big_bang/graphics/image.hpp"
 
-#include "digitama/physics/random.hpp"
+#include "digitama/big_bang/physics/random.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -324,4 +324,3 @@ void WarGrey::STEM::HighLife::evolve(int** world, int* shadow, int stage_width, 
         }
     }
 }
-

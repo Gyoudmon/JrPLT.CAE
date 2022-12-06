@@ -1,6 +1,6 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/game.hpp"
+#include "digitama/big_bang/game.hpp"
 
 namespace WarGrey::STEM {
 #define WORLD_SIZE 48    // 方格单边数量
@@ -30,4 +30,3 @@ namespace WarGrey::STEM {
             WarGrey::STEM::WalkState state;
     };
 }
-
