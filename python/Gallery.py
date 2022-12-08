@@ -30,8 +30,8 @@ class Gallery(World):
         this.sea = this.insert(Ellipselet(raft_width * 1.618, raft_height, DEEPSKYBLUE))
                 
         this.mast = this.insert(Rectanglet(4.0, raft_width, BURLYWOOD, SADDLEBROWN))
-        this.flag = this.insert(RegularPolygonlet(3, raft_height * 0.618, ROYALBLUE, DODGERBLUE))
-
+        this.flag = this.insert(Trianglet(-raft_height, raft_height * 0.618, -raft_height, -raft_height * 0.618, ROYALBLUE, DODGERBLUE))
+        
         this.post = this.insert(RoundedRectanglet(raft_height * 0.618, raft_height * 2.0, -0.45, BURLYWOOD, BURLYWOOD))
         this.paddle = this.insert(Linelet(raft_width * 0.618, raft_height * 1.5, BROWN))
         this.raft = this.insert(RoundedRectanglet(raft_width, raft_height, -0.1, BURLYWOOD, BURLYWOOD))

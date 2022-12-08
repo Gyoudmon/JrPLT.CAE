@@ -24,7 +24,7 @@ namespace {
                 this->sea = this->insert(new Ellipselet(raft_width * 1.618F, raft_height, DEEPSKYBLUE));
                 
                 this->mast = this->insert(new Rectanglet(4.0F, raft_width, BURLYWOOD, SADDLEBROWN));
-                this->flag = this->insert(new RegularPolygonlet(3, raft_height * 0.618F, 0.0F, ROYALBLUE, DODGERBLUE));
+                this->flag = this->insert(new Trianglet(-raft_height, raft_height * 0.618F, -raft_height, -raft_height * 0.618F, ROYALBLUE, DODGERBLUE));
 
                 this->post = this->insert(new RoundedRectanglet(raft_height * 0.618F, raft_height * 2.0F, -0.45F, BURLYWOOD, BURLYWOOD));
                 this->paddle = this->insert(new Linelet(raft_width * 0.618F, raft_height * 1.5F, BROWN));
