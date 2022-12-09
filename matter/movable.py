@@ -48,8 +48,11 @@ class IMovable(object):
                 self.__set_border_strategy(strategy[0], strategy[1], strategy[2], strategy[3])
     
 # public
-    def set_speed(self, speed, degree):
-        rad = math.radians(degree)
+    def set_speed(self, speed, direction, is_radian = False):
+        rad = direction
+
+        if not is_radian:
+            rad = math.radians(direction)
 
         self.__xspeed = speed * math.cos(rad)
         self.__yspeed = speed * math.sin(rad)
