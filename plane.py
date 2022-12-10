@@ -246,7 +246,7 @@ class Plane(object):
         '''
 
         info = _plane_matter_info(self, matter)
-        x, y = False, False
+        pos = False
         
         if info and _unsafe_matter_unmasked(info, self.__mode):
             target_shape = len(target)
@@ -258,17 +258,15 @@ class Plane(object):
                     if tinfo and _unsafe_matter_unmasked(tinfo, self.__mode):
                         tx, ty, tw, th = _unsafe_get_matter_bound(target[0], tinfo)
                         tfx, tfy = _matter_anchor_fraction(target[1])
-                        x = tx + tw * tfx
-                        y = ty + th * tfy
+                        pos = (tx + tw * tfx, ty + th * tfy)
                 else:
-                    x, y = target[0], target[1]
+                    pos = target
             elif target_shape == 3:
                 tinfo = _plane_matter_info(self, target[0])
 
                 if tinfo and _unsafe_matter_unmasked(tinfo, self.__mode):
                     tx, ty, tw, th = _unsafe_get_matter_bound(target[0], tinfo)
-                    x = tx + tw * target[1]
-                    y = ty + th * target[2]
+                    pos = (tx + tw * target[1], ty + th * target[2])
             else:
                 xinfo = _plane_matter_info(self, target[0])
                 yinfo = _plane_matter_info(self, target[2])
@@ -277,13 +275,12 @@ class Plane(object):
                     if yinfo and _unsafe_matter_unmasked(yinfo, self.__mode):
                         xtx, _, xtw, _ = _unsafe_get_matter_bound(target[0], xinfo)
                         _, yty, _, yth = _unsafe_get_matter_bound(target[2], yinfo)
-                        x = xtx + xtw * target[1]
-                        y = yty + yth * target[2]
+                        pos = (xtx + xtw * target[1], yty + yth * target[2])
 
-        if x and y:
+        if isinstance(pos, tuple):
             fx, fy = _matter_anchor_fraction(anchor)
             
-            if _unsafe_move_matter_via_info(self, matter, info, x, y, fx, fy, dx, dy):
+            if _unsafe_move_matter_via_info(self, matter, info, pos[0], pos[1], fx, fy, dx, dy):
                 self.notify_updated()
     
     def remove(self, m):
