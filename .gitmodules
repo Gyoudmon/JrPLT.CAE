@@ -8,5 +8,5 @@
 	path = cpp/village/vcso
 	url = https://github.com/Gyoudmon/vcso.git
 [submodule "racket/basis/digitama"]
-	path = racket/digitama
+	path = racket/digitama/big-bang
 	url = https://github.com/Gyoudmon/big-bang.rkt
