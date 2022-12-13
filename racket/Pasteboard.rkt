@@ -1,4 +1,11 @@
-#!/usr/bin/env racket
+#!/bin/sh
+
+#|
+# `raco setup` makes it hard to set other options,
+# I have to keep the launch command simple.
+exec racket -N "`basename $0 .rkt`" -t "$0" -- ${1+"$@"}
+|#
+
 #lang racket
 
 (require "shape.rkt")  ; importing the current game
@@ -14,7 +21,7 @@
   ; The main game loop starts here, and lasts until being stopped by player
   (send universe big-bang)
   
-  ; Racket exits happily
+  ; Racket feels fulfilled and exits joyfully
   ; The universe is destroyed in pass
   ; now the void is in charge
   (exit 0))
