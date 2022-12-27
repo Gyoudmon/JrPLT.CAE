@@ -2,6 +2,8 @@
 
 @(require "literacy.rkt")
 
+@require{graphviz.rkt}
+
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-root-story{源码库同步}
 
@@ -18,10 +20,11 @@
 @itemlist[#:style 'compact
           @item{@tt{cpp}: C++ 课程源码。}
           @item{@tt{python}: Python 课程源码。}
-          @item{@tt{racket}: Racket 课程源码。这是我自己的私有课程，为我女儿和徒弟级学生准备。诸位有兴趣可以自行学习。
+          @item{@tt{racket}: Racket 课程源码。@bold{这是我自己的私有课程，为我女儿和徒弟级学生准备，放在这里是方便诸位自行学习，
+           假如课程源码需申请专利，届时应当移走该目录的内容。}
            此外，此目录下也包含这篇手册的源码。这可以作为例子告诉学生，编程和写作是同类活动；即使将来只想做作家，懂编程也将如虎添翼。}]
 
-接下来以 @tt{cpp} 目录为例说明课程内容组织（先把课程假想成软件，再把软件假想成数字生物，这样会更容易理解）。
+对照@tamer-figure-ref{srctree}，每个课程的源码按如下目录组织（先把课程假想成软件，再把软件假想成数字生物，这样会更容易理解）。
 
 @itemlist[#:style 'compact
           @item{@tamer-deftech[#:key "digivice"]{.}: 源码根目录，相当于常规的 @tt{src}，存放最直接的源码，包括带 @italic{main} 的程序入口文件、
@@ -50,16 +53,39 @@
            @itemlist[#:style 'compact
                      @item{@tt{STEMA}: STEM 能力测试赛题源码。学生考前冲刺用的，也可作为非比赛学生夯实基本功的作业题。}
                      @item{@tt{sketch}: 草稿源码，每个文件都自带 main，用于演示语言的某一个细节。比如众所周知的 @racket{Hello, World!}。
-                                 这是个特殊的目录，@tt{basis}肯定会用到，其他课可能会用到，可以现场发给学生，也可以把源码包含在课件里。}]}]
+                                 这是个特殊的目录，@tt{basis}肯定会用到，其他课可能会用到，可以现场发给学生，也可以把源码包含在课件里。}
+                     @item{@tt{pop}: 过程式风格示例源码。过程式风格更为注重细节，复杂度未必有多大，但代码量多半会让初学者生畏。
+                                 因此仅作为对比材料发放给学生，学生根据自身情况课后自行决定是否掌握。}
+                     @item{@tt{vcso}: 适用于 vcpkg 的 Windows 动态链接库，是二进制文件。有这个目录学生就不必自己安装了，
+                                 详细信息见@Secref{vcpkg}}]}]
 
 以上条目未必都会出现在同一课程目录里，如果出现，一定符合上述解释。比如 @tt{literacy} 就只出现在 @tt{racket} 里，手册只需写一份就行。
+
+@tamer-figure["srctree" "源码目录结构"]{
+ @filesystem-tree[
+ '(|.|
+   (info.rkt . "Racket 软件包元信息文件")
+   ((digitama . "私有源码")
+    (big_bang . "游戏内核源码"))
+   (stone . "资源目录")
+   (literacy . "出版物源码")
+   ((village . "协作目录")
+    (vcso . "Windows vcpkg 动态链接库")
+    (pop . "过程式风格示例代码")
+    (sketch . "课堂练习用草稿源码")
+    (STEMA . "STEM 能力测试题库"))
+   ((compiled . "Racket 编译缓存目录")
+    (typesetting . "含本手册成品")
+    (native . "含 C++ 可执行文件")))]}
 
 此外，还有两个特殊文件(夹)，文件名不可更改。
 
 @itemlist[#:style 'compact
-          @item{@tamer-deftech{info.rkt}: Racket 软件包的信息文件。用来配置我的 C++ 构建工具，比如哪些文件需要编译，怎么编译等。}
-          @item{@tamer-deftech{compiled}: Racket 编译缓存文件目录，用于存放所有编译过程中可以自动生成的文件。以下几个子目录在我们的课程中也可能用到：
-                 
+          @item{@tamer-deftech{info.rkt}: Racket 软件包的元信息文件。用来配置我的 C++ 构建工具，比如哪些文件需要编译，怎么编译等。}
+          @item{@tamer-deftech{compiled}: Racket 编译缓存目录，用于存放所有编译过程中可以自动生成的文件。注意，此目录不唯一，
+           各个被编译的文件所在的目录里都有一个。
+
+           以下几个子目录在我们的课程中也可能用到：      
            @itemlist[#:style 'compact
                      @item{@tamer-deftech{typesetting}: 存放 @tech{literacy}的输出，比如本手册 @filepath{compiled/typesettings/YouLanguage.pdf}。}
                      @item{@tamer-deftech{native}: 存放 C++ 二进制文件的输出，比如 @filepath{compiled/native/win32/x86_64/BigBang}。
@@ -75,8 +101,8 @@
 比如我自己的项目也会用到它。于是，初次同步，先选一个用于存放源码的目录，比如 @filepath{G:\Laboratory}，然后打开 PowerShell 执行以下命令：
 
 @itemlist[#:style 'compact
-          @commandline{git clone --recurse-submodules https://github.com/Gyoudmon/YouthLanguage.git G:\Laboratory\YouthLanguage}
           @commandline{cd G:\Laboratory\YouthLanguage}
+          @commandline{git clone --recurse-submodules https://github.com/Gyoudmon/YouthLanguage.git .}
           @commandline{git submodule foreach git checkout master}]
 
 第三步很重要，要不然拉过来的子库源码不属于任何分支，这是 git submodule 经常被人诟病的地方。

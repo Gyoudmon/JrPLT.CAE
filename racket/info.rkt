@@ -3,7 +3,7 @@
 (define collection "Youth Language")
 (define pkg-desc "青少计算机科学")
 
-(define deps '("digimon"))
+(define deps '("digimon" "pict"))
 (define build-deps '("digimon" "scribble-lib" "racket-doc"))
 
 (define version "1.0")

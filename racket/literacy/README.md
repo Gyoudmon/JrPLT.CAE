@@ -13,10 +13,11 @@
 
 * `python`: Python 课程源码。
 
-* `racket`: Racket 课程源码。这是我自己的私有课程，为我女儿和徒弟级学生准备。诸位有兴趣可以自行学习。
+* `racket`: Racket 课程源码。**这是我自己的私有课程，为我女儿和徒弟级学生准备，放在这里是方便诸位自行学习，
+  假如课程源码需申请专利，届时应当移走该目录的内容。**
   此外，此目录下也包含这篇手册的源码。这可以作为例子告诉学生，编程和写作是同类活动；即使将来只想做作家，懂编程也将如虎添翼。
 
-接下来以 `cpp` 目录为例说明课程内容组织（先把课程假想成软件，再把软件假想成数字生物，这样会更容易理解）。
+对照图1.1，每个课程的源码按如下目录组织（先把课程假想成软件，再把软件假想成数字生物，这样会更容易理解）。
 
 * _._: 源码根目录，相当于常规的 `src`，存放最直接的源码，包括带 _main_ 的程序入口文件、
   你愿意共享给别人使用的模块文件和头文件。软件一旦发布，你修改这些文件必须保证兼容性，或以较为正式的方式告知别人为什么要放弃兼容性。
@@ -51,14 +52,26 @@
   * `sketch`: 草稿源码，每个文件都自带 main，用于演示语言的某一个细节。比如众所周知的 `"Hello, World!"`。
     这是个特殊的目录，`basis`肯定会用到，其他课可能会用到，可以现场发给学生，也可以把源码包含在课件里。
 
+  * `pop`: 过程式风格示例源码。过程式风格更为注重细节，复杂度未必有多大，但代码量多半会让初学者生畏。
+    因此仅作为对比材料发放给学生，学生根据自身情况课后自行决定是否掌握。
+
+  * `vcso`: 适用于 vcpkg 的 Windows 动态链接库，是二进制文件。有这个目录学生就不必自己安装了，
+    详细信息见\[missing\]
+
 以上条目未必都会出现在同一课程目录里，如果出现，一定符合上述解释。比如 `literacy` 就只出现在 `racket`
 里，手册只需写一份就行。
 
+\#<pict>
+**图1.1. **源码目录结构
+
 此外，还有两个特殊文件(夹)，文件名不可更改。
 
-* _info.rkt_: Racket 软件包的信息文件。用来配置我的 C++ 构建工具，比如哪些文件需要编译，怎么编译等。
+* _info.rkt_: Racket 软件包的元信息文件。用来配置我的 C++ 构建工具，比如哪些文件需要编译，怎么编译等。
 
-* _compiled_: Racket 编译缓存文件目录，用于存放所有编译过程中可以自动生成的文件。以下几个子目录在我们的课程中也可能用到：
+* _compiled_: Racket 编译缓存目录，用于存放所有编译过程中可以自动生成的文件。注意，此目录不唯一，
+  各个被编译的文件所在的目录里都有一个。
+
+  以下几个子目录在我们的课程中也可能用到：
 
   * _typesetting_: 存放 literacy的输出，比如本手册
     `"compiled/typesettings/YouLanguage.pdf"`。
@@ -77,11 +90,10 @@
 比如我自己的项目也会用到它。于是，初次同步，先选一个用于存放源码的目录，比如 `"G:\Laboratory"`，然后打开 PowerShell
 执行以下命令：
 
-*   `git clone --recurse-submodules
-  https://github.com/Gyoudmon/YouthLanguage.git
-  G:\Laboratory\YouthLanguage`
-
 *   `cd G:\Laboratory\YouthLanguage`
+
+*   `git clone --recurse-submodules
+  https://github.com/Gyoudmon/YouthLanguage.git .`
 
 *   `git submodule foreach git checkout master`
 
@@ -124,17 +136,17 @@ Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文�
 ## 4. 学生目录
 
 一般来说，不建议学生直接修改教师的源码，学生应该另外找一个目录，保持目录结构不变，创建好自己的课程目录。
-比如`"G:\Course\YouthLanguage\cpp\basis"`，然后把教师目录下的`"info.rkt"`
+比如`"G:\Course\YouthLanguage\cpp"`，然后把教师目录下的`"info.rkt"`
 和已经配置好的入口文件复制到该目录下，最后单独`clone`配套的源码库：
 
 *   `git clone https://github.com/Gyoudmon/big-bang.cpp.git
   G:\Course\YouthLanguage\cpp\digitama\big-bang`
 
+使用 Windows 的学生还需要再同步一个`vcso.git`，有这个就不用另外安装 vcpkg
+了（就是那个可以跳过的\[missing\]）。 使用其他操作系统的学生无需同步这个共享库。
+
 *   `git clone https://github.com/Gyoudmon/vcso.git
   G:\Course\YouthLanguage\cpp\village\vcso`
-
-其中`vcso.git`是 Windows 共享库，有这个就不用另外安装 vcpkg 了（就是那个可以跳过的\[missing\]）。
-因此，使用其他操作系统的学生无需同步这个。
 
 Python 学生将其中的 `big-bang.cpp.git` 替换成 `big-bang.py.git` 即可，也不需要
 `vcso.git`：

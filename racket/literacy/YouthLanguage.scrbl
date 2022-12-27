@@ -1,6 +1,7 @@
 #lang scribble/acmart @manuscript @nonacm @screen @timestamp
 
 @(require "literacy.rkt")
+@(require "graphviz.rkt")
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-title/pkg-desc[]
@@ -12,6 +13,8 @@
 并找到一个平衡点，既要有铺垫时间来给初学者训练基础技能(如英文键盘打字)、认识基本概念(如变量、语法和语义)、感受编程的乐趣；
 又不能铺垫太长导致初学者耐心耗尽被动劝退。而且，这个问题的解决只能从更高纬度入手(比如课程的整体设计和教学过程的实施)，
 而不是简单地带学生读懂每一行代码的语法细节。}
+
+@handbook-statistics[#:gitstat-width 350]
 
 @handbook-smart-table[]
 
