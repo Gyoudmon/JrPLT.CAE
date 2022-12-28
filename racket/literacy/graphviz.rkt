@@ -54,7 +54,7 @@
         [legend-brush (make-brush #:color (make-color #xFF #xFF #xFF 0.618))])
     (lambda [#:radian0 [r0 0.0] #:bytes-fx [fx 0.5] #:bytes-fy [fy 0.5]
              #:legend-font [legend-font (make-font #:family 'modern #:weight 'bold #:size 10)]
-             #:label-color [label-color "black"] #:%-color [%-color (make-color #x6a #x72 #x8f)] #:total-color [total-color (make-color 0 0 0 0.3)]
+             #:label-color [label-color "black"] #:%-color [%-color (make-color #x6a #x72 #x8f)] #:total-color [total-color (make-color 0 0 0 0.2)]
              flradius datasource altcolors]
       (define flwidth (* flradius 2.0))
       (define flheight (* flradius 2.0))
@@ -107,7 +107,7 @@
                                   (send dc draw-arc ring-x ring-y ring-diameter ring-diameter radian0 radiann)
                                   
                                   (define label (git-language-name datum))
-                                  (define percentage (~% datum%))
+                                  (define percentage (~% datum% #:precision '(= 2)))
                                   
                                   (define-values (lwidth _lh ldistance _ls) (send dc get-text-extent label legend-font #true))
                                   (define-values (pwidth _ph _pd _ps) (send dc get-text-extent percentage legend-font #true))
@@ -175,7 +175,7 @@
           
           (define-values (locsource peak x0 xn)
             (for/fold ([src null] [all-peak 0] [x0 +inf.0] [xn 0])
-                      ([lang-src (in-hash-values datasource)])
+                      ([lang-src (in-list datasource)])
               (define lang (git-language-name lang-src))
               (define pen (make-pen #:color (language-rgba lang-src altcolors)))
               (define stats (git-language-content lang-src))
@@ -185,7 +185,8 @@
               (define-values (LoCs total peak)
                 (for/fold ([LoCs null] [total 0] [peak 0])
                           ([stat (in-list stats)])
-                  (define total++ (+ total (- (vector-ref (cadr stat) 0) (vector-ref (cadr stat) 1))))
+                  (define-values (adds dels) (git-numstats->additions+deletions* (list stat)))
+                  (define total++ (+ total (- adds dels)))
                   (values (cons (cons (car stat) total++) LoCs)
                           total++
                           (max peak total++))))
@@ -226,7 +227,7 @@
 
                   (when (and year?)
                     (let ([self-x (+ x-start (* (- x-axis date0) date-fraction))])
-                      (send dc set-pen axis-color 1 'dot-dash)
+                      (send dc set-pen axis-color 1 'short-dash)
                       (send dc draw-line self-x y-start self-x (- y-start y-range))
                       (send dc set-pen axis-color 1 'solid)))
                   
@@ -259,7 +260,7 @@
             (send dc set-text-foreground (send (vector-ref loc-src 1) get-color))
             (define this-y-axis (vector-ref loc-src 3))
             (define y (- y-start (* (- this-y-axis line0) line-fraction)))
-            (send dc draw-text (~integer this-y-axis) (+ x-start x-range 1ch) (- y 1ex) #true)
+            (send dc draw-text (number->string this-y-axis) (+ x-start x-range 1ch) (- y 1ex) #true)
             (send dc draw-lines
                   (for/list ([date.LoC (in-list (vector-ref loc-src 2))])
                     (define-values (x-axis y-axis) (values (car date.LoC) (cdr date.LoC)))
@@ -285,6 +286,7 @@
     (define-values (insertions deletions) (git-numstats->additions+deletions* all-numstats))
     
     (define sorted-langfiles (sort (hash-values lang-sizes) >= #:key git-language-content))
+    (define langstats (for/list ([(id lang) (in-hash lang-stats)] #:when (hash-has-key? lang-sizes id)) lang))
     (define altcolors '(["Racket" . "Green"] ["Python" . "Khaki"]))
 
     (nested (filebox (elem #:style file-color (~integer src-file) (superscript "files")
@@ -295,7 +297,7 @@
                                            [series-height (* (or git-radius pie-radius) 2)]
                                            [series-width (or git-width (* series-height 2.4))])
                                       (list (pie-chart #:bytes-fy 0.618 #:radian0 (* pi 0.5) pie-radius sorted-langfiles altcolors)
-                                            (git-loc-series series-width series-height lang-stats altcolors)))))))))
+                                            (git-loc-series series-width series-height langstats altcolors)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define filesystem-value->pict
