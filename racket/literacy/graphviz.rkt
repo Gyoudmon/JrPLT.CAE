@@ -275,9 +275,9 @@
         flwidth flheight)))
 
 (define handbook-statistics
-  (lambda [#:gitstat-width [git-width #false] #:gitstat-radius [git-radius #false] #:ignore [exclude-submodules '(#px"vcso")] . argl]
+  (lambda [#:gitstat-width [git-width #false] #:gitstat-radius [git-radius #false] #:ignore [exclude-submodules null] #:altcolors [altcolors null] #:since [since #false]]
     (define all-files (git-list-tree #:recursive? #true #:ignore-submodule exclude-submodules))
-    (define all-numstats (git-numstat #:recursive? #true #:ignore-submodule exclude-submodules))
+    (define all-numstats (git-numstat #:recursive? #true #:ignore-submodule exclude-submodules #:since since))
     (define lang-files (git-files->langfiles all-files null git-default-subgroups))
     (define lang-sizes (git-files->langsizes all-files null git-default-subgroups))
     (define lang-stats (git-numstats->langstats all-numstats null git-default-subgroups))
@@ -287,15 +287,14 @@
     
     (define sorted-langfiles (sort (hash-values lang-sizes) >= #:key git-language-content))
     (define langstats (for/list ([(id lang) (in-hash lang-stats)] #:when (hash-has-key? lang-sizes id)) lang))
-    (define altcolors '(["Racket" . "Green"] ["Python" . "Khaki"]))
-
+    
     (nested (filebox (elem #:style file-color (~integer src-file) (superscript "files")
                            ~ (elem #:style insertion-color (~integer insertions) (superscript "++"))
                            ~ (elem #:style deletion-color (~integer deletions) (superscript (literal "--"))))
                      (tabular #:sep (hspace 1) #:column-properties '(left right)
-                              (list (let* ([pie-radius (or git-radius 90)]
+                              (list (let* ([pie-radius (or git-radius 75)]
                                            [series-height (* (or git-radius pie-radius) 2)]
-                                           [series-width (or git-width (* series-height 2.4))])
+                                           [series-width (or git-width 380)])
                                       (list (pie-chart #:bytes-fy 0.618 #:radian0 (* pi 0.5) pie-radius sorted-langfiles altcolors)
                                             (git-loc-series series-width series-height langstats altcolors)))))))))
 
