@@ -7,8 +7,7 @@ def elevator_layers(src):
     for token in src.split(","):
         layer = int(token)
 
-        if (layer < 0):
-            layer += 1
+        if (layer < 0): layer += 1
 
         layers.append(layer)
 

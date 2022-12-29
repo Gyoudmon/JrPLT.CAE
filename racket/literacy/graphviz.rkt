@@ -288,9 +288,9 @@
     (define sorted-langfiles (sort (hash-values lang-sizes) >= #:key git-language-content))
     (define langstats (for/list ([(id lang) (in-hash lang-stats)] #:when (hash-has-key? lang-sizes id)) lang))
     
-    (nested (filebox (elem #:style file-color (~integer src-file) (superscript "files")
-                           ~ (elem #:style insertion-color (~integer insertions) (superscript "++"))
-                           ~ (elem #:style deletion-color (~integer deletions) (superscript (literal "--"))))
+    (nested (filebox (elem #:style file-color (~integer src-file) (subscript "files")
+                           ~ (elem #:style insertion-color (~integer insertions) (subscript "++"))
+                           ~ (elem #:style deletion-color (~integer deletions) (subscript (literal "--"))))
                      (tabular #:sep (hspace 1) #:column-properties '(left right)
                               (list (let* ([pie-radius (or git-radius 75)]
                                            [series-height (* (or git-radius pie-radius) 2)]
