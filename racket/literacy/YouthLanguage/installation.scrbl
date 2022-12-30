@@ -1,6 +1,6 @@
 #lang scribble/manual
 
-@(require "literacy.rkt")
+@(require "../literacy.rkt")
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-root-story{配置开发环境}

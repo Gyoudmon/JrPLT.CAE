@@ -1,8 +1,8 @@
 #lang scribble/manual
 
-@(require "literacy.rkt")
+@(require "../literacy.rkt")
 
-@require{graphviz.rkt}
+@require{../graphviz.rkt}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-root-story{源码库同步}

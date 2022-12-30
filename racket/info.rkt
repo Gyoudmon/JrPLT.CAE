@@ -13,4 +13,4 @@
 (define typesettings '(["literacy/YouthLanguage.scrbl" xelatex]
                        ["literacy/Metrics.scrbl" xelatex #:always-make]))
 
-(define literacy-samples '(["literacy/sync.scrbl"]))
+(define literacy-samples '(["literacy/YouthLanguage/sync.scrbl"]))

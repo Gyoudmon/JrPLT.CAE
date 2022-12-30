@@ -20,5 +20,7 @@
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-appendix[#:index-section? #true #:numbered? #false
- (book-bib-entry #:date "2015" #:edition "Eighth Edition"
-                 "SE:APA" "Software Engineering: A Practition's Approach" "Roger S. Pressman, Bruce R. Maxim" "China Mechine Press")]
+ (book-bib-entry #:date "2015" #:edition "8th"
+                 "SE:APA" "Software Engineering: A Practitioner's Approach"
+                 (list "Roger S. Pressman" "Bruce R. Maxim")
+                 "China Mechine Press")]
