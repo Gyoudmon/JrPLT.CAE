@@ -1,0 +1,20 @@
+#lang scribble/sigplan @nocopyright @onecolumn
+
+@(require "literacy.rkt")
+@(require "graphviz.rkt")
+
+@;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+@handbook-title{计算机科学课程源码库量化指标}
+
+@abstract{对软件项目的量化历来是软件工程的重点和难点，迄今为止行业已经总结出了数以百计的度量方法，有些极其不实用，
+ 有些极其晦涩难懂以至于只有极少数专家有望能理解。本文尝试确立一些简单易懂的度量参数，用以将源码库的工作量折算成课时费。
+ 将来等此课程成熟、源码库可以扩充为完整的软件产品（比如 C++ 版的 Scratch）时，届时再重新按照软件项目的标准量化。}
+
+@handbook-statistics[#:ignore '(#px"vcso") #:gitstat-width 420 #:gitstat-radius 80
+                     #:altcolors '(["Racket" . "Green"]
+                                   ["Python" . "Khaki"])]
+
+@handbook-smart-table[]
+
+@;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+@handbook-appendix[#:index-section? #true #:numbered? #false]
