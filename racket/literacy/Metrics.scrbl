@@ -10,11 +10,13 @@
  有些极其晦涩难懂以至于只有极少数专家有望能理解。本文尝试确立一些简单易懂的度量参数，用以将源码库的工作量折算成课时费。
  将来等此课程成熟、源码库可以扩充为完整的软件产品（比如 C++ 版的 Scratch）时，届时再重新按照软件项目的标准量化。}
 
-@handbook-statistics[#:ignore '(#px"vcso") #:gitstat-width 420 #:gitstat-radius 80
+@handbook-statistics[#:ignore '(#px"vcso") #:gitstat-width 450 #:gitstat-radius 80
                      #:altcolors '(["Racket" . "Green"]
                                    ["Python" . "Khaki"])]
 
 @handbook-smart-table[]
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-@handbook-appendix[#:index-section? #true #:numbered? #false]
+@handbook-appendix[#:index-section? #true #:numbered? #false
+ (book-bib-entry #:date "2015" #:edition "Eighth Edition"
+                 "SE:APA" "Software Engineering: A Practition's Approach" "Roger S. Pressman, Bruce R. Maxim" "China Mechine Press")]
