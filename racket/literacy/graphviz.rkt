@@ -195,18 +195,18 @@
                       (min x0 date0)
                       (max xn daten))))
           
-          (define-values (date0 daten line0 linen)
+          (define-values (sec0 secn line0 linen)
             (values (or date-start x0)
                     (or date-end xn)
                     (or line-start 0)
-                    (or line-end (* (exact-ceiling (/ peak peak-factor)) peak-factor))))
+                    (or line-end (* (max (exact-ceiling (/ peak peak-factor)) 1) peak-factor))))
           
           (define-values (mark-max-width _h _d _s) (send dc get-text-extent (~integer linen) mark-font #true))
           (define x-start (+ dx mark-max-width 1ch))
           (define x-range (- (+ dx flwidth) x-start mark-max-width))
           (define y-start (- (+ dy flheight) 1ex 1em))
           (define y-range (- y-start dy 1ex))
-          (define date-interval (- daten date0))
+          (define date-interval (- secn sec0))
           (define line-interval (- linen line0))
           (define date-fraction (/ x-range date-interval))
           (define line-fraction (/ y-range line-interval))
@@ -215,28 +215,28 @@
           (send dc set-text-foreground mark-color)
           
           (let draw-x-axis ([this-endx 0.0]
-                            [this-date date0])
-            (if (<= this-date daten)
-                (let ([the-date (seconds->date this-date)])
+                            [this-sec sec0])
+            (if (< this-sec secn)
+                (let ([the-date (seconds->date this-sec)])
                   (define-values (year month) (values (date-year the-date) (date-month the-date)))
-                  (define month-starts (find-seconds 0 0 0 1 month year))
+                  (define month-sec0 (find-seconds 0 0 0 1 month year))
                   (define-values (x-axis x-mark year?)
-                    (cond [(= this-date date0) (values this-date (~day (date-day the-date)) #false)]
-                          [(= month 1) (values month-starts (number->string year) #true)]
-                          [else (values month-starts (~month month) #false)]))
+                    (cond [(= month 1) (values (if (= this-sec sec0) sec0 month-sec0) (number->string year) #true)]
+                          [(= this-sec sec0) (values this-sec (~day (date-day the-date)) #false)]
+                          [else (values month-sec0 (~month month) #false)]))
 
                   (when (and year?)
-                    (let ([self-x (+ x-start (* (- x-axis date0) date-fraction))])
+                    (let ([self-x (+ x-start (* (- x-axis sec0) date-fraction))])
                       (send dc set-pen axis-color 1 'short-dash)
                       (send dc draw-line self-x y-start self-x (- y-start y-range))
                       (send dc set-pen axis-color 1 'solid)))
                   
-                  (draw-x-axis (draw-x dc (- x-axis date0) x-mark this-endx
+                  (draw-x-axis (draw-x dc (- x-axis sec0) x-mark this-endx
                                        mark-font x-start y-start
                                        date-fraction 1ex)
-                               (+ month-starts (* 3600 24 31))))
-                (draw-x dc (- daten date0)
-                        (~day (date-day (seconds->date daten)))
+                               (+ month-sec0 (* 3600 24 31))))
+                (draw-x dc (- secn sec0)
+                        (~day (date-day (seconds->date secn)))
                         this-endx mark-font x-start y-start
                         date-fraction 1ex)))
           
@@ -264,7 +264,7 @@
             (send dc draw-lines
                   (for/list ([date.LoC (in-list (vector-ref loc-src 2))])
                     (define-values (x-axis y-axis) (values (car date.LoC) (cdr date.LoC)))
-                    (cons (+ x-start (* (- x-axis date0) date-fraction))
+                    (cons (+ x-start (* (- x-axis sec0) date-fraction))
                           (- y-start (* (- y-axis line0) line-fraction))))))
         
           (send* dc
@@ -275,9 +275,11 @@
         flwidth flheight)))
 
 (define handbook-statistics
-  (lambda [#:gitstat-width [git-width #false] #:gitstat-radius [git-radius #false] #:ignore [exclude-submodules null] #:altcolors [altcolors null] #:since [since #false]]
-    (define all-files (git-list-tree #:recursive? #true #:ignore-submodule exclude-submodules))
-    (define all-numstats (git-numstat #:recursive? #true #:ignore-submodule exclude-submodules #:since since))
+  (lambda [#:gitstat-width [git-width #false] #:gitstat-radius [git-radius #false]
+           #:ignore [exclude-submodules null] #:filter [filter null]
+           #:altcolors [altcolors null] #:since [since #false]]
+    (define all-files (git-list-tree #:recursive? #true #:ignore-submodule exclude-submodules #:filter filter))
+    (define all-numstats (git-numstat #:recursive? #true #:ignore-submodule exclude-submodules #:since since #:filter filter))
     (define lang-files (git-files->langfiles all-files null git-default-subgroups))
     (define lang-sizes (git-files->langsizes all-files null git-default-subgroups))
     (define lang-stats (git-numstats->langstats all-numstats null git-default-subgroups))

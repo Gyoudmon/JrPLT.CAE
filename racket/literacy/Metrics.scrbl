@@ -1,4 +1,4 @@
-#lang scribble/sigplan @nocopyright
+#lang scribble/sigplan @nocopyright @onecolumn
 
 @(require "literacy.rkt")
 @(require "graphviz.rkt")
