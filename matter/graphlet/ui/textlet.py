@@ -20,8 +20,6 @@ class ITextlet(IGraphlet):
         self.set_text_color()
 
     def __def__(self):
-        game_font_destroy(self._text_font)
-
         if self._text_surface:
             sdl2.SDL_FreeSurface(self._text_surface)
 
