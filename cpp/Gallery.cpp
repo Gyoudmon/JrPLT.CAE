@@ -1,7 +1,7 @@
 #include "digitama/big_bang/game.hpp"
 
 #include "digitama/big_bang/matter/graphlet/shapelet.hpp"
-#include "digitama/big_bang/matter/graphlet/ui/textlet.hpp"
+#include "digitama/big_bang/matter/graphlet/textlet.hpp"
 
 using namespace WarGrey::STEM;
 
