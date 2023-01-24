@@ -29,8 +29,7 @@ static inline int count_neighbors(int *world[], int nx, int ny, int x, int y) {
 }
 
 /*************************************************************************************************/
-WarGrey::STEM::GameOfLife::GameOfLife(const char* title)
-    : Universe(title, 8, 0x000000U, 0xFFFFFFU) {}
+WarGrey::STEM::GameOfLife::GameOfLife(const char* title) : World(title, 8, 0x000000U, 0xFFFFFFU) {}
 
 WarGrey::STEM::GameOfLife::~GameOfLife() {
     /* 销毁世界 */ {
@@ -46,7 +45,7 @@ WarGrey::STEM::GameOfLife::~GameOfLife() {
 
 /*************************************************************************************************/
 void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[]) {
-    this->stage_width = 0;
+    this->stage_width = 0.0F;
 
     if (argc > 1) {
         this->stage_width = atoi(argv[1]);
@@ -80,7 +79,7 @@ void WarGrey::STEM::GameOfLife::construct(int argc, char* argv[]) {
     this->switch_game_state(GameState::Run);
 }
 
-void WarGrey::STEM::GameOfLife::reflow(int width, int height) {
+void WarGrey::STEM::GameOfLife::reflow(float width, float height) {
     // 确保舞台被绘制在屏幕中心
     this->stage_x = (width - this->stage_width * GRID_SIZE) / 2;
     this->stage_y = (height - this->stage_height * GRID_SIZE) / 2;
@@ -103,11 +102,11 @@ void WarGrey::STEM::GameOfLife::draw(SDL_Renderer* renderer, int x, int y, int w
 
     // 绘制舞台的网格
     if (!this->hide_grid) {
-        game_draw_grid(renderer, this->stage_width, this->stage_height, GRID_SIZE, this->stage_x, this->stage_y);
+        game_draw_grid(renderer, this->stage_height, this->stage_width, GRID_SIZE, GRID_SIZE, this->stage_x, this->stage_y);
     }
 
     // 绘制生命
-    game_fill_grid(renderer, this->world, this->stage_width, this->stage_height, GRID_SIZE, this->stage_x, this->stage_y);
+    game_fill_grid(renderer, this->world, this->stage_height, this->stage_width, GRID_SIZE, GRID_SIZE, this->stage_x, this->stage_y);
 
     /* 绘制提示信息 */ {
         uint32_t fgcolor = this->get_foreground_color();

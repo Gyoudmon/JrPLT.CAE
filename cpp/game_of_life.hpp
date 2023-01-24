@@ -6,20 +6,20 @@ namespace WarGrey::STEM {
     enum class GameState { Run, Stop, Edit };
 
     /** 声明游戏宇宙 **/
-    class GameOfLife : public WarGrey::STEM::Universe {
+    class GameOfLife : public WarGrey::STEM::World {
         public:
             GameOfLife(const char* title);
             virtual ~GameOfLife();
 
         public:    // 覆盖游戏基本方法
-            void construct(int argc, char* argv[]);
-            void reflow(int width, int height);
-            void update(uint32_t interval, uint32_t count, uint32_t uptime);
-            void draw(SDL_Renderer* renderer, int x, int y, int width, int height);
+            void construct(int argc, char* argv[]) override;
+            void reflow(float width, float height) override;
+            void update(uint32_t interval, uint32_t count, uint32_t uptime) override;
+            void draw(SDL_Renderer* renderer, int x, int y, int width, int height) override;
 
         protected: // 覆盖输入事件处理方法
-            void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed);  // 处理键盘事件
-            void on_click(int x, int y);                                                // 处理单击事件
+            void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) override;  // 处理键盘事件
+            void on_click(int x, int y) override;                                                // 处理单击事件
 
         protected: // 演化策略, 默认留给子类实现
             virtual void evolve(int** world, int* shadow, int stage_width, int stage_height) = 0;
@@ -60,7 +60,7 @@ namespace WarGrey::STEM {
             ConwayLife();
 
         protected:
-            void evolve(int** world, int* shadow, int stage_width, int stage_height);
+            void evolve(int** world, int* shadow, int stage_width, int stage_height) override;
     };
 
     class HighLife : public WarGrey::STEM::GameOfLife {
@@ -68,6 +68,6 @@ namespace WarGrey::STEM {
             HighLife();
 
         protected:
-            void evolve(int** world, int* shadow, int stage_width, int stage_height);
+            void evolve(int** world, int* shadow, int stage_width, int stage_height) override;
     };
 }
