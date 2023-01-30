@@ -10,9 +10,10 @@
  有些极其晦涩难懂以至于只有极少数专家有望能理解。本文尝试确立一些简单易懂的度量参数，用以将源码库的工作量折算成课时费。
  将来等此课程成熟、源码库可以作为独立软件产品（比如 C++ 版的 Scratch）发布时，再重新按照软件项目的标准量化。}
 
-@handbook-statistics[#:ignore '(#px"vcso") #:gitstat-width 450 #:gitstat-radius 80
-                     #:altcolors '(["Racket" . "Green"]
-                                   ["Python" . "Khaki"])]
+@handbook-statistics[git-size-ring-chart git-loc-time-series
+                     #:ignore '(#px"vcso") #:gitstat-width 450 #:gitstat-radius 80
+                     #:altcolors '(["Racket" . Green]
+                                   ["Python" . Khaki])]
 
 @handbook-smart-table[]
 
