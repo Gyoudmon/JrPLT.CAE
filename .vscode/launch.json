@@ -1,0 +1,32 @@
+{
+    "configurations": [
+        {
+            "name": "宇宙大爆炸@macOS",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cpp/compiled/native/x86_64-macosx/BigBang",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/cpp",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "宇宙大爆炸@macOS[Release]"
+        },
+        
+        {
+            "name": "[Debug]宇宙大爆炸@macOS",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cpp/compiled/native/x86_64-macosx/debug/BigBang",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/cpp",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "宇宙大爆炸@macOS[Debug]"
+        }
+    ],
+    "version": "2.0.0"
+}
