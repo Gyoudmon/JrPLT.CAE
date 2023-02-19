@@ -140,7 +140,7 @@ Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文�
 和已经配置好的入口文件复制到该目录下，最后单独`clone`配套的源码库：
 
 *   `git clone https://github.com/Gyoudmon/big-bang.cpp.git
-  G:\Course\YouthLanguage\cpp\digitama\big-bang`
+  G:\Course\YouthLanguage\cpp\digitama\big_bang`
 
 使用 Windows 的学生还需要再同步一个`vcso.git`，有这个就不用另外安装 vcpkg
 了（就是那个可以跳过的\[missing\]）。 使用其他操作系统的学生无需同步这个共享库。
@@ -152,4 +152,4 @@ Python 学生将其中的 `big-bang.cpp.git` 替换成 `big-bang.py.git` 即可�
 `vcso.git`：
 
 *   `git clone https://github.com/Gyoudmon/big-bang.py.git
-  G:\Course\YouthLanguage\python\digitama\big-bang`
+  G:\Course\YouthLanguage\python\digitama\big_bang`

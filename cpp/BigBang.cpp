@@ -1,10 +1,31 @@
-#include "paddleball.hpp" /* 导入当前要启动的游戏头文件 */
+#include "digitama/splash.hpp"
 
 using namespace WarGrey::STEM;
 
+namespace {
+    enum class CmdlineOps { _ };
+
+    class BigBangCosmos : public TheCosmos {
+    public:
+        BigBangCosmos(int fps = 60) : TheCosmos(fps) {}
+        virtual ~BigBangCosmos() {}
+
+    public:
+        void construct(int argc, char* argv[]) override {
+            this->set_window_size(1200, 0);
+
+            TheCosmos::construct(argc, argv);
+        }
+
+    protected:
+        void parse_cmdline_options(int argc, char* argv[]) override {}
+    };
+}
+
+/*************************************************************************************************/
 int main(int argc, char* args[]) {
     /* 混沌初开，宇宙诞生 */
-    PaddleBallWorld universe;
+    BigBangCosmos universe;
 
     /* 创造游戏世界 */
     universe.construct(argc, args);

@@ -12,7 +12,7 @@
                 "cc"
             ],
             "options": {
-                "cwd": "${workspaceFolder}/cpp"
+                "cwd": "${workspaceFolder}"
             },
             "group": {
                 "kind": "build",
@@ -36,11 +36,11 @@
             "problemMatcher": ["$gcc"],
             "args": [
                 "wisemon",
-                "-dv",
+                "-d",
                 "cc-dbg"
             ],
             "options": {
-                "cwd": "${workspaceFolder}/cpp"
+                "cwd": "${workspaceFolder}"
             },
             "group": {
                 "kind": "build",

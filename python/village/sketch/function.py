@@ -18,5 +18,3 @@ def main(argc, argv):
 # 效果上相当于 C++ 程序的启动器，负责调用 main 函数
 if __name__ == "__main__":
     sys.exit(main(argv = sys.argv, argc = len(sys.argv)))
-
-
