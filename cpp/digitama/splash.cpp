@@ -11,7 +11,7 @@ static const char* unknown_task_name = "冒险越来越深入了";
 
 static const float tux_speed_walk_x = 2.4F;
 static const float tux_speed_jump_x = tux_speed_walk_x;
-static const float tux_speed_jump_y = -10.0F;
+static const float tux_speed_jump_y = -12.0F;
 static const float tux_speed_dy = 1.0F;
 
 static const std::vector<std::pair<int, int>> tux_spots = {
@@ -46,7 +46,7 @@ namespace {
                 if (task_name == nullptr) {
                     this->names.push_back(this->insert(new Labellet(bang_font::tiny, GAINSBORO, label_fmt, index, unknown_task_name)));
                     this->coins.push_back(this->insert(new Coinlet(unknown_task_name, index)));
-                    //this->coins.back()->stop();
+                    this->coins.back()->stop();
                 } else {
                     this->names.push_back(this->insert(new Labellet(bang_font::tiny, ROYALBLUE, label_fmt, index, task_name)));
                     this->coins.push_back(this->insert(new Coinlet(task_name, index)));
@@ -58,7 +58,7 @@ namespace {
             this->agent->scale(-1.0F, 1.0F);
             this->sledge->scale(0.80F);
             this->splash->create_logic_grid(28, 45);
-            //this->splash->set_logic_grid_color(DIMGRAY);
+            // this->splash->set_logic_grid_color(DIMGRAY);
 
             this->set_background(BLACK);
         }
@@ -172,11 +172,11 @@ namespace {
         }
 
         void feed_splash_location(size_t idx, float* x, float* y) {
-            auto pos = tux_spots[idx];
-
             this->splash->feed_logic_tile_location(
-                pos.first, pos.second,
-                x, y, MatterAnchor::LB);
+                tux_spots[idx].first,
+                tux_spots[idx].second,
+                x, y,
+                MatterAnchor::LB);
         }
 
     private:
