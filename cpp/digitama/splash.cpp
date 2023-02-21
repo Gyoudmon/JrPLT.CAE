@@ -6,8 +6,25 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
+static const char* label_fmt = " %2d %s";
 static const char* unknown_task_name = "冒险越来越深入了";
-static const int advent_days = 12;
+
+static const float tux_speed_walk_x = 2.4F;
+static const float tux_speed_jump_x = tux_speed_walk_x;
+static const float tux_speed_jump_y = -10.0F;
+static const float tux_speed_dy = 1.0F;
+
+static const std::vector<std::pair<int, int>> tux_spots = {
+    /* { row, col } */
+    { 6, 4 },
+    { 6, 15 }, { 12, 24 },
+    { 17, 34 }, { 22, 44 }
+};
+
+static const std::vector<std::pair<int, int>> coin_positions = {
+    /* { row, col } */
+    { 5, 9 }, { 11, 18 }, { 16, 27 }, { 21, 37 }
+};
 
 /*************************************************************************************************/
 namespace {
@@ -20,55 +37,55 @@ namespace {
             this->sledge = this->insert(new GridAtlas("sledge.png"));
             this->splash = this->insert(new GridAtlas("splash.png"));
             this->title = this->insert(new Labellet(bang_font::title, GHOSTWHITE, title_fmt, "宇宙大爆炸"));
-
             this->agent = this->insert(new Linkmon());
-            this->agent->scale(-1.0F, 1.0F);
             
-            for (int idx = 0; idx < advent_days; idx ++) {
+            for (int idx = 0; idx < coin_positions.size(); idx ++) {
                 const char* task_name = this->master->plane_name(idx + 1);
+                int index = idx + 1;
                 
                 if (task_name == nullptr) {
-                    std::string vname = make_nstring(" %2d %s", idx + 1, unknown_task_name);
-
-                    this->names.push_back(this->insert(new Labellet(bang_font::vertical, GAINSBORO, "%s", vname.c_str())));
-                    this->coins.push_back(this->insert(new Coinlet(unknown_task_name, idx + 1)));
-                    this->coins.back()->stop();
+                    this->names.push_back(this->insert(new Labellet(bang_font::tiny, GAINSBORO, label_fmt, index, unknown_task_name)));
+                    this->coins.push_back(this->insert(new Coinlet(unknown_task_name, index)));
+                    //this->coins.back()->stop();
                 } else {
-                    std::string vname = make_nstring(" %2d %s", idx + 1, task_name);
-
-                    this->names.push_back(this->insert(new Labellet(bang_font::vertical, ROYALBLUE, "%s", vname.c_str())));
-                    this->coins.push_back(this->insert(new Coinlet(task_name, idx + 1)));
+                    this->names.push_back(this->insert(new Labellet(bang_font::tiny, ROYALBLUE, label_fmt, index, task_name)));
+                    this->coins.push_back(this->insert(new Coinlet(task_name, index)));
                 }
             }
 
             this->tux = this->insert(new Tuxmon());
-            this->tux->scale(-1.0F, 1.0F);
 
+            this->agent->scale(-1.0F, 1.0F);
             this->sledge->scale(0.80F);
+            this->splash->create_logic_grid(28, 45);
+            //this->splash->set_logic_grid_color(DIMGRAY);
+
             this->set_background(BLACK);
         }
         
         void reflow(float width, float height) override {
+            float dx, dy;
+
             this->move_to(this->title, this->agent, MatterAnchor::RB, MatterAnchor::LB);
             this->move_to(this->sledge, width, 0.0F, MatterAnchor::RT);
             this->move_to(this->splash, width * 0.5F, height * 0.5F, MatterAnchor::CC);
-            this->move_to(this->tux, width, 0.0F, MatterAnchor::RT);
-
-            this->create_grid(28, 45, this->splash);
-            this->set_grid_color(GRAY);
             
-            for (int idx = 0; idx < this->coins.size(); idx ++) {
-                if (idx == 0) {
-                    this->move_to(this->coins[idx], width, height, MatterAnchor::LB);
-                } else {
-                    this->move_to(this->coins[idx], this->coins[idx - 1], MatterAnchor::LB, MatterAnchor::LT, 0.0F, 4.0F);
-                }
+            this->tux_home();
+            
+            for (int idx = 0; idx < coin_positions.size(); idx ++) {
+                auto pos = coin_positions[idx];
 
-                this->move_to(this->names[idx], this->coins[idx], MatterAnchor::RC, MatterAnchor::LC);
+                this->splash->feed_logic_tile_location(pos.first, pos.second, &dx, &dy, MatterAnchor::CC, false);
+
+                this->move_to(this->coins[idx], dx, dy, MatterAnchor::CC);
+                this->move_to(this->names[idx], this->coins[idx], MatterAnchor::CB, MatterAnchor::CT);
+                this->names[idx]->show(false);
             }
         }
 
         void update(uint32_t count, uint32_t interval, uint32_t uptime) override {
+            this->tux_step(count, interval, uptime);
+
             if (this->target_plane > 0) {
                 if (!this->agent->in_playing()) {
                     this->master->transfer_to_plane(this->target_plane);
@@ -79,7 +96,7 @@ namespace {
 
         void on_enter(IPlane* from) override {
             this->agent->play("Greeting", 1);
-            this->tux->play("buttjump");
+            this->tux->set_speed(tux_speed_walk_x, 0.0F);
         }
 
     public:
@@ -88,8 +105,8 @@ namespace {
                     || (m == this->tux);
         }
 
-        void after_select(IMatter* m, bool yes_or_no) override {
-            if (yes_or_no) {
+        void after_select(IMatter* m, bool yes) override {
+            if (yes) {
                 if (m == this->tux) {
                     if (this->tux->is_wearing()) {
                         this->tux->take_off();
@@ -106,6 +123,61 @@ namespace {
                 }
             }
         }
+    
+    private:
+        void tux_home() {
+            int row = tux_spots[0].first;
+            int col = tux_spots[0].second;
+            float x0, y0;
+            
+            this->splash->feed_logic_tile_location(row, col, &x0, &y0, MatterAnchor::LB, false);
+            this->move_to(this->tux, x0, y0, MatterAnchor::CB);
+            this->tux_walk_segment = 1;
+            this->tux_start_walk();
+        }
+
+        void tux_start_walk() {
+            this->tux->play("walk");
+            this->tux->set_speed_xy(tux_speed_walk_x, 0.0F);
+            this->tux_target_y = 0.0F;
+        }
+
+        void tux_step(uint32_t count, uint32_t interval, uint32_t uptime) {
+            float x0, y0, tx, ty, gx;
+            
+            this->feed_matter_location(this->tux, &tx, &ty, MatterAnchor::RB);
+            this->feed_matter_location(this->splash, &x0, &y0, MatterAnchor::LT);
+            
+            tx -= x0;
+            ty -= y0;
+
+            if (this->tux_target_y == 0.0F) {
+                this->feed_splash_location(this->tux_walk_segment, &gx, nullptr);
+
+                if (tx >= gx) {
+                    this->tux_walk_segment += 1;
+                    if (this->tux_walk_segment < tux_spots.size()) {
+                        this->feed_splash_location(this->tux_walk_segment, nullptr, &this->tux_target_y);
+                        this->tux->play("buttjump");
+                        this->tux->set_speed_xy(tux_speed_jump_x, tux_speed_jump_y);
+                    } else {
+                        this->tux_home();
+                    }
+                }
+            } else if (ty >= this->tux_target_y) {
+                this->tux_start_walk();
+            } else {
+                this->tux->set_speed_xy(tux_speed_jump_x, this->tux->y_speed() + tux_speed_dy);
+            }
+        }
+
+        void feed_splash_location(size_t idx, float* x, float* y) {
+            auto pos = tux_spots[idx];
+
+            this->splash->feed_logic_tile_location(
+                pos.first, pos.second,
+                x, y, MatterAnchor::LB);
+        }
 
     private:
         Linkmon* agent;
@@ -115,6 +187,10 @@ namespace {
         Sprite* tux;
         GridAtlas* sledge;
         GridAtlas* splash;
+
+    private:
+        int tux_walk_segment = 1;
+        float tux_target_y = 0.0F;
         
     private:
         Cosmos* master;

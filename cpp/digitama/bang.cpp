@@ -14,7 +14,7 @@ void WarGrey::STEM::bang_fonts_initialize() {
     if (bang_font::title == nullptr) {
         bang_font::title = game_create_font(font_basename(game_font::unicode), title_fontsize);
         bang_font::normal = game_create_font(font_basename(game_font::unicode), normal_fontsize);
-        bang_font::tiny = game_create_font(font_basename(game_font::math), tiny_fontsize);
+        bang_font::tiny = game_create_font(font_basename(game_font::unicode), tiny_fontsize);
         bang_font::vertical = game_create_font(font_basename(game_font::unicode), tiny_fontsize);
         bang_font::mono = game_create_font(font_basename(game_font::monospace), normal_fontsize);
     }
