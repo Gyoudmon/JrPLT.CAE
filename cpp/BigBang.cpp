@@ -22,9 +22,15 @@ namespace {
             this->set_window_size(1200, 0);
             
             // 按顺序加载各个任务类
+            // 第一阶段
             this->push_plane(new ShapeWorld());
             this->push_plane(new PaddleBallWorld());
             this->push_plane(new Gallery());
+
+            // 第二阶段
+
+            // 第三阶段
+
         }
 
     protected:

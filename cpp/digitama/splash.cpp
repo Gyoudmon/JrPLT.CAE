@@ -6,8 +6,6 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-static const char* label_fmt = " %2d %s";
-
 static const float tux_speed_walk_x = 2.4F;
 static const float tux_speed_jump_x = tux_speed_walk_x;
 static const float tux_speed_jump_y = -12.0F;
@@ -16,15 +14,15 @@ static const float tux_speed_dy = 1.0F;
 static const std::vector<std::pair<int, int>> tux_spots = {
     /* { row, col } */
     { 6, 4 },
-    { 6, 15 }, { 12, 24 },
+    { 6, 14 }, { 12, 24 },
     { 17, 34 }, { 22, 44 }
 };
 
 static const std::vector<std::vector<std::pair<int, int>>> task_info = {
     { /* { row, col } */ },
     { { 11, 15 }, { 11, 18 }, { 9, 21 } },
-    { { 16, 27 } },
-    { { 21, 37 } }
+    { /* { 16, 27 } */ },
+    { { 21, 37 }, { 22, 37 }, { 19, 40 } }
 };
 
 /*************************************************************************************************/
@@ -54,16 +52,11 @@ namespace {
             this->move_to(this->splash, width * 0.5F, height * 0.5F, MatterAnchor::CC);
             
             this->reflow_tasks(width, height);
-            this->hide_all_task_names();
             this->tux_home();
         }
 
         void update(uint32_t count, uint32_t interval, uint32_t uptime) override {
             this->tux_step(count, interval, uptime);
-
-            if (this->tux->y_speed() == 0.0F) {
-                this->move_task_names(this->tux_walk_segment - 1);
-            }
 
             if (this->target_plane > 0) {
                 if (!this->agent->in_playing()) {
@@ -76,10 +69,11 @@ namespace {
         void on_enter(IPlane* from) override {
             this->agent->play("Greeting", 1);
             this->tux->set_speed(tux_speed_walk_x, 0.0F);
+            this->task_name->show(false);
         }
 
     public:
-        bool can_select(WarGrey::STEM::IMatter* m) override {
+        bool can_select(IMatter* m) override {
             return (dynamic_cast<Coinlet*>(m) != nullptr)
                     || (m == this->tux);
         }
@@ -105,27 +99,61 @@ namespace {
             }
         }
 
+        void on_hover(IMatter* m, float x, float y) override {
+            auto coin = dynamic_cast<Coinlet*>(m);
+
+            if ((coin != nullptr) && !this->task_name->visible()) {
+                this->task_name->set_text(MatterAnchor::CC, " %s ", coin->name.c_str());
+                this->task_name->show(true);
+                this->move_to(this->task_name, m, MatterAnchor::LB, MatterAnchor::LT, -tiny_fontsize);
+
+                if (coin->name.compare(unknown_task_name) == 0) {
+                    this->task_name->set_text_color(BLACK);
+                } else {
+                    this->task_name->set_text_color(ROYALBLUE);
+                }
+            }
+        }
+
+        void on_goodbye(IMatter* m, float x, float y) override {
+            this->task_name->show(false);
+        }
+
     private:
         void load_tasks(float width, float height) {
-            for (int seg = 0, pdx = 0; seg < task_info.size(); seg ++) {
+            int task_idx = 0;
+
+            for (int seg = 0; seg < task_info.size(); seg ++) {
                 std::vector<Coinlet*> subcoins;
                 std::vector<Labellet*> subnames;
 
                 for (int idx = 0; idx < task_info[seg].size(); idx ++) {
-                    const char* task_name = this->master->plane_name(++ pdx);
-                    
-                    if ((task_name == nullptr) || (strcmp(task_name, unknown_task_name) == 0)) {
-                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GAINSBORO, label_fmt, pdx, unknown_task_name)));
-                        subcoins.push_back(this->insert(new Coinlet(unknown_task_name, pdx)));
-                        subcoins.back()->stop();
+                    const char* task_name = this->master->plane_name(++ task_idx);
+
+                    if (task_name == nullptr) {
+                        this->load_task(subcoins, unknown_task_name, task_idx);
                     } else {
-                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GHOSTWHITE, label_fmt, pdx, task_name)));
-                        subcoins.push_back(this->insert(new Coinlet(task_name, pdx)));
+                        this->load_task(subcoins, task_name, task_idx);
                     }
                 }
 
                 this->coins.push_back(subcoins);
-                this->names.push_back(subnames);
+            }
+
+            for (int idx = task_idx + 1; idx < this->master->plane_count(); idx ++) {
+                this->load_task(this->bonus_coins, this->master->plane_name(idx), idx);
+            }
+
+            this->task_name = this->insert(new Labellet(bang_font::tiny, GHOSTWHITE, ""));
+            this->task_name->set_border_color(GOLD);
+            this->task_name->set_background_color(SNOW);
+        }
+
+        void load_task(std::vector<Coinlet*>& subcoins, const char* task_name, int task_idx) {
+            subcoins.push_back(this->insert(new Coinlet(task_name, task_idx)));
+            
+            if (strcmp(task_name, unknown_task_name) == 0) {
+                subcoins.back()->stop();
             }
         }
 
@@ -141,6 +169,14 @@ namespace {
 
                     this->splash->feed_logic_tile_location(pos.first, pos.second, &dx, &dy, MatterAnchor::CC, false);
                     this->move_to(subcoins[idx], dx, dy, MatterAnchor::CC);
+                }
+            }
+
+            for (size_t idx = this->bonus_coins.size(); idx > 0; idx --) {
+                if (idx == this->bonus_coins.size()) {
+                    this->move_to(this->bonus_coins[idx - 1], this->splash, MatterAnchor::LB, MatterAnchor::LB);
+                } else {
+                    this->move_to(this->bonus_coins[idx - 1], this->bonus_coins[idx], MatterAnchor::RC, MatterAnchor::LC);
                 }
             }
         }
@@ -161,8 +197,6 @@ namespace {
             this->tux->play("walk");
             this->tux->set_speed_xy(tux_speed_walk_x, 0.0F);
             this->tux_target_y = 0.0F;
-            this->show_task_names(this->tux_walk_segment - 1);
-            this->move_task_names(this->tux_walk_segment - 1);
         }
 
         void tux_step(uint32_t count, uint32_t interval, uint32_t uptime) {
@@ -179,8 +213,7 @@ namespace {
 
                 if (tx >= gx) {
                     this->tux_walk_segment += 1;
-                    this->hide_all_task_names();
-
+                    
                     if (this->tux_walk_segment < tux_spots.size()) {
                         this->feed_splash_location(this->tux_walk_segment, nullptr, &this->tux_target_y);
                         this->tux->play("buttjump");
@@ -192,7 +225,8 @@ namespace {
             } else if (ty >= this->tux_target_y) {
                 this->tux_start_walk();
             } else {
-                this->tux->set_speed_xy(tux_speed_jump_x, this->tux->y_speed() + tux_speed_dy);
+                this->tux->set_speed_xy(tux_speed_jump_x,
+                    this->tux->y_speed() + tux_speed_dy);
             }
         }
 
@@ -205,38 +239,11 @@ namespace {
         }
 
     private:
-        void hide_all_task_names() {
-            for (auto subnames : this->names) {
-                for (auto name : subnames) {
-                    name->show(false);
-                }
-            }
-        }
-
-        void show_task_names(int idx) {
-            if (idx < this->names.size()) {
-                for (auto name : this->names[idx]) {
-                    name->show(true);
-                }
-            }
-        }
-
-        void move_task_names(int idx) {
-            if (idx < this->names.size()) {
-                IMatter* target = this->tux;
-
-                for (auto name : this->names[idx]) {
-                    this->move_to(name, target, MatterAnchor::CB, MatterAnchor::CT);
-                    target = name;
-                }
-            }
-        }
-
-    private:
         Linkmon* agent;
         Labellet* title;
         std::vector<std::vector<Coinlet*>> coins;
-        std::vector<std::vector<Labellet*>> names;
+        std::vector<Coinlet*> bonus_coins;
+        Labellet* task_name;
         Sprite* tux;
         GridAtlas* splash;
 
