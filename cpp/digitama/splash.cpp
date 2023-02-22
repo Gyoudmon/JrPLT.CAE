@@ -1,5 +1,5 @@
-#include "bang.hpp"
 #include "splash.hpp"
+#include "bang.hpp"
 
 #include "big_bang/datum/string.hpp"
 
@@ -21,10 +21,9 @@ static const std::vector<std::pair<int, int>> tux_spots = {
     { 17, 34 }, { 22, 44 }
 };
 
-static const std::vector<std::vector<std::pair<int, int>>> coin_positions = {
-    /* { row, col } */
-    { { 5, 9 } },
-    { { 11, 18 } },
+static const std::vector<std::vector<std::pair<int, int>>> task_info = {
+    { /* { row, col } */ },
+    { { 11, 15 }, { 11, 18 }, { 9, 21 } },
     { { 16, 27 } },
     { { 21, 37 } }
 };
@@ -42,20 +41,20 @@ namespace {
             this->title = this->insert(new Labellet(bang_font::title, GHOSTWHITE, title_fmt, "宇宙大爆炸"));
             this->agent = this->insert(new Linkmon());
             
-            for (int seg = 0, plane_idx = 0; seg < coin_positions.size(); seg ++) {
+            for (int seg = 0, pdx = 0; seg < task_info.size(); seg ++) {
                 std::vector<Coinlet*> subcoins;
                 std::vector<Labellet*> subnames;
 
-                for (int idx = 0; idx < coin_positions[seg].size(); idx ++) {
-                    const char* task_name = this->master->plane_name(++ plane_idx);
+                for (int idx = 0; idx < task_info[seg].size(); idx ++) {
+                    const char* task_name = this->master->plane_name(++ pdx);
                     
                     if (task_name == nullptr) {
-                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GAINSBORO, label_fmt, plane_idx, unknown_task_name)));
-                        subcoins.push_back(this->insert(new Coinlet(unknown_task_name, plane_idx)));
+                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GAINSBORO, label_fmt, pdx, unknown_task_name)));
+                        subcoins.push_back(this->insert(new Coinlet(unknown_task_name, pdx)));
                         subcoins.back()->stop();
                     } else {
-                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, ROYALBLUE, label_fmt, plane_idx, task_name)));
-                        subcoins.push_back(this->insert(new Coinlet(task_name, plane_idx)));
+                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GHOSTWHITE, label_fmt, pdx, task_name)));
+                        subcoins.push_back(this->insert(new Coinlet(task_name, pdx)));
                     }
                 }
 
@@ -83,12 +82,12 @@ namespace {
             this->hide_all_task_names();
             this->tux_home();
             
-            for (int seg = 0; seg < coin_positions.size(); seg ++) {
-                auto subpositions = coin_positions[seg];
+            for (int seg = 0; seg < task_info.size(); seg ++) {
+                auto subinfos = task_info[seg];
                 auto subcoins = this->coins[seg];
                 
-                for (int idx = 0; idx < subpositions.size(); idx ++) {
-                    auto pos = subpositions[idx];
+                for (int idx = 0; idx < subinfos.size(); idx ++) {
+                    auto pos = subinfos[idx];
 
                     this->splash->feed_logic_tile_location(pos.first, pos.second, &dx, &dy, MatterAnchor::CC, false);
                     this->move_to(subcoins[idx], dx, dy, MatterAnchor::CC);

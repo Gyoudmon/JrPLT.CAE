@@ -1,4 +1,8 @@
 #include "digitama/splash.hpp"
+#include "digitama/bang.hpp"
+
+#include "shape.hpp"
+#include "digitama/gallery.hpp"
 
 using namespace WarGrey::STEM;
 
@@ -12,9 +16,13 @@ namespace {
 
     public:
         void construct(int argc, char* argv[]) override {
-            this->set_window_size(1200, 0);
-
             TheCosmos::construct(argc, argv);
+            this->set_window_size(1200, 0);
+            
+            // 按顺序加载各个任务世界
+            this->push_plane(new ShapeWorld());
+            this->push_plane(new TheBigBang());
+            this->push_plane(new Gallery());
         }
 
     protected:
