@@ -11,19 +11,15 @@
                                  ((config SDL2)
                                   (include [windows "village\\vcso\\include"])
                                   (libpath [windows "village\\vcso\\lib"]))]
-                                ["Gallery.cpp" console ;desktop
-                                 ((config SDL2)
-                                  (include [windows "village\\vcso\\include"])
-                                  (libpath [windows "village\\vcso\\lib"]))]
                                 ["FontBrowser.cpp" console ;desktop
                                  ((config SDL2)
                                   (include [windows "village\\vcso\\include"])
                                   (libpath [windows "village\\vcso\\lib"]))]
-                                ["village/pop/shape.cpp" console ;desktop
+                                ["village/procedural/shape.cpp" console ;desktop
                                  ((config SDL2)
                                   (include [windows "village\\vcso\\include"])
                                   (libpath [windows "village\\vcso\\lib"]))]
-                                ["village/pop/paddleball.cpp" console ;desktop
+                                ["village/procedural/paddleball.cpp" console ;desktop
                                  ((config SDL2)
                                   (include [windows "village\\vcso\\include"])
                                   (libpath [windows "village\\vcso\\lib"]))]))
