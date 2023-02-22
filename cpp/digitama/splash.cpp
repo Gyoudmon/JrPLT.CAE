@@ -7,7 +7,6 @@ using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 static const char* label_fmt = " %2d %s";
-static const char* unknown_task_name = "冒险越来越深入了";
 
 static const float tux_speed_walk_x = 2.4F;
 static const float tux_speed_jump_x = tux_speed_walk_x;
@@ -36,36 +35,14 @@ namespace {
 
     public:  // 覆盖游戏基本方法
         void load(float width, float height) override {
-            this->sledge = this->insert(new GridAtlas("sledge.png"));
             this->splash = this->insert(new GridAtlas("splash.png"));
             this->title = this->insert(new Labellet(bang_font::title, GHOSTWHITE, title_fmt, "宇宙大爆炸"));
             this->agent = this->insert(new Linkmon());
             
-            for (int seg = 0, pdx = 0; seg < task_info.size(); seg ++) {
-                std::vector<Coinlet*> subcoins;
-                std::vector<Labellet*> subnames;
-
-                for (int idx = 0; idx < task_info[seg].size(); idx ++) {
-                    const char* task_name = this->master->plane_name(++ pdx);
-                    
-                    if (task_name == nullptr) {
-                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GAINSBORO, label_fmt, pdx, unknown_task_name)));
-                        subcoins.push_back(this->insert(new Coinlet(unknown_task_name, pdx)));
-                        subcoins.back()->stop();
-                    } else {
-                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GHOSTWHITE, label_fmt, pdx, task_name)));
-                        subcoins.push_back(this->insert(new Coinlet(task_name, pdx)));
-                    }
-                }
-
-                this->coins.push_back(subcoins);
-                this->names.push_back(subnames);
-            }
-
+            this->load_tasks(width, height);
             this->tux = this->insert(new Tuxmon());
 
             this->agent->scale(-1.0F, 1.0F);
-            this->sledge->scale(0.80F);
             this->splash->create_logic_grid(28, 45);
             // this->splash->set_logic_grid_color(DIMGRAY);
 
@@ -73,26 +50,12 @@ namespace {
         }
         
         void reflow(float width, float height) override {
-            float dx, dy;
-
             this->move_to(this->title, this->agent, MatterAnchor::RB, MatterAnchor::LB);
-            this->move_to(this->sledge, width, 0.0F, MatterAnchor::RT);
             this->move_to(this->splash, width * 0.5F, height * 0.5F, MatterAnchor::CC);
             
+            this->reflow_tasks(width, height);
             this->hide_all_task_names();
             this->tux_home();
-            
-            for (int seg = 0; seg < task_info.size(); seg ++) {
-                auto subinfos = task_info[seg];
-                auto subcoins = this->coins[seg];
-                
-                for (int idx = 0; idx < subinfos.size(); idx ++) {
-                    auto pos = subinfos[idx];
-
-                    this->splash->feed_logic_tile_location(pos.first, pos.second, &dx, &dy, MatterAnchor::CC, false);
-                    this->move_to(subcoins[idx], dx, dy, MatterAnchor::CC);
-                }
-            }
         }
 
         void update(uint32_t count, uint32_t interval, uint32_t uptime) override {
@@ -133,9 +96,51 @@ namespace {
                     Coinlet* coin = dynamic_cast<Coinlet*>(m);
 
                     if (coin != nullptr) {
-                        this->target_plane = coin->idx;
-                        this->agent->play("Hide", 1);
+                        if (coin->name.compare(unknown_task_name) != 0) {
+                            this->target_plane = coin->idx;
+                            this->agent->play("Hide", 1);
+                        }
                     }
+                }
+            }
+        }
+
+    private:
+        void load_tasks(float width, float height) {
+            for (int seg = 0, pdx = 0; seg < task_info.size(); seg ++) {
+                std::vector<Coinlet*> subcoins;
+                std::vector<Labellet*> subnames;
+
+                for (int idx = 0; idx < task_info[seg].size(); idx ++) {
+                    const char* task_name = this->master->plane_name(++ pdx);
+                    
+                    if ((task_name == nullptr) || (strcmp(task_name, unknown_task_name) == 0)) {
+                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GAINSBORO, label_fmt, pdx, unknown_task_name)));
+                        subcoins.push_back(this->insert(new Coinlet(unknown_task_name, pdx)));
+                        subcoins.back()->stop();
+                    } else {
+                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GHOSTWHITE, label_fmt, pdx, task_name)));
+                        subcoins.push_back(this->insert(new Coinlet(task_name, pdx)));
+                    }
+                }
+
+                this->coins.push_back(subcoins);
+                this->names.push_back(subnames);
+            }
+        }
+
+        void reflow_tasks(float width, float height) {
+            float dx, dy;
+
+            for (int seg = 0; seg < task_info.size(); seg ++) {
+                auto subinfos = task_info[seg];
+                auto subcoins = this->coins[seg];
+                
+                for (int idx = 0; idx < subinfos.size(); idx ++) {
+                    auto pos = subinfos[idx];
+
+                    this->splash->feed_logic_tile_location(pos.first, pos.second, &dx, &dy, MatterAnchor::CC, false);
+                    this->move_to(subcoins[idx], dx, dy, MatterAnchor::CC);
                 }
             }
         }
@@ -233,7 +238,6 @@ namespace {
         std::vector<std::vector<Coinlet*>> coins;
         std::vector<std::vector<Labellet*>> names;
         Sprite* tux;
-        GridAtlas* sledge;
         GridAtlas* splash;
 
     private:

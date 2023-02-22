@@ -2,6 +2,8 @@
 #include "digitama/bang.hpp"
 
 #include "shape.hpp"
+#include "paddleball.hpp"
+
 #include "digitama/gallery.hpp"
 
 using namespace WarGrey::STEM;
@@ -19,9 +21,9 @@ namespace {
             TheCosmos::construct(argc, argv);
             this->set_window_size(1200, 0);
             
-            // 按顺序加载各个任务世界
+            // 按顺序加载各个任务类
             this->push_plane(new ShapeWorld());
-            this->push_plane(new TheBigBang());
+            this->push_plane(new PaddleBallWorld());
             this->push_plane(new Gallery());
         }
 

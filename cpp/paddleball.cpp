@@ -12,6 +12,8 @@ const float paddle_speed = ball_speed * 1.5F;
 /*************************************************************************************************/
 // 实现 PaddleBallWorld::load 方法，加载球和桨，设置相关边界碰撞策略和速度
 void WarGrey::STEM::PaddleBallWorld::load(float width, float height) {
+    TheBigBang::load(width, height);
+
     this->ball = this->insert(new Circlet(ball_radius, ORANGE));
     this->paddle = this->insert(new Rectanglet(paddle_width, paddle_height, FORESTGREEN));
 
@@ -23,6 +25,8 @@ void WarGrey::STEM::PaddleBallWorld::load(float width, float height) {
 
 // 实现 PaddleBallWorld::reflow 方法，调整球和桨的位置
 void WarGrey::STEM::PaddleBallWorld::reflow(float width, float height) {
+    TheBigBang::reflow(width, height);
+    
     // 确保球产生于屏幕上方的中间
     this->move_to(this->ball, width * 0.5F, ball_radius, MatterAnchor::CT);
     

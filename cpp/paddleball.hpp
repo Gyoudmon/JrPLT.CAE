@@ -1,14 +1,14 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/big_bang/game.hpp"
+#include "digitama/bang.hpp"
 
 #include "digitama/big_bang/matter/graphlet/shapelet.hpp"
 
 namespace WarGrey::STEM {
     /******************************************* 声明游戏世界 ******************************************/
-    class PaddleBallWorld : public WarGrey::STEM::World {
+    class PaddleBallWorld : public WarGrey::STEM::TheBigBang {
         public:
-            PaddleBallWorld() : World("Paddle Ball") {}
+            PaddleBallWorld() : TheBigBang("托球游戏") {}
 
         public:    // 覆盖游戏基本方法
             void load(float width, float height) override;

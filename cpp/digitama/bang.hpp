@@ -6,6 +6,7 @@
 namespace WarGrey::STEM {
     /* Constants */
     static const char* title_fmt = "青少计算机科学: %s";
+    static const char* unknown_task_name = "冒险越来越深入了";
     
     /* Fonts */
     static const int title_fontsize = 42; /* <-- already hit the ceiling */
@@ -17,7 +18,6 @@ namespace WarGrey::STEM {
         static TTF_Font* title;
         static TTF_Font* normal;
         static TTF_Font* tiny;
-        static TTF_Font* vertical;
         static TTF_Font* mono;
     };
 
@@ -27,7 +27,7 @@ namespace WarGrey::STEM {
     /*********************************************************************************************/
     class TheBigBang : public WarGrey::STEM::Plane {
         public:
-            TheBigBang(const char* name = "冒险越来越深入了")
+            TheBigBang(const char* name = unknown_task_name)
                 : WarGrey::STEM::Plane(name) {}
 
             virtual ~TheBigBang() {}

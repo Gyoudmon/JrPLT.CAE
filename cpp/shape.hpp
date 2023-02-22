@@ -28,7 +28,6 @@ namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
             bool can_select(WarGrey::STEM::IMatter* m) override { return true; }
 
         private: // 本游戏世界有以下物体
-            WarGrey::STEM::Labellet* label;
             WarGrey::STEM::IShapelet* roof;
             WarGrey::STEM::IShapelet* wall;
             WarGrey::STEM::IShapelet* door;
