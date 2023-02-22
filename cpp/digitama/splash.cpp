@@ -21,16 +21,19 @@ static const std::vector<std::pair<int, int>> tux_spots = {
     { 17, 34 }, { 22, 44 }
 };
 
-static const std::vector<std::pair<int, int>> coin_positions = {
+static const std::vector<std::vector<std::pair<int, int>>> coin_positions = {
     /* { row, col } */
-    { 5, 9 }, { 11, 18 }, { 16, 27 }, { 21, 37 }
+    { { 5, 9 } },
+    { { 11, 18 } },
+    { { 16, 27 } },
+    { { 21, 37 } }
 };
 
 /*************************************************************************************************/
 namespace {
     class BigBangPlane : public Plane {
     public:
-        BigBangPlane(Cosmos* master) : Plane("Big Bang!"), master(master) {}
+        BigBangPlane(Cosmos* master) : Plane("The Big Bang!"), master(master) {}
 
     public:  // 覆盖游戏基本方法
         void load(float width, float height) override {
@@ -39,18 +42,25 @@ namespace {
             this->title = this->insert(new Labellet(bang_font::title, GHOSTWHITE, title_fmt, "宇宙大爆炸"));
             this->agent = this->insert(new Linkmon());
             
-            for (int idx = 0; idx < coin_positions.size(); idx ++) {
-                const char* task_name = this->master->plane_name(idx + 1);
-                int index = idx + 1;
-                
-                if (task_name == nullptr) {
-                    this->names.push_back(this->insert(new Labellet(bang_font::tiny, GAINSBORO, label_fmt, index, unknown_task_name)));
-                    this->coins.push_back(this->insert(new Coinlet(unknown_task_name, index)));
-                    this->coins.back()->stop();
-                } else {
-                    this->names.push_back(this->insert(new Labellet(bang_font::tiny, ROYALBLUE, label_fmt, index, task_name)));
-                    this->coins.push_back(this->insert(new Coinlet(task_name, index)));
+            for (int seg = 0, plane_idx = 0; seg < coin_positions.size(); seg ++) {
+                std::vector<Coinlet*> subcoins;
+                std::vector<Labellet*> subnames;
+
+                for (int idx = 0; idx < coin_positions[seg].size(); idx ++) {
+                    const char* task_name = this->master->plane_name(++ plane_idx);
+                    
+                    if (task_name == nullptr) {
+                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, GAINSBORO, label_fmt, plane_idx, unknown_task_name)));
+                        subcoins.push_back(this->insert(new Coinlet(unknown_task_name, plane_idx)));
+                        subcoins.back()->stop();
+                    } else {
+                        subnames.push_back(this->insert(new Labellet(bang_font::tiny, ROYALBLUE, label_fmt, plane_idx, task_name)));
+                        subcoins.push_back(this->insert(new Coinlet(task_name, plane_idx)));
+                    }
                 }
+
+                this->coins.push_back(subcoins);
+                this->names.push_back(subnames);
             }
 
             this->tux = this->insert(new Tuxmon());
@@ -70,21 +80,28 @@ namespace {
             this->move_to(this->sledge, width, 0.0F, MatterAnchor::RT);
             this->move_to(this->splash, width * 0.5F, height * 0.5F, MatterAnchor::CC);
             
+            this->hide_all_task_names();
             this->tux_home();
             
-            for (int idx = 0; idx < coin_positions.size(); idx ++) {
-                auto pos = coin_positions[idx];
+            for (int seg = 0; seg < coin_positions.size(); seg ++) {
+                auto subpositions = coin_positions[seg];
+                auto subcoins = this->coins[seg];
+                
+                for (int idx = 0; idx < subpositions.size(); idx ++) {
+                    auto pos = subpositions[idx];
 
-                this->splash->feed_logic_tile_location(pos.first, pos.second, &dx, &dy, MatterAnchor::CC, false);
-
-                this->move_to(this->coins[idx], dx, dy, MatterAnchor::CC);
-                this->move_to(this->names[idx], this->coins[idx], MatterAnchor::CB, MatterAnchor::CT);
-                this->names[idx]->show(false);
+                    this->splash->feed_logic_tile_location(pos.first, pos.second, &dx, &dy, MatterAnchor::CC, false);
+                    this->move_to(subcoins[idx], dx, dy, MatterAnchor::CC);
+                }
             }
         }
 
         void update(uint32_t count, uint32_t interval, uint32_t uptime) override {
             this->tux_step(count, interval, uptime);
+
+            if (this->tux->y_speed() == 0.0F) {
+                this->move_task_names(this->tux_walk_segment - 1);
+            }
 
             if (this->target_plane > 0) {
                 if (!this->agent->in_playing()) {
@@ -140,6 +157,8 @@ namespace {
             this->tux->play("walk");
             this->tux->set_speed_xy(tux_speed_walk_x, 0.0F);
             this->tux_target_y = 0.0F;
+            this->show_task_names(this->tux_walk_segment - 1);
+            this->move_task_names(this->tux_walk_segment - 1);
         }
 
         void tux_step(uint32_t count, uint32_t interval, uint32_t uptime) {
@@ -156,6 +175,8 @@ namespace {
 
                 if (tx >= gx) {
                     this->tux_walk_segment += 1;
+                    this->hide_all_task_names();
+
                     if (this->tux_walk_segment < tux_spots.size()) {
                         this->feed_splash_location(this->tux_walk_segment, nullptr, &this->tux_target_y);
                         this->tux->play("buttjump");
@@ -180,10 +201,38 @@ namespace {
         }
 
     private:
+        void hide_all_task_names() {
+            for (auto subnames : this->names) {
+                for (auto name : subnames) {
+                    name->show(false);
+                }
+            }
+        }
+
+        void show_task_names(int idx) {
+            if (idx < this->names.size()) {
+                for (auto name : this->names[idx]) {
+                    name->show(true);
+                }
+            }
+        }
+
+        void move_task_names(int idx) {
+            if (idx < this->names.size()) {
+                IMatter* target = this->tux;
+
+                for (auto name : this->names[idx]) {
+                    this->move_to(name, target, MatterAnchor::CB, MatterAnchor::CT);
+                    target = name;
+                }
+            }
+        }
+
+    private:
         Linkmon* agent;
         Labellet* title;
-        std::vector<Coinlet*> coins;
-        std::vector<Labellet*> names;
+        std::vector<std::vector<Coinlet*>> coins;
+        std::vector<std::vector<Labellet*>> names;
         Sprite* tux;
         GridAtlas* sledge;
         GridAtlas* splash;
