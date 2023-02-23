@@ -31,35 +31,7 @@ void WarGrey::STEM::TheBigBang::load(float width, float height) {
 
     this->agent = this->insert(new Linkmon());
     this->agent->scale(-1.0F, 1.0F);
-}
 
-void WarGrey::STEM::TheBigBang::reflow(float width, float height) {
+    this->set_sentry_sprite(this->agent, "Greeting", "GoodBye");
     this->move_to(this->title, this->agent, MatterAnchor::RB, MatterAnchor::LB);
-}
-
-void WarGrey::STEM::TheBigBang::on_enter(IPlane* from) {
-    this->agent->play("Greeting", 1);
-    this->task_done = false;
-    this->on_enter_task();
-}
-
-void WarGrey::STEM::TheBigBang::on_leave(IPlane* to) {
-    this->on_leave_task();
-}
-
-bool WarGrey::STEM::TheBigBang::has_mission_completed() {
-    return this->task_done && !this->agent->in_playing();   
-}
-
-bool WarGrey::STEM::TheBigBang::can_select(IMatter* m) {
-    return m == this->agent;
-}
-
-void WarGrey::STEM::TheBigBang::after_select(IMatter* m, bool yes_or_no) {
-    if (yes_or_no) {
-        if (m == this->agent) {
-            this->agent->play("GoodBye", 1);
-            this->task_done = true;
-        }
-    }
 }

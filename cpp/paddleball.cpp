@@ -25,8 +25,6 @@ void WarGrey::STEM::PaddleBallWorld::load(float width, float height) {
 
 // 实现 PaddleBallWorld::reflow 方法，调整球和桨的位置
 void WarGrey::STEM::PaddleBallWorld::reflow(float width, float height) {
-    TheBigBang::reflow(width, height);
-    
     // 确保球产生于屏幕上方的中间
     this->move_to(this->ball, width * 0.5F, ball_radius, MatterAnchor::CT);
     

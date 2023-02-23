@@ -40,6 +40,9 @@ namespace {
             this->load_tasks(width, height);
             this->tux = this->insert(new Tuxmon());
 
+            this->tooltip = this->insert(make_label_as_tooltip(bang_font::tiny, GHOSTWHITE));
+            this->set_tooltip_matter(this->tooltip);
+
             this->agent->scale(-1.0F, 1.0F);
             this->splash->create_logic_grid(28, 45);
             // this->splash->set_logic_grid_color(DIMGRAY);
@@ -69,7 +72,6 @@ namespace {
         void on_enter(IPlane* from) override {
             this->agent->play("Greeting", 1);
             this->tux->set_speed(tux_speed_walk_x, 0.0F);
-            this->task_name->show(false);
         }
 
     public:
@@ -99,24 +101,23 @@ namespace {
             }
         }
 
-        void on_hover(IMatter* m, float x, float y) override {
+        bool update_tooltip(IMatter* m, float x, float y) override {
+            bool updated = false;
             auto coin = dynamic_cast<Coinlet*>(m);
 
-            if ((coin != nullptr) && !this->task_name->visible()) {
-                this->task_name->set_text(MatterAnchor::CC, " %s ", coin->name.c_str());
-                this->task_name->show(true);
-                this->move_to(this->task_name, m, MatterAnchor::LB, MatterAnchor::LT, -tiny_fontsize);
-
+            if ((coin != nullptr) && !this->tooltip->visible()) {
+                this->tooltip->set_text(MatterAnchor::CC, " %s ", coin->name.c_str());
+                
                 if (coin->name.compare(unknown_task_name) == 0) {
-                    this->task_name->set_text_color(BLACK);
+                    this->tooltip->set_text_color(BLACK);
                 } else {
-                    this->task_name->set_text_color(ROYALBLUE);
+                    this->tooltip->set_text_color(ROYALBLUE);
                 }
-            }
-        }
 
-        void on_goodbye(IMatter* m, float x, float y) override {
-            this->task_name->show(false);
+                updated = true;
+            }
+
+            return updated;
         }
 
     private:
@@ -128,12 +129,12 @@ namespace {
                 std::vector<Labellet*> subnames;
 
                 for (int idx = 0; idx < task_info[seg].size(); idx ++) {
-                    const char* task_name = this->master->plane_name(++ task_idx);
+                    const char* tooltip = this->master->plane_name(++ task_idx);
 
-                    if (task_name == nullptr) {
+                    if (tooltip == nullptr) {
                         this->load_task(subcoins, unknown_task_name, task_idx);
                     } else {
-                        this->load_task(subcoins, task_name, task_idx);
+                        this->load_task(subcoins, tooltip, task_idx);
                     }
                 }
 
@@ -143,16 +144,12 @@ namespace {
             for (int idx = task_idx + 1; idx < this->master->plane_count(); idx ++) {
                 this->load_task(this->bonus_coins, this->master->plane_name(idx), idx);
             }
-
-            this->task_name = this->insert(new Labellet(bang_font::tiny, GHOSTWHITE, ""));
-            this->task_name->set_border_color(GOLD);
-            this->task_name->set_background_color(SNOW);
         }
 
-        void load_task(std::vector<Coinlet*>& subcoins, const char* task_name, int task_idx) {
-            subcoins.push_back(this->insert(new Coinlet(task_name, task_idx)));
+        void load_task(std::vector<Coinlet*>& subcoins, const char* tooltip, int task_idx) {
+            subcoins.push_back(this->insert(new Coinlet(tooltip, task_idx)));
             
-            if (strcmp(task_name, unknown_task_name) == 0) {
+            if (strcmp(tooltip, unknown_task_name) == 0) {
                 subcoins.back()->stop();
             }
         }
@@ -243,7 +240,7 @@ namespace {
         Labellet* title;
         std::vector<std::vector<Coinlet*>> coins;
         std::vector<Coinlet*> bonus_coins;
-        Labellet* task_name;
+        Labellet* tooltip;
         Sprite* tux;
         GridAtlas* splash;
 

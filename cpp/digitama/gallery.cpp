@@ -46,7 +46,6 @@ void WarGrey::STEM::Gallery::load(float width, float height) {
 void WarGrey::STEM::Gallery::reflow(float width, float height) {
     float raft_width, raft_height;
 
-    TheBigBang::reflow(width, height);
     feed_raft_size(this->title, &raft_width, &raft_height);
 
     this->move_to(this->sea, width * 0.5F, height * 0.5F, MatterAnchor::CT);
