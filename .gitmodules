@@ -10,3 +10,6 @@
 [submodule "racket/digitama/big-bang"]
 	path = racket/digitama/big-bang
 	url = https://github.com/Gyoudmon/big-bang.rkt.git
+[submodule "cpp/digitama/pltmos"]
+	path = cpp/digitama/pltmos
+	url = https://github.com/Gyoudmon/pltmos.git
