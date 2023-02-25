@@ -37,9 +37,9 @@ namespace {
     };
 
     /******************************************* 声明游戏世界 ******************************************/
-    class PaddleBallWorld : public WarGrey::STEM::World {
+    class PaddleBallWorld : public WarGrey::STEM::Universe {
     public:
-        PaddleBallWorld() : World("Paddle Ball (Procedural)") { /* 什么都不做 */ }
+        PaddleBallWorld() : Universe("Paddle Ball (Procedural)") { /* 什么都不做 */ }
         virtual ~PaddleBallWorld() { /* 什么都不做 */ }
 
     public: // 覆盖游戏基本方法

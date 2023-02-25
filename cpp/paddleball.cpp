@@ -32,22 +32,18 @@ void WarGrey::STEM::PaddleBallWorld::reflow(float width, float height) {
     this->move_to(this->paddle, width * 0.5F, height - paddle_height * 3.0F, MatterAnchor::CC);
 }
 
-// 实现 PaddleBallWorld::update 方法，根据当前球和桨的当前位置判断是否有碰撞，无需考虑运动细节
+// 实现 PaddleBallWorld::update 方法，根据球和桨的当前位置判断是否有碰撞，无需考虑运动细节
 void WarGrey::STEM::PaddleBallWorld::update(uint32_t interval, uint32_t count, uint32_t uptime) {
-    float paddle_lx, paddle_ty, paddle_rx, paddle_by;
-    float ball_lx, ball_ty, ball_rx, ball_by;
+    float paddle_rx, paddle_by, ball_lx, ball_ty;
 
-    // 依次查询桨左上角和右下角的位置
-    this->feed_matter_location(this->paddle, &paddle_lx, &paddle_ty, MatterAnchor::LT);
+    // 查询桨右下角的位置
     this->feed_matter_location(this->paddle, &paddle_rx, &paddle_by, MatterAnchor::RB);
     
-    // 依次查询球左上角和右下角的位置
+    // 查询球左上角的位置
     this->feed_matter_location(this->ball, &ball_lx, &ball_ty, MatterAnchor::LT);
-    this->feed_matter_location(this->ball, &ball_rx, &ball_by, MatterAnchor::RB);
-
+    
     if (ball_ty < paddle_by) { // 球未脱板, 检测小球是否被捕获
-        if ((ball_by >= paddle_ty) && (ball_by <= paddle_by)
-                && (ball_lx >= paddle_lx) && (ball_rx <= paddle_rx)) {
+        if (this->is_colliding(this->ball, this->paddle)) {
             this->ball->motion_bounce(false, true); // 正常，反弹球
         }
     } else {

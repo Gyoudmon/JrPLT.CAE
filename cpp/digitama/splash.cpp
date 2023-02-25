@@ -29,18 +29,18 @@ static const std::vector<std::vector<std::pair<int, int>>> task_info = {
 namespace {
     class BigBangPlane : public Plane {
     public:
-        BigBangPlane(Cosmos* master) : Plane("The Big Bang!"), master(master) {}
+        BigBangPlane(Cosmos* master) : Plane("宇宙大爆炸"), master(master) {}
 
     public:  // 覆盖游戏基本方法
         void load(float width, float height) override {
             this->splash = this->insert(new GridAtlas("splash.png"));
-            this->title = this->insert(new Labellet(bang_font::title, GHOSTWHITE, title_fmt, "宇宙大爆炸"));
+            this->title = this->insert(new Labellet(bang_font::title, GHOSTWHITE, title_fmt, this->name()));
             this->agent = this->insert(new Linkmon());
             
             this->load_tasks(width, height);
             this->tux = this->insert(new Tuxmon());
 
-            this->tooltip = this->insert(make_label_as_tooltip(bang_font::tiny, GHOSTWHITE));
+            this->tooltip = this->insert(make_label_for_tooltip(bang_font::tiny, GHOSTWHITE));
             this->set_tooltip_matter(this->tooltip);
 
             this->agent->scale(-1.0F, 1.0F);
@@ -69,9 +69,10 @@ namespace {
             }
         }
 
-        void on_enter(IPlane* from) override {
+        void on_mission_start() override {
             this->agent->play("Greeting", 1);
             this->tux->set_speed(tux_speed_walk_x, 0.0F);
+            this->no_selected();
         }
 
     public:
@@ -106,14 +107,9 @@ namespace {
             auto coin = dynamic_cast<Coinlet*>(m);
 
             if ((coin != nullptr) && !this->tooltip->visible()) {
-                this->tooltip->set_text(MatterAnchor::CC, " %s ", coin->name.c_str());
+                this->tooltip->set_text((coin->name.compare(unknown_task_name) == 0) ? BLACK : ROYALBLUE,
+                    " %s ", coin->name.c_str());
                 
-                if (coin->name.compare(unknown_task_name) == 0) {
-                    this->tooltip->set_text_color(BLACK);
-                } else {
-                    this->tooltip->set_text_color(ROYALBLUE);
-                }
-
                 updated = true;
             }
 

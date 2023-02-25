@@ -1,15 +1,19 @@
 #include "digitama/splash.hpp"
 #include "digitama/bang.hpp"
 
+#include "digitama/gallery.hpp"
+
+#include "digitama/pltmos/stream.hpp"
+
 #include "shape.hpp"
 #include "paddleball.hpp"
 
-#include "digitama/gallery.hpp"
-
 using namespace WarGrey::STEM;
+using namespace WarGrey::PLT;
 
+/*************************************************************************************************/
 namespace {
-    enum class CmdlineOps { _ };
+    enum class CmdlineOps { StreamFile, _ };
 
     class BigBangCosmos : public TheCosmos {
     public:
@@ -30,11 +34,31 @@ namespace {
             // 第二阶段
 
             // 第三阶段
-
+            this->push_plane(new TheBigBang());
+            this->push_plane(new TheBigBang());
+            this->push_plane(new StreamPlane(this->stream_source.c_str()));
         }
 
     protected:
-        void parse_cmdline_options(int argc, char* argv[]) override {}
+        void parse_cmdline_options(int argc, char* argv[]) override {
+            CmdlineOps opt = CmdlineOps::_;
+            
+            for (int idx = 1; idx < argc; idx ++) {
+                switch (opt) {
+                    case CmdlineOps::StreamFile: {
+                        this->stream_source = argv[idx];
+                        opt = CmdlineOps::_;
+                    }; break;
+                    default: {
+                        if (strncmp("--pipe", argv[idx], 7) == 0) {
+                            opt = CmdlineOps::StreamFile;
+                        }
+                    }
+                }
+            }
+        }
+    private:
+        std::string stream_source;
     };
 }
 
