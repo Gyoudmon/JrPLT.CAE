@@ -27,7 +27,8 @@ namespace WarGrey::STEM {
     /*********************************************************************************************/
     class TheBigBang : public WarGrey::STEM::Plane {
         public:
-            TheBigBang(const char* name = unknown_task_name) : WarGrey::STEM::Plane(name) {}
+            TheBigBang(const char* name = unknown_task_name, uint32_t title_color = BLACK)
+                : WarGrey::STEM::Plane(name), title_color(title_color) {}
             virtual ~TheBigBang() {}
 
         public:
@@ -36,5 +37,8 @@ namespace WarGrey::STEM {
         protected:
             WarGrey::STEM::AgentSpriteSheet* agent;
             WarGrey::STEM::Labellet* title;
+
+        private:
+            uint32_t title_color;
     };
 }

@@ -27,7 +27,7 @@ void WarGrey::STEM::bang_fonts_destroy() {
 
 /*************************************************************************************************/
 void WarGrey::STEM::TheBigBang::load(float width, float height) {
-    this->title = this->insert(new Labellet(bang_font::title, BLACK, title_fmt, this->name()));
+    this->title = this->insert(new Labellet(bang_font::title, this->title_color, title_fmt, this->name()));
 
     this->agent = this->insert(new Linkmon());
     this->agent->scale(-1.0F, 1.0F);

@@ -10,17 +10,17 @@ const float ball_speed = 6.0F;
 const float paddle_speed = ball_speed * 1.5F;
 
 /*************************************************************************************************/
-// 实现 PaddleBallWorld::load 方法，加载球和桨，设置相关边界碰撞策略和速度
+// 实现 PaddleBallWorld::load 方法，加载球和桨，设置相关边界碰撞策略
 void WarGrey::STEM::PaddleBallWorld::load(float width, float height) {
     TheBigBang::load(width, height);
 
-    this->ball = this->insert(new Circlet(ball_radius, ORANGE));
-    this->paddle = this->insert(new Rectanglet(paddle_width, paddle_height, FORESTGREEN));
+    this->ball = this->insert(new Circlet(ball_radius, GHOSTWHITE));
+    this->paddle = this->insert(new Rectanglet(paddle_width, paddle_height, WHITESMOKE));
 
     this->ball->set_border_strategy(BorderStrategy::BOUNCE, BorderStrategy::BOUNCE, BorderStrategy::STOP, BorderStrategy::BOUNCE);
     this->paddle->set_border_strategy(BorderStrategy::IGNORE, BorderStrategy::STOP);
     
-    this->ball->set_speed(ball_speed, 45.0F);
+    this->set_background(BLACK);
 }
 
 // 实现 PaddleBallWorld::reflow 方法，调整球和桨的位置
@@ -29,7 +29,7 @@ void WarGrey::STEM::PaddleBallWorld::reflow(float width, float height) {
     this->move_to(this->ball, width * 0.5F, ball_radius, MatterAnchor::CT);
     
     // 确保桨产生在靠近屏幕下方的中间
-    this->move_to(this->paddle, width * 0.5F, height - paddle_height * 3.0F, MatterAnchor::CC);
+    this->move_to(this->paddle, width * 0.5F, height - paddle_height * 4.0F, MatterAnchor::CC);
 }
 
 // 实现 PaddleBallWorld::update 方法，根据球和桨的当前位置判断是否有碰撞，无需考虑运动细节
@@ -47,14 +47,19 @@ void WarGrey::STEM::PaddleBallWorld::update(uint32_t interval, uint32_t count, u
             this->ball->motion_bounce(false, true); // 正常，反弹球
         }
     } else {
-        this->ball->set_color(RED);
+        this->ball->set_color(LIGHTGRAY);
     }
+}
+
+// 实现 PaddleBallWorld::on_mission_start 方法，设置小球速度
+void WarGrey::STEM::PaddleBallWorld::on_mission_start() {
+    this->ball->set_velocity(ball_speed, 45.0F);
 }
 
 // 实现 PaddleBallWorld::on_char 方法，处理键盘事件，用于控制桨的移动
 void WarGrey::STEM::PaddleBallWorld::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
     switch(key) {
-        case 'a': this->paddle->set_speed(pressed ? paddle_speed : 0.0F, 180.0F); break;
-        case 'd': this->paddle->set_speed(pressed ? paddle_speed : 0.0F, 000.0F); break;
+        case 'a': this->paddle->set_velocity(pressed ? paddle_speed : 0.0F, 180.0F); break;
+        case 'd': this->paddle->set_velocity(pressed ? paddle_speed : 0.0F, 000.0F); break;
     }
 }

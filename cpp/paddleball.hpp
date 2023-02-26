@@ -15,6 +15,9 @@ namespace WarGrey::STEM {
             void reflow(float width, float height) override;
             void update(uint32_t interval, uint32_t count, uint32_t uptime) override;
 
+        public:
+            void on_mission_start() override;
+
         protected: // 覆盖键盘事件处理方法
             void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) override;
 

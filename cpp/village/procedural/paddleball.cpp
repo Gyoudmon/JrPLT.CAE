@@ -54,7 +54,7 @@ namespace {
 
             // 确保桨产生在靠近屏幕下方的中间
             this->paddle.x = this->ball.x - paddle_width / 2.0F;
-            this->paddle.y = height - paddle_height * 3.0F;
+            this->paddle.y = height - paddle_height * 4.0F;
         }
 
         // 定义和实现 PaddleBallWorld::update 方法，刷新球和桨的位置，这就是“运动动画”的基本原理
