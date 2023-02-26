@@ -69,7 +69,7 @@ namespace {
             }
         }
 
-        void on_mission_start() override {
+        void on_mission_start(float width, float height) override {
             this->agent->play("Greeting", 1);
             this->tux->set_speed(tux_speed_walk_x, 0.0F);
             this->no_selected();

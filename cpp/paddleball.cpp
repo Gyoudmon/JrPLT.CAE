@@ -23,13 +23,16 @@ void WarGrey::STEM::PaddleBallWorld::load(float width, float height) {
     this->set_background(BLACK);
 }
 
-// 实现 PaddleBallWorld::reflow 方法，调整球和桨的位置
-void WarGrey::STEM::PaddleBallWorld::reflow(float width, float height) {
+// 实现 PaddleBallWorld::on_mission_start 方法，调整球和桨的位置
+void WarGrey::STEM::PaddleBallWorld::on_mission_start(float width, float height) {
     // 确保球产生于屏幕上方的中间
     this->move_to(this->ball, width * 0.5F, ball_radius, MatterAnchor::CT);
     
     // 确保桨产生在靠近屏幕下方的中间
     this->move_to(this->paddle, width * 0.5F, height - paddle_height * 4.0F, MatterAnchor::CC);
+
+    // 设置球的速度
+    this->ball->set_velocity(ball_speed, 45.0F);
 }
 
 // 实现 PaddleBallWorld::update 方法，根据球和桨的当前位置判断是否有碰撞，无需考虑运动细节
@@ -49,11 +52,6 @@ void WarGrey::STEM::PaddleBallWorld::update(uint32_t interval, uint32_t count, u
     } else {
         this->ball->set_color(LIGHTGRAY);
     }
-}
-
-// 实现 PaddleBallWorld::on_mission_start 方法，设置小球速度
-void WarGrey::STEM::PaddleBallWorld::on_mission_start() {
-    this->ball->set_velocity(ball_speed, 45.0F);
 }
 
 // 实现 PaddleBallWorld::on_char 方法，处理键盘事件，用于控制桨的移动
