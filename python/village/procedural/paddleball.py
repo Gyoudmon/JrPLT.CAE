@@ -1,4 +1,5 @@
 ### paddleball.py
+
 from digitama.big_bang.game import *    # 导入游戏模块
 
 ############################### 定义游戏世界里的物体 ##############################
@@ -30,10 +31,10 @@ ball_speed = 4.0
 paddle_speed = ball_speed * 3.0
 
 ###############################################################################
-class PaddleBallWorld(World):
+class PaddleBallWorld(Universe):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题
-        super(PaddleBallWorld, self).__init__("Paddle Ball (POP)")
+        super(PaddleBallWorld, self).__init__("托球游戏(过程式)")
 
         # 本游戏世界中的物体
         self.ball = Ball()
