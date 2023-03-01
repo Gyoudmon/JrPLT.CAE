@@ -83,7 +83,7 @@ def game_world_refresh(renderer, texture):
 ###############################################################################
 class Universe(IDisplay):
 # public
-    def __init__(self, fps = 60, fgc = 0x0000000, bgc = 0xFFFFFF):
+    def __init__(self, title, fps = 60, fgc = 0x0000000, bgc = 0xFFFFFF):
         """ 构造函数，在创建游戏世界时自动调用，以设置帧频、窗口标题、前背景色和混色模式 """
         
         # The constructors of base classes must be invoked explicitly
@@ -110,6 +110,7 @@ class Universe(IDisplay):
         self.__snapshot_rootdir = ""
         
         # Python doesn't need two-step initialization as C++ does
+        self.set_window_title(title)
         self.construct(sys.argv)
 
     def __del__(self):
@@ -169,23 +170,22 @@ class Universe(IDisplay):
             for e in sdl2.ext.get_events():
                 self.begin_update_sequence()
 
-                match e.type:
-                    case sdl2.SDL_USEREVENT:
-                        parcel = ffi.cast(e.user.data1, ffi.POINTER(_TimerParcel)).contents
-                        if parcel.master is self:
-                            self._on_elapse(parcel.interval, parcel.count, parcel.uptime)
-                    case sdl2.SDL_MOUSEMOTION: self._on_mouse_motion_event(e.motion)
-                    case sdl2.SDL_MOUSEWHEEL: self._on_mouse_wheel_event(e.wheel)
-                    case sdl2.SDL_MOUSEBUTTONUP: self._on_mouse_button_event(e.button, False)
-                    case sdl2.SDL_MOUSEBUTTONDOWN: self._on_mouse_button_event(e.button, True)
-                    case sdl2.SDL_KEYUP: self._on_keyboard_event(e.key, False)
-                    case sdl2.SDL_KEYDOWN: self._on_keyboard_event(e.key, True)
-                    case sdl2.SDL_TEXTINPUT: self._on_user_input(e.text.text.decode('utf-8'))
-                    case sdl2.SDL_TEXTEDITING: self._on_editing(e.edit.text.decode('utf-8'), e.edit.start, e.edit.length)
-                    case sdl2.SDL_WINDOWEVENT:
-                        match e.window.event:
-                             case sdl2.SDL_WINDOWEVENT_RESIZED: self._on_resize(e.window.data1, e.window.data2)    
-                    case sdl2.SDL_QUIT:
+                if e.type == sdl2.SDL_USEREVENT:
+                    parcel = ffi.cast(e.user.data1, ffi.POINTER(_TimerParcel)).contents
+                    if parcel.master is self:
+                        self._on_elapse(parcel.interval, parcel.count, parcel.uptime)
+                elif e.type == sdl2.SDL_MOUSEMOTION: self._on_mouse_motion_event(e.motion)
+                elif e.type == sdl2.SDL_MOUSEWHEEL: self._on_mouse_wheel_event(e.wheel)
+                elif e.type == sdl2.SDL_MOUSEBUTTONUP: self._on_mouse_button_event(e.button, False)
+                elif e.type == sdl2.SDL_MOUSEBUTTONDOWN: self._on_mouse_button_event(e.button, True)
+                elif e.type == sdl2.SDL_KEYUP: self._on_keyboard_event(e.key, False)
+                elif e.type == sdl2.SDL_KEYDOWN: self._on_keyboard_event(e.key, True)
+                elif e.type == sdl2.SDL_TEXTINPUT: self._on_user_input(e.text.text.decode('utf-8'))
+                elif e.type == sdl2.SDL_TEXTEDITING: self._on_editing(e.edit.text.decode('utf-8'), e.edit.start, e.edit.length)
+                elif e.type == sdl2.SDL_WINDOWEVENT:
+                    if e.window.event == sdl2.SDL_WINDOWEVENT_RESIZED:
+                        self._on_resize(e.window.data1, e.window.data2)    
+                elif e.type == sdl2.SDL_QUIT:
                         if self.__timer > 0:
                             sdl2.SDL_RemoveTimer(self.__timer)
                             self.__timer = 0
@@ -348,14 +348,14 @@ class Universe(IDisplay):
     # 响应鼠标事件，并按需触发单击、右击、双击、移动、滚轮事件
     def _on_mouse_button_event(self, mouse, pressed):
         if not pressed:
-            match mouse.clicks:
-                case 1:
-                    match mouse.button:
-                        case sdl2.SDL_BUTTON_LEFT: self._on_click(mouse.x, mouse.y)
-                        case sdl2.SDL_BUTTON_RIGHT: self._on_right_click(mouse.x, mouse.y)
-                case 2:
-                    match mouse.button:
-                        case sdl2.SDL_BUTTON_LEFT: self._on_double_click(mouse.x, mouse.y)
+            if mouse.clicks == 1:
+                if mouse.button == sdl2.SDL_BUTTON_LEFT:
+                    self._on_click(mouse.x, mouse.y)
+                elif mouse.button == sdl2.SDL_BUTTON_RIGHT:
+                    self._on_right_click(mouse.x, mouse.y)
+            elif mouse.clicks == 2:
+                if mouse.button == sdl2.SDL_BUTTON_LEFT:
+                    self._on_double_click(mouse.x, mouse.y)
 
     def _on_mouse_motion_event(self, mouse):
         self._on_mouse_move(mouse.state, mouse.x, mouse.y, mouse.xrel, mouse.yrel)
@@ -384,9 +384,10 @@ class Universe(IDisplay):
 
         if self.__in_editing:
             if not pressed:
-                match key.sym:
-                    case sdl2.SDLK_RETURN: self.__enter_input_text()
-                    case sdl2.SDLK_BACKSPACE: self.__popback_input_text()
+                if key.sym == sdl2.SDLK_RETURN:
+                    self.__enter_input_text()
+                elif key.sym == sdl2.SDLK_BACKSPACE:
+                    self.__popback_input_text()
         else:
             if not pressed:
                 ctrl_mod = sdl2.KMOD_LCTRL | sdl2.KMOD_RCTRL
@@ -395,10 +396,12 @@ class Universe(IDisplay):
                     ctrl_mod = ctrl_mod | sdl2.KMOD_LGUI | sdl2.KMOD_RGUI
 
                 if key.mod & ctrl_mod:
-                    match key.sym:
-                        case sdl2.SDLK_s: self._on_save()
-                        case sdl2.SDLK_p: self._take_snapshot()
-                        case _: self._on_char(keycode, key.mod, keyboard.repeat, pressed)
+                    if key.sym == sdl2.SDLK_s:
+                        self._on_save()
+                    elif key.sym == sdl2.SDLK_p:
+                        self._take_snapshot()
+                    else:
+                        self._on_char(keycode, key.mod, keyboard.repeat, pressed)
                 else:
                     self._on_char(keycode, key.mod, keyboard.repeat, pressed)
             else:
