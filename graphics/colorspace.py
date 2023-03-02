@@ -1,14 +1,14 @@
-import sdl2  # SDL2 函数
-import math  # 数学函数
+import pygame # PyGame 函数
+import math   # 数学函数
 
 ###############################################################################
-def RGB_SetRenderDrawColor(renderer, rgb, alpha = 0xFF):
+def RGB_SetRenderDrawColor(renderer: pygame.Surface, rgb, alpha = 0xFF):
     r, g, b = RGB_FromHexadecimal(rgb)
     
     if isinstance(alpha, float):
         alpha = _UCHAR(alpha)
     
-    return sdl2.SDL_SetRenderDrawColor(renderer, r, g, b, alpha)
+    return renderer.fill((r, g, b, alpha))
 
 def HSV_SetRenderDrawColor(renderer, hue, saturation, value, alpha = 0xFF):
     chroma = saturation * value
@@ -56,11 +56,11 @@ _B = 3
 def _UCHAR(v):
     return round(v * 255.0)
 
-def _set_renderer_draw_color(renderer, r, g, b, a):
+def _set_renderer_draw_color(renderer: pygame.Surface, r, g, b, a):
     if isinstance(a, float):
         a = _UCHAR(a)
     
-    return sdl2.SDL_SetRenderDrawColor(renderer, _UCHAR(r), _UCHAR(g), _UCHAR(b), a)
+    return renderer.fill((_UCHAR(r), _UCHAR(g), _UCHAR(b), a))
 
 def _set_renderer_color_from_hue(renderer, hue, chroma, m, a):
     r = m

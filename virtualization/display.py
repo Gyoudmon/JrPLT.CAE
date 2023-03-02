@@ -1,7 +1,5 @@
 from abc import *               # abstract base class
 
-from ..graphics.image import *
-
 ###############################################################
 class IDisplay(ABC):
     def __init__(self):
@@ -13,23 +11,6 @@ class IDisplay(ABC):
 
     @abstractmethod
     def refresh(self): pass
-
-    @abstractmethod
-    def log_message(self, fgc, message): pass
-
-    @abstractmethod
-    def start_input_text(self, prompt): pass
-
-    @abstractmethod
-    def snapshot(self): pass
-
-    def save_snapshot(self, pname):
-        snapshot_png = self.snapshot()
-        okay = game_save_image(snapshot_png, pname)
-        
-        game_unload_image(snapshot_png)
-
-        return okay
 
     def begin_update_sequence(self):
         self.__update_sequence_depth += 1
@@ -56,4 +37,3 @@ class IDisplay(ABC):
         else:
             self.refresh()
             self.__update_is_needed = False
-
