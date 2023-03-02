@@ -59,7 +59,7 @@ class PaddleBallWorld(Universe):
         game_fill_rect(renderer, self.paddle['x'], self.paddle['y'], paddle_width, paddle_height, FORESTGREEN)
 
     # 实现 PaddleBallWorld::update 方法，刷新球和桨的位置，这就是“运动动画”的基本原理
-    def update(self, interval, count, uptime):
+    def update(self, count, interval, uptime):
         width, height = self.get_window_size()
 
         if self.ball.y < height - ball_radius: # 球未触底
