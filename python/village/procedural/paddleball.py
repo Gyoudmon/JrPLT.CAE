@@ -31,7 +31,7 @@ ball_speed = 4.0
 paddle_speed = ball_speed * 3.0
 
 ###############################################################################
-class PaddleBallWorld(Universe):
+class PaddleBallWorld(World):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题
         super(PaddleBallWorld, self).__init__("托球游戏(过程式)")
