@@ -1,16 +1,16 @@
-import sdl2.sdlttf
+import pygame
 
-import os
 import sys
+import os
 
 ###################################################################################################
 class game_font:
-    DEFAULT = None
-    sans_serif = None
-    serif = None
-    monospace = None
-    math = None
-    unicode = None
+    DEFAULT: pygame.font.Font = None
+    sans_serif: pygame.font.Font = None
+    serif: pygame.font.Font = None
+    monospace: pygame.font.Font = None
+    math: pygame.font.Font = None
+    unicode: pygame.font.Font = None
 
 ###################################################################################################
 _default_fontsize = 16
@@ -29,7 +29,7 @@ def game_fonts_initialize(fontsize = _default_fontsize):
         if os.path.isdir(rootdir):
             for parent, _subdirs, fontfiles in os.walk(rootdir):
                 for fontfile in fontfiles:
-                    _system_fonts[fontfile] = (parent + os.sep + fontfile).encode('utf-8')
+                    _system_fonts[fontfile] = (parent + os.sep + fontfile)
 
     if sys.platform == 'darwin':
         game_font.sans_serif = game_create_font("LucidaGrande.ttc", fontsize)
@@ -50,31 +50,25 @@ def game_fonts_initialize(fontsize = _default_fontsize):
         game_font.math = game_create_font("URW Bookman.ttf", fontsize)
         game_font.unicode = game_create_font("Arial Unicode.ttf", fontsize)
 
-    game_font.DEFAULT = game_font.sans_serif;
+    game_font.DEFAULT = game_font.sans_serif
 
 def game_fonts_destroy():
     if game_font.DEFAULT != None:
-        sdl2.sdlttf.TTF_CloseFont(game_font.DEFAULT)
         game_font.DEFAULT = None
 
     if game_font.sans_serif != None:
-        sdl2.sdlttf.TTF_CloseFont(game_font.sans_serif)
         game_font.sans_serif = None
 
     if game_font.serif != None:
-        sdl2.sdlttf.TTF_CloseFont(game_font.serif)
         game_font.serif = None
 
     if game_font.monospace != None:
-        sdl2.sdlttf.TTF_CloseFont(game_font.monospace)
         game_font.monospace = None
 
     if game_font.math != None:
-        sdl2.sdlttf.TTF_CloseFont(game_font.math)
         game_font.math = None
 
     if game_font.unicode != None:
-        sdl2.sdlttf.TTF_CloseFont(game_font.unicode)
         game_font.unicode = None
 
 ###################################################################################################
@@ -82,24 +76,19 @@ def game_create_font(face, fontsize = _default_fontsize):
     font = None
 
     if face in _system_fonts:
-        font = sdl2.sdlttf.TTF_OpenFont(_system_fonts[face], fontsize)
+        font = pygame.font.FontType(_system_fonts[face], fontsize)
     else:
-        font = sdl2.sdlttf.TTF_OpenFont(face.encode('utf-8'), fontsize)
+        font = pygame.font.FontType(face, fontsize)
 
-    if font == None:
-        print("无法加载字体 '%s': %s" % (face, sdl2.sdlttf.TTF_GetError().decode('utf-8')))
-
-    return font;
+    return font
 
 def game_font_destroy(font, usr_only = True):
     if font:
-        if not usr_only:
-            sdl2.sdlttf.TTF_CloseFont(font)
+        if not usr_only: del font
         elif font == game_font.DEFAULT: pass
         elif font == game_font.sans_serif: pass
         elif font == game_font.serif: pass
         elif font == game_font.monospace: pass
         elif font == game_font.math: pass
         elif font == game_font.unicode: pass
-        else:
-            sdl2.sdlttf.TTF_CloseFont(font)
+        else: del font

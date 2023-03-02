@@ -1,5 +1,11 @@
 from .cosmos import *
 
+'''
+Python 学员的年龄下限可能很低
+因此保留此 World 类作为“只包含单一场景的主界面”
+以免他们被复杂的OOP设计劝退
+'''
+
 ###############################################################################
 class World(Cosmos):
     def __init__(this, title, fps = 60, fgc = 0x000000, bgc = 0xFFFFFF, initial_mode = 0):

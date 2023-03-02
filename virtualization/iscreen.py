@@ -27,10 +27,3 @@ class IScreen(ABC):
 
     @abstractmethod
     def notify_updated(self): pass
-
-    @abstractmethod
-    def log_message(self, fgc, message): pass
-
-    @abstractmethod
-    def start_input_text(self, prompt): pass
-

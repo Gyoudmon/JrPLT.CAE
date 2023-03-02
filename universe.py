@@ -1,21 +1,22 @@
+import pygame           # PyGame 函数
+
 import sys              # 系统相关参数和函数
 import atexit           # 用于管理程序退出时执行的函数
 
-import pygame           # PyGame 函数
-
-#from .graphics.font import *
-#from .graphics.text import *
+from .graphics.font import *
+from .graphics.text import *
 from .graphics.colorspace import *
 
 from .virtualization.display import *
 
 ###############################################################################
 def game_initialize(fontsize = 16):
-#    if game_font.DEFAULT is None:
+    if game_font.DEFAULT is None:
         pygame.init()
         atexit.register(pygame.quit)
 
-#        game_fonts_initialize(fontsize)
+        game_fonts_initialize(fontsize)
+        atexit.register(game_fonts_destroy)
 
 def game_world_create(width, height):
     flags = pygame.SHOWN | pygame.RESIZABLE
@@ -29,9 +30,8 @@ def game_world_create(width, height):
 
 def game_world_reset(renderer, fgc, bgc):
     fga, fgb, fbc = RGB_FromHexadecimal(fgc)
-    bga, bgb, bgc = RGB_FromHexadecimal(bgc)
 
-    renderer.fill((bga, bgb, bgc, 255))
+    renderer.fill(RGB_FromHexadecimal(bgc))
     pygame.display.flip()
 
 def game_world_refresh(renderer):
@@ -40,7 +40,7 @@ def game_world_refresh(renderer):
 ###############################################################################
 class Universe(IDisplay):
 # public
-    def __init__(self, title, fps = 60, fgc = 0x0000000, bgc = 0xFFFFFF):
+    def __init__(self, fps = 60, fgc = 0x0000000, bgc = 0xFFFFFF):
         """ 构造函数，在创建游戏世界时自动调用，以设置帧频、窗口标题、前背景色和混色模式 """
         
         # The constructors of base classes must be invoked explicitly
@@ -62,7 +62,6 @@ class Universe(IDisplay):
         game_world_reset(self.__window, self.__fgc, self.__bgc)
 
         # Python doesn't need two-step initialization as C++ does
-        self.set_window_title(title)
         self.construct(sys.argv)
 
     def __del__(self):

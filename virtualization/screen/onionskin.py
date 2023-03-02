@@ -28,9 +28,3 @@ class OnionSkin(IScreen):
     
     def notify_updated(self):
         return self.__display.notify_updated()
-
-    def log_message(self, fgc, message):
-        self.__display.log_message(fgc, message)
-
-    def start_input_text(self, prompt):
-        self.__display.start_input_text(prompt)

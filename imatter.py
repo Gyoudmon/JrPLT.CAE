@@ -1,5 +1,3 @@
-import sdl2
-
 from .forward import *
 from .graphics.image import *
 from .virtualization.iscreen import *
@@ -55,14 +53,9 @@ class IMatter(object):
 # public
     def is_colliding_with_mouse(self, local_x, local_y): return True
     def on_char(self, key, modifiers, repeats, pressed): return False
-    def on_text(self, text, size, entire): return False
-    def on_editing_text(self, text, pos, span): return False
     def on_hover(self, local_x, local_y): return False
     def on_tap(self, local_x, local_y): return False
     def on_goodbye(self, local_x, local_y): return False
-
-    def start_input_text(self, prompt): pass
-    def log_message(self, message): pass
 
 # public
     def on_pointer_pressed(self, button, x, y, clicks, touch): return False
@@ -124,39 +117,12 @@ class IMatter(object):
                     self.moor(self.__resize_anchor)
                     self._on_resize(w, h, width, height)
                     self.notify_updated()
-
-    def log_message(self, message):
-        if self.info:
-            self.info.master.log_message(message)
     
     def camouflage(self, yes_or_no):
         self.__findable = yes_or_no
     
     def concealled(self):
         return not self.__findable
-
-# public
-    def snapshot(self):
-        width, height = self.get_extent(0.0, 0.0)
-        photograph = game_blank_image(width, height)
-
-        if photograph:
-            renderer = sdl2.SDL_CreateSoftwareRenderer(photograph)
-
-            if renderer:
-                self.draw(renderer, 0.0, 0.0, width, height)
-                sdl2.SDL_RenderPresent(renderer)
-                sdl2.SDL_DestroyRenderer(renderer)
-
-        return photograph                
-
-    def save_snapshot(self, pname):
-        photograph = self.snapshot()
-        okay = game_save_image(photograph, pname)
-
-        sdl2.SDL_FreeSurface(photograph)
-
-        return okay
 
 # proteceted
     def _on_resized(self, width, height, old_width, old_height):

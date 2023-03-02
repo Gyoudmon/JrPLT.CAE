@@ -29,7 +29,7 @@ class Cosmos(Universe):
                     if child == self.__head_plane:
                         break
     
-    def update(self, interval, count, uptime):
+    def update(self, count, interval, uptime):
         pass
     
     def draw(self, renderer, x, y, width, height):
@@ -45,9 +45,9 @@ class Cosmos(Universe):
             self.begin_update_sequence()
             
             if pressed:
-                self.__recent_plane.on_pointer_pressed(m.button, m.x, m.y, m.clicks)
+                self.__recent_plane.on_pointer_pressed(m.button, m.pos[0], m.pos[1], 1)
             else:
-                self.__recent_plane.on_pointer_released(m.button, m.x, m.y, m.clicks)
+                self.__recent_plane.on_pointer_released(m.button, m.pos[0], m.pos[1], 1)
 
             self.end_update_sequence()
 
@@ -69,24 +69,6 @@ class Cosmos(Universe):
             self.__recent_plane.on_char(key, modifiers, repeats, pressed)
             self.end_update_sequence()
 
-    def _on_text(self, text, size, entire):
-        if self.__recent_plane:
-            self.begin_update_sequence()
-            self.__recent_plane.on_text(text, size, entire)
-            self.end_update_sequence()
-
-    def _on_editing_text(self, text, pos, span):
-        if self.__recent_plane:
-            self.begin_update_sequence()
-            self.__recent_plane.on_editing_text(text, pos, span)
-            self.end_update_sequence()
-
-    def _on_save(self):
-        if self.__recent_plane:
-            self.begin_update_sequence()
-            self.__recent_plane.on_save()
-            self.end_update_sequence()
-
 # protected
     def _on_big_bang(self, width, height):
         if self.__head_plane:
@@ -102,7 +84,7 @@ class Cosmos(Universe):
 
             self.set_window_title(self.__recent_plane.name())
 
-    def _on_elapse(self, interval, count, uptime):
+    def _on_elapse(self, count, interval, uptime):
         self.begin_update_sequence()
 
         if self.__head_plane:
