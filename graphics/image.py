@@ -13,7 +13,7 @@ def game_blank_image(width, height, alpha_color_key = 0xFFFFFF):
     return surface
 
 def game_load_image(file):
-    return pygame.image.load(file)
+    return pygame.image.load(file).convert_alpha()
 
 def game_unload_image(image):
     del image

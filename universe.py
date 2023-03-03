@@ -19,7 +19,7 @@ def game_initialize(fontsize = 16):
         atexit.register(game_fonts_destroy)
 
 def game_world_create(width, height):
-    flags = pygame.SHOWN | pygame.RESIZABLE
+    flags = pygame.SHOWN | pygame.RESIZABLE | pygame.HWSURFACE
 
     if width <= 0 and height <= 0:
         flags |= pygame.FULLSCREEN
@@ -138,7 +138,6 @@ class Universe(IDisplay):
             if height <= 0:
                 height = oldh
 
-        self.__window = game_world_create(width, height)
         self._on_resize(width, height)  # the universe has been completely initialized
 
     def get_window_size(self, logical = True):
@@ -233,6 +232,7 @@ class Universe(IDisplay):
 
     # 响应窗体事件，并按需触发尺寸改变事件
     def _on_resize(self, width, height):
+        self.__window = game_world_create(width, height)
         self.__window_width, self.__window_height = width, height
 
         self.begin_update_sequence()
