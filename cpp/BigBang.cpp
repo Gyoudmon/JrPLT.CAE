@@ -1,6 +1,4 @@
 #include "digitama/splash.hpp"
-#include "digitama/bang.hpp"
-
 #include "digitama/gallery.hpp"
 
 #include "digitama/pltmos/stream.hpp"

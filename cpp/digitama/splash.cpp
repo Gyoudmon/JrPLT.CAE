@@ -1,6 +1,6 @@
 #include "splash.hpp"
-#include "bang.hpp"
 
+#include "big_bang/bang.hpp"
 #include "big_bang/datum/string.hpp"
 
 using namespace WarGrey::STEM;
@@ -27,23 +27,22 @@ static const std::vector<std::vector<std::pair<int, int>>> task_info = {
 
 /*************************************************************************************************/
 namespace {
-    class BigBangPlane : public Plane {
+    class SplashPlane : public TheBigBang {
     public:
-        BigBangPlane(Cosmos* master) : Plane("宇宙大爆炸"), master(master) {}
+        SplashPlane(Cosmos* master) : TheBigBang("宇宙大爆炸", GHOSTWHITE), master(master) {}
 
     public:  // 覆盖游戏基本方法
         void load(float width, float height) override {
             this->splash = this->insert(new GridAtlas("splash.png"));
-            this->title = this->insert(new Labellet(bang_font::title, GHOSTWHITE, title_fmt, this->name()));
-            this->agent = this->insert(new Linkmon());
+
+            TheBigBang::load(width, height);
             
             this->load_tasks(width, height);
             this->tux = this->insert(new Tuxmon());
 
-            this->tooltip = this->insert(make_label_for_tooltip(bang_font::tiny, GHOSTWHITE));
+            this->tooltip = this->insert(make_label_for_tooltip(bang_font::small, GHOSTWHITE));
             this->set_tooltip_matter(this->tooltip);
 
-            this->agent->scale(-1.0F, 1.0F);
             this->splash->create_logic_grid(28, 45);
             // this->splash->set_logic_grid_color(DIMGRAY);
 
@@ -51,6 +50,8 @@ namespace {
         }
         
         void reflow(float width, float height) override {
+            TheBigBang::reflow(width, height);
+
             this->move_to(this->title, this->agent, MatterAnchor::RB, MatterAnchor::LB);
             this->move_to(this->splash, width * 0.5F, height * 0.5F, MatterAnchor::CC);
             
@@ -70,7 +71,6 @@ namespace {
         }
 
         void on_mission_start(float width, float height) override {
-            this->agent->play("Greeting", 1);
             this->tux->set_speed(tux_speed_walk_x, 0.0F);
             this->no_selected();
         }
@@ -83,20 +83,12 @@ namespace {
 
         void after_select(IMatter* m, bool yes) override {
             if (yes) {
-                if (m == this->tux) {
-                    if (this->tux->is_wearing()) {
-                        this->tux->take_off();
-                    } else {
-                        this->tux->wear("ice_hat");
-                    }
-                } else {
-                    Coinlet* coin = dynamic_cast<Coinlet*>(m);
+                Coinlet* coin = dynamic_cast<Coinlet*>(m);
 
-                    if (coin != nullptr) {
-                        if (coin->name.compare(unknown_task_name) != 0) {
-                            this->target_plane = coin->idx;
-                            this->agent->play("Hide", 1);
-                        }
+                if (coin != nullptr) {
+                    if (coin->name.compare(unknown_plane_name) != 0) {
+                        this->target_plane = coin->idx;
+                        this->agent->play("Hide", 1);
                     }
                 }
             }
@@ -107,7 +99,7 @@ namespace {
             auto coin = dynamic_cast<Coinlet*>(m);
 
             if ((coin != nullptr) && !this->tooltip->visible()) {
-                this->tooltip->set_text((coin->name.compare(unknown_task_name) == 0) ? BLACK : ROYALBLUE,
+                this->tooltip->set_text((coin->name.compare(unknown_plane_name) == 0) ? BLACK : ROYALBLUE,
                     " %s ", coin->name.c_str());
                 
                 updated = true;
@@ -115,6 +107,9 @@ namespace {
 
             return updated;
         }
+
+    protected:
+        void on_double_tap_sentry_sprite(ISprite* sentry) override { /* Yes, do nothing */ }
 
     private:
         void load_tasks(float width, float height) {
@@ -128,7 +123,7 @@ namespace {
                     const char* tooltip = this->master->plane_name(++ task_idx);
 
                     if (tooltip == nullptr) {
-                        this->load_task(subcoins, unknown_task_name, task_idx);
+                        this->load_task(subcoins, unknown_plane_name, task_idx);
                     } else {
                         this->load_task(subcoins, tooltip, task_idx);
                     }
@@ -145,7 +140,7 @@ namespace {
         void load_task(std::vector<Coinlet*>& subcoins, const char* tooltip, int task_idx) {
             subcoins.push_back(this->insert(new Coinlet(tooltip, task_idx)));
             
-            if (strcmp(tooltip, unknown_task_name) == 0) {
+            if (strcmp(tooltip, unknown_plane_name) == 0) {
                 subcoins.back()->stop();
             }
         }
@@ -231,8 +226,6 @@ namespace {
         }
 
     private:
-        Linkmon* agent;
-        Labellet* title;
         std::vector<std::vector<Coinlet*>> coins;
         std::vector<Coinlet*> bonus_coins;
         Labellet* tooltip;
@@ -261,7 +254,7 @@ void WarGrey::STEM::TheCosmos::construct(int argc, char* argv[]) {
     imgdb_setup(digimon_zonedir().append("stone"));
     this->parse_cmdline_options(argc, argv);
 
-    this->push_plane(new BigBangPlane(this));
+    this->push_plane(new SplashPlane(this));
 }
 
 void WarGrey::STEM::TheCosmos::update(uint32_t count, uint32_t interval, uint32_t uptime) {

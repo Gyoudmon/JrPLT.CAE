@@ -1,7 +1,6 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/bang.hpp"
-
+#include "digitama/big_bang/bang.hpp"
 #include "digitama/big_bang/matter/graphlet/shapelet.hpp"
 
 namespace WarGrey::STEM {

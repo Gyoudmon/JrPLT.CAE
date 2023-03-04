@@ -2,7 +2,7 @@
 #pragma once // 确保只被 include 一次
 
 // 导入宇宙大爆炸模块，内含 TheBigBang 类和常用函数，包含自己项目里的头文件要用双引号
-#include "digitama/bang.hpp"
+#include "digitama/big_bang/bang.hpp"
 
 // 导入基本图形模块
 #include "digitama/big_bang/matter/graphlet/shapelet.hpp"
