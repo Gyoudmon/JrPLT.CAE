@@ -48,12 +48,12 @@ namespace {
 
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height) override {
                 int font_count;
-                const std::string* fonts = game_font_list(&font_count);
+                const std::string* fonts = game_fontname_list(&font_count);
 
                 for (int i = 0; i < font_count; i++) {
-                    TTF_Font* f = game_create_font(fonts[i].c_str(), this->fontsize);
+                    shared_font_t f = game_create_font(fonts[i].c_str(), this->fontsize);
 
-                    if (is_font_okay(f, this->text)) {
+                    if (f->is_suitable(this->text)) {
                         game_draw_blended_text(f, renderer, this->get_foreground_color(),
                             x, y, "%s: %s", fonts[i].c_str(), text.c_str());
                         
@@ -63,8 +63,6 @@ namespace {
                             y = 0;
                         }
                     }
-
-                    game_font_destroy(f);
                 }
             }
 

@@ -35,9 +35,9 @@ void WarGrey::STEM::Gallery::load(float width, float height) {
             IUniverse* master = dynamic_cast<IUniverse*>(screen->display());
 
             if (master != nullptr) {
-                this->caption = this->insert(new Labellet(game_font::DEFAULT, BLACK, master->get_renderer_name()));
+                this->caption = this->insert(new Labellet(GameFont::Default(), BLACK, master->get_renderer_name()));
             } else {
-                this->caption = this->insert(new Labellet(game_font::DEFAULT, BLACK, "[Unknown]"));
+                this->caption = this->insert(new Labellet(GameFont::Default(), BLACK, "[Unknown]"));
             }
         }
     }

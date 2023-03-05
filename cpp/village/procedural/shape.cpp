@@ -21,7 +21,7 @@ namespace {
 
         // 定义和实现 ShapeWorld::draw 方法，本例中绘制一系列几何图形
         void draw(SDL_Renderer* renderer, int x, int y, int width, int height) override {
-            game_draw_blended_text(game_font::fangsong, renderer,
+            game_draw_blended_text(GameFont::fangsong(), renderer,
                 this->get_foreground_color(), 10, 10, "基本图形陈列馆(过程式)");
 
             /** 绘制椭圆院子 **/

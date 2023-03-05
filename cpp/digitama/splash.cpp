@@ -40,7 +40,7 @@ namespace {
             this->load_tasks(width, height);
             this->tux = this->insert(new Tuxmon());
 
-            this->tooltip = this->insert(make_label_for_tooltip(bang_font::small, GHOSTWHITE));
+            this->tooltip = this->insert(make_label_for_tooltip(GameFont::Tooltip(), GHOSTWHITE));
             this->set_tooltip_matter(this->tooltip);
 
             this->splash->create_logic_grid(28, 45);
@@ -244,13 +244,11 @@ namespace {
 
 /*************************************************************************************************/
 WarGrey::STEM::TheCosmos::~TheCosmos() {
-    bang_fonts_destroy();
     imgdb_teardown();
 }
 
 void WarGrey::STEM::TheCosmos::construct(int argc, char* argv[]) {
     enter_digimon_zone(argv[0]);
-    bang_fonts_initialize();
     imgdb_setup(digimon_zonedir().append("stone"));
     this->parse_cmdline_options(argc, argv);
 
