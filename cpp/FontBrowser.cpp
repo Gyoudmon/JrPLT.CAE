@@ -51,7 +51,7 @@ namespace {
                 const std::string* fonts = game_fontname_list(&font_count);
 
                 for (int i = 0; i < font_count; i++) {
-                    shared_font_t f = game_create_font(fonts[i].c_str(), this->fontsize);
+                    shared_font_t f = std::make_shared<GameFont>(game_create_font(fonts[i].c_str(), this->fontsize));
 
                     if (f->is_suitable(this->text)) {
                         game_draw_blended_text(f, renderer, this->get_foreground_color(),

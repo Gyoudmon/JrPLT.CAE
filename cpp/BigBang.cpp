@@ -22,6 +22,7 @@ namespace {
         void construct(int argc, char* argv[]) override {
             TheCosmos::construct(argc, argv);
             this->set_window_size(1200, 0);
+            GameFont::fontsize(21);
             
             // 按顺序加载各个任务类
             // 第一阶段
