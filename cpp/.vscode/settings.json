@@ -5,6 +5,7 @@
         "fstream": "cpp",
         "ios": "cpp",
         "vector": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "memory": "cpp"
     }
 }
