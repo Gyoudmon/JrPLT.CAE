@@ -182,7 +182,6 @@ namespace {
         }
 
         void tux_start_walk() {
-            this->tux->play("walk");
             this->tux->set_speed(tux_speed_walk_x, 0.0F);
             this->tux->set_delta_speed(0.0F, 0.0F);
             this->tux_target_y = 0.0F;
@@ -205,7 +204,6 @@ namespace {
                     
                     if (this->tux_walk_segment < tux_spots.size()) {
                         this->feed_splash_location(this->tux_walk_segment, nullptr, &this->tux_target_y);
-                        this->tux->play("buttjump");
                         this->tux->set_speed(tux_speed_jump_x, tux_speed_jump_y);
                         this->tux->set_delta_speed(0.0F, tux_speed_dy);
                     } else {
