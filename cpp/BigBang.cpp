@@ -6,6 +6,8 @@
 #include "shape.hpp"
 #include "paddleball.hpp"
 
+#include "color_mixture.hpp" 
+
 using namespace WarGrey::STEM;
 using namespace WarGrey::PLT;
 
@@ -31,7 +33,8 @@ namespace {
             this->push_plane(new Gallery());
 
             // 第二阶段
-
+            this->push_plane(new ColorMixtureWorld());
+            
             // 第三阶段
             this->push_plane(new TheBigBang());
             this->push_plane(new TheBigBang());
