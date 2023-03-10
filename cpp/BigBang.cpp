@@ -1,12 +1,12 @@
-#include "digitama/splash.hpp"
+#include "digitama/splash.hpp"  // 导入欢迎界面
 #include "digitama/gallery.hpp"
 
 #include "digitama/pltmos/stream.hpp"
 
-#include "shape.hpp"
-#include "paddleball.hpp"
+#include "shape.hpp"            // 导入任务世界，几何图形
+#include "paddleball.hpp"       // 导入任务世界，托球游戏
 
-#include "color_mixture.hpp" 
+#include "color_mixture.hpp"
 
 using namespace WarGrey::STEM;
 using namespace WarGrey::PLT;
@@ -15,18 +15,19 @@ using namespace WarGrey::PLT;
 namespace {
     enum class CmdlineOps { StreamFile, _ };
 
+    /* 定义本地宇宙类，并命名为 BigBangCosmos，继承自 TheCosmos 类 */
     class BigBangCosmos : public TheCosmos {
     public:
         BigBangCosmos(int fps = 60) : TheCosmos(fps) {}
         virtual ~BigBangCosmos() {}
 
     public:
+        // 定义和实现 BigBangCosmos::construct 函数，执行初始化，加载任务世界    
         void construct(int argc, char* argv[]) override {
             TheCosmos::construct(argc, argv);
             this->set_window_size(1200, 0);
-            GameFont::fontsize(21);
             
-            // 按顺序加载各个任务类
+            // 按顺序加载各个任务世界
             // 第一阶段
             this->push_plane(new ShapeWorld());
             this->push_plane(new PaddleBallWorld());
@@ -59,6 +60,7 @@ namespace {
                 }
             }
         }
+
     private:
         std::string stream_source;
     };

@@ -246,10 +246,12 @@ WarGrey::STEM::TheCosmos::~TheCosmos() {
 }
 
 void WarGrey::STEM::TheCosmos::construct(int argc, char* argv[]) {
+    GameFont::fontsize(21);
+    
     enter_digimon_zone(argv[0]);
     imgdb_setup(digimon_zonedir().append("stone"));
     this->parse_cmdline_options(argc, argv);
-
+    
     this->push_plane(new SplashPlane(this));
 }
 

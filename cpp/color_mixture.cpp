@@ -3,7 +3,7 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-static const float radius = 64.0F;
+static const float radius = 80.0F;
 static const float gliding_duration = 2.0F;
 
 /*************************************************************************************************/

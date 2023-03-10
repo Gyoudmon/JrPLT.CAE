@@ -13,7 +13,7 @@ namespace WarGrey::STEM {
             void load(float width, float height) override;
             void update(uint32_t interval, uint32_t count, uint32_t uptime) override;
 
-        public:
+        protected:
             void on_mission_start(float width, float height) override;
 
         protected: // 覆盖键盘事件处理方法

@@ -14,7 +14,7 @@ namespace WarGrey::STEM {
     public:
         bool can_select(WarGrey::STEM::IMatter* m) override { return true; }
 
-    protected:
+    protected: // 覆盖鼠标事件处理方法
         void after_select(WarGrey::STEM::IMatter* m, bool yes) override;
         void on_tap_selected(WarGrey::STEM::IMatter* m, float x, float y) override { this->no_selected(); }
 
