@@ -14,6 +14,7 @@ void WarGrey::STEM::ColorMixtureWorld::load(float width, float height) {
     this->set_background(0x000000U);
 
     this->half_bg = this->insert(new Rectanglet(width * 0.5F, height, 0xFFFFFFU));
+    this->half_bg->camouflage(true);
 
     this->red = this->insert(new Circlet(radius, 0xFF0000U));   // 红色
     this->green = this->insert(new Circlet(radius, 0x00FF00U)); // 绿色
