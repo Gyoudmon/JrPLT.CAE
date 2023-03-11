@@ -44,6 +44,10 @@ namespace {
                 if (this->text.empty()) {
                     this->text = "Sphinx [字体陈列馆]";
                 }
+
+#ifdef __windows__
+                game_disable_font_selection(true);
+#endif
             }
 
             void draw(SDL_Renderer* renderer, int x, int y, int width, int height) override {
@@ -53,7 +57,11 @@ namespace {
                 for (int i = 0; i < font_count; i++) {
                     shared_font_t f = std::make_shared<GameFont>(game_create_font(fonts[i].c_str(), this->fontsize), this->fontsize);
 
+#ifndef __windows__
                     if (f->is_suitable(this->text)) {
+#else
+                    if (true) {
+#endif
                         game_draw_blended_text(f, renderer, this->get_foreground_color(),
                             x, y, "%s: %s", fonts[i].c_str(), text.c_str());
                         
