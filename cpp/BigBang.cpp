@@ -7,6 +7,7 @@
 #include "paddleball.hpp"       // 导入任务世界，托球游戏
 
 #include "color_mixture.hpp"
+#include "color_wheel.hpp"
 
 using namespace WarGrey::STEM;
 using namespace WarGrey::PLT;
@@ -35,6 +36,8 @@ namespace {
 
             // 第二阶段
             this->push_plane(new ColorMixtureWorld());
+            this->push_plane(new ColorWheelWorld());
+            this->push_plane(new TheBigBang());
             
             // 第三阶段
             this->push_plane(new TheBigBang());

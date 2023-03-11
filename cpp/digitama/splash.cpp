@@ -21,7 +21,7 @@ static const std::vector<std::pair<int, int>> tux_spots = {
 static const std::vector<std::vector<std::pair<int, int>>> task_info = {
     { /* { row, col } */ },
     { { 11, 15 }, { 11, 18 }, { 9, 21 } },
-    { { 16, 27 } },
+    { { 16, 23 }, { 16, 25 }, { 16, 27 } },
     { { 21, 37 }, { 22, 37 }, { 19, 40 } }
 };
 
@@ -78,7 +78,8 @@ namespace {
     public:
         bool can_select(IMatter* m) override {
             return (dynamic_cast<Coinlet*>(m) != nullptr)
-                    || (m == this->tux);
+                    || (m == this->tux)
+                    || (m == this->agent);
         }
 
         void after_select(IMatter* m, bool yes) override {
@@ -91,6 +92,8 @@ namespace {
                         this->agent->play("Hide", 1);
                     }
                 }
+
+                this->no_selected();
             }
         }
 
@@ -107,9 +110,6 @@ namespace {
 
             return updated;
         }
-
-    protected:
-        void on_double_tap_sentry_sprite(ISprite* sentry) override { /* Yes, do nothing */ }
 
     private:
         void load_tasks(float width, float height) {
@@ -252,11 +252,15 @@ void WarGrey::STEM::TheCosmos::construct(int argc, char* argv[]) {
     imgdb_setup(digimon_zonedir().append("stone"));
     this->parse_cmdline_options(argc, argv);
     
-    this->push_plane(new SplashPlane(this));
+    this->splash = this->push_plane(new SplashPlane(this));
 }
 
 void WarGrey::STEM::TheCosmos::update(uint32_t count, uint32_t interval, uint32_t uptime) {
     if (this->has_current_mission_completed()) {
         this->transfer_to_plane(0);
     }
+}
+
+bool WarGrey::STEM::TheCosmos::can_exit() {
+    return this->splash->has_mission_completed();
 }
