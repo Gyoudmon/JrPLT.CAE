@@ -37,7 +37,7 @@ def RGBA_From_HSL_With_Alpha(hue, saturation, lightness, alpha = 0xFF):
     return _rgba_from_hue(hue, chroma, m, alpha)
 
 def RGBA_From_HSI_With_Alpha(hue, saturation, intensity, alpha = 0xFF):
-    if (saturation == 0.0) or math.isnan(saturation):
+    if (saturation == 0.0) or math.isnan(hue):
         return _color_rgba(intensity, intensity, intensity, alpha)
     elif (hue < 120.0):
         return _rgba_from_hsi_sector(hue, saturation, intensity, _R, alpha)
