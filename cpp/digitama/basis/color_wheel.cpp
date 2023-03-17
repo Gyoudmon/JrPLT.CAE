@@ -35,6 +35,7 @@ void WarGrey::STEM::ColorWheelWorld::load(float width, float height) {
 
 void WarGrey::STEM::ColorWheelWorld::reflow(float width, float height) {
     float delta_deg = 360.0F / float(color_count);
+    float cc_off = color_mixture_radius * 0.5F;
     float cx = width * 0.5F;
     float cy = height * 0.5F;
     float x, y;
@@ -47,9 +48,9 @@ void WarGrey::STEM::ColorWheelWorld::reflow(float width, float height) {
         this->move_to(this->colors[idx++], cx + x, cy + y, MatterAnchor::CC);
     }
 
-    this->move_to(this->color_components[1], 0.0F, height, MatterAnchor::LB);
+    this->move_to(this->color_components[0], width * 0.5F, height * 0.5F, MatterAnchor::CB, 0.0F, cc_off);
+    this->move_to(this->color_components[1], this->color_components[0], MatterAnchor::CB, MatterAnchor::RC, cc_off);
     this->move_to(this->color_components[2], this->color_components[1], MatterAnchor::CC, MatterAnchor::LC);
-    this->move_to(this->color_components[0], this->color_components[1], MatterAnchor::RC, MatterAnchor::CB, -color_mixture_radius * 0.5F);
 }
 
 void WarGrey::STEM::ColorWheelWorld::after_select(IMatter* m, bool yes) {
@@ -66,9 +67,13 @@ void WarGrey::STEM::ColorWheelWorld::after_select(IMatter* m, bool yes) {
 bool WarGrey::STEM::ColorWheelWorld::update_tooltip(IMatter* m, float x, float y) {
     bool updated = false;
     auto com = dynamic_cast<Circlet*>(m);
+    auto cc = dynamic_cast<Ellipselet*>(m);
 
     if (com != nullptr) {
-        this->tooltip->set_text(" Hue: %.2f ", com->get_body_hsb_hue());
+        this->tooltip->set_text(" #%06X [Hue: %.2f] ", com->get_color(), com->get_body_hsb_hue());
+        updated = true;
+    } else if (cc != nullptr) {
+        this->tooltip->set_text(" #%06X ", cc->get_color());
         updated = true;
     }
 

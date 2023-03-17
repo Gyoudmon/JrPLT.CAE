@@ -1,13 +1,13 @@
-#include "digitama/splash.hpp"  // 导入欢迎界面
+#include "digitama/splash.hpp"               // 导入欢迎界面
 #include "digitama/gallery.hpp"
 
+#include "digitama/basis/shape.hpp"          // 导入任务世界，几何图形
+#include "digitama/basis/paddleball.hpp"     // 导入任务世界，托球游戏
+
+#include "digitama/basis/color_mixture.hpp"
+#include "digitama/basis/color_wheel.hpp"
+
 #include "digitama/pltmos/stream.hpp"
-
-#include "shape.hpp"            // 导入任务世界，几何图形
-#include "paddleball.hpp"       // 导入任务世界，托球游戏
-
-#include "color_mixture.hpp"
-#include "color_wheel.hpp"
 
 using namespace WarGrey::STEM;
 using namespace WarGrey::PLT;

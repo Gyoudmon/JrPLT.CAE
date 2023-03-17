@@ -1,6 +1,6 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/big_bang/bang.hpp"
+#include "../big_bang/bang.hpp"
 
 namespace WarGrey::STEM {
     class ColorMixtureWorld : public WarGrey::STEM::TheBigBang {
