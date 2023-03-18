@@ -13,11 +13,11 @@ void WarGrey::STEM::ShapeWorld::load(float width, float height) {
     this->garden = this->insert(new Ellipselet(200, 80, PALEGREEN, KHAKI));
     
     // 房屋部件
-    this->roof = this->insert(new RegularPolygonlet(3, 140.0F, -90.0, DEEPSKYBLUE, ROYALBLUE)); // 深空蓝屋顶
-    this->wall = this->insert(new Rectanglet(200, 180, WHITESMOKE, SNOW));                      // 白色墙壁
-    this->door = this->insert(new Rectanglet(42, 84, KHAKI, DARKKHAKI));                        // 卡其色门
-    this->lock = this->insert(new Circlet(4, CHOCOLATE));                                       // 巧克力色门锁
-    this->window = this->insert(new RoundedSquarelet(64, -0.15F, LIGHTSKYBLUE, SKYBLUE));       // 天蓝色窗户
+    this->roof = this->insert(new RegularPolygonlet(3, 140.0F, -90.0F, DEEPSKYBLUE, ROYALBLUE)); // 深空蓝屋顶
+    this->wall = this->insert(new Rectanglet(200, 180, WHITESMOKE, SNOW));                       // 白色墙壁
+    this->door = this->insert(new Rectanglet(42, 84, KHAKI, DARKKHAKI));                         // 卡其色门
+    this->lock = this->insert(new Circlet(4, CHOCOLATE));                                        // 巧克力色门锁
+    this->window = this->insert(new RoundedSquarelet(64, -0.15F, LIGHTSKYBLUE, SKYBLUE));        // 天蓝色窗户
 }
 
 // 实现 ShapeWorld::reflow 方法，重新排列几何图形在舞台上的位置

@@ -6,6 +6,7 @@
 
 #include "digitama/basis/color_mixture.hpp"
 #include "digitama/basis/color_wheel.hpp"
+#include "digitama/basis/chromaticity.hpp"
 
 #include "digitama/pltmos/stream.hpp"
 
@@ -38,6 +39,7 @@ namespace {
             this->push_plane(new ColorMixtureWorld());
             this->push_plane(new ColorWheelWorld());
             this->push_plane(new TheBigBang());
+            this->push_plane(new ChromaticityDiagramWorld());
             
             // 第三阶段
             this->push_plane(new TheBigBang());
