@@ -97,7 +97,7 @@ namespace {
             }
         }
 
-        bool update_tooltip(IMatter* m, float x, float y) override {
+        bool update_tooltip(IMatter* m, float x, float y, float gx, float gy) override {
             bool updated = false;
             auto coin = dynamic_cast<Coinlet*>(m);
 

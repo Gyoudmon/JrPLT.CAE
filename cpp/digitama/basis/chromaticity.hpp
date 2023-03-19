@@ -18,7 +18,7 @@ namespace WarGrey::STEM {
     public:
         bool can_select(IMatter* m) override;
         void after_select(IMatter* m, bool yes) override;
-        bool update_tooltip(IMatter* m, float x, float y) override;
+        bool update_tooltip(IMatter* m, float lx, float ly, float gx, float gy) override;
 
     protected:
         void reflow_color_components(float x, float y);

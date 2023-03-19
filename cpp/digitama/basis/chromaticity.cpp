@@ -82,25 +82,45 @@ void WarGrey::STEM::ChromaticityDiagramWorld::after_select(IMatter* m, bool yes)
     }
 }
 
-bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x, float y) {
+bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x, float y, float gx, float gy) {
     bool updated = false;
     auto com = dynamic_cast<Circlet*>(m);
     auto cc = dynamic_cast<Ellipselet*>(m);
 
     if (com != nullptr) {
-        this->tooltip->set_text(" #%06X [Hue: %.2f] ", com->get_color(), com->get_body_hsb_hue());
+        uint32_t hex = com->get_color();
+
+        this->tooltip->set_text(" #%06X [Hue: %.2f] ", hex, com->get_body_hsb_hue());
+        this->tooltip->set_background_color(GHOSTWHITE);
         updated = true;
     } else if (cc != nullptr) {
-        this->tooltip->set_text(" #%06X ", cc->get_color());
+        uint32_t hex = 0U;
+
+        for (size_t idx = 0; idx < this->color_components.size(); idx ++) {
+            float cx, cy;
+            
+            this->feed_matter_location(this->color_components[idx], &cx, &cy, MatterAnchor::CC);
+
+            if (point_distance(gx, gy, cx, cy) <= color_mixture_radius) {
+                hex = RGB_Add(hex, static_cast<uint32_t>(this->color_components[idx]->get_color()));
+            }
+        }
+
+        this->tooltip->set_text(" #%06X ", hex);
+        this->tooltip->set_background_color(GHOSTWHITE);
         updated = true;
     } else if (m == this->chroma_dia) {
-        uint32_t hex = this->chroma_dia->get_color(x, y);
+        uint32_t hex = this->chroma_dia->get_color_at(x, y, is_shift_pressed());
 
-        switch (this->chroma_dia->get_standard()) {
-        case CIE_Standard::Primary: this->tooltip->set_text(" CIE 标准色彩：%06X ", hex); break;
-        case CIE_Standard::D65: this->tooltip->set_text(" sRGB-D65: %06X ", hex); break;
+        if (hex > 0U) {
+            switch (this->chroma_dia->get_standard()) {
+                case CIE_Standard::Primary: this->tooltip->set_text(" CIE 标准色彩：%06X ", hex); break;
+                case CIE_Standard::D65: this->tooltip->set_text(" sRGB-D65: %06X ", hex); break;
+            }
+
+            this->tooltip->set_background_color(hex);
+            updated = true;
         }
-        updated = true;
     }
 
     return updated;

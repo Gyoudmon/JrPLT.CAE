@@ -17,7 +17,7 @@ namespace WarGrey::STEM {
     public:
         bool can_select(IMatter* m) override { return (dynamic_cast<Circlet*>(m) != nullptr) || (m == this->agent); }
         void after_select(IMatter* m, bool yes) override;
-        bool update_tooltip(IMatter* m, float x, float y) override;
+        bool update_tooltip(IMatter* m, float x, float y, float gx, float gy) override;
 
     protected:
         void reflow_color_components(float x, float y);

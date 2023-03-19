@@ -61,7 +61,7 @@ void WarGrey::STEM::ColorWheelWorld::after_select(IMatter* m, bool yes) {
     }
 }
 
-bool WarGrey::STEM::ColorWheelWorld::update_tooltip(IMatter* m, float x, float y) {
+bool WarGrey::STEM::ColorWheelWorld::update_tooltip(IMatter* m, float x, float y, float gx, float gy) {
     bool updated = false;
     auto com = dynamic_cast<Circlet*>(m);
     auto cc = dynamic_cast<Ellipselet*>(m);
@@ -70,7 +70,19 @@ bool WarGrey::STEM::ColorWheelWorld::update_tooltip(IMatter* m, float x, float y
         this->tooltip->set_text(" #%06X [Hue: %.2f] ", com->get_color(), com->get_body_hsb_hue());
         updated = true;
     } else if (cc != nullptr) {
-        this->tooltip->set_text(" #%06X ", cc->get_color());
+        uint32_t hex = 0U;
+
+        for (size_t idx = 0; idx < this->color_components.size(); idx ++) {
+            float cx, cy;
+            
+            this->feed_matter_location(this->color_components[idx], &cx, &cy, MatterAnchor::CC);
+
+            if (point_distance(gx, gy, cx, cy) <= color_mixture_radius) {
+                hex = RGB_Add(hex, static_cast<uint32_t>(this->color_components[idx]->get_color()));
+            }
+        }
+
+        this->tooltip->set_text(" #%06X ", hex);
         updated = true;
     }
 
