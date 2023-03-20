@@ -1,5 +1,4 @@
 #include "big_bang/bang.hpp"
-#include "big_bang/matter/graphlet/shapelet.hpp"
 
 /*************************************************************************************************/
 namespace WarGrey::STEM {

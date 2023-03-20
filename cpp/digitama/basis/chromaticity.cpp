@@ -7,8 +7,8 @@ static const size_t color_count = 36U;
 static const float color_radius = 16.0F;
 static const float wheel_radius = 360.0F;
 
-static const float color_mixture_radius = 80.0F;
-static const float chromaticity_size = 300.0F;
+static const float color_mixture_radius = 64.0F;
+static const float chromaticity_size = 380.0F;
 
 /*************************************************************************************************/
 void WarGrey::STEM::ChromaticityDiagramWorld::load(float width, float height) {
@@ -49,10 +49,17 @@ void WarGrey::STEM::ChromaticityDiagramWorld::reflow(float width, float height) 
         this->move_to(this->colors[idx++], cx + x, cy + y, MatterAnchor::CC);
     }
 
-
     circle_point(wheel_radius, -90.0F, &x, &y, false);
     this->reflow_color_components(cx + x, cy + y + (color_mixture_radius + color_radius) * 1.618F);
-    this->move_to(this->chroma_dia, width * 0.5F, height * 0.5F, MatterAnchor::CT);
+    this->move_to(this->chroma_dia, width * 0.5F, height * 0.618F, MatterAnchor::CC);
+}
+
+void WarGrey::STEM::ChromaticityDiagramWorld::update(uint32_t interval, uint32_t count, uint32_t uptime) {
+    if (is_shift_pressed()) {
+        this->chroma_dia->set_pseudo_primary_triangle_alpha(0.32);
+    } else {
+        this->chroma_dia->set_pseudo_primary_triangle_alpha(0.00);
+    }
 }
 
 bool WarGrey::STEM::ChromaticityDiagramWorld::can_select(IMatter* m) {
@@ -69,7 +76,7 @@ void WarGrey::STEM::ChromaticityDiagramWorld::after_select(IMatter* m, bool yes)
             uint32_t pcolor = static_cast<uint32_t>(com->get_color());
 
             this->color_components[this->selection_seq]->set_color(pcolor);
-            this->chroma_dia->set_primary_color(pcolor, this->selection_seq);
+            this->chroma_dia->set_pseudo_primary_color(pcolor, this->selection_seq);
             this->selection_seq = (this->selection_seq + 1) % this->color_components.size();
         } else if (m == this->chroma_dia) {
             switch (this->chroma_dia->get_standard()) {
@@ -92,6 +99,8 @@ bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x
 
         this->tooltip->set_text(" #%06X [Hue: %.2f] ", hex, com->get_body_hsb_hue());
         this->tooltip->set_background_color(GHOSTWHITE);
+
+        this->no_selected();
         updated = true;
     } else if (cc != nullptr) {
         uint32_t hex = 0U;

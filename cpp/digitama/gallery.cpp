@@ -48,7 +48,7 @@ void WarGrey::STEM::Gallery::reflow(float width, float height) {
 
     feed_raft_size(this->title, &raft_width, &raft_height);
 
-    this->move_to(this->sea, width * 0.5F, height * 0.5F, MatterAnchor::CT);
+    this->move_to(this->sea, width * 0.5F, height * 0.618F, MatterAnchor::CT);
                 
     this->move_to(this->raft, this->sea, MatterAnchor::CT, MatterAnchor::CC);
     this->move_to(this->caption, this->raft, MatterAnchor::CC, MatterAnchor::CC);

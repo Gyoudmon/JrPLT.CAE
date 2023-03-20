@@ -68,6 +68,7 @@ bool WarGrey::STEM::ColorWheelWorld::update_tooltip(IMatter* m, float x, float y
 
     if (com != nullptr) {
         this->tooltip->set_text(" #%06X [Hue: %.2f] ", com->get_color(), com->get_body_hsb_hue());
+        this->no_selected();
         updated = true;
     } else if (cc != nullptr) {
         uint32_t hex = 0U;

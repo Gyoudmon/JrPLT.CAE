@@ -13,6 +13,7 @@ namespace WarGrey::STEM {
         
     public:
         void load(float width, float height) override;
+        void update(uint32_t interval, uint32_t count, uint32_t uptime) override;
         void reflow(float width, float height) override;
 
     public:
