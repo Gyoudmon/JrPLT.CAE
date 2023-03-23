@@ -216,9 +216,9 @@ Python 才跟 C++ 处于同一起跑线上，我的代码库的 Python 版就从
 @itemlist[#:style 'compact
           @commandline{python -m pip install pysdl2 pysdl2-dll pygame}]
 
-那个 PyGame 是 Python 自己提供的建立在 PySDL2 基础之上的游戏引擎。
+那个 PyGame 是 Python 自己提供的建立在老版 SDL 基础之上的游戏引擎。
 按理说，不装它也没有问题，但实际情况是不装它我们的程序也运行不起来。
-大概是这几个软件包的依赖关系比较混乱，凑合着用把。
+大概是这几个软件包的依赖关系比较混乱，凑合着用吧。
 
 @handbook-scenario{Scratch}
 

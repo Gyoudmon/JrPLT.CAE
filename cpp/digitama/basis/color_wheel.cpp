@@ -11,13 +11,7 @@ static const float color_mixture_radius = 100.0F;
 
 /*************************************************************************************************/
 void WarGrey::STEM::ColorWheelWorld::load(float width, float height) {
-    float delta_deg = 360.0F / float(color_count);
-
     this->set_background(0x000000U);
-
-    for (float deg = 0.0F; deg < 360.0F; deg += delta_deg) {
-        this->colors.push_back(this->insert(new Circlet(color_radius, deg)));
-    }
 
     this->color_components.push_back(this->insert(new Ellipselet(color_mixture_radius, 0xFF0000U)));
     this->color_components.push_back(this->insert(new Ellipselet(color_mixture_radius, 0x00FF00U)));
@@ -27,6 +21,7 @@ void WarGrey::STEM::ColorWheelWorld::load(float width, float height) {
         com->set_color_mixture(ColorMixture::Add);
     }
 
+    this->load_color_wheel_components();
     TheBigBang::load(width, height);
 
     this->tooltip = this->insert(make_label_for_tooltip(GameFont::Tooltip()));
@@ -88,6 +83,15 @@ bool WarGrey::STEM::ColorWheelWorld::update_tooltip(IMatter* m, float x, float y
     }
 
     return updated;
+}
+
+/*************************************************************************************************/
+void WarGrey::STEM::ColorWheelWorld::load_color_wheel_components() {
+    float delta_deg = 360.0F / float(color_count);
+
+    for (float deg = 0.0F; deg < 360.0F; deg += delta_deg) {
+        this->colors.push_back(this->insert(new Circlet(color_radius, deg)));
+    }
 }
 
 void WarGrey::STEM::ColorWheelWorld::reflow_color_components(float x, float y) {

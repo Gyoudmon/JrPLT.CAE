@@ -1,13 +1,12 @@
 ### shape.py
 from digitama.big_bang.game import *                         # 导入游戏模块，内含 Wolrd 类和常用函数
-from digitama.big_bang.matter.graphlet.shapelet import *     # 导入基本图形模块
 
 ###############################################################################
 # 创建自定义数据类型，并命名为 ShapeWorld，继承自 World
 class ShapeWorld(World):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题和帧频
-        super(ShapeWorld, self).__init__("Primitive Shapes", 0)
+        super(ShapeWorld, self).__init__("Primitive Shapes")
 
         # 本游戏世界有以下物体
         self.label = None

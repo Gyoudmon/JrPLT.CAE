@@ -21,7 +21,7 @@ namespace WarGrey::STEM {
         void after_select(IMatter* m, bool yes) override;
         bool update_tooltip(IMatter* m, float lx, float ly, float gx, float gy) override;
 
-    protected:
+    private:
         void reflow_color_components(float x, float y);
 
     private:

@@ -128,11 +128,11 @@ bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x
             
             switch (this->chroma_dia->get_standard()) {
                 case CIE_Standard::Primary: {
-                    this->tooltip->set_text(" CIE 标准色彩：%06X (%.3lf, %.3lf, %.3lf) ",
+                    this->tooltip->set_text(" CIE Primary：%06X (%.3lf, %.3lf, %.3lf) ",
                         hex, co_x, co_y, 1.0 - co_x - co_y);
                  }; break;
                 case CIE_Standard::D65: {
-                    this->tooltip->set_text(" sRGB-D65: %06X (%.3lf, %.3lf, %.3lf) ",
+                    this->tooltip->set_text(" CIE sRGB-D65: %06X (%.3lf, %.3lf, %.3lf) ",
                         hex, co_x, co_y, 1.0 - co_x - co_y);
                  }; break;
             }
