@@ -1,4 +1,6 @@
-import pygame
+import sdl2
+import sdl2.rect as sdlr
+
 import math
 
 from .virtualization.iscreen import *
@@ -67,7 +69,7 @@ class Plane(object):
     def update(self, count, interval, uptime): pass
     def can_exit(self): return False
 
-    def draw(self, renderer: pygame.Surface, X, Y, Width, Height):
+    def draw(self, renderer, X, Y, Width, Height):
         dsX, dsY = max(0.0, X), max(0.0, Y)
         dsWidth, dsHeight = X + Width, Y + Height
 
@@ -75,7 +77,7 @@ class Plane(object):
             game_fill_rect(renderer, dsX, dsY, dsWidth, dsHeight, self.__background, self.__bg_alpha)
 
         if self.__head_matter:
-            clip = pygame.Rect(0, 0, 0, 0)
+            clip = sdlr.SDL_Rect(0, 0, 0, 0)
             child = self.__head_matter
 
             while True:
@@ -93,18 +95,18 @@ class Plane(object):
                         clip.w = int(math.ceil(mwidth))
                         clip.h = int(math.ceil(mheight))
 
-                        renderer.set_clip(clip)
+                        sdl2.SDL_RenderSetClipRect(renderer, clip)
                         child.draw(renderer, mx, my, mwidth, mheight)
 
                         if info.selected:
-                            renderer.set_clip(None)
+                            sdl2.SDL_RenderSetClipRect(renderer, None)
                             self.draw_visible_selection(renderer, mx, my, mwidth, mheight)
 
                 child = info.next
                 if child == self.__head_matter:
                     break
             
-            renderer.set_clip(None)
+            sdl2.SDL_RenderSetClipRect(renderer, None)
 
     def draw_visible_selection(self, renderer, x, y, width, height):
         game_draw_rect(renderer, x, y, width, height, 0x00FFFF)
@@ -410,7 +412,7 @@ class Plane(object):
         handled = False
 
         if clicks == 1:
-            if button == 1:
+            if button == sdl2.SDL_BUTTON_LEFT:
                 unmasked_matter = self.find_matter(x, y)
 
                 self.set_caret_owner(unmasked_matter)
@@ -428,7 +430,7 @@ class Plane(object):
         handled = False
 
         if clicks == 1:
-            if button == 1:
+            if button == sdl2.SDL_BUTTON_LEFT:
                 unmasked_matter = self.find_matter(x, y)
 
                 if unmasked_matter:
@@ -640,6 +642,43 @@ class Plane(object):
     def notify_updated(self):
         if self.info:
             self.info.master.notify_updated()
+
+# public
+    def snapshot(self, width, height, bgcolor = 0, alpha = 0.0, translation = (0.0, 0.0)):
+        saved_bgc, saved_alpha = self.__background, self.__bg_alpha
+        x, y = translation
+
+        if x != 0.0:
+            width += x
+
+        if y != 0.0:
+            height += y
+
+        photograph = game_blank_image(width, height)
+
+        if photograph:
+            renderer = sdl2.SDL_CreateSoftwareRenderer(photograph)
+
+            if renderer:
+                self.__background = bgcolor
+                self.__bg_alpha = alpha
+
+                self.draw(renderer, -x, -y, width, height)
+                sdl2.SDL_RenderPresent(renderer)
+                sdl2.DestroyRenderer(renderer)
+
+                self.__background = saved_bgc
+                self.__bg_alpha = saved_alpha
+
+        return photograph
+        
+    def save_snapshot(self, pname, width, height, bgcolor = 0, alpha = 0.0, translation = (0.0, 0.0)):
+        photograph = self.snapshot(width, height, bgcolor, alpha, translation)
+        okay = game_save_image(photograph, pname)
+
+        sdl2.SDL_FreeSurface(photograph)
+
+        return okay
 
 # private
     def __recalculate_matters_extent_when_invalid(self):

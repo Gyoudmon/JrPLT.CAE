@@ -1,13 +1,13 @@
 import sdl2
 import sdl2.pixels as sdlp
 
-from ...igraphlet import *
+from ..igraphlet import *
 
-from ....forward import *
-from ....graphics.colorspace import *
-from ....graphics.named_colors import *
-from ....graphics.font import *
-from ....graphics.text import *
+from ...forward import *
+from ...graphics.colorspace import *
+from ...graphics.named_colors import *
+from ...graphics.font import *
+from ...graphics.text import *
 
 ###################################################################################################
 class ITextlet(IGraphlet):

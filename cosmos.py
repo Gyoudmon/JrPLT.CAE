@@ -45,9 +45,9 @@ class Cosmos(Universe):
             self.begin_update_sequence()
             
             if pressed:
-                self.__recent_plane.on_pointer_pressed(m.button, m.pos[0], m.pos[1], 1)
+                self.__recent_plane.on_pointer_pressed(m.button, m.x, m.y, m.clicks)
             else:
-                self.__recent_plane.on_pointer_released(m.button, m.pos[0], m.pos[1], 1)
+                self.__recent_plane.on_pointer_released(m.button, m.x, m.y, m.clicks)
 
             self.end_update_sequence()
 

@@ -1,3 +1,5 @@
+import sdl2
+
 import math   # 数学函数
 
 ###############################################################################
@@ -9,6 +11,11 @@ def rgba(cs, alpha = 0xFF):
 
     return c
 
+def RGBA_SetRenderDrawColor(renderer, cs, alpha = 0xFF):
+    r, g, b, a = rgba(cs, alpha)
+    sdl2.SDL_SetRenderDrawColor(renderer, r, g, b, a)
+
+###############################################################################
 def RGBA_From_Hexadecimal_With_Alpha(hex, alpha = 0xFF):
     r, g, b = RGB_FromHexadecimal(hex)
     a = alpha
