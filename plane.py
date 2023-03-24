@@ -29,6 +29,7 @@ class Plane(object):
         self.__head_matter, self.__focused_matter, self.__hovering_matter = None, None, None
         self.__translate_x, self.__translate_y = 0.0, 0.0
         self.__scale_x, self.__scale_y = 1.0, 1.0
+        self.__mission_done = False
         self.size_cache_invalid()
 
     def __del__(self):
@@ -485,7 +486,6 @@ class Plane(object):
 # public
     # do nothing by default
     def on_focus(self, m, on_off): pass
-    def on_tap_selected(self, m, local_x, local_y): pass
     def on_hover(self, m, local_x, local_y): pass
     def on_goodbye(self, m, local_x, local_y): pass
     def on_save(self): pass
@@ -493,14 +493,6 @@ class Plane(object):
     def on_char(self, key, modifiers, repeats, pressed):
         if self.__focused_matter:
             self.__focused_matter.on_char(key, modifiers, repeats, pressed)
-
-    def on_text(self, text, size, entire):
-        if self.__focused_matter:
-            self.__focused_matter.on_char(text, size, entire)
-
-    def on_editing_text(self, text, pos, span):
-        if self.__focused_matter:
-            self.__focused_matter.on_editing_text(self, text, pos, span)
 
     def on_tap(self, m, local_x, local_y):
         if m:
@@ -515,6 +507,8 @@ class Plane(object):
                 else:
                     self.no_selected()
 
+    def on_tap_selected(self, m, local_x, local_y): pass
+    
     def on_elapse(self, count, interval, uptime):
         if self.__head_matter:
             child = self.__head_matter
@@ -570,6 +564,25 @@ class Plane(object):
         
         self.update(count, interval, uptime)
     
+# public
+    def on_enter(self, from_plane):
+        width, height = self.master.get_client_extent()
+        self.on_mission_start(width, height)
+
+    def on_leave(self, to_plane):
+        # the completion of mission doesn't imply leaving
+        pass
+
+    def has_mission_completed(self):
+        return self.__mission_done
+
+    def mission_complete(self):
+        self.on_mission_complete()
+        self.__mission_done = True
+
+    def on_mission_start(self, width, height): pass
+    def on_mission_complete(self): pass
+
 # public, do nothing by default
     def can_interactive_move(self, m, local_x, local_y): return False
     def can_select(self, m): return False
@@ -642,43 +655,6 @@ class Plane(object):
     def notify_updated(self):
         if self.info:
             self.info.master.notify_updated()
-
-# public
-    def snapshot(self, width, height, bgcolor = 0, alpha = 0.0, translation = (0.0, 0.0)):
-        saved_bgc, saved_alpha = self.__background, self.__bg_alpha
-        x, y = translation
-
-        if x != 0.0:
-            width += x
-
-        if y != 0.0:
-            height += y
-
-        photograph = game_blank_image(width, height)
-
-        if photograph:
-            renderer = sdl2.SDL_CreateSoftwareRenderer(photograph)
-
-            if renderer:
-                self.__background = bgcolor
-                self.__bg_alpha = alpha
-
-                self.draw(renderer, -x, -y, width, height)
-                sdl2.SDL_RenderPresent(renderer)
-                sdl2.DestroyRenderer(renderer)
-
-                self.__background = saved_bgc
-                self.__bg_alpha = saved_alpha
-
-        return photograph
-        
-    def save_snapshot(self, pname, width, height, bgcolor = 0, alpha = 0.0, translation = (0.0, 0.0)):
-        photograph = self.snapshot(width, height, bgcolor, alpha, translation)
-        okay = game_save_image(photograph, pname)
-
-        sdl2.SDL_FreeSurface(photograph)
-
-        return okay
 
 # private
     def __recalculate_matters_extent_when_invalid(self):

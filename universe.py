@@ -156,6 +156,7 @@ class Universe(IDisplay):
         self.begin_update_sequence()
         self._on_big_bang(self.__window_width, self.__window_height)
         self._on_resize(self.__window_width, self.__window_height)
+        self._on_game_start()
         self.notify_updated()
         self.end_update_sequence()
         
@@ -276,6 +277,9 @@ class Universe(IDisplay):
 # protected
     # 大爆炸之前最后的初始化宇宙机会，默认什么都不做
     def _on_big_bang(self, width, height): pass
+
+    # 宇宙初始化之后，游戏世界开始运行，默认什么都不做
+    def _on_game_start(self): pass
 
     # 响应定时器事件，刷新游戏世界
     def _on_elapse(self, count, interval, uptime):

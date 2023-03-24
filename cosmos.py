@@ -38,6 +38,20 @@ class Cosmos(Universe):
     
     def can_exit(self):
         return self.__recent_plane and self.__recent_plane.can_exit()
+    
+# public
+    def has_current_mission_completed(self):
+        return (not self.__recent_plane) and (self.__recent_plane.has_mission_completed())
+    
+    def can_exit(self):
+        return self.has_current_mission_completed() and self.__recent_plane is self.__recent_plane.info.next
+    
+    def notify_transfer(self, from_plane, to_plane):
+        if from_plane:
+            from_plane.on_leave(to_plane)
+
+        if to_plane:
+            to_plane.on_enter(from_plane)
 
 # protected
     def _on_mouse_button_event(self, m, pressed):
@@ -83,6 +97,10 @@ class Cosmos(Universe):
                     break
 
             self.set_window_title(self.__recent_plane.name())
+
+    def _on_game_start(self):
+        if (not self.__recent_plane) and (self.__recent_plane == self.__head_plane):
+            self.notify_transfer(None, self.__recent_plane)
 
     def _on_elapse(self, count, interval, uptime):
         self.begin_update_sequence()
