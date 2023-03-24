@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
+
 ### shape.py
-from digitama.big_bang.game import *                         # 导入游戏模块，内含 Wolrd 类和常用函数
+from digitama.big_bang.game import *    # 导入游戏模块，内含 Plane 类和常用函数
 
 ###############################################################################
-# 创建自定义数据类型，并命名为 ShapeWorld，继承自 World
-class ShapeWorld(World):
+# 创建自定义数据类型，并命名为 ShapeWorld，继承自 Plane
+class ShapeWorld(Plane):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题和帧频
         super(ShapeWorld, self).__init__("基本图形陈列馆(对象版)")
@@ -15,10 +17,6 @@ class ShapeWorld(World):
         self.door = None
         self.lock = None
         self.window = None
-
-    # 实现 ShapeWorld::construct 函数，设置窗口大小
-    def construct(self, argv):
-        self.set_window_size(800, 600)
 
     # 实现 ShapeWorld::load 方法，在舞台上加入基础几何图形的实例，注意添加顺序
     def load(self, Width, Height):
@@ -49,3 +47,6 @@ class ShapeWorld(World):
     # 为演示该设计思路的优点，运行游戏里的物体可以被选中
     def can_select(self, matter):
         return True
+    
+###############################################################################
+launch_universe(ShapeWorld, __name__, (800, 600))
