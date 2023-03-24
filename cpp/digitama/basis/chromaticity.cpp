@@ -54,7 +54,7 @@ void WarGrey::STEM::ChromaticityDiagramWorld::reflow(float width, float height) 
     this->move_to(this->chroma_dia, width * 0.5F, height * 0.618F, MatterAnchor::CC);
 }
 
-void WarGrey::STEM::ChromaticityDiagramWorld::update(uint32_t interval, uint32_t count, uint32_t uptime) {
+void WarGrey::STEM::ChromaticityDiagramWorld::update(uint64_t interval, uint32_t count, uint64_t uptime) {
     if (is_shift_pressed()) {
         this->chroma_dia->set_pseudo_primary_triangle_alpha(0.32);
     } else {

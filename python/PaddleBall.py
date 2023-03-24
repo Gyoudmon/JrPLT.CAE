@@ -22,8 +22,8 @@ class PaddleBallWorld(Plane):
 
     # 实现 PaddleBallWorld::load 方法，加载球和桨，设置相关边界碰撞策略和速度
     def load(self, width, height):
-        self.ball = self.insert(Circlet(ball_radius, ORANGE))
-        self.paddle = self.insert(Rectanglet(paddle_width, paddle_height, FORESTGREEN))
+        self.ball = self.insert(Circlet(ball_radius, GHOSTWHITE))
+        self.paddle = self.insert(Rectanglet(paddle_width, paddle_height, WHITESMOKE))
 
         self.ball.set_border_strategy((BorderStrategy.BOUNCE, BorderStrategy.BOUNCE, BorderStrategy.STOP, BorderStrategy.BOUNCE))
         self.paddle.set_border_strategy((BorderStrategy.IGNORE, BorderStrategy.STOP))
@@ -40,21 +40,20 @@ class PaddleBallWorld(Plane):
         self.ball.set_speed(ball_speed, 45.0)
 
     # 实现 PaddleBallWorld::update 方法，根据当前球和桨的当前位置判断是否有碰撞，无需考虑运动细节
-    def update(self, interval, count, uptime):
-        paddle_lx, paddle_ty = self.get_matter_location(self.paddle, MatterAnchor.LT)
-        paddle_rx, paddle_by = self.get_matter_location(self.paddle, MatterAnchor.RB)
-
-        ball_lx, ball_ty = self.get_matter_location(self.ball, MatterAnchor.LT)
-        ball_rx, ball_by = self.get_matter_location(self.ball, MatterAnchor.RB)
-
+    def update(self, count, interval, uptime):
+        # 查询桨右下角的位置
+        _, ball_ty = self.get_matter_location(self.ball, MatterAnchor.LT)
+        # 查询球左上角的位置
+        _, paddle_by = self.get_matter_location(self.paddle, MatterAnchor.RB)
+        
         if ball_ty < paddle_by: # 球未脱板, 检测小球是否被捕获
-            if ball_by >= paddle_ty and ball_by <= paddle_by and ball_lx >= paddle_lx and ball_rx <= paddle_rx:
+            if self.is_colliding(self.ball, self.paddle):
                 self.ball.motion_bounce(False, True) # 正常，反弹球
         else:
-            self.ball.set_color(RED)
+            self.ball.set_color(LIGHTGREY)
 
     # 实现 PaddleBallWorld::on_char 方法，处理键盘事件，用于控制桨的移动
-    def _on_char(self, key, modifiers, repeats, pressed):
+    def on_char(self, key, modifiers, repeats, pressed):
         if key == 'a':
             if pressed:
                 self.paddle.set_speed(paddle_speed, 180.0)

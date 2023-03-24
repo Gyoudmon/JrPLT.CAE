@@ -11,7 +11,7 @@ namespace WarGrey::STEM {
         bool can_exit() override;
 
     protected:
-        void update(uint32_t count, uint32_t interval, uint32_t uptime) override;
+        void update(uint64_t count, uint32_t interval, uint64_t uptime) override;
 
     protected:
         virtual void parse_cmdline_options(int argc, char* argv[]) {}

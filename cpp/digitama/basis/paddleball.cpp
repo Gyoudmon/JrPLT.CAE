@@ -36,7 +36,7 @@ void WarGrey::STEM::PaddleBallWorld::on_mission_start(float width, float height)
 }
 
 // 实现 PaddleBallWorld::update 方法，根据球和桨的当前位置判断是否有碰撞，无需考虑运动细节
-void WarGrey::STEM::PaddleBallWorld::update(uint32_t interval, uint32_t count, uint32_t uptime) {
+void WarGrey::STEM::PaddleBallWorld::update(uint64_t count, uint32_t interval, uint64_t uptime) {
     float paddle_rx, paddle_by, ball_lx, ball_ty;
 
     // 查询桨右下角的位置

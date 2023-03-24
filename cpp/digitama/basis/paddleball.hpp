@@ -11,7 +11,7 @@ namespace WarGrey::STEM {
 
         public:    // 覆盖游戏基本方法
             void load(float width, float height) override;
-            void update(uint32_t interval, uint32_t count, uint32_t uptime) override;
+            void update(uint64_t interval, uint32_t count, uint64_t uptime) override;
 
         protected:
             void on_mission_start(float width, float height) override;

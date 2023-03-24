@@ -58,7 +58,7 @@ namespace {
         }
 
         // 定义和实现 PaddleBallWorld::update 方法，刷新球和桨的位置，这就是“运动动画”的基本原理
-        void update(uint32_t interval, uint32_t count, uint32_t uptime) override {
+        void update(uint64_t count, uint32_t interval, uint64_t uptime) override {
             int width, height;
             
             this->feed_window_size(&width, &height);

@@ -59,7 +59,7 @@ namespace {
             this->tux_home();
         }
 
-        void update(uint32_t count, uint32_t interval, uint32_t uptime) override {
+        void update(uint64_t count, uint32_t interval, uint64_t uptime) override {
             this->tux_step(count, interval, uptime);
 
             if (this->target_plane > 0) {
@@ -187,7 +187,7 @@ namespace {
             this->tux_target_y = 0.0F;
         }
 
-        void tux_step(uint32_t count, uint32_t interval, uint32_t uptime) {
+        void tux_step(uint64_t count, uint64_t interval, uint64_t uptime) {
             float x0, y0, tx, ty, gx;
             
             this->feed_matter_location(this->tux, &tx, &ty, MatterAnchor::RB);
@@ -255,7 +255,7 @@ void WarGrey::STEM::TheCosmos::construct(int argc, char* argv[]) {
     this->splash = this->push_plane(new SplashPlane(this));
 }
 
-void WarGrey::STEM::TheCosmos::update(uint32_t count, uint32_t interval, uint32_t uptime) {
+void WarGrey::STEM::TheCosmos::update(uint64_t count, uint32_t interval, uint64_t uptime) {
     if (this->has_current_mission_completed()) {
         this->transfer_to_plane(0);
     }
