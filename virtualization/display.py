@@ -1,5 +1,7 @@
 from abc import *               # abstract base class
 
+from ..graphics.image import *
+
 ###############################################################
 class IDisplay(ABC):
     def __init__(self):
@@ -8,6 +10,20 @@ class IDisplay(ABC):
 
     @abstractmethod
     def get_extent(self): pass
+
+    def get_client_extent(self):
+        return get_extent(self)
+
+    @abstractmethod
+    def snapshot(self): pass
+
+    def save_snapshot(self, pname):
+        snapshot_png = self.snapshot()
+        okay = game_save_image(snapshot_png, pname)
+
+        game_unload_image(snapshot_png)
+
+        return okay
 
     @abstractmethod
     def refresh(self): pass

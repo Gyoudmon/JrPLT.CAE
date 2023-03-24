@@ -18,7 +18,7 @@ from .graphics.colorspace import *
 from .virtualization.display import *
 
 ###############################################################################
-def game_initialize(flags, fontsize = 16):
+def game_initialize(flags):
     if game_font.DEFAULT is None:
         _Call_With_Safe_Exit(sdl2.SDL_Init(flags), "SDL 初始化失败：", sdl2.SDL_Quit)
         _Call_With_Safe_Exit(sdl2.sdlttf.TTF_Init(), "TTF 初始化失败：", sdl2.sdlttf.TTF_Quit, sdl2.sdlttf.TTF_GetError)
@@ -33,10 +33,10 @@ def game_initialize(flags, fontsize = 16):
             print("IMG 初始化失败：" + maybe_err)
             os._exit(1)
 
-        game_fonts_initialize(fontsize)
+        game_fonts_initialize()
 
         atexit.register(sdl2.sdlimage.IMG_Quit)
-        # atexit.register(game_fonts_destroy) # leave it to ctypes
+        #atexit.register(game_fonts_destroy)
 
 def game_create_texture(window, renderer):
     width, height = _get_window_size(window, renderer)
@@ -190,15 +190,13 @@ class Universe(IDisplay):
         self.__snapshot_rootdir = os.path.normpath(path)
 
     def snapshot(self):
-        photograph = game_blank_image(self.__window_width, self.__window_height)
+        format = sdl2.SDL_PIXELFORMAT_RGBA8888
+        photograph = game_formatted_surface(self.__window_width, self.__window_height, format)
 
         if photograph:
-            renderer = sdl2.SDL_CreateSoftwareRenderer(photograph)
-
-            if renderer:
-                self.__do_redraw(renderer, 0, 0, self.__window_width, self.__window_height)
-                sdl2.SDL_RenderPresent(renderer)
-                sdl2.SDL_DestroyRenderer(renderer)
+            photo = photograph.contents
+            if sdl2.SDL_RenderReadPixels(self.__renderer, None, format, photo.pixels, photo.pitch) < 0:
+                print("failed to take snapshot: %s" % sdl2.SDL_GetError().decode("utf-8"))
 
         return photograph
 
@@ -234,6 +232,9 @@ class Universe(IDisplay):
 
     def get_window_size(self, logical = True):
         return _get_window_size(self.__window, self.__renderer, logical)
+
+    def master_renderer(self):
+        return self.__renderer
 
     def get_renderer_name(self):
         rinfo = sdl2.render.SDL_RendererInfo()
@@ -364,9 +365,9 @@ class Universe(IDisplay):
             snapshot_png = os.getcwd() + os.sep + basename
 
         if self.save_snapshot(snapshot_png):
-            self.log_message((self.__fgc, "A snapshot has been save as '%s'." % snapshot_png))
+            print("A snapshot has been save as '%s'." % snapshot_png)
         else:
-            self.log_message((0xFF0000, "Failed to save snapshot: %s." % sdl2.SDL_GetError().decode("utf-8")))
+            print("Failed to save snapshot: %s." % sdl2.SDL_GetError().decode("utf-8"))
 
 # private
     def __do_redraw(self, renderer, x, y, width, height):
