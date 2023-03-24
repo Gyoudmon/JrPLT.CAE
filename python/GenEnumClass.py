@@ -14,6 +14,7 @@ def main(argv):
             id = pk64_random()
             while id in ids:
                 print("Retrying due to a hash conflict: %s" % id)
+                id = pk64_random()
             ids.append(id)
 
         print("class %s(enum.Enum):" % argv[1])
