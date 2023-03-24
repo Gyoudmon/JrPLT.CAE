@@ -393,8 +393,8 @@ class Plane(object):
         return selected
 
     def set_background(self, c_hex, a = 1.0):
-        self._background = c_hex
-        self._bg_alpha = a
+        self.__background = c_hex
+        self.__bg_alpha = a
 
     def feed_background(self, sdl_c):
         RGB_FillColor(sdl_c, self.__background, self.__bg_alpha)
