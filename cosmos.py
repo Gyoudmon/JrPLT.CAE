@@ -99,7 +99,7 @@ class Cosmos(Universe):
             self.set_window_title(self.__recent_plane.name())
 
     def _on_game_start(self):
-        if (not self.__recent_plane) and (self.__recent_plane == self.__head_plane):
+        if self.__recent_plane and (self.__recent_plane is self.__head_plane):
             self.notify_transfer(None, self.__recent_plane)
 
     def _on_elapse(self, count, interval, uptime):

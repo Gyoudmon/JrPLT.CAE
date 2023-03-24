@@ -13,7 +13,7 @@ from .physics.mathematics import *
 
 ###############################################################################
 class IPlaneInfo(object):
-    def __init__(self, master):
+    def __init__(self, master: IScreen):
         super(IPlaneInfo, self).__init__()
         self.master = master
 
@@ -39,14 +39,6 @@ class Plane(object):
 # public
     def name(self):
         return self.__caption
-
-    def master(self):
-        screen = None
-
-        if self.info:
-            screen = self.info.master
-
-        return screen
 
     def change_mode(self, mode):
         if mode != self.__mode:
@@ -313,6 +305,15 @@ class Plane(object):
     def size_cache_invalid(self):
         self.__mright = self.__mleft - 1.0
 
+    def is_colliding(self, m, target):
+        slx, sty, sw, sh = self.get_matter_boundary(m)
+        tlx, tty, tw, th = self.get_matter_boundary(target)
+
+        srx, sby = slx + sw, sty + sh
+        trx, tby = tlx + tw, tty + th
+
+        return rectangle_overlay(slx, sty, srx, sby, tlx, tty, trx, tby)
+
 # public
     def find_next_selected_matter(self, start = None):
         found = None
@@ -327,8 +328,6 @@ class Plane(object):
                 found = _do_search_selected_matter(info.next, self.__mode, self.__head_matter)
 
         return found
-    
-    def thumbnail_matter(self): return None
 
     def add_selected(self, m):
         if self.can_select_multiple():
@@ -399,14 +398,6 @@ class Plane(object):
 
     def feed_background(self, sdl_c):
         RGB_FillColor(sdl_c, self.__background, self.__bg_alpha)
-
-    def start_input_text(self, prompt):
-        if self.info:
-            self.info.master.start_input_text(prompt)
-
-    def log_message(self, message):
-        if self.info:
-            self.info.log_message(message)
 
 # public
     def on_pointer_pressed(self, button, x, y, clicks):
@@ -566,7 +557,7 @@ class Plane(object):
     
 # public
     def on_enter(self, from_plane):
-        width, height = self.master.get_client_extent()
+        width, height = self.info.master.get_client_extent()
         self.on_mission_start(width, height)
 
     def on_leave(self, to_plane):

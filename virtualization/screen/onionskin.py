@@ -10,6 +10,9 @@ class OnionSkin(IScreen):
 
     def get_extent(self):
         return self.__display.get_extent()
+    
+    def get_client_extent(self):
+        return self.__display.get_client_extent()
         
     def refresh(self):
         self.__display.refresh()

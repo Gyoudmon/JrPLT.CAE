@@ -167,7 +167,9 @@ class Universe(IDisplay):
                 if e.type == sdl2.SDL_USEREVENT:
                     parcel = ffi.cast(e.user.data1, ffi.POINTER(_TimerParcel)).contents
                     if parcel.master is self:
-                        self._on_elapse(parcel.count, parcel.interval, parcel.uptime)
+                        if (parcel.last_timestamp != parcel.uptime):
+                            self._on_elapse(parcel.count, parcel.interval, parcel.uptime)
+                            parcel.last_timestamp = parcel.uptime
                 elif e.type == sdl2.SDL_MOUSEMOTION: self._on_mouse_motion_event(e.motion)
                 elif e.type == sdl2.SDL_MOUSEWHEEL: self._on_mouse_wheel_event(e.wheel)
                 elif e.type == sdl2.SDL_MOUSEBUTTONUP: self._on_mouse_button_event(e.button, False)
@@ -407,9 +409,10 @@ def _get_window_size(window, renderer, logical = True):
 ###############################################################################
 class _TimerParcel(ffi.Structure):
     _fields_ = [("master", ffi.py_object),
-                ("interval", ffi.c_int),
-                ("count", ffi.c_int),
-                ("uptime", ffi.c_int)]
+                ("interval", ffi.c_uint32),
+                ("count", ffi.c_uint64),
+                ("uptime", ffi.c_uint64),
+                ("last_timestamp", ffi.c_uint64)]
 
 def _trigger_timer_event(interval, datum):
     """ 本函数在定时器到期时执行, 并将该事件报告给事件系统，以便绘制下一帧动画
@@ -423,7 +426,7 @@ def _trigger_timer_event(interval, datum):
     parcel = ffi.cast(datum, ffi.POINTER(_TimerParcel)).contents
     parcel.count += 1
     parcel.interval = interval
-    parcel.uptime = sdl2.SDL_GetTicks()    
+    parcel.uptime = sdl2.SDL_GetTicks()
 
     user_event = sdl2.SDL_UserEvent()
     timer_event = sdl2.SDL_Event()

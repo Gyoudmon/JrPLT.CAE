@@ -12,7 +12,7 @@ class IDisplay(ABC):
     def get_extent(self): pass
 
     def get_client_extent(self):
-        return get_extent(self)
+        return self.get_extent()
 
     @abstractmethod
     def snapshot(self): pass
