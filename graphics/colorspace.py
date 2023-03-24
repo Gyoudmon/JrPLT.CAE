@@ -1,6 +1,19 @@
 import sdl2
 
 import math   # 数学函数
+import enum   # 枚举类型
+
+###############################################################################
+class ColorMixture(enum.Enum):
+    Ignore = sdl2.SDL_BLENDMODE_NONE,
+    Add = sdl2.SDL_BLENDMODE_ADD,
+    
+    # The following two are identical
+    Subtract = sdl2.SDL_BLENDMODE_MUL,
+    Multiply = sdl2.SDL_BLENDMODE_MUL,
+
+    Modulate = sdl2.SDL_BLENDMODE_MOD,
+    Alpha = sdl2.SDL_BLENDMODE_BLEND
 
 ###############################################################################
 def rgba(cs, alpha = 0xFF):

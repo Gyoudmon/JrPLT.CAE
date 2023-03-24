@@ -14,8 +14,8 @@ pTexture = ffi.POINTER(sdl2.SDL_Texture)
 ###################################################################################################
 def game_blank_image(renderer, width, height):
     img = sdl2.SDL_CreateTexture(renderer,
-        sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET,
-        round(width), round(height))
+            sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET,
+            round(width), round(height))
     
     if img:
         origin = sdl2.SDL_GetRenderTarget(renderer)
