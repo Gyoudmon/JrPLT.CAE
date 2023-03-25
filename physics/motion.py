@@ -11,7 +11,7 @@ class IMovable(object):
         self.__bounce_acc = False
         self.__ar, self.__ax, self.__ay = 0.0, 0.0, 0.0
         self.__vr, self.__vx, self.__vy = 0.0, 0.0, 0.0
-        self.__tvx, self.__tvy = 0.0, 0.0
+        self.__tvx, self.__tvy = math.inf, math.inf
 
         self.set_border_strategy(BorderStrategy.IGNORE)
         self.motion_stop(True, True)
@@ -33,34 +33,90 @@ class IMovable(object):
 
         if hstrategy == BorderStrategy.STOP or vstrategy == BorderStrategy.STOP:
             self.motion_stop(True, True) # if stopping, both direction should stop
+        elif hstrategy == BorderStrategy.BOUNCE or vstrategy == BorderStrategy.BOUNCE:
+            self.motion_bounce(hstrategy == BorderStrategy.BOUNCE, vstrategy == BorderStrategy.BOUNCE)
 
 # public
-    def set_acceleration(self, acc, direction, is_radian = False): pass
-    def add_acceleration(self, acc, direction, is_radian = False): pass
-    def get_acceleration(self): pass
-    def get_acceleration_direction(self, need_radian = True): pass
+    def set_acceleration(self, acc, direction, is_radian = False):
+        ax, ay = orthogonal_decomposition(acc, direction, is_radian)
+        self.set_delta_speed(ax, ay)
 
-    def set_delta_speed(self, xacc, yacc): pass
-    def add_delta_speed(self, xacc, yacc): pass
+    def add_acceleration(self, acc, direction, is_radian = False):
+        ax, ay = orthogonal_decomposition(acc, direction, is_radian)
+        self.add_delta_speed(ax, ay)
+
+    def get_acceleration(self):
+        return vector_magnitude(self.__ax, self.__ay)
+
+    def get_acceleration_direction(self, need_radian = True):
+        rad = self.__ar
+
+        if math.isnan(rad):
+            rad = math.atan2(self.__ay, self.__ax)
+
+        if not need_radian:
+            rad = radians_to_degrees(rad)
+
+        return rad
+
+    def set_delta_speed(self, xacc, yacc):
+        xchanged = (self.__ax != xacc)
+        ychanged = (self.__ay != yacc)
+
+        if xchanged: self.__ax = xacc
+        if ychanged: self.__ay = yacc
+
+        if xchanged or ychanged:
+            self.__on_acceleration_changed()
+
+    def add_delta_speed(self, xacc, yacc):
+        self.set_delta_speed(self.__ax + xacc, self.__ay + yacc)
+
     def x_delta_speed(self):
-        return self.ax
+        return self.__ax
     
     def y_delta_speed(self):
-        return self.ay
+        return self.__ay
 
 # public
-    def set_velocity(self, spd, direction, is_radian = False): pass
-    def add_velocity(self, spd, direction, is_radian = False): pass
-    def get_velocity(self): pass
-    def get_velocity_direction(self, need_radian = True): pass
+    def set_velocity(self, spd, direction, is_radian = False):
+        vx, vy = orthogonal_decomposition(spd, direction, is_radian)
+        self.set_speed(vx, vy)
+
+    def add_velocity(self, spd, direction, is_radian = False):
+        vx, vy = orthogonal_decomposition(spd, direction, is_radian)
+        self.add_speed(vx, vy)
+
+    def get_velocity(self):
+        return vector_magnitude(self._vx, self.__vy)
+    
+    def get_velocity_direction(self, need_radian = True):
+        rad = self.__vr
+
+        if math.isnan(rad):
+            rad = math.atan2(self.__vy, self.__vx)
+
+        if not need_radian:
+            rad = radians_to_degrees(rad)
+
+        return rad
         
-    def set_speed(self, xspd, yspd): pass
-    def add_speed(self, xspd, yspd): pass
+    def set_speed(self, xspd, yspd):
+        if (xspd > self.__tvx): xspd = self.__tvx
+        if (yspd > self.__tvy): yspd = self.__tvy
+
+        self.__vx = xspd
+        self.__vy = yspd
+        self.__on_velocity_changed()
+
+    def add_speed(self, xspd, yspd):
+        pass
+
     def x_speed(self):
-        return self.vx
+        return self.__vx
     
     def y_speed(self):
-        return self.vy
+        return self.__vy
 
 # public
     def set_terminal_velocity(self, max_spd, direction, is_radian = False): pass

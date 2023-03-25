@@ -7,14 +7,6 @@ def radians_to_degrees(radians):
 def degrees_to_radians(degrees):
     return math.radians(degrees)
 
-def orthogonal_decomposition(magnitude, direction, is_radian):
-    if is_radian:
-        rad = direction
-    else:
-        rad = degrees_to_radians(direction)
-
-    return magnitude * math.cos(rad), magnitude * math.sin(rad)
-
 ###################################################################################################
 def flin(dmin, datum, dmax):
     return dmin <= datum and datum <= dmax
@@ -47,6 +39,50 @@ def rectangle_overlay(tlx1, tly1, brx1, bry1, tlx2, tly2, brx2, bry2):
 
 def rectangle_contain(tlx, tly, brx, bry, x, y):
     return flin(tlx, x, brx) and flin(tly, y, bry)
+
+###################################################################################################
+def orthogonal_decomposition(magnitude, direction, is_radian):
+    if is_radian:
+        rad = direction
+    else:
+        rad = degrees_to_radians(direction)
+
+    return magnitude * math.cos(rad), magnitude * math.sin(rad)
+
+def vector_magnitude(x, y):
+    return math.sqrt(x * x + y * y)
+
+def vector_direction(x, y, need_radian):
+    rad = math.atan2(y, x)
+
+    if not need_radian:
+        rad = radians_to_degrees(rad)
+
+    return rad
+
+def vector_rotate(x, y, theta, ox, oy, is_radian = True):
+    if is_radian:
+        rad = theta
+    else:
+        rad = degrees_to_radians(theta)
+	
+    cosr = math.cos(rad)
+    sinr = math.sin(rad)
+    dx = x - ox
+    dy = y - oy
+
+    rx = dx * cosr - dy * sinr + ox
+    ry = dx * sinr + dy * cosr + oy
+
+    return rx, ry
+
+def vector_clamp(v, ceil):
+    if v > ceil:
+        v = ceil
+    elif v < -ceil:
+        v = -ceil
+
+    return v
 
 ###################################################################################################
 def lines_intersection(x11, y11, x12, y12, x21, y21, x22, y22):
