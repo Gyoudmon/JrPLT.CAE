@@ -7,6 +7,14 @@ def radians_to_degrees(radians):
 def degrees_to_radians(degrees):
     return math.radians(degrees)
 
+def orthogonal_decomposition(magnitude, direction, is_radian):
+    if is_radian:
+        rad = direction
+    else:
+        rad = degrees_to_radians(direction)
+
+    return magnitude * math.cos(rad), magnitude * math.sin(rad)
+
 ###################################################################################################
 def flin(dmin, datum, dmax):
     return dmin <= datum and datum <= dmax

@@ -5,15 +5,21 @@ import enum   # 枚举类型
 
 ###############################################################################
 class ColorMixture(enum.Enum):
-    Ignore = sdl2.SDL_BLENDMODE_NONE,
-    Add = sdl2.SDL_BLENDMODE_ADD,
+    Ignore = sdl2.SDL_BLENDMODE_NONE
+    Add = sdl2.SDL_BLENDMODE_ADD
     
     # The following two are identical
-    Subtract = sdl2.SDL_BLENDMODE_MUL,
-    Multiply = sdl2.SDL_BLENDMODE_MUL,
+    Subtract = sdl2.SDL_BLENDMODE_MUL
+    Multiply = sdl2.SDL_BLENDMODE_MUL
 
-    Modulate = sdl2.SDL_BLENDMODE_MOD,
+    Modulate = sdl2.SDL_BLENDMODE_MOD
     Alpha = sdl2.SDL_BLENDMODE_BLEND
+
+def color_mixture_to_blend_mode(mixture: ColorMixture):
+    return mixture.value
+
+def blend_mode_to_color_mixture(mode: int):
+    return ColorMixture(mode)
 
 ###############################################################################
 def rgba(cs, alpha = 0xFF):
@@ -88,7 +94,7 @@ _G = 2
 _B = 3
 
 def _UCHAR(v):
-    return round(v * 255.0)
+    return max(0, min(round(v * 255.0), 0xFF))
 
 def _color_rgba(r, g, b, a):
     if isinstance(a, float):

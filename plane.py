@@ -6,6 +6,7 @@ import math
 from .virtualization.iscreen import *
 from .graphics.colorspace import *
 
+from .misc import *
 from .imatter import *
 from .matter.movable import *
 
@@ -16,6 +17,34 @@ class IPlaneInfo(object):
     def __init__(self, master: IScreen):
         super(IPlaneInfo, self).__init__()
         self.master = master
+
+class _GlidingMotion(object):
+    def __init__(self, pos, absolute, sec = 0.0, sec_delta = 0.0):
+        self.position = pos
+        self.second = sec
+        self.sec_delta = sec_delta
+        self.absolute = absolute
+
+class _MatterInfo(IMatterInfo):
+    def __init__(self, master, mode):
+        super(_MatterInfo, self).__init__(master)
+        
+        self.mode = mode
+        self.x, self.y = 0.0, 0.0
+        self.selected = False
+
+        self.local_frame_delta = 0
+        self.local_frame_count = 0
+        self.local_elapse = 0
+        self.duration = 0
+
+        # for queued motions
+        self.gliding = False
+        self.gliding_target = (0.0, 0.0)
+        self.motion_queues: list[_GlidingMotion] = []
+        
+        self.iasync = None
+        self.next, self.prev = None, None
 
 ###############################################################################
 class Plane(object):
@@ -60,7 +89,6 @@ class Plane(object):
     def load(self, Width, Height): pass
     def reflow(self, width, height): pass
     def update(self, count, interval, uptime): pass
-    def can_exit(self): return False
 
     def draw(self, renderer, X, Y, Width, Height):
         dsX, dsY = max(0.0, X), max(0.0, Y)
@@ -140,7 +168,7 @@ class Plane(object):
 
         if info and _unsafe_matter_unmasked(info, self.__mode):
             sx, sy, sw, sh = _unsafe_get_matter_bound(m, info)
-            fx, fy = _matter_anchor_fraction(anchor)
+            fx, fy = matter_anchor_fraction(anchor)
             x = sx + sw * fx
             y = sy + sh * fy
 
@@ -165,7 +193,7 @@ class Plane(object):
 
     def insert(self, m, x = 0.0, y = 0.0, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
         if m.info is None:
-            fx, fy = _matter_anchor_fraction(anchor)
+            fx, fy = matter_anchor_fraction(anchor)
             
             info = _bind_matter_owership(self, self.__mode, m)
             if not self.__head_matter:
@@ -204,7 +232,7 @@ class Plane(object):
 
         if info:
             if _unsafe_matter_unmasked(info, self.__mode):
-                if _unsafe_do_moving_via_info(self, info, x, y, False):
+                if self.__move_matter_via_info(info, x, y, False):
                     self.notify_updated()
         elif self.__head_matter:
             child = self.__head_matter
@@ -213,7 +241,7 @@ class Plane(object):
                 info = child.info
 
                 if info.selected and _unsafe_matter_unmasked(info, self.__mode):
-                    _unsafe_do_moving_via_info(self, info, x, y, False)
+                    self.__move_matter_via_info(info, x, y, False)
 
                 child = info.next
                 if child == self.__head_matter:
@@ -221,60 +249,55 @@ class Plane(object):
             
             self.notify_update()
     
+    def glide(self, sec, m, x, y):
+        info = _plane_matter_info(self, m)
+
+        if info:
+            if _unsafe_matter_unmasked(info, self.__mode):
+                if self.__glide_matter_via_info(info, sec, x, y, False):
+                    self.notify_updated()
+        elif self.__head_matter:
+            child = self.__head_matter
+
+            while True:
+                info = child.info
+
+                if info.selected and _unsafe_matter_unmasked(info, self.__mode):
+                    self.__glide_matter_via_info(info, sec, x, y, False)
+
+                child = info.next
+                if child == self.__head_matter:
+                    break
+            
+            self.notify_update()
+
     def move_to(self, matter, target, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
-        '''
-        Move the game object to the target position, aligned by the anchor
-
-        :param matter: the game object
-        :param target: the target position, which can be shaped as one of
-                            (x, y)
-                            (target_matter, target_anchor)
-                            (target_matter, target_x_fraction, target_y_fraction)
-                            (target_matter_for_x, x_fraction, target_matter_for_y, y_fraction)
-        :param anchor: the aligning anchor of the game object, which can be shaped as one of
-                            anchor
-                            (width_fraction, height_fraction)
-        :param dx: the final translation of x
-        :param dy: the final translation of y
-        '''
-
         info = _plane_matter_info(self, matter)
-        pos = False
         
         if info and _unsafe_matter_unmasked(info, self.__mode):
-            target_shape = len(target)
+            pos = self.__extract_moving_target_info(target)
             
-            if target_shape == 2:
-                if isinstance(target[0], IMatter):
-                    tinfo = _plane_matter_info(self, target[0])
-
-                    if tinfo and _unsafe_matter_unmasked(tinfo, self.__mode):
-                        tx, ty, tw, th = _unsafe_get_matter_bound(target[0], tinfo)
-                        tfx, tfy = _matter_anchor_fraction(target[1])
-                        pos = (tx + tw * tfx, ty + th * tfy)
-                else:
-                    pos = target
-            elif target_shape == 3:
-                tinfo = _plane_matter_info(self, target[0])
-
-                if tinfo and _unsafe_matter_unmasked(tinfo, self.__mode):
-                    tx, ty, tw, th = _unsafe_get_matter_bound(target[0], tinfo)
-                    pos = (tx + tw * target[1], ty + th * target[2])
-            else:
-                xinfo = _plane_matter_info(self, target[0])
-                yinfo = _plane_matter_info(self, target[2])
-
-                if xinfo and _unsafe_matter_unmasked(xinfo, self.__mode):
-                    if yinfo and _unsafe_matter_unmasked(yinfo, self.__mode):
-                        xtx, _, xtw, _ = _unsafe_get_matter_bound(target[0], xinfo)
-                        _, yty, _, yth = _unsafe_get_matter_bound(target[2], yinfo)
-                        pos = (xtx + xtw * target[1], yty + yth * target[2])
-
-        if isinstance(pos, tuple):
-            fx, fy = _matter_anchor_fraction(anchor)
+            if isinstance(pos, tuple):
+                fx, fy = matter_anchor_fraction(anchor)
             
-            if _unsafe_move_matter_via_info(self, matter, info, pos[0], pos[1], fx, fy, dx, dy):
-                self.notify_updated()
+                if self.__move_matter_to_target_via_info(matter, info, pos[0], pos[1], fx, fy, dx, dy):
+                    self.notify_updated()
+
+    def glide_to(self, sec, matter, target, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
+        info = _plane_matter_info(self, matter)
+        
+        if info and _unsafe_matter_unmasked(info, self.__mode):
+            pos = self.__extract_moving_target_info(target)
+            
+            if isinstance(pos, tuple):
+                fx, fy = matter_anchor_fraction(anchor)
+            
+                if self.__glide_matter_to_target_via_info(matter, info, sec, pos[0], pos[1], fx, fy, dx, dy):
+                    self.notify_updated()
+
+    def glide_to_mouse(self, sec, matter, anchor = MatterAnchor.CC, dx = 1.0, dy = 1.0):
+        mx, my = get_current_mouse_location()
+        self.glide_to(sec, matter, (mx, my), anchor, dx, dy)
     
     def remove(self, m):
         info = _plane_matter_info(self, m)
@@ -403,45 +426,54 @@ class Plane(object):
     def on_pointer_pressed(self, button, x, y, clicks):
         handled = False
 
-        if clicks == 1:
-            if button == sdl2.SDL_BUTTON_LEFT:
-                unmasked_matter = self.find_matter(x, y)
+        if button == sdl2.SDL_BUTTON_LEFT:
+            unmasked_matter = self.find_matter(x, y)
 
-                self.set_caret_owner(unmasked_matter)
-                self.no_selected()
+            if unmasked_matter:
+                info = unmasked_matter.info
 
-                if unmasked_matter and unmasked_matter.low_level_events_allowed():
-                    info = unmasked_matter.info
+                if not info.selected:    
+                    self.set_caret_owner(unmasked_matter)
+                    self.no_selected()
+
+                if unmasked_matter.low_level_events_allowed():
                     local_x = x - info.x
                     local_y = y - info.y
                     handled = unmasked_matter.on_pointer_pressed(button, local_x, local_y)
+            else:
+                self.set_caret_owner(unmasked_matter)
+                self.no_selected()
 
         return handled
 
     def on_pointer_released(self, button, x, y, clicks):
         handled = False
 
-        if clicks == 1:
-            if button == sdl2.SDL_BUTTON_LEFT:
-                unmasked_matter = self.find_matter(x, y)
+        if button == sdl2.SDL_BUTTON_LEFT:
+            unmasked_matter = self.find_matter(x, y)
 
-                if unmasked_matter:
-                    info = unmasked_matter.info
-                    local_x = x - info.x
-                    local_y = y - info.y
+            if unmasked_matter:
+                info = unmasked_matter.info
+                local_x = x - info.x
+                local_y = y - info.y
                     
-                    if unmasked_matter.events_allowed():
+                if unmasked_matter.events_allowed():
+                    if clicks == 1:
                         unmasked_matter.on_tap(local_x, local_y)
 
-                        if unmasked_matter.low_level_events_allowed():
-                            unmasked_matter.on_pointer_released(button, local_x, local_y)
+                    if unmasked_matter.low_level_events_allowed():
+                        unmasked_matter.on_pointer_released(button, local_x, local_y, clicks)
 
-                    self.on_tap(unmasked_matter, local_x, local_y)
-
+                if clicks == 1:
                     if info.selected:
                         self.on_tap_selected(unmasked_matter, local_x, local_y)
+                    else:
+                        self.on_tap(unmasked_matter, local_x, local_y)
 
                     handled = info.selected
+                else:
+                    # leave for the sentry 
+                    pass
 
         return handled
 
@@ -574,6 +606,10 @@ class Plane(object):
     def on_mission_start(self, width, height): pass
     def on_mission_complete(self): pass
 
+    def on_motion_start(self, m, sec, x, y, xspd, yspd): pass
+    def on_motion_step(self, m, x, y, xspd, yspd): pass
+    def on_motion_complete(self, m, x, y, xspd, yspd): pass
+
 # public, do nothing by default
     def can_interactive_move(self, m, local_x, local_y): return False
     def can_select(self, m): return False
@@ -690,19 +726,164 @@ class Plane(object):
                 self.__hovering_matter = None
 
         return done
+    
+    def __extract_moving_target_info(self, target):
+        '''
+        the target position, which can be shaped as one of
+                (x, y)
+                (target_matter, target_anchor)
+                (target_matter, target_x_fraction, target_y_fraction)
+                (target_matter_for_x, x_fraction, target_matter_for_y, y_fraction)
+        '''
+
+        pos = False
+        target_shape = len(target)
+            
+        if target_shape == 2:
+            if isinstance(target[0], IMatter):
+                tinfo = _plane_matter_info(self, target[0])
+
+                if tinfo and _unsafe_matter_unmasked(tinfo, self.__mode):
+                    tx, ty, tw, th = _unsafe_get_matter_bound(target[0], tinfo)
+                    tfx, tfy = matter_anchor_fraction(target[1])
+                    pos = (tx + tw * tfx, ty + th * tfy)
+            else:
+                pos = target
+        elif target_shape == 3:
+            tinfo = _plane_matter_info(self, target[0])
+
+            if tinfo and _unsafe_matter_unmasked(tinfo, self.__mode):
+                tx, ty, tw, th = _unsafe_get_matter_bound(target[0], tinfo)
+                pos = (tx + tw * target[1], ty + th * target[2])
+        else:
+            xinfo = _plane_matter_info(self, target[0])
+            yinfo = _plane_matter_info(self, target[2])
+
+            if xinfo and _unsafe_matter_unmasked(xinfo, self.__mode):
+                if yinfo and _unsafe_matter_unmasked(yinfo, self.__mode):
+                    xtx, _, xtw, _ = _unsafe_get_matter_bound(target[0], xinfo)
+                    _, yty, _, yth = _unsafe_get_matter_bound(target[2], yinfo)
+                    pos = (xtx + xtw * target[1], yty + yth * target[2])
+
+        return pos
+
+# private
+    def __move_matter_via_info(self, m, info: _MatterInfo, x, y, absolute):
+        moved = False
+
+        if not info.gliding:
+            moved = self.__do_move_via_info(m, info, x, y, absolute)
+        else:
+            if len(info.motion_queues) == 0:
+                info.motion_queues.append(_GlidingMotion((x, y), absolute))
+            else:
+                back = info.motion_queues[-1]
+
+                if back.second == 0.0:
+                    back.position = (x, y)
+                    back.absolute = absolute
+                else:
+                    info.motion_queues.append(_GlidingMotion((x, y), absolute))
+
+        return moved
+
+    def __move_matter_to_target_via_info(self, m, info, x, y, fx, fy, dx, dy):
+        self.__glide_matter_to_target_via_info(self, m, info, 0.0, x, y, fx, fy, dx, dy)
+
+    def __glide_matter_via_info(self, m, info: _MatterInfo, sec, x, y, absolute):
+        moved = False
+
+        if sec <= 0.0:
+            moved = self.__move_matter_via_info(m, info, x, y, absolute)
+        else:
+            if self.info:
+                sec_delta = 1.0 / self.info.get_frame_rate()
+            else:
+                sec_delta = 0.0
+
+            if (sec <= sec_delta) or (sec_delta == 0.0):
+                moved = self.__move_matter_via_info(m, info, x, y, absolute)
+            else:
+                if m.motion_stopped():
+                    info.motion_queues.clear()
+                    moved = self.__do_glide_via_info(m, info, x, y, sec, sec_delta, absolute)
+                elif not info.gliding:
+                    moved = self.__do_glide_via_info(m, info, x, y, sec, sec_delta, absolute)
+                else:
+                    info.motion_queues.append(_GlidingMotion((x, y), absolute, sec, sec_delta))
+        
+        return moved
+
+    def __glide_matter_to_target_via_info(self, m, info, sec, x, y, fx, fy, dx, dy):
+        ax, ay = 0.0, 0.0
+
+        if m.ready():
+            _, _, sw, sh = _unsafe_get_matter_bound(m, info)
+            ax = sw * fx
+            ay = sh * fy
+        else:
+            info.iasync = {}
+            info.iasync['x0'] = x
+            info.iasync['y0'] = y
+            info.iasync['fx0'] = fx
+            info.iasync['fy0'] = fy
+            info.iasync['dx0'] = dx
+            info.iasync['dy0'] = dy
+
+        return self.__glide_matter_via_info(m, info, sec, x - ax + dx, y - ay + dy, True)
+
+    def __do_move_via_info(self, m, info, x, y, absolute):
+        moved = False
+
+        if not absolute:
+            x += info.x
+            y += info.y
+
+        if info.x != x or info.y != y:
+            ox = info.x
+            oy = info.y
+            info.x = x
+            info.y = y
+
+            m.on_location_changed(info.x, info.y, ox, oy)
+            self.size_cache_invalid()
+            moved = True
+
+        return moved
+
+    def __do_glide_via_info(self, m, info: _MatterInfo, x, y, sec, sec_delta, absolute):
+        moved = False
+
+        if not absolute:
+            x += info.x
+            y += info.y
+        
+        if info.x != x or info.y != y:
+            n = math.floor(sec / sec_delta)
+            dx = x - info.x
+            dy = y - info.y
+            xspd = dx / n
+            yspd = dy / n
+
+            m.set_delta_speed(0.0, 0.0)
+            m.set_speed(xspd, yspd)
+
+            info.gliding = True
+            info.gliding_target = (x, y)
+
+            self.on_motion_start(m, sec, info.x, info.y, xspd, yspd)
+            info.x, info.y = m.step(info.x, info.y)
+            self.on_motion_step(m, info.x, info.y, xspd, yspd)
+            m.on_location_changed(info.x, info.y, x - dx, y - dy)
+            self.size_cache_invalid()
+            moved = True
+        
+        return moved
+
+    def __do_motion_move(self, m, info, dwidth, dheight):
+        pass
 
 ###################################################################################################
-class _MatterInfo(IMatterInfo):
-    def __init__(self, master, mode):
-        super(_MatterInfo, self).__init__(master)
-        
-        self.mode = mode
-        self.x, self.y = 0.0, 0.0
-        self.selected = False
-        self.iasync = None
-        
-        self.next, self.prev = None, None
-
 def _bind_matter_owership(master, mode, m):
     m.info = _MatterInfo(master, mode)
     
@@ -735,24 +916,6 @@ def _unsafe_set_selected(master, m, info):
     master.no_selected()
     _unsafe_add_selected(master, m, info)
     master.end_update_sequence()
-
-def _matter_anchor_fraction(a):
-    fx, fy = 0.0, 0.0
-
-    if isinstance(a, enum.Enum): 
-        if a == MatterAnchor.LT: pass
-        elif a == MatterAnchor.LC: fy = 0.5
-        elif a == MatterAnchor.LB: fy = 1.0
-        elif a == MatterAnchor.CT: fx = 0.5          
-        elif a == MatterAnchor.CC: fx, fy = 0.5, 0.5
-        elif a == MatterAnchor.CB: fx, fy = 0.5, 1.0
-        elif a == MatterAnchor.RT: fx = 1.0
-        elif a == MatterAnchor.RC: fx, fy = 1.0, 0.5
-        elif a == MatterAnchor.RB: fx, fy = 1.0, 1.0
-    else:
-        fx, fy = a[0], a[1]
-
-    return fx, fy
 
 def _unsafe_do_moving_via_info(master, info, x, y, absolute):
     moved = False
@@ -814,7 +977,7 @@ def _do_resize(master, m, info, scale_x, scale_y, prev_scale_x = 1.0, prev_scale
 
     if resizable:
         sx, sy, sw, sh = _unsafe_get_matter_bound(m, info)
-        fx, fy = _matter_anchor_fraction(resize_anchor)
+        fx, fy = matter_anchor_fraction(resize_anchor)
 
         m.resize(sw / prev_scale_x * scale_x, sh / prev_scale_y * scale_y)
         nw, nh = m.get_extent(sx, sy)

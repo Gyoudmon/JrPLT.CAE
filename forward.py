@@ -1,5 +1,6 @@
 import enum
 
+###############################################################################
 class MatterAnchor(enum.Enum):
     LT = 0x4983917e165afce8
     CT = 0x45469ade8ed1ff0e
@@ -23,3 +24,21 @@ class BorderStrategy(enum.Enum):
     STOP = 0x407c35437235f05f
     BOUNCE = 0x4fcc175c111c2d94
 
+###############################################################################
+def matter_anchor_fraction(a):
+    fx, fy = 0.0, 0.0
+
+    if isinstance(a, enum.Enum): 
+        if a == MatterAnchor.LT: pass
+        elif a == MatterAnchor.LC: fy = 0.5
+        elif a == MatterAnchor.LB: fy = 1.0
+        elif a == MatterAnchor.CT: fx = 0.5          
+        elif a == MatterAnchor.CC: fx, fy = 0.5, 0.5
+        elif a == MatterAnchor.CB: fx, fy = 0.5, 1.0
+        elif a == MatterAnchor.RT: fx = 1.0
+        elif a == MatterAnchor.RC: fx, fy = 1.0, 0.5
+        elif a == MatterAnchor.RB: fx, fy = 1.0, 1.0
+    else:
+        fx, fy = a[0], a[1]
+
+    return fx, fy

@@ -170,12 +170,18 @@ class Universe(IDisplay):
                         if (parcel.last_timestamp != parcel.uptime):
                             self._on_elapse(parcel.count, parcel.interval, parcel.uptime)
                             parcel.last_timestamp = parcel.uptime
-                elif e.type == sdl2.SDL_MOUSEMOTION: self._on_mouse_motion_event(e.motion)
-                elif e.type == sdl2.SDL_MOUSEWHEEL: self._on_mouse_wheel_event(e.wheel)
-                elif e.type == sdl2.SDL_MOUSEBUTTONUP: self._on_mouse_button_event(e.button, False)
-                elif e.type == sdl2.SDL_MOUSEBUTTONDOWN: self._on_mouse_button_event(e.button, True)
-                elif e.type == sdl2.SDL_KEYUP: self._on_keyboard_event(e.key, False)
-                elif e.type == sdl2.SDL_KEYDOWN: self._on_keyboard_event(e.key, True)
+                elif e.type == sdl2.SDL_MOUSEMOTION:
+                    self._on_mouse_motion_event(e.motion)
+                elif e.type == sdl2.SDL_MOUSEWHEEL:
+                    self._on_mouse_wheel_event(e.wheel)
+                elif e.type == sdl2.SDL_MOUSEBUTTONUP:
+                    self._on_mouse_button_event(e.button, False)
+                elif e.type == sdl2.SDL_MOUSEBUTTONDOWN:
+                    self._on_mouse_button_event(e.button, True)
+                elif e.type == sdl2.SDL_KEYUP:
+                    self._on_keyboard_event(e.key, False)
+                elif e.type == sdl2.SDL_KEYDOWN:
+                    self._on_keyboard_event(e.key, True)
                 elif e.type == sdl2.SDL_WINDOWEVENT:
                     if e.window.event == sdl2.SDL_WINDOWEVENT_RESIZED:
                         self._on_resize(e.window.data1, e.window.data2)    
@@ -252,7 +258,7 @@ class Universe(IDisplay):
     def get_background_color(self):
         return self.__bgc
 
-    def get_frame_per_second(self):
+    def get_frame_rate(self):
         return self.__fps
 
 # public

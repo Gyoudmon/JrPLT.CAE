@@ -46,7 +46,7 @@ class IShapelet(IGraphlet, IMovable):
                     self._draw_shape(renderer, width, height, r, g, b, self.__alpha)
 
                 sdl2.SDL_SetRenderTarget(renderer, origin)
-                sdl2.SDL_SetTextureBlendMode(self.__geometry, self.__mixture.value)
+                sdl2.SDL_SetTextureBlendMode(self.__geometry, color_mixture_to_blend_mode(self.__mixture))
             else:
                 print("无法绘制几何图形：%s" % sdl2.SDL_GetError().decode('utf-8'))
         
@@ -72,6 +72,26 @@ class IShapelet(IGraphlet, IMovable):
     def get_border_color(self):
         return self.__border_color
     
+    def set_alpha(self, a):
+        if isinstance(a, float):
+            if a >= 1.0:
+                a = 0xFF
+            elif a <= 0.0:
+                a = 0
+            else:
+                a = round(a * 255.0)
+
+        if self.__alpha != a:
+            self.__alpha = a
+            self._invalidate_geometry()
+            self.notify_updated()
+
+    def set_color_mixture(self, mixture):
+        if self.__mixture != mixture:
+            self.__mixture = mixture
+            self._invalidate_geometry()
+            self.notify_updated()
+
 # protected
     def _draw_shape(self, renderer, width, height, r, g, b, a): pass
     def _fill_shape(self, renderer, width, height, r, g, b, a): pass
