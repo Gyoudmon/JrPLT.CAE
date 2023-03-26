@@ -11,6 +11,12 @@ def degrees_to_radians(degrees):
 def flin(dmin, datum, dmax):
     return dmin <= datum and datum <= dmax
 
+def flout(dmin, datum, dmax):
+    return datum < dmin or datum > dmax
+
+def flsign(x):
+    return math.copysign(1, x)
+
 ###################################################################################################
 def point_inside(px, py, x1, y1, x2, y2):
     if x1 <= x2:

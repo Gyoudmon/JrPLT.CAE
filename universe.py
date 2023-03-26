@@ -258,7 +258,7 @@ class Universe(IDisplay):
     def get_background_color(self):
         return self.__bgc
 
-    def get_frame_rate(self):
+    def frame_rate(self):
         return self.__fps
 
 # public

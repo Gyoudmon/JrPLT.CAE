@@ -11,6 +11,8 @@ from .cosmos import *
 from .matter.graphlet.textlet import *
 from .matter.graphlet.shapelet import *
 
+from .trace import *
+
 ###############################################################################
 class TheBigBang(Cosmos):
     def __init__(this, self: Plane, fps = 60, fgc = 0x000000, bgc = 0xFFFFFF, size = None):
@@ -20,7 +22,10 @@ class TheBigBang(Cosmos):
         if size:
             this.set_window_size(size[0], size[1])
 
-def launch_universe(world, module_name, size = None, fps = 60):
+def launch_universe(world, module_name, size = None, fps = 60, trace = False):
+    if trace:
+        register_tracer()
+    
     if module_name == "__main__":
         # 混沌初开，宇宙诞生，游戏世界就绪
         universe = TheBigBang(world(), fps, size = size)

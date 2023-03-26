@@ -11,9 +11,10 @@ from ...graphics.image import *
 from ...graphics.colorspace import *
 
 ###################################################################################################
-class IShapelet(IGraphlet, IMovable):
+class IShapelet(IGraphlet):
     def __init__(self, color = -1, border_color = -1):
         super(IShapelet, self).__init__()
+
         self.enable_resizing(True)
         self.__geometry = None
         self.__mixture = ColorMixture.Alpha

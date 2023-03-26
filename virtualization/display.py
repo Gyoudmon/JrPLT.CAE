@@ -15,6 +15,9 @@ class IDisplay(ABC):
         return self.get_extent()
 
     @abstractmethod
+    def frame_rate(self): pass
+
+    @abstractmethod
     def snapshot(self): pass
 
     def save_snapshot(self, pname):

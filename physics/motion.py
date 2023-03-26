@@ -13,10 +13,28 @@ class IMovable(object):
         self.__vr, self.__vx, self.__vy = 0.0, 0.0, 0.0
         self.__tvx, self.__tvy = math.inf, math.inf
 
-        self.set_border_strategy(BorderStrategy.IGNORE)
+        self.set_border_strategy([BorderStrategy.IGNORE])
         self.motion_stop(True, True)
 
 # public
+    def set_border_strategy(self, s):
+        if isinstance(s, BorderEdge):
+            self.set_border_strategy([s, s, s, s])
+        else:
+            size = len(s)
+
+            if size == 1:
+                self.set_border_strategy([s[0], s[0], s[0], s[0]])
+            elif size == 2:
+                self.set_border_strategy([s[0], s[1], s[0], s[1]])
+            elif size == 4:
+                self.__border_strategies[BorderEdge.TOP] = s[0]
+                self.__border_strategies[BorderEdge.RIGHT] = s[1]
+                self.__border_strategies[BorderEdge.BOTTOM] = s[2]
+                self.__border_strategies[BorderEdge.LEFT] = s[3]
+            else:
+                pass
+
     def on_border(self, hoffset, voffset):
         hstrategy = BorderStrategy.IGNORE
         vstrategy = BorderStrategy.IGNORE
@@ -102,15 +120,20 @@ class IMovable(object):
         return rad
         
     def set_speed(self, xspd, yspd):
-        if (xspd > self.__tvx): xspd = self.__tvx
-        if (yspd > self.__tvy): yspd = self.__tvy
+        xspd = vector_clamp(xspd, self.__tvx)
+        yspd = vector_clamp(yspd, self.__tvy)
 
-        self.__vx = xspd
-        self.__vy = yspd
-        self.__on_velocity_changed()
+        xchanged = self.__vx != xspd
+        ychanged = self.__vy != yspd
+
+        if xchanged: self.__vx = xspd
+        if ychanged: self.__vy = yspd
+
+        if xchanged or ychanged:
+            self.__on_velocity_changed()
 
     def add_speed(self, xspd, yspd):
-        pass
+        self.set_speed(self.__vx + xspd, self.__vy + yspd)
 
     def x_speed(self):
         return self.__vx
@@ -119,25 +142,83 @@ class IMovable(object):
         return self.__vy
 
 # public
-    def set_terminal_velocity(self, max_spd, direction, is_radian = False): pass
-    def set_terminal_speed(self, mxspd, myspd):
-        self.__tvx = mxspd
-        self.__tvy = myspd
+    def set_terminal_velocity(self, max_v, direction, is_radian = False):
+        xv, vy = orthogonal_decomposition(max_v, direction, is_radian)
+        self.set_terminal_speed(xv, vy)
 
+    def set_terminal_speed(self, mxspd, myspd):
+        changed = False
+
+        self.__tvx = math.abs(mxspd)
+        self.__tvy = math.abs(myspd)
+
+        if flout(-self.__tvx, self.__vx, self.__tvx):
+            self.__vx = vector_clamp(self.__vx, self.__tvx)
+            changed = True
+
+        if flout(-self.__tvy, self.__vy, self.__tvy):
+            self.__vy = vector_clamp(self.__vy, self.__tvy)
+            changed = True
+
+        if changed:
+            self.__on_velocity_changed()
+        
     def get_heading(self, need_radian = True):
         return self.get_velocity_direction()
     
-    def heading_rotate(self, theta, is_radian = False): pass
+    def heading_rotate(self, theta, is_radian = False):
+        if theta != 0.0:
+            vector_rotate(self.__vx, self.__vy, theta, 0.0, 0.0, is_radian)
+            self.__on_velocity_changed()
 
 # public
-    def set_border_strategy(self, s): pass
-    def set_border_strategy(self, vs, hs): pass
-    def set_border_strategy(self, ts, rs, bs, ls): pass
+    def step(self, sx, sy):
+        if self.__ax != 0.0:
+            self.__vx = vector_clamp(self.__vx + self.__ax, self.__tvx)
+        
+        if self.__ay != 0.0:
+            self.__vy = vector_clamp(self.__vy + self.__ay, self.__tvy)
 
-# public
-    def step(self, sx, sy): pass
-    def motion_stop(self, horizon = True, vertical = True): pass
-    def motion_bounce(self, horizon, vertical): pass
+        self.__check_velocity_changing()
+
+        if self.__vx != 0.0: sx += self.__vx
+        if self.__vy != 0.0: sy += self.__vy
+
+        return sx, sy
+
+    def motion_bounce(self, horizon, vertical):
+        if horizon:
+            self.__vx *= -1.0
+            if self.__bounce_acc:
+                self.__ax *= -1.0
+
+        if vertical:
+            self.__vy *= -1.0
+            if self.__bounce_acc:
+                self.__ay *= -1.0
+
+        if horizon or vertical:
+            self.__on_velocity_changed()
+            if self.__bounce_acc:
+                self.__on_acceleration_changed()
+
+    def motion_stop(self, horizon = True, vertical = True):
+        if horizon:
+            self.__vx = 0.0
+            self.__ax = 0.0
+
+        if vertical:
+            self.__vy = 0.0
+            self.__ay = 0.0
+
+        if horizon and vertical:
+            self.__ar = math.nan
+            self.__vr = math.nan
+            self._on_motion_stopped()
+        else:
+            self.__on_acceleration_changed()
+            self.__on_velocity_changed()
+
     def disable_acceleration_bounce(self, yes = True):
         self.__bounce_acc = (not yes)
     
@@ -156,6 +237,19 @@ class IMovable(object):
     def _on_motion_stopped(self): pass
 
 # private
-    def __on_acceleration_changed(self): pass
-    def __check_velocity_changing(self): pass
-    def __on_velocity_changed(self): pass
+    def __on_acceleration_changed(self):
+        self.__ar = math.atan2(self.__ay, self.__ax)
+
+    def __check_velocity_changing(self):
+        rad = math.atan2(self.__vy, self.__vx)
+
+        if self.__vr != rad:
+            pvr = self.__vr
+
+            self.__vr = rad
+            self._on_heading_changed(rad, self.__vx, self.__vy, pvr)
+
+    def __on_velocity_changed(self):
+        if self.__ax != 0.0 or self.__ay != 0.0:
+            if self.__ar != self.__vr:
+                self.__on_velocity_changed()

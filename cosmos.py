@@ -3,13 +3,22 @@ from .plane import *
 
 from .virtualization.screen.onionskin import *
 
+import typing
+
+###############################################################################
+class _LinkedPlaneInfo(IPlaneInfo):
+    def __init__(self, master):
+        super(_LinkedPlaneInfo, self).__init__(master)
+        self.next = None
+        self.prev = None
+
 ###############################################################################
 class Cosmos(Universe):
     def __init__(self, fps = 60, fgc = 0x000000, bgc = 0xFFFFFF):
         super(Cosmos, self).__init__(fps, fgc, bgc)
         self.__screen = OnionSkin(self)
-        self.__head_plane = None
-        self.__recent_plane = None
+        self.__head_plane: typing.Optional(Plane) = None
+        self.__recent_plane: typing.Optional(Plane) = None
 
     def __del__(self):
         self.__collapse()
@@ -145,12 +154,6 @@ class Cosmos(Universe):
         self.__recent_plane = None
 
 ###################################################################################################
-class _LinkedPlaneInfo(IPlaneInfo):
-    def __init__(self, master):
-        super(_LinkedPlaneInfo, self).__init__(master)
-        self.next = None
-        self.prev = None
-
 def _bind_plane_owership(master, plane):
     plane.info = _LinkedPlaneInfo(master)
     

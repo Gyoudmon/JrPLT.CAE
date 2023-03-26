@@ -2,6 +2,7 @@ import sdl2
 import sdl2.rect as sdlr
 
 import math
+import typing
 
 from .virtualization.iscreen import *
 from .graphics.colorspace import *
@@ -19,8 +20,9 @@ class IPlaneInfo(object):
         self.master = master
 
 class _GlidingMotion(object):
-    def __init__(self, pos, absolute, sec = 0.0, sec_delta = 0.0):
-        self.position = pos
+    def __init__(self, x, y, absolute, sec = 0.0, sec_delta = 0.0):
+        self.tx = x
+        self.ty = y
         self.second = sec
         self.sec_delta = sec_delta
         self.absolute = absolute
@@ -40,9 +42,13 @@ class _MatterInfo(IMatterInfo):
 
         # for queued motions
         self.gliding = False
-        self.gliding_target = (0.0, 0.0)
+        self.gliding_tx = 0.0
+        self.gliding_ty = 0.0
         self.motion_queues: list[_GlidingMotion] = []
         
+        self.current_step = 1.0
+        self.progress_total = 1.0
+
         self.iasync = None
         self.next, self.prev = None, None
 
@@ -50,12 +56,14 @@ class _MatterInfo(IMatterInfo):
 class Plane(object):
     def __init__(self, name, initial_mode = 0):
         super(Plane, self).__init__()
-        self.info = None
+        self.info: typing.Optional(IPlaneInfo) = None
         self.__caption = name
         self.__mode = initial_mode
-        self.__background, self.__bg_alpha = -1, 1.0
+        self.__background, self.__bg_alpha = 0, 0.0
         self.__mleft, self.__mtop, self.__mright, self.__mbottom = 0.0, 0.0, 0.0, 0.0
-        self.__head_matter, self.__focused_matter, self.__hovering_matter = None, None, None
+        self.__head_matter: typing.Optional(IMatter) = None
+        self.__focused_matter: typing.Optional(IMatter) = None
+        self.__hovering_matter: typing.Optional(IMatter) = None
         self.__translate_x, self.__translate_y = 0.0, 0.0
         self.__scale_x, self.__scale_y = 1.0, 1.0
         self.__mission_done = False
@@ -162,24 +170,24 @@ class Plane(object):
 
         return found
 
-    def get_matter_location(self, m, anchor):
-        info = _plane_matter_info(self, m)
+    def get_matter_location(self, matter, anchor):
+        info = _plane_matter_info(self, matter)
         x, y = False, 0.0
 
         if info and _unsafe_matter_unmasked(info, self.__mode):
-            sx, sy, sw, sh = _unsafe_get_matter_bound(m, info)
+            sx, sy, sw, sh = _unsafe_get_matter_bound(matter, info)
             fx, fy = matter_anchor_fraction(anchor)
             x = sx + sw * fx
             y = sy + sh * fy
 
         return x, y
 
-    def get_matter_boundary(self, m):
-        info = _plane_matter_info(self, m)
+    def get_matter_boundary(self, matter):
+        info = _plane_matter_info(self, matter)
         x, y, width, height = False, 0.0, 0.0, 0.0
         
         if info and _unsafe_matter_unmasked(info, self.__mode):
-            x, y, width, height = _unsafe_get_matter_bound(m, info)
+            x, y, width, height = _unsafe_get_matter_bound(matter, info)
 
         return x, y, width, height
 
@@ -191,48 +199,46 @@ class Plane(object):
 
         return self.__mleft, self.__mtop, w, h
 
-    def insert(self, m, x = 0.0, y = 0.0, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
-        if m.info is None:
+    def insert(self, matter: IMatter, x = 0.0, y = 0.0, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
+        if matter.info is None:
             fx, fy = matter_anchor_fraction(anchor)
             
-            info = _bind_matter_owership(self, self.__mode, m)
+            info = _bind_matter_owership(self, self.__mode, matter)
             if not self.__head_matter:
-                self.__head_matter = m
+                self.__head_matter = matter
                 info.prev = self.__head_matter
             else:
                 head_info = self.__head_matter.info
                 prev_info = head_info.prev.info
 
                 info.prev = head_info.prev
-                prev_info.next = m
-                head_info.prev = m
+                prev_info.next = matter
+                head_info.prev = matter
             info.next = self.__head_matter
 
             self.begin_update_sequence()
-            m.pre_construct()
-            m.construct()
-            m.post_construct()
-            _unsafe_move_matter_via_info(self, m, info, x, y, fx, fy, dx, dy)
+            matter.construct()
+            self.__move_matter_to_target_via_info(matter, info, x, y, fx, fy, dx, dy)
             
-            if m.ready():
+            if matter.ready():
                 if self.__scale_x != 1.0 or self.__scale_y != 1.0:
-                    _do_resize(self, m, info, self.__scale_x, self.__scale_y)
+                    self.__do_resize(matter, info, fx, fy, self.__scale_x, self.__scale_y)
 
                 self.notify_updated()
-                self.on_matter_ready(m)
+                self.on_matter_ready(matter)
             else:
                 self.notify_updated()
             
             self.end_update_sequence()
 
-        return m
+        return matter
 
-    def move(self, m, x, y):
-        info = _plane_matter_info(self, m)
+    def move(self, matter: IMatter, x, y):
+        info = _plane_matter_info(self, matter)
 
         if info:
             if _unsafe_matter_unmasked(info, self.__mode):
-                if self.__move_matter_via_info(info, x, y, False):
+                if self.__move_matter_via_info(matter, info, x, y, False):
                     self.notify_updated()
         elif self.__head_matter:
             child = self.__head_matter
@@ -241,7 +247,7 @@ class Plane(object):
                 info = child.info
 
                 if info.selected and _unsafe_matter_unmasked(info, self.__mode):
-                    self.__move_matter_via_info(info, x, y, False)
+                    self.__move_matter_via_info(matter, info, x, y, False)
 
                 child = info.next
                 if child == self.__head_matter:
@@ -249,12 +255,12 @@ class Plane(object):
             
             self.notify_update()
     
-    def glide(self, sec, m, x, y):
-        info = _plane_matter_info(self, m)
+    def glide(self, sec, matter, x, y):
+        info = _plane_matter_info(self, matter)
 
         if info:
             if _unsafe_matter_unmasked(info, self.__mode):
-                if self.__glide_matter_via_info(info, sec, x, y, False):
+                if self.__glide_matter_via_info(matter, info, sec, x, y, False):
                     self.notify_updated()
         elif self.__head_matter:
             child = self.__head_matter
@@ -263,7 +269,7 @@ class Plane(object):
                 info = child.info
 
                 if info.selected and _unsafe_matter_unmasked(info, self.__mode):
-                    self.__glide_matter_via_info(info, sec, x, y, False)
+                    self.__glide_matter_via_info(matter, info, sec, x, y, False)
 
                 child = info.next
                 if child == self.__head_matter:
@@ -542,44 +548,8 @@ class Plane(object):
                 
                 if _unsafe_matter_unmasked(info, self.__mode):
                     child.update(count, interval, uptime)
-
-                    if isinstance(child, IMovable):
-                        xspd, yspd = child.x_speed(), child.y_speed()
-                        hdist, vdist = 0.0, 0.0
-
-                        if xspd != 0.0 or yspd != 0.0:
-                            info.x += xspd
-                            info.y += yspd
-
-                            cwidth, cheight = child.get_extent(info.x, info.y)
-                            
-                            if info.x < 0:
-                                hdist = info.x
-                            elif info.x + cwidth > dwidth:
-                                hdist = info.x + cwidth - dwidth
-
-                            if info.y < 0:
-                                vdist = info.y
-                            elif info.y + cheight > dheight:
-                                vdist = info.y + cheight - dheight
-
-                            if hdist != 0.0 or vdist != 0.0:
-                                child.on_border(hdist, vdist)
-                                xspd = child.x_speed()
-                                yspd = child.y_speed()
-
-                                if xspd == 0.0 or yspd == 0.0:
-                                    if info.x < 0.0:
-                                        info.x = 0.0
-                                    elif info.x + cwidth > dwidth:
-                                        info.x = dwidth - cwidth
-
-                                    if info.y < 0.0:
-                                        info.y = 0.0
-                                    elif info.y + cheight > dheight:
-                                        info.y = dheight - cheight
-
-                            self.notify_updated()
+                    self.__do_motion_moving(child, info, dwidth, dheight)
+                    
                 child = info.next
 
                 if child == self.__head_matter:
@@ -607,7 +577,7 @@ class Plane(object):
     def on_mission_complete(self): pass
 
     def on_motion_start(self, m, sec, x, y, xspd, yspd): pass
-    def on_motion_step(self, m, x, y, xspd, yspd): pass
+    def on_motion_step(self, m, x, y, xspd, yspd, percentage): pass
     def on_motion_complete(self, m, x, y, xspd, yspd): pass
 
 # public, do nothing by default
@@ -647,18 +617,28 @@ class Plane(object):
             self.on_focus(m, True)
 
     def notify_matter_ready(self, m):
-        info = _plane_matter_info(self, m)
+        info: _MatterInfo = _plane_matter_info(self, m)
 
-        if info:
-            if info.iasync:
-                self.size_cache_invalid()
-                self.begin_update_sequence()
+        if info and info.iasync:
+            self.size_cache_invalid()
+            self.begin_update_sequence()
 
-                _unsafe_move_async_matter_when_ready(self, m, info)
+            self.__glide_matter_to_target_via_info(m, info,
+                    info.iasync['second'],
+                    info.iasync['x0'], info.iasync['y0'],
+                    info.iasync['fx0'], info.iasync['fy0'],
+                    info.iasync['dx0'], info.iasync['dy0'])
+                
+            if self.__scale_x != 1.0 or self.__scale_y != 1.0:
+                self.__do_resize(m, info, 
+                        info.iasync['fx0'], info.iasync['fy0'],
+                        self.__scale_x, self.__scale_y)
+                
+            info.iasync = None
 
-                self.notify_updated()
-                self.on_matter_ready(m)
-                self.end_update_sequence()
+            self.notify_updated()
+            self.on_matter_ready(m)
+            self.end_update_sequence()
 
     def on_matter_ready(self, m): pass
 
@@ -684,6 +664,18 @@ class Plane(object):
             self.info.master.notify_updated()
 
 # private
+    def __do_resize(self, m: IMatter, info, fx, fy, scale_x, scale_y, prev_scale_x = 1.0, prev_scale_y = 1.0):
+        if m.resizable():
+            sx, sy, sw, sh = _unsafe_get_matter_bound(m, info)
+
+            m.resize(sw / prev_scale_x * scale_x, sh / prev_scale_y * scale_y)
+            nw, nh = m.get_extent(sx, sy)
+
+            nx = sx + (sw - nw) * fx
+            ny = sy + (sh - nh) * fy
+
+            self.__do_moving_via_info(m, info, nx, ny, True)
+
     def __recalculate_matters_extent_when_invalid(self):
         if self.__mright < self.__mleft:
             if self.__head_matter:
@@ -720,7 +712,7 @@ class Plane(object):
                 done |= self.__hovering_matter.on_goodbye(local_x, local_y)
 
                 if self.__hovering_matter.low_level_events_allowed():
-                    done |= self.__hovering_matter.on_pointer_move(state, local_x, local_y)
+                    done |= self.__hovering_matter.on_pointer_move(state, local_x, local_y, dx, dy, True)
 
                 self.on_goodbye(self.__hovering_matter, local_x, local_y)
                 self.__hovering_matter = None
@@ -772,23 +764,24 @@ class Plane(object):
         moved = False
 
         if not info.gliding:
-            moved = self.__do_move_via_info(m, info, x, y, absolute)
+            moved = self.__do_moving_via_info(m, info, x, y, absolute)
         else:
             if len(info.motion_queues) == 0:
-                info.motion_queues.append(_GlidingMotion((x, y), absolute))
+                info.motion_queues.append(_GlidingMotion(x, y, absolute))
             else:
                 back = info.motion_queues[-1]
 
                 if back.second == 0.0:
-                    back.position = (x, y)
+                    back.tx = x
+                    back.ty = y
                     back.absolute = absolute
                 else:
-                    info.motion_queues.append(_GlidingMotion((x, y), absolute))
+                    info.motion_queues.append(_GlidingMotion(x, y, absolute))
 
         return moved
 
     def __move_matter_to_target_via_info(self, m, info, x, y, fx, fy, dx, dy):
-        self.__glide_matter_to_target_via_info(self, m, info, 0.0, x, y, fx, fy, dx, dy)
+        self.__glide_matter_to_target_via_info(m, info, 0.0, x, y, fx, fy, dx, dy)
 
     def __glide_matter_via_info(self, m, info: _MatterInfo, sec, x, y, absolute):
         moved = False
@@ -796,21 +789,20 @@ class Plane(object):
         if sec <= 0.0:
             moved = self.__move_matter_via_info(m, info, x, y, absolute)
         else:
+            sec_delta = 0.0
             if self.info:
-                sec_delta = 1.0 / self.info.get_frame_rate()
-            else:
-                sec_delta = 0.0
-
+                sec_delta = 1.0 / float(self.info.master.frame_rate())
+            
             if (sec <= sec_delta) or (sec_delta == 0.0):
                 moved = self.__move_matter_via_info(m, info, x, y, absolute)
             else:
                 if m.motion_stopped():
                     info.motion_queues.clear()
-                    moved = self.__do_glide_via_info(m, info, x, y, sec, sec_delta, absolute)
+                    moved = self.__do_gliding_via_info(m, info, x, y, sec, sec_delta, absolute)
                 elif not info.gliding:
-                    moved = self.__do_glide_via_info(m, info, x, y, sec, sec_delta, absolute)
+                    moved = self.__do_gliding_via_info(m, info, x, y, sec, sec_delta, absolute)
                 else:
-                    info.motion_queues.append(_GlidingMotion((x, y), absolute, sec, sec_delta))
+                    info.motion_queues.append(_GlidingMotion(x, y, absolute, sec, sec_delta))
         
         return moved
 
@@ -823,6 +815,7 @@ class Plane(object):
             ay = sh * fy
         else:
             info.iasync = {}
+            info.iasync['second'] = sec
             info.iasync['x0'] = x
             info.iasync['y0'] = y
             info.iasync['fx0'] = fx
@@ -832,7 +825,7 @@ class Plane(object):
 
         return self.__glide_matter_via_info(m, info, sec, x - ax + dx, y - ay + dy, True)
 
-    def __do_move_via_info(self, m, info, x, y, absolute):
+    def __do_moving_via_info(self, m, info, x, y, absolute):
         moved = False
 
         if not absolute:
@@ -851,7 +844,7 @@ class Plane(object):
 
         return moved
 
-    def __do_glide_via_info(self, m, info: _MatterInfo, x, y, sec, sec_delta, absolute):
+    def __do_gliding_via_info(self, m: IMatter, info: _MatterInfo, x, y, sec, sec_delta, absolute):
         moved = False
 
         if not absolute:
@@ -869,19 +862,82 @@ class Plane(object):
             m.set_speed(xspd, yspd)
 
             info.gliding = True
-            info.gliding_target = (x, y)
+            info.gliding_tx = x
+            info.gliding_ty = y
+            info.current_step = 1.0
+            info.progress_total = n
 
             self.on_motion_start(m, sec, info.x, info.y, xspd, yspd)
             info.x, info.y = m.step(info.x, info.y)
-            self.on_motion_step(m, info.x, info.y, xspd, yspd)
+            self.on_motion_step(m, info.x, info.y, xspd, yspd, info.current_step / info.progress_total)
             m.on_location_changed(info.x, info.y, x - dx, y - dy)
             self.size_cache_invalid()
             moved = True
         
         return moved
 
-    def __do_motion_move(self, m, info, dwidth, dheight):
-        pass
+    def __do_motion_moving(self, child: IMatter, info: _MatterInfo, dwidth, dheight):
+        if not child.motion_stopped():
+            ox, oy = info.x, info.y
+            xspd, yspd = child.x_speed(), child.y_speed()
+            info.x, info.y = child.step(ox, oy)
+            
+            if info.gliding:
+                if _over_stepped(info.gliding_tx, info.x, xspd) or _over_stepped(info.gliding_ty, info.y, yspd):
+                    info.x, info.y = info.gliding_tx, info.gliding_ty
+                    self.on_motion_step(child, info.x, info.y, xspd, yspd, 1.0)
+                    child.motion_stop()
+                    info.gliding = False
+                    self.on_motion_complete(child, info.x, info.y, xspd, yspd)
+                else:
+                    info.current_step += 1.0
+                    self.on_motion_step(child, info.x, info.y, xspd, yspd, info.current_step / info.progress_total)
+
+            cwidth, cheight = child.get_extent(info.x, info.y)
+            hdist, vdist = 0.0, 0.0
+            
+            if info.x < 0:
+                hdist = info.x
+            elif info.x + cwidth > dwidth:
+                hdist = info.x + cwidth - dwidth
+
+            if info.y < 0:
+                vdist = info.y
+            elif info.y + cheight > dheight:
+                vdist = info.y + cheight - dheight
+
+            if hdist != 0.0 or vdist != 0.0:
+                child.on_border(hdist, vdist)
+                
+                if child.x_stopped():
+                    if info.x < 0.0:
+                        info.x = 0.0
+                    elif info.x + cwidth > dwidth:
+                        info.x = dwidth - cwidth
+
+                if child.y_stopped():
+                    if info.y < 0.0:
+                        info.y = 0.0
+                    elif info.y + cheight > dheight:
+                        info.y = dheight - cheight
+
+            if info.gliding and child.motion_stopped():
+                info.gliding = False
+
+            if info.x != ox or info.y != oy:
+                child.on_location_changed(info.x, info.y, ox, oy)
+                self.size_cache_invalid()
+                self.notify_updated()
+        else:
+            while len(info.motion_queues) > 0:
+                gm = info.motion_queues.pop(0)
+
+                if gm.second > 0.0:
+                    if self.__do_gliding_via_info(child, info, gm.tx, gm.ty, gm.second, gm.sec_delta, gm.absolute):
+                        self.notify_updated()
+                        break
+                elif self.__do_moving_via_info(child, info, gm.tx, gm.ty, gm.absolute):
+                    self.notify_updated()
 
 ###################################################################################################
 def _bind_matter_owership(master, mode, m):
@@ -900,7 +956,7 @@ def _plane_matter_info(master, m):
 def _unsafe_matter_unmasked(info, mode):
     return (info.mode & mode) == info.mode
 
-def _unsafe_get_matter_bound(m, info):
+def _unsafe_get_matter_bound(m: IMatter, info):
     width, height = m.get_extent(info.x, info.y)
 
     return info.x, info.y, width, height
@@ -917,47 +973,7 @@ def _unsafe_set_selected(master, m, info):
     _unsafe_add_selected(master, m, info)
     master.end_update_sequence()
 
-def _unsafe_do_moving_via_info(master, info, x, y, absolute):
-    moved = False
-
-    if not absolute:
-        x += info.x
-        y += info.y
-
-    if info.x != x or info.y != y:
-        info.x = x
-        info.y = y
-
-        master.size_cache_invalid()
-        moved = True
-
-    return moved
-
-def _unsafe_move_matter_via_info(master, m, info, x, y, fx, fy, dx, dy):
-    ax, ay = 0.0, 0.0
-
-    if m.ready():
-        sx, sy, sw, sh = _unsafe_get_matter_bound(m, info)
-        ax = sw * fx
-        ay = sh * fy
-    else:
-        info.iasync = {}
-        info.iasync['x0'] = x
-        info.iasync['y0'] = y
-        info.iasync['fx0'] = fx
-        info.iasync['fy0'] = fy
-        info.iasync['dx0'] = dx
-        info.iasync['dy0'] = dy
-
-    return _unsafe_do_moving_via_info(master, info, x - ax + dx, y - ay + dy, True)
-
-def _unsafe_move_async_matter_when_ready(master, m, info):
-    asi = info.iasync
-    info.iasync = None
-
-    return _unsafe_move_matter_via_info(master, m, info, asi['x0'], asi['y0'], asi['fx0'], asi['fy0'], asi['dx0'], asi['dy0'])
-
-def _do_search_selected_matter(start, mode, terminator):
+def _do_search_selected_matter(start: IMatter, mode, terminator):
     found = None
     child = start
 
@@ -972,17 +988,5 @@ def _do_search_selected_matter(start, mode, terminator):
 
     return found
 
-def _do_resize(master, m, info, scale_x, scale_y, prev_scale_x = 1.0, prev_scale_y = 1.0):
-    resizable, resize_anchor = m.resizable()
-
-    if resizable:
-        sx, sy, sw, sh = _unsafe_get_matter_bound(m, info)
-        fx, fy = matter_anchor_fraction(resize_anchor)
-
-        m.resize(sw / prev_scale_x * scale_x, sh / prev_scale_y * scale_y)
-        nw, nh = m.get_extent(sx, sy)
-
-        nx = sx + (sw - nw) * fx
-        ny = sy + (sh - nh) * fy
-
-        _unsafe_do_moving_via_info(master, info, nx, ny, True)
+def _over_stepped(tx, cx, spd):
+    return flsign(tx - cx) != flsign(spd)

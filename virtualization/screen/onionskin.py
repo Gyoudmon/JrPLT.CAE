@@ -13,6 +13,9 @@ class OnionSkin(IScreen):
     
     def get_client_extent(self):
         return self.__display.get_client_extent()
+    
+    def frame_rate(self):
+        return self.__display.frame_rate()
         
     def refresh(self):
         self.__display.refresh()

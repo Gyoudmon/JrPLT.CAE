@@ -14,6 +14,9 @@ class IScreen(ABC):
     def get_client_extent(self): pass
 
     @abstractmethod
+    def frame_rate(self): pass
+
+    @abstractmethod
     def refresh(self): pass
 
     @abstractmethod

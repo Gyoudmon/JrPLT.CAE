@@ -1,27 +1,24 @@
 from .forward import *
 from .graphics.image import *
+from .physics.motion import *
 from .virtualization.iscreen import *
-
 
 ###############################################################################
 class IMatterInfo(object):
     def __init__(self, master):
         self.master = master
 
-class IMatter(object):
+class IMatter(IMovable):
     def __init__(self):
         super(IMatter, self).__init__()
         self.info = None
-        self.__resize_anchor, self.__resizable = MatterAnchor.LT, False
+        self.__resizable = False
         self.__anchor, self.__anchor_x, self.__anchor_y = MatterAnchor.LT, 0.0, 0.0
         self.__deal_with_events, self.__deal_with_low_level_events = False, False
         self.__findable = True
 
     def __del__(self):
         self.info = None
-        
-    def pre_construct(self): pass
-    def post_construct(self): pass
 
     def master(self):
         plane = None
@@ -63,6 +60,9 @@ class IMatter(object):
     def on_pointer_move(self, state, x, y, dx, dy, touch): return False
     
 # public
+    def on_location_changed(self, x, y, old_x, old_y): pass
+
+# public
     def enable_events(self, yes_or_no, low_level = False):
         self.__deal_with_events = yes_or_no
         self.__deal_with_low_level_events = low_level
@@ -72,7 +72,7 @@ class IMatter(object):
         self.__resize_anchor = anchor
 
     def resizable(self):
-        return self.__resizable, self.__resize_anchor
+        return self.__resizable
 
     def events_allowed(self):
         return self.__deal_with_events
