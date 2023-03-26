@@ -37,7 +37,7 @@ class ColorMixtureWorld(Plane):
 
     def can_select(self, matter):
         return True
-    
+
     # 实现 ColorMixtureWorld::after_select 方法
     def after_select(self, matter, yes):
         if not yes:
@@ -48,4 +48,4 @@ class ColorMixtureWorld(Plane):
         self.no_selected()
     
 ###############################################################################
-launch_universe(ColorMixtureWorld, __name__, (1200, 800))
+launch_universe(ColorMixtureWorld, __name__, (1200, 1200))
