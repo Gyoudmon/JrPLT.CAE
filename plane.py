@@ -199,7 +199,7 @@ class Plane(object):
 
         return self.__mleft, self.__mtop, w, h
 
-    def insert(self, matter: IMatter, x = 0.0, y = 0.0, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
+    def insert(self, matter: IMatter, x = 0.0, y = 0.0, anchor: MatterAnchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
         if matter.info is None:
             fx, fy = matter_anchor_fraction(anchor)
             
@@ -255,7 +255,7 @@ class Plane(object):
             
             self.notify_update()
     
-    def glide(self, sec, matter, x, y):
+    def glide(self, sec, matter: IMatter, x, y):
         info = _plane_matter_info(self, matter)
 
         if info:
@@ -277,7 +277,7 @@ class Plane(object):
             
             self.notify_update()
 
-    def move_to(self, matter, target, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
+    def move_to(self, matter: IMatter, target, anchor: MatterAnchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
         info = _plane_matter_info(self, matter)
         
         if info and _unsafe_matter_unmasked(info, self.__mode):
@@ -289,7 +289,7 @@ class Plane(object):
                 if self.__move_matter_to_target_via_info(matter, info, pos[0], pos[1], fx, fy, dx, dy):
                     self.notify_updated()
 
-    def glide_to(self, sec, matter, target, anchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
+    def glide_to(self, sec, matter: IMatter, target, anchor: MatterAnchor = MatterAnchor.LT, dx = 0.0, dy = 0.0):
         info = _plane_matter_info(self, matter)
         
         if info and _unsafe_matter_unmasked(info, self.__mode):
@@ -301,12 +301,12 @@ class Plane(object):
                 if self.__glide_matter_to_target_via_info(matter, info, sec, pos[0], pos[1], fx, fy, dx, dy):
                     self.notify_updated()
 
-    def glide_to_mouse(self, sec, matter, anchor = MatterAnchor.CC, dx = 1.0, dy = 1.0):
+    def glide_to_mouse(self, sec, matter: IMatter, anchor: MatterAnchor = MatterAnchor.CC, dx = 1.0, dy = 1.0):
         mx, my = get_current_mouse_location()
         self.glide_to(sec, matter, (mx, my), anchor, dx, dy)
     
-    def remove(self, m):
-        info = _plane_matter_info(self, m)
+    def remove(self, matter: IMatter):
+        info = _plane_matter_info(self, matter)
 
         if info and _unsafe_matter_unmasked(info, self.__mode):
             prev_info = info.prev
@@ -315,13 +315,13 @@ class Plane(object):
             prev_info.next = info.next
             next_info.prev = info.prev
 
-            if self.__head_matter == m:
+            if self.__head_matter == matter:
                 if self.__head_matter == info.next:
                     self.__head_matter = None
                 else:
                     self.__head_matter = info.next
 
-            if self.__hovering_matter == m:
+            if self.__hovering_matter == matter:
                 self.__hovering_matter = None
             
             self.notify_updated()
@@ -334,8 +334,8 @@ class Plane(object):
     def size_cache_invalid(self):
         self.__mright = self.__mleft - 1.0
 
-    def is_colliding(self, m, target):
-        slx, sty, sw, sh = self.get_matter_boundary(m)
+    def is_colliding(self, matter: IMatter, target: IMatter):
+        slx, sty, sw, sh = self.get_matter_boundary(matter)
         tlx, tty, tw, th = self.get_matter_boundary(target)
 
         srx, sby = slx + sw, sty + sh

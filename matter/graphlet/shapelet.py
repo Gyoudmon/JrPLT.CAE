@@ -18,8 +18,8 @@ class IShapelet(IGraphlet):
         self.enable_resizing(True)
         self.__geometry = None
         self.__mixture = ColorMixture.Alpha
-        self.__color = color
-        self.__border_color = border_color
+        self.__color = _shape_color(color)
+        self.__border_color = _shape_color(border_color)
         self.__alpha = 0xFF
         
     def __del__(self):
@@ -56,8 +56,10 @@ class IShapelet(IGraphlet):
 
 # public
     def set_color(self, color):
-        if self.__color != color:
-            self.__color = color
+        c = _shape_color(color)
+
+        if self.__color != c:
+            self.__color = c
             self._invalidate_geometry()
             self.notify_updated()
 
@@ -65,8 +67,10 @@ class IShapelet(IGraphlet):
         return self.__color
 
     def set_border_color(self, color):
-        if self.__border_color != color:
-            self.__border_color = color
+        c = _shape_color(color)
+
+        if self.__border_color != c:
+            self.__border_color = c
             self._invalidate_geometry()
             self.notify_updated()
     
@@ -159,7 +163,7 @@ class Rectanglet(IShapelet):
         gfx.boxRGBA(renderer, width, 0, 0, height, r, g, b, a)
 
 class Squarelet(Rectanglet):
-    def __init__(self, edge_size, color, border_color=-1):
+    def __init__(self, edge_size, color, border_color = -1):
         super(Squarelet, self).__init__(edge_size, edge_size, color, border_color)
 
 class RoundedRectanglet(IShapelet):
@@ -293,3 +297,13 @@ class RegularPolygonlet(IShapelet):
         for idx in range(0, self.__n):
             self.__xs[idx] -= self.__lx
             self.__ys[idx] -= self.__ty
+
+###################################################################################################
+def _shape_color(src):
+    if isinstance(src, int):
+        return src
+    elif isinstance(src, float):
+        return _shape_color([src, 1.0, 1.0])
+    else:
+        r, g, b, _ = RGBA_From_HSB_With_Alpha(src[0], src[1], src[2], 0xFF)
+        return Hexadecimal_From_RGB(r, g, b)

@@ -3,6 +3,8 @@ import sdl2
 import math   # 数学函数
 import enum   # 枚举类型
 
+from ..physics.mathematics import *
+
 ###############################################################################
 class ColorMixture(enum.Enum):
     Ignore = sdl2.SDL_BLENDMODE_NONE
@@ -25,6 +27,8 @@ def blend_mode_to_color_mixture(mode: int):
 def rgba(cs, alpha = 0xFF):
     if isinstance(cs, int):
         c = RGBA_From_Hexadecimal_With_Alpha(cs, alpha) 
+    elif isinstance(cs, float):
+        c = RGBA_From_HSB_With_Alpha(cs, 1.0, 1.0, alpha)
     else:
         c = RGBA_From_HSB_With_Alpha(cs[0], cs[1], cs[2], alpha)
 
@@ -73,6 +77,9 @@ def RGBA_From_HSI_With_Alpha(hue, saturation, intensity, alpha = 0xFF):
         return _rgba_from_hsi_sector(hue - 240.0, saturation, intensity, _B, alpha)
 
 ###############################################################################
+def Hexadecimal_From_RGB(red, green, blue):
+    return (red << 16) | (green << 8) | blue
+
 def RGB_FromHexadecimal(hex):
     return (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF
 
@@ -106,8 +113,10 @@ def _rgba_from_hue(hue, chroma, m, a):
     r = m
     g = m
     b = m
+
+    hue = degrees_normalize(hue)
     
-    if math.isnan(hue):
+    if not math.isnan(hue):
         hue_60 = hue / 60.0
         flhue = math.floor(hue_60)
         fxhue = int(flhue)

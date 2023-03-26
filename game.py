@@ -6,6 +6,8 @@ from .graphics.geometry import *
 from .graphics.font import *
 from .graphics.text import *
 
+from .physics.mathematics import *
+
 from .cosmos import *
 
 from .matter.graphlet.textlet import *

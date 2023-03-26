@@ -1,11 +1,36 @@
 import math
 
 ###################################################################################################
+d_pi = math.pi * 2.0
+	
 def radians_to_degrees(radians):
     return math.degrees(radians)
 
 def degrees_to_radians(degrees):
     return math.radians(degrees)
+
+def degrees_normalize(degrees, degrees_start = 0.0):
+    degrees_end = degrees_start + 360.0
+    
+    while degrees < degrees_start:
+        degrees += 360.0
+    
+    while degrees >= degrees_end:
+        degrees -= 360.0
+
+    return degrees
+        
+def radians_normalize(radians, degrees_start = 0.0):
+    radians_start = degrees_to_radians(degrees_start)
+    radians_end = radians_start + d_pi
+    
+    while radians < radians_start:
+        radians += d_pi
+
+    while radians >= radians_end:
+        radians -= d_pi
+
+    return radians
 
 ###################################################################################################
 def flin(dmin, datum, dmax):
@@ -89,6 +114,19 @@ def vector_clamp(v, ceil):
         v = -ceil
 
     return v
+
+###################################################################################################
+def circle_point(radius, angle, is_radian = False):
+    if not is_radian:
+        angle = degrees_to_radians(angle)
+
+    return radius * math.cos(angle), radius * math.sin(angle)
+
+def ellipse_point(radiusX, radiusY, angle, is_radian = False):
+    if not is_radian:
+        angle = degrees_to_radians(angle)
+
+    return radiusX * math.cos(angle), radiusY * math.sin(angle)
 
 ###################################################################################################
 def lines_intersection(x11, y11, x12, y12, x21, y21, x22, y22):
