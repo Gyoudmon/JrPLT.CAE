@@ -36,17 +36,15 @@ void WarGrey::STEM::ChromaticityDiagramWorld::load(float width, float height) {
 }
 
 void WarGrey::STEM::ChromaticityDiagramWorld::reflow(float width, float height) {
-    float delta_deg = 360.0F / float(color_count);
     float cx = width * 0.5F;
     float cy = height * 0.55F;
     float x, y;
-    int idx = 0;
-
+    
     TheBigBang::reflow(width, height);
     
-    for (float deg = 0.0F; deg < 360.0F; deg += delta_deg) {
-        circle_point(wheel_radius, deg - 90.0F, &x, &y, false);
-        this->move_to(this->colors[idx++], cx + x, cy + y, MatterAnchor::CC);
+    for (auto c : this->colors) {
+        circle_point(wheel_radius, float(c->get_body_hsb_hue()) - 90.0F, &x, &y, false);
+        this->move_to(c, cx + x, cy + y, MatterAnchor::CC);
     }
 
     circle_point(wheel_radius, -90.0F, &x, &y, false);
