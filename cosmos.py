@@ -16,6 +16,7 @@ class _LinkedPlaneInfo(IPlaneInfo):
 class Cosmos(Universe):
     def __init__(self, fps = 60, fgc = 0x000000, bgc = 0xFFFFFF):
         super(Cosmos, self).__init__(fps, fgc, bgc)
+        
         self.__screen = OnionSkin(self)
         self.__head_plane: typing.Optional(Plane) = None
         self.__recent_plane: typing.Optional(Plane) = None

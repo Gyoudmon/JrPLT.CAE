@@ -1,4 +1,4 @@
-import sdl2
+import pygame
 
 import math   # 数学函数
 import enum   # 枚举类型
@@ -7,15 +7,11 @@ from ..physics.mathematics import *
 
 ###############################################################################
 class ColorMixture(enum.Enum):
-    Ignore = sdl2.SDL_BLENDMODE_NONE
-    Add = sdl2.SDL_BLENDMODE_ADD
-    
-    # The following two are identical
-    Subtract = sdl2.SDL_BLENDMODE_MUL
-    Multiply = sdl2.SDL_BLENDMODE_MUL
+    Ignore = pygame.BLENDMODE_NONE
+    Add = pygame.BLENDMODE_ADD
 
-    Modulate = sdl2.SDL_BLENDMODE_MOD
-    Alpha = sdl2.SDL_BLENDMODE_BLEND
+    Modulate = pygame.BLENDMODE_MOD
+    Alpha = pygame.BLENDMODE_BLEND
 
 def color_mixture_to_blend_mode(mixture: ColorMixture):
     return mixture.value
@@ -33,10 +29,6 @@ def rgba(cs, alpha = 0xFF):
         c = RGBA_From_HSB_With_Alpha(cs[0], cs[1], cs[2], alpha)
 
     return c
-
-def RGBA_SetRenderDrawColor(renderer, cs, alpha = 0xFF):
-    r, g, b, a = rgba(cs, alpha)
-    sdl2.SDL_SetRenderDrawColor(renderer, r, g, b, a)
 
 ###############################################################################
 def RGBA_From_Hexadecimal_With_Alpha(hex, alpha = 0xFF):

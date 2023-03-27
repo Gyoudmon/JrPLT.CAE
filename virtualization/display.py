@@ -21,10 +21,11 @@ class IDisplay(ABC):
     def snapshot(self): pass
 
     def save_snapshot(self, pname):
-        snapshot_png = self.snapshot()
+        snapshot_png, need_delete = self.snapshot()
         okay = game_save_image(snapshot_png, pname)
 
-        game_unload_image(snapshot_png)
+        if need_delete:
+            game_unload_image(snapshot_png)
 
         return okay
 

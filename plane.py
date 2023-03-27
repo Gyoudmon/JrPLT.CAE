@@ -1,6 +1,4 @@
-import sdl2
-import sdl2.rect as sdlr
-
+import pygame
 import math
 import typing
 
@@ -98,7 +96,7 @@ class Plane(object):
     def reflow(self, width, height): pass
     def update(self, count, interval, uptime): pass
 
-    def draw(self, renderer, X, Y, Width, Height):
+    def draw(self, renderer: pygame.Surface, X, Y, Width, Height):
         dsX, dsY = max(0.0, X), max(0.0, Y)
         dsWidth, dsHeight = X + Width, Y + Height
 
@@ -106,7 +104,7 @@ class Plane(object):
             game_fill_rect(renderer, dsX, dsY, dsWidth, dsHeight, self.__background, self.__bg_alpha)
 
         if self.__head_matter:
-            clip = sdlr.SDL_Rect(0, 0, 0, 0)
+            clip = pygame.Rect(0, 0, 0, 0)
             child = self.__head_matter
 
             while True:
@@ -124,18 +122,18 @@ class Plane(object):
                         clip.w = int(math.ceil(mwidth))
                         clip.h = int(math.ceil(mheight))
 
-                        sdl2.SDL_RenderSetClipRect(renderer, clip)
+                        renderer.set_clip(clip)
                         child.draw(renderer, mx, my, mwidth, mheight)
 
                         if info.selected:
-                            sdl2.SDL_RenderSetClipRect(renderer, None)
+                            renderer.set_clip(None)
                             self.draw_visible_selection(renderer, mx, my, mwidth, mheight)
 
                 child = info.next
                 if child == self.__head_matter:
                     break
             
-            sdl2.SDL_RenderSetClipRect(renderer, None)
+            renderer.set_clip(None)
 
     def draw_visible_selection(self, renderer, x, y, width, height):
         game_draw_rect(renderer, x, y, width, height, 0x00FFFF)
@@ -425,14 +423,11 @@ class Plane(object):
         self.__background = c_hex
         self.__bg_alpha = a
 
-    def feed_background(self, sdl_c):
-        RGB_FillColor(sdl_c, self.__background, self.__bg_alpha)
-
 # public
     def on_pointer_pressed(self, button, x, y, clicks):
         handled = False
 
-        if button == sdl2.SDL_BUTTON_LEFT:
+        if button == 1:
             unmasked_matter = self.find_matter(x, y)
 
             if unmasked_matter:
@@ -455,7 +450,7 @@ class Plane(object):
     def on_pointer_released(self, button, x, y, clicks):
         handled = False
 
-        if button == sdl2.SDL_BUTTON_LEFT:
+        if button == 1:
             unmasked_matter = self.find_matter(x, y)
 
             if unmasked_matter:
