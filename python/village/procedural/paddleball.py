@@ -31,14 +31,17 @@ ball_speed = 4.0
 paddle_speed = ball_speed * 3.0
 
 ###############################################################################
-class PaddleBallWorld(World):
+class PaddleBallWorld(Universe):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题
-        super(PaddleBallWorld, self).__init__("托球游戏(过程式)")
+        super(PaddleBallWorld, self).__init__()
 
         # 本游戏世界中的物体
         self.ball = Ball()
         self.paddle = make_paddle()
+
+    def construct(self, argv):
+        self.set_window_title("托球游戏(过程式)")
 
     # 实现 PaddleBallWorld::reflow 方法，调整球和桨的初始位置
     def reflow(self, width, height):
@@ -95,12 +98,12 @@ class PaddleBallWorld(World):
 
     # 实现 PaddleBallWorld::on_char 方法，处理键盘事件，用于控制桨的移动
     def _on_char(self, key, modifiers, repeats, pressed):
-        if key == 'a':
+        if key == pygame.K_a:
             if pressed:
                 self.paddle['speed'] = -paddle_speed
             else:
                 self.paddle['speed'] = 0.0
-        elif key == 'd':
+        elif key == pygame.K_d:
             if pressed:
                 self.paddle['speed'] = +paddle_speed
             else:

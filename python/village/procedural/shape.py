@@ -4,13 +4,14 @@ from digitama.big_bang.game import *    # 导入游戏模块，内含 World 类�
 
 ###############################################################################
 # 创建自定义数据类型，并命名为 ShapeWorld，继承自 World
-class ShapeWorld(World):
+class ShapeWorld(Universe):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题和帧频
-        super(ShapeWorld, self).__init__("Primitive Shapes", 0)
+        super(ShapeWorld, self).__init__(0)
 
     # 实现 ShapeWorld::construct 函数，设置窗口大小
     def construct(self, argv):
+        self.set_window_title("基本图形陈列馆(过程式)")
         self.set_window_size(800, 600)
 
     # 实现 ShapeWorld::draw 函数，本例中绘制一系列几何图形
