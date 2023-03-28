@@ -22,7 +22,7 @@ def game_text_size(font: pygame.font.Font, text):
     return font.size(text)
 
 ###################################################################################################
-def game_text_surface(text, font: pygame.font.Font, mode, fgc, bgc):
+def game_text_surface(text, font: pygame.font.Font, mode, fgc, bgc, wrap):
     if not font:
         font = game_font.DEFAULT
     
@@ -35,19 +35,19 @@ def game_text_surface(text, font: pygame.font.Font, mode, fgc, bgc):
 
 ###################################################################################################
 def game_draw_solid_text(font, renderer, rgb, x, y, text):
-    message = game_text_surface(text, font, TextRenderMode.Solid, rgb, None)
+    message = game_text_surface(text, font, TextRenderMode.Solid, rgb, None, 0)
     _safe_render_text_surface(renderer, message, x, y)
 
 def game_draw_shaded_text(font, renderer, fgc, bgc, x, y, text):
-    message = game_text_surface(text, font, TextRenderMode.Shaded, fgc, bgc)
+    message = game_text_surface(text, font, TextRenderMode.Shaded, fgc, bgc, 0)
     _safe_render_text_surface(renderer, message, x, y)
 
 def game_draw_lcd_text(font, renderer, fgc, bgc, x, y, text):
-    message = game_text_surface(text, font, TextRenderMode.LCD, fgc, bgc)
+    message = game_text_surface(text, font, TextRenderMode.LCD, fgc, bgc, 0)
     _safe_render_text_surface(renderer, message, x, y)
 
 def game_draw_blended_text(font, renderer, rgb, x, y, text):
-    message = game_text_surface(text, font, TextRenderMode.Blender, rgb, None)
+    message = game_text_surface(text, font, TextRenderMode.Blender, rgb, None, 0)
     _safe_render_text_surface(renderer, message, x, y)
 
 ###################################################################################################

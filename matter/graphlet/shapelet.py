@@ -1,8 +1,4 @@
-import sdl2
-import sdl2.sdlgfx as gfx
-
 import math
-import ctypes
 
 from ..igraphlet import *
 from ..movable import *
@@ -31,28 +27,18 @@ class IShapelet(IGraphlet):
         height = round(flHeight)
         
         if not self.__geometry:
-            self.__geometry = game_blank_image(renderer, width + 1, height + 1)
+            self.__geometry = game_blank_image(width + 1, height + 1)
 
-            if self.__geometry:
-                origin = sdl2.SDL_GetRenderTarget(renderer)
+            if self.__color >= 0:
+                r, g, b = RGB_FromHexadecimal(self.__color)
+                self._fill_shape(self.__geometry, width, height, r, g, b, self.__alpha)
 
-                sdl2.SDL_SetRenderTarget(renderer, self.__geometry)
-        
-                if self.__color >= 0:
-                    r, g, b = RGB_FromHexadecimal(self.__color)
-                    self._fill_shape(renderer, width, height, r, g, b, self.__alpha)
-
-                if self.__border_color >= 0:
-                    r, g, b = RGB_FromHexadecimal(self.__border_color)
-                    self._draw_shape(renderer, width, height, r, g, b, self.__alpha)
-
-                sdl2.SDL_SetRenderTarget(renderer, origin)
-                sdl2.SDL_SetTextureBlendMode(self.__geometry, color_mixture_to_blend_mode(self.__mixture))
-            else:
-                print("无法绘制几何图形：%s" % sdl2.SDL_GetError().decode('utf-8'))
-        
+            if self.__border_color >= 0:
+                r, g, b = RGB_FromHexadecimal(self.__border_color)
+                self._draw_shape(self.__geometry, width, height, r, g, b, self.__alpha)
+                
         if self.__geometry:
-            game_render_texture(renderer, self.__geometry, (flx, fly, flWidth, flHeight))
+            game_render_surface(renderer, self.__geometry, (flx, fly, flWidth, flHeight))
 
 # public
     def set_color(self, color):
@@ -98,13 +84,13 @@ class IShapelet(IGraphlet):
             self.notify_updated()
 
 # protected
-    def _draw_shape(self, renderer, width, height, r, g, b, a): pass
-    def _fill_shape(self, renderer, width, height, r, g, b, a): pass
+    def _draw_shape(self, renderer: pygame.Surface, width, height, r, g, b, a): pass
+    def _fill_shape(self, renderer: pygame.Surface, width, height, r, g, b, a): pass
 
 # protected
     def _invalidate_geometry(self):
         if self.__geometry:
-            sdl2.SDL_DestroyTexture(self.__geometry)
+            del self.__geometry
             self.__geometry = None
 
 ###################################################################################################
@@ -132,7 +118,7 @@ class Linelet(IShapelet):
         if yn < 0:
             y = y - yn
 
-        gfx.aalineRGBA(renderer, x, y, x + xn, y + yn, r, g, b, a)        
+        pygame.draw.aaline(renderer, (r, g, b, a), (x, y), (x + xn, y + yn), 1)
 
 class HLinelet(Linelet):
     def __init__(self, width, color):
@@ -141,6 +127,48 @@ class HLinelet(Linelet):
 class VLinelet(Linelet):
     def __init__(self, height, color):
         super(VLinelet, self).__init__(0.0, height, color)
+
+###################################################################################################
+class Trianglet(IShapelet):
+    def __init__(self, x2, y2, x3, y3, color, border_color = -1):
+        super(Trianglet, self).__init__(color, border_color)
+
+        self.__x2, self.__y2 = x2, y2
+        self.__x3, self.__y3 = x3, y3
+
+    def get_extent(self, x, y):
+        xmin = min(0.0, min(self.__x2, self.__x3))
+        ymin = min(0.0, min(self.__y2, self.__y3))
+        xmax = max(0.0, max(self.__x2, self.__x3))
+        ymax = max(0.0, max(self.__y2, self.__y3))
+
+        return xmax - xmin + 1.0, ymax - ymin + 1.0
+    
+    def _on_resize(self, w, h, width, height):
+        xratio = w / width
+        yratio = h / height
+
+        self.__x2 *= xratio
+        self.__y2 *= yratio
+        self.__x3 *= xratio
+        self.__y3 *= yratio
+        self._invalidate_geometry()
+
+    def _draw_shape(self, renderer: pygame.Surface, width, height, r, g, b, a):
+        x = -min(0.0, min(self.__x2, self.__x3))
+        y = -min(0.0, min(self.__y2, self.__y3))
+        pts = [(x, y), (self.__x2 + x, self.__y2 + y), (self.__x3 + x, self.__y3 + y)]
+
+        pygame.draw.polygon(renderer, (r, g, b, a), pts, 1)
+
+    def _draw_shape(self, renderer: pygame.Surface, width, height, r, g, b, a):
+        x = -min(0.0, min(self.__x2, self.__x3))
+        y = -min(0.0, min(self.__y2, self.__y3))
+        pts = [(x, y), (self.__x2 + x, self.__y2 + y), (self.__x3 + x, self.__y3 + y)]
+        c = (r, g, b, a)
+        
+        pygame.draw.polygon(renderer, c, pts, 0)
+        pygame.draw.polygon(renderer, c, pts, 1)
 
 ###################################################################################################
 class Rectanglet(IShapelet):
@@ -157,10 +185,10 @@ class Rectanglet(IShapelet):
         self._invalidate_geometry()
     
     def _draw_shape(self, renderer, width, height, r, g, b, a):
-        gfx.rectangleRGBA(renderer, width, 0, 0, height, r, g, b, a)
+        pygame.draw.rect(renderer, (r, g, b, a), pygame.Rect(0, 0, width, height), 1)
 
     def _fill_shape(self, renderer, width, height, r, g, b, a):
-        gfx.boxRGBA(renderer, width, 0, 0, height, r, g, b, a)
+        pygame.draw.rect(renderer, (r, g, b, a), pygame.Rect(0, 0, width, height), 0)
 
 class Squarelet(Rectanglet):
     def __init__(self, edge_size, color, border_color = -1):
@@ -186,7 +214,7 @@ class RoundedRectanglet(IShapelet):
         if rad < 0.0:
             rad = -min(self.__width, self.__height) * rad
 
-        gfx.roundedRectangleRGBA(renderer, 0, 0, width, height, round(rad), r, g, b, a)
+        pygame.draw.rect(renderer, (r, g, b, a), pygame.Rect(0, 0, width, height), 1, round(rad))
 
     def _fill_shape(self, renderer, width, height, r, g, b, a):
         rad = self.__radius
@@ -194,7 +222,7 @@ class RoundedRectanglet(IShapelet):
         if rad < 0.0:
             rad = -min(self.__width, self.__height) * rad
 
-        gfx.roundedBoxRGBA(renderer, 0, 0, width, height, round(rad), r, g, b, a)
+        pygame.draw.rect(renderer, (r, g, b, a), pygame.Rect(0, 0, width, height), 0, round(rad))
 
 class RoundedSquarelet(RoundedRectanglet):
     def __init__(self, edge_size, radius, color, border_color = -1):
@@ -216,26 +244,28 @@ class Ellipselet(IShapelet):
     def _draw_shape(self, renderer, width, height, r, g, b, a):
         rx = round(self.__aradius) - 1
         ry = round(self.__bradius) - 1
-        cx = rx + 1
-        cy = ry + 1
-
+        c = (r, g, b, a)
+        
         if rx == ry:
-            gfx.aacircleRGBA(renderer, cx, cy, rx, r, g, b, a)
+            cx = rx + 1
+            cy = ry + 1
+            pygame.draw.circle(renderer, c, (cx, cy), rx, 1)
         else:
-            gfx.aaellipseRGBA(renderer, cx, cy, rx, ry, r, g, b, a)
+            pygame.draw.ellipse(renderer, c, pygame.Rect(0, 0, width, height), 1)
 
     def _fill_shape(self, renderer, width, height, r, g, b, a):
         rx = round(self.__aradius) - 1
         ry = round(self.__bradius) - 1
-        cx = rx + 1
-        cy = ry + 1
-
+        c = (r, g, b, a)
+        
         if rx == ry:
-            gfx.filledCircleRGBA(renderer, cx, cy, rx, r, g, b, a)
-            gfx.aacircleRGBA(renderer, cx, cy, rx, r, g, b, a)
+            center = (rx + 1, ry + 1)
+            pygame.draw.circle(renderer, c, center, rx, 0)
+            pygame.draw.circle(renderer, c, center, rx, 1)
         else:
-            gfx.filledEllipseRGBA(renderer, cx, cy, rx, ry, r, g, b, a)
-            gfx.aaellipseRGBA(renderer, cx, cy, rx, ry, r, g, b, a)
+            box = pygame.Rect(0, 0, width, height)
+            pygame.draw.ellipse(renderer, c, box, 0)
+            pygame.draw.ellipse(renderer, c, box, 1)
 
 class Circlet(Ellipselet):
     def __init__(self, radius, color, border_color = -1):
@@ -245,13 +275,11 @@ class Circlet(Ellipselet):
 class RegularPolygonlet(IShapelet):
     def __init__(self, n, radius, color, border_color = -1, rotation = 0.0):
         super(RegularPolygonlet, self).__init__(color, border_color)
-        self.__PTArray = ctypes.c_int16 * (n + 1)
         self.__n = n
         self.__aradius, self.__bradius = radius, radius
         self.__rotation = rotation
         self.__lx, self.__rx, self.__ty, self.__by = 0.0, 0.0, 0.0, 0.0
-        self.__xs = self.__PTArray()
-        self.__ys = self.__PTArray()
+        self.__pts = [(0, 0)] * n
         self.__initialize_vertice()
 
     def get_extent(self, x, y):
@@ -264,11 +292,12 @@ class RegularPolygonlet(IShapelet):
         self._invalidate_geometry()
 
     def _draw_shape(self, renderer, width, height, r, g, b, a):
-        gfx.aapolygonRGBA(renderer, self.__xs, self.__ys, self.__n, r, g, b, a)
+        pygame.draw.polygon(renderer, (r, g, b, a), self.__pts, 1)
     
     def _fill_shape(self, renderer, width, height, r, g, b, a):
-        gfx.filledPolygonRGBA(renderer, self.__xs, self.__ys, self.__n, r, g, b, a)
-        gfx.aapolygonRGBA(renderer, self.__xs, self.__ys, self.__n, r, g, b, a)
+        c = (r, g, b, a)
+        pygame.draw.polygon(renderer, c, self.__pts, 0)
+        pygame.draw.polygon(renderer, c, self.__pts, 1)
     
     def __initialize_vertice(self):
         start = math.radians(self.__rotation)
@@ -281,8 +310,9 @@ class RegularPolygonlet(IShapelet):
 
         for idx in range(0, self.__n):
             theta = start + delta * float(idx)
-            self.__xs[idx] = this_x = round(self.__aradius * math.cos(theta))
-            self.__ys[idx] = this_y = round(self.__bradius * math.sin(theta))
+            this_x = self.__aradius * math.cos(theta)
+            this_y = self.__bradius * math.sin(theta)
+            self.__pts[idx] = (this_x, this_y)
 
             if self.__rx < this_x:
                 self.__rx = this_x
@@ -295,8 +325,8 @@ class RegularPolygonlet(IShapelet):
                 self.__ty = this_y
 
         for idx in range(0, self.__n):
-            self.__xs[idx] -= self.__lx
-            self.__ys[idx] -= self.__ty
+            x, y = self.__pts[idx]
+            self.__pts[idx] = (x - self.__lx, y - self.__ty)
 
 ###################################################################################################
 def _shape_color(src):

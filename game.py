@@ -10,8 +10,8 @@ from .physics.mathematics import *
 
 from .cosmos import *
 
-#from .matter.graphlet.textlet import *
-#from .matter.graphlet.shapelet import *
+from .matter.graphlet.textlet import *
+from .matter.graphlet.shapelet import *
 
 from .trace import *
 

@@ -21,11 +21,12 @@ def game_initialize():
         #atexit.register(game_fonts_destroy)
 
 def game_world_create(width, height):
-    flags = pygame.SHOWN | pygame.RESIZABLE
+    flags = pygame.SHOWN
 
     if width <= 0 and height <= 0:
         flags |= pygame.FULLSCREEN
     elif width <= 0 or height <= 0:
+        flags |= pygame.RESIZABLE
         width, height = pygame.display.get_desktop_sizes()[0]
     
     return pygame.display.set_mode((width, height), flags)
@@ -166,7 +167,13 @@ class Universe(IDisplay):
 
         if width != oldw or height != oldh:
             self.__window = game_world_create(width, height)
-            self._on_resize(width, height)
+
+            if (self.__window_width > 0) and (self.__window_height > 0):
+                # the universe has been completely initialized
+                self._on_resize(width, height)
+            else:
+                # the big_bang() will do resizing later
+                pass
 
     def get_window_size(self, logical = True):
         return _get_window_size(self.__window, logical)

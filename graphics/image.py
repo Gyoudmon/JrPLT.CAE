@@ -5,15 +5,11 @@ from .geometry import *
 from .colorspace import *
 
 ###################################################################################################
-def game_blank_image(width, height, alpha_color_key = 0xFFFFFF):
-    surface = pygame.Surface((round(width), round(height)), 0, 32)
-    r, g, b = RGB_FromHexadecimal(alpha_color_key)
-    surface.set_colorkey(pygame.Color(r, g, b))
-    
-    return surface
+def game_blank_image(width, height):
+    return pygame.Surface((round(width), round(height)), pygame.SRCALPHA)
 
 def game_load_image(file):
-    return pygame.image.load(file)
+    return pygame.image.load(file).convert(0, pygame.SRCALPHA)
 
 def game_unload_image(image):
     del image
@@ -32,7 +28,7 @@ def game_draw_image(renderer, image, x, y, width, height):
     if image.w == width and image.h == height:
         game_render_surface(renderer, image, (x, y))
     else:
-        region = pygame.rect(round(x), round(y), round(width), round(height))
+        region = pygame.Rect(round(x), round(y), round(width), round(height))
 
         if  width <= 0: region.w = image.w
         if height <= 0: region.h = image.h

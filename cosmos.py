@@ -67,11 +67,12 @@ class Cosmos(Universe):
     def _on_mouse_button_event(self, m, pressed):
         if self.__recent_plane:
             self.begin_update_sequence()
+            x, y = m.pos
             
             if pressed:
-                self.__recent_plane.on_pointer_pressed(m.button, m.x, m.y, m.clicks)
+                self.__recent_plane.on_pointer_pressed(m.button, x, y, 1)
             else:
-                self.__recent_plane.on_pointer_released(m.button, m.x, m.y, m.clicks)
+                self.__recent_plane.on_pointer_released(m.button, x, y, 1)
 
             self.end_update_sequence()
 

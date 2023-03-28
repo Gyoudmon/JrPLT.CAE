@@ -1,6 +1,3 @@
-import sdl2
-import sdl2.pixels as sdlp
-
 from ..igraphlet import *
 
 from ...forward import *
@@ -14,20 +11,24 @@ class ITextlet(IGraphlet):
     def __init__(self):
         super(ITextlet, self).__init__()
         self.__raw = ""
-        self._text_color = sdlp.SDL_Color()
+        self._text_color = SILVER
+        self._alpha = 1.0
         self._text_font = None
         self._text_surface = None
         self.set_text_color()
 
     def __def__(self):
         if self._text_surface:
-            sdl2.SDL_FreeSurface(self._text_surface)
+            del self._text_surface
+            self._text_surface = None
 
 # public
     def set_text_color(self, color_hex = SILVER, alpha = 1.0):
-        RGB_FillColor(self._text_color, color_hex, alpha)
-        self.__update_text_surface()
-        self.notify_updated()
+        if self._text_color != color_hex or self._alpha != alpha:
+            self._text_color = color_hex
+            self._alpha = alpha
+            self.__update_text_surface()
+            self.notify_updated()
 
     def set_font(self, font, anchor = MatterAnchor.LT):
         self.moor(anchor)
@@ -56,8 +57,7 @@ class ITextlet(IGraphlet):
         w, h = 0.0, 0.0
 
         if self._text_surface:
-            tsobj = self._text_surface.contents
-            w, h = tsobj.w, tsobj.h
+            w, h = self._text_surface.get_size()
         else:
             w, h = super(ITextlet, self).get_extent(x, y)
 
@@ -73,7 +73,7 @@ class ITextlet(IGraphlet):
 # private
     def __update_text_surface(self):
         if self._text_surface:
-            sdl2.SDL_FreeSurface(self._text_surface)
+            del self._text_surface
 
         if self.__raw:
             self._text_surface = game_text_surface(self.__raw, self._text_font,
