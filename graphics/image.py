@@ -6,7 +6,8 @@ from .colorspace import *
 
 ###################################################################################################
 def game_blank_image(width, height):
-    return pygame.Surface((round(width), round(height)), pygame.SRCALPHA)
+    surface = pygame.Surface((round(width), round(height)), pygame.SRCALPHA)
+    return surface
 
 def game_load_image(file):
     return pygame.image.load(file).convert(0, pygame.SRCALPHA)

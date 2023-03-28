@@ -38,7 +38,7 @@ class IShapelet(IGraphlet):
                 self._draw_shape(self.__geometry, width, height, r, g, b, self.__alpha)
                 
         if self.__geometry:
-            game_render_surface(renderer, self.__geometry, (flx, fly, flWidth, flHeight))
+            game_render_surface(renderer, self.__geometry, (flx, fly, flWidth, flHeight), None, self.__mixture.value)
 
 # public
     def set_color(self, color):
@@ -82,6 +82,9 @@ class IShapelet(IGraphlet):
             self.__mixture = mixture
             self._invalidate_geometry()
             self.notify_updated()
+
+    def get_color_hue(self):
+        return Hue_FromRGB(self.__color)
 
 # protected
     def _draw_shape(self, renderer: pygame.Surface, width, height, r, g, b, a): pass

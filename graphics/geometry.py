@@ -42,8 +42,8 @@ def game_fill_regular_polygon(surface, n, cx, cy, radius, rotation, cs, alpha = 
     __draw_regular_polygon(surface, n, cx, cy, radius, rotation, rgba(cs, alpha), 0)
 
 ###############################################################################
-def game_render_surface(target: pygame.Surface, source: pygame.Surface, dest, src_region = None):
-    target.blit(source, dest, src_region)
+def game_render_surface(target: pygame.Surface, source: pygame.Surface, dest, src_region = None, options = 0):
+    target.blit(source, dest, src_region, options)
 
 ###############################################################################
 def __draw_regular_polygon(surface, n, cx, cy, r, rotation, c, width):

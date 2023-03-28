@@ -33,7 +33,7 @@ def game_world_create(width, height):
 
 def game_world_reset(renderer, fgc, bgc, flipping):
     renderer.fill(RGB_FromHexadecimal(bgc))
-
+    
     if flipping:
         pygame.display.flip()
 
@@ -153,7 +153,7 @@ class Universe(IDisplay):
         return title
     
     def toggle_window_fullscreen(self):
-        # This doesn't work for Meta and OpenGL
+        # This doesn't work for Meta and OpenGL backend
         pygame.display.toggle_fullscreen()
 
     def set_window_size(self, width, height):

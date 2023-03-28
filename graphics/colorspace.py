@@ -7,11 +7,16 @@ from ..physics.mathematics import *
 
 ###############################################################################
 class ColorMixture(enum.Enum):
-    Ignore = pygame.BLENDMODE_NONE
-    Add = pygame.BLENDMODE_ADD
+    Ignore = 0
+    Add = pygame.BLEND_RGB_ADD
 
-    Modulate = pygame.BLENDMODE_MOD
-    Alpha = pygame.BLENDMODE_BLEND
+    # Subtractive Mixture by multiplication has problem
+    #  on pairs of non-primary colors,
+    #  and there is no easy way to solve it
+    Subtract = pygame.BLEND_RGB_SUB
+    Multiple = pygame.BLEND_RGB_MULT
+    
+    Alpha = pygame.BLEND_ALPHA_SDL2
 
 def color_mixture_to_blend_mode(mixture: ColorMixture):
     return mixture.value
@@ -78,14 +83,26 @@ def RGB_FromHexadecimal(hex):
 def RGBA_FromHexadecimal(hex):
     return (hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF
 
-def RGB_FillColor(c, hex, alpha = 0xFF):
-    c.r, c.g, c.b = RGB_FromHexadecimal(hex)
-    a = alpha
-
-    if isinstance(a, float):
-        a = _UCHAR(a)
-
-    c.a = a
+def Hue_FromRGB(c):
+    if isinstance(c, int):
+        red, green, blue = RGB_FromHexadecimal(c)
+    else:
+        red, green, blue = c[0], c[1], c[2]
+        
+    M = max(red, green, blue)
+    m = min(red, green, blue)
+    chroma = float(M) - float(m)
+    
+    if chroma == 0.0:
+        return math.nan
+    elif M == green:
+        return 60.0 * ((float(blue) - float(red)) / chroma + 2.0)
+    elif M == blue:
+        return 60.0 * ((float(red) - float(green)) / chroma + 4.0)
+    elif green < blue:
+        return 60.0 * ((float(green) - float(blue)) / chroma + 6.0)
+    else:
+        return 60.0 * ((float(green) - float(blue)) / chroma)
 
 ###############################################################################
 _R = 1
