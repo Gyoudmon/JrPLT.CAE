@@ -48,4 +48,4 @@ class ColorMixtureWorld(Plane):
         self.no_selected()
     
 ###############################################################################
-launch_universe(ColorMixtureWorld, __name__, (1200, 1200))
+launch_universe(ColorMixtureWorld, __name__)

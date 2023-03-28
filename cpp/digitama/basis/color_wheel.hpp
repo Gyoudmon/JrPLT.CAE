@@ -20,12 +20,12 @@ namespace WarGrey::STEM {
         bool update_tooltip(IMatter* m, float x, float y, float gx, float gy) override;
 
     private:
-        void load_color_wheel_components();
-        void reflow_color_components(float x, float y);
+        void load_hues();
+        void reflow_primaries(float x, float y);
 
     private:
-        std::vector<WarGrey::STEM::Circlet*> colors;
-        std::vector<WarGrey::STEM::Ellipselet*> color_components;
+        std::vector<WarGrey::STEM::Circlet*> hues;
+        std::vector<WarGrey::STEM::Ellipselet*> primaries;
         WarGrey::STEM::Labellet* tooltip;
 
     private:

@@ -37,7 +37,7 @@ class PaddleBallWorld(Plane):
         # 确保桨产生在靠近屏幕下方的中间
         self.move_to(self.paddle, (width * 0.5, height - paddle_height * 3.0), MatterAnchor.CC)
         # 设置球的速度
-        self.ball.set_speed(ball_speed, 45.0)
+        self.ball.set_velocity(ball_speed, 45.0)
 
     # 实现 PaddleBallWorld::update 方法，根据当前球和桨的当前位置判断是否有碰撞，无需考虑运动细节
     def update(self, count, interval, uptime):
@@ -54,16 +54,16 @@ class PaddleBallWorld(Plane):
 
     # 实现 PaddleBallWorld::on_char 方法，处理键盘事件，用于控制桨的移动
     def on_char(self, key, modifiers, repeats, pressed):
-        if key == 'a':
+        if key == pygame.K_a:
             if pressed:
-                self.paddle.set_speed(paddle_speed, 180.0)
+                self.paddle.set_velocity(paddle_speed, 180.0)
             else:
-                self.paddle.set_speed(0.0, 180.0)
-        elif key == 'd':
+                self.paddle.set_velocity(0.0, 180.0)
+        elif key == pygame.K_d:
             if pressed:
-                self.paddle.set_speed(paddle_speed, 0.0)
+                self.paddle.set_velocity(paddle_speed, 0.0)
             else:
-                self.paddle.set_speed(0.0, 0.0)
+                self.paddle.set_velocity(0.0, 0.0)
 
 ###############################################################################
 launch_universe(PaddleBallWorld, __name__)

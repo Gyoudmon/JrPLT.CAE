@@ -3,29 +3,29 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-static const size_t color_count = 36U;
-static const float color_radius = 16.0F;
+static const size_t hue_count = 36U;
+static const float hue_radius = 16.0F;
 static const float wheel_radius = 360.0F;
 
-static const float color_mixture_radius = 64.0F;
+static const float primary_radius = 64.0F;
 static const float chromaticity_size = 380.0F;
 
 /*************************************************************************************************/
 void WarGrey::STEM::ChromaticityDiagramWorld::load(float width, float height) {
-    float delta_deg = 360.0F / float(color_count);
+    float delta_deg = 360.0F / float(hue_count);
 
     this->set_background(0x000000U);
 
     for (float deg = 0.0F; deg < 360.0F; deg += delta_deg) {
-        this->colors.push_back(this->insert(new Circlet(color_radius, deg)));
+        this->hues.push_back(this->insert(new Circlet(hue_radius, deg)));
     }
 
-    this->color_components.push_back(this->insert(new Ellipselet(color_mixture_radius, 0xFF0000U)));
-    this->color_components.push_back(this->insert(new Ellipselet(color_mixture_radius, 0x00FF00U)));
-    this->color_components.push_back(this->insert(new Ellipselet(color_mixture_radius, 0x0000FFU)));
+    this->primaries.push_back(this->insert(new Ellipselet(primary_radius, 0xFF0000U)));
+    this->primaries.push_back(this->insert(new Ellipselet(primary_radius, 0x00FF00U)));
+    this->primaries.push_back(this->insert(new Ellipselet(primary_radius, 0x0000FFU)));
     this->chroma_dia = this->insert(new Chromalet(chromaticity_size));
 
-    for (auto com : this->color_components) {
+    for (auto com : this->primaries) {
         com->set_color_mixture(ColorMixture::Add);
     }
 
@@ -42,13 +42,13 @@ void WarGrey::STEM::ChromaticityDiagramWorld::reflow(float width, float height) 
     
     TheBigBang::reflow(width, height);
     
-    for (auto c : this->colors) {
-        circle_point(wheel_radius, float(c->get_body_hsb_hue()) - 90.0F, &x, &y, false);
+    for (auto c : this->hues) {
+        circle_point(wheel_radius, float(c->get_color_hue()) - 90.0F, &x, &y, false);
         this->move_to(c, cx + x, cy + y, MatterAnchor::CC);
     }
 
     circle_point(wheel_radius, -90.0F, &x, &y, false);
-    this->reflow_color_components(cx + x, cy + y + (color_mixture_radius + color_radius) * 1.618F);
+    this->reflow_primaries(cx + x, cy + y + (primary_radius + hue_radius) * 1.618F);
     this->move_to(this->chroma_dia, width * 0.5F, height * 0.618F, MatterAnchor::CC);
 }
 
@@ -73,9 +73,9 @@ void WarGrey::STEM::ChromaticityDiagramWorld::after_select(IMatter* m, bool yes)
         if (com != nullptr) {
             uint32_t pcolor = static_cast<uint32_t>(com->get_color());
 
-            this->color_components[this->selection_seq]->set_color(pcolor);
+            this->primaries[this->selection_seq]->set_color(pcolor);
             this->chroma_dia->set_pseudo_primary_color(pcolor, this->selection_seq);
-            this->selection_seq = (this->selection_seq + 1) % this->color_components.size();
+            this->selection_seq = (this->selection_seq + 1) % this->primaries.size();
         } else if (m == this->chroma_dia) {
             switch (this->chroma_dia->get_standard()) {
             case CIE_Standard::Primary: this->chroma_dia->set_standard(CIE_Standard::D65); break;
@@ -95,7 +95,7 @@ bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x
     if (com != nullptr) {
         uint32_t hex = com->get_color();
 
-        this->tooltip->set_text(" #%06X [Hue: %.2f] ", hex, com->get_body_hsb_hue());
+        this->tooltip->set_text(" #%06X [Hue: %.2f] ", hex, com->get_color_hue());
         this->tooltip->set_background_color(GHOSTWHITE);
 
         this->no_selected();
@@ -103,13 +103,13 @@ bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x
     } else if (cc != nullptr) {
         uint32_t hex = 0U;
 
-        for (size_t idx = 0; idx < this->color_components.size(); idx ++) {
+        for (size_t idx = 0; idx < this->primaries.size(); idx ++) {
             float cx, cy;
             
-            this->feed_matter_location(this->color_components[idx], &cx, &cy, MatterAnchor::CC);
+            this->feed_matter_location(this->primaries[idx], &cx, &cy, MatterAnchor::CC);
 
-            if (point_distance(gx, gy, cx, cy) <= color_mixture_radius) {
-                hex = RGB_Add(hex, static_cast<uint32_t>(this->color_components[idx]->get_color()));
+            if (point_distance(gx, gy, cx, cy) <= primary_radius) {
+                hex = RGB_Add(hex, static_cast<uint32_t>(this->primaries[idx]->get_color()));
             }
         }
 
@@ -143,10 +143,10 @@ bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x
     return updated;
 }
 
-void WarGrey::STEM::ChromaticityDiagramWorld::reflow_color_components(float x, float y) {
-    float cc_off = color_mixture_radius * 0.5F;
+void WarGrey::STEM::ChromaticityDiagramWorld::reflow_primaries(float x, float y) {
+    float cc_off = primary_radius * 0.5F;
     
-    this->move_to(this->color_components[0], x, y, MatterAnchor::CB, 0.0F, cc_off);
-    this->move_to(this->color_components[1], this->color_components[0], MatterAnchor::CB, MatterAnchor::RC, cc_off);
-    this->move_to(this->color_components[2], this->color_components[1], MatterAnchor::CC, MatterAnchor::LC);
+    this->move_to(this->primaries[0], x, y, MatterAnchor::CB, 0.0F, cc_off);
+    this->move_to(this->primaries[1], this->primaries[0], MatterAnchor::CB, MatterAnchor::RC, cc_off);
+    this->move_to(this->primaries[2], this->primaries[1], MatterAnchor::CC, MatterAnchor::LC);
 }
