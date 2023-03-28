@@ -2,10 +2,8 @@
 
 from digitama.big_bang.game import *
 
-from digitama.big_bang.matter.graphlet.shapelet import *
-
 ###################################################################################################
-class Gallery(World):
+class Gallery(Plane):
     def __init__(this):
         super(Gallery, this).__init__("The Gallery of Sprites and Graphlets")
         
@@ -38,7 +36,7 @@ class Gallery(World):
         this.bow = this.insert(RegularPolygonlet(3, raft_height * 0.5, KHAKI, BURLYWOOD, 180.0))
         this.stern = this.insert(RegularPolygonlet(3, raft_height * 0.5, KHAKI, BURLYWOOD))
                 
-        this.caption = this.insert(Labellet(this.get_renderer_name(), game_font.DEFAULT, BLACK))
+        this.caption = this.insert(Labellet(this.info.master.display().get_renderer_name(), game_font.DEFAULT, BLACK))
 
     def reflow(this, width, height):
         _, raft_height = this.label.get_extent(0.0, 0.0)
@@ -59,8 +57,4 @@ class Gallery(World):
 
 
 ###################################################################################################
-if __name__ == '__main__':
-    universe = Gallery()
-    universe.big_bang()
-
-    sys.exit(0)
+launch_universe(Gallery, __name__)

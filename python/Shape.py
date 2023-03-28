@@ -26,7 +26,7 @@ class ShapeWorld(Plane):
         self.garden = self.insert(Ellipselet(200.0, 80.0, PALEGREEN, KHAKI))
     
         # 房屋的组成
-        self.roof = self.insert(RegularPolygonlet(3, 140.0, DEEPSKYBLUE, ROYALBLUE, -90.0)) # 深天蓝色屋顶
+        self.roof = self.insert(RegularPolygonlet(3, 140.0, DEEPSKYBLUE, ROYALBLUE, -90.0)) # 深空蓝屋顶
         self.wall = self.insert(Rectanglet(200.0, 180.0, WHITESMOKE, SNOW));                # 白色墙壁
         self.door = self.insert(Rectanglet(42.0, 84.0, KHAKI, DARKKHAKI));                  # 卡其色门
         self.lock = self.insert(Circlet(4.0, CHOCOLATE));                                   # 巧克力色门锁
@@ -49,4 +49,4 @@ class ShapeWorld(Plane):
         return True
     
 ###############################################################################
-launch_universe(ShapeWorld, __name__, (800, 600))
+launch_universe(ShapeWorld, __name__)
