@@ -31,11 +31,11 @@ def game_world_create(width, height):
     
     return pygame.display.set_mode((width, height), flags)
 
-def game_world_reset(renderer, fgc, bgc):
-    fga, fgb, fbc = RGB_FromHexadecimal(fgc)
-
+def game_world_reset(renderer, fgc, bgc, flipping):
     renderer.fill(RGB_FromHexadecimal(bgc))
-    pygame.display.flip()
+
+    if flipping:
+        pygame.display.flip()
 
 def game_world_refresh(renderer):
     pygame.display.flip()
@@ -62,7 +62,7 @@ class Universe(IDisplay):
         else:
             self.__frame_delta = 0
 
-        game_world_reset(self.__window, self.__fgc, self.__bgc)
+        game_world_reset(self.__window, self.__fgc, self.__bgc, True)
 
         self.__snapshot_rootdir = ""
         
@@ -220,7 +220,6 @@ class Universe(IDisplay):
     def _on_elapse(self, count, interval, uptime):
         """ 响应定时器事件，刷新游戏世界 """
         self.update(count, interval, uptime)
-        self.notify_updated()
 
     # 响应鼠标事件，并按需触发单击、右击、双击、移动、滚轮事件
     def _on_mouse_button_event(self, mouse, pressed):
@@ -277,7 +276,7 @@ class Universe(IDisplay):
         self.__window_width, self.__window_height = width, height
 
         self.begin_update_sequence()
-        game_world_reset(self.__window, self.__fgc, self.__bgc)
+        game_world_reset(self.__window, self.__fgc, self.__bgc, True)
         self.reflow(width, height)
         self.notify_updated()
         self.end_update_sequence()
@@ -300,7 +299,7 @@ class Universe(IDisplay):
 
 # private
     def __do_redraw(self, renderer, x, y, width, height):
-        game_world_reset(renderer, self.__fgc, self.__bgc)
+        game_world_reset(renderer, self.__fgc, self.__bgc, False)
         self.draw(renderer, x, y, width, height)
 
 ###############################################################################
