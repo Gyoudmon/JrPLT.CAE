@@ -19,6 +19,7 @@ class ColorWheelWorld(Plane):
         # 本游戏世界有以下物体
         self.hues = []
         self.primaries = []
+        self.tooltip = None
 
         # 私有变量
         self.__selection_seq = 0
@@ -36,6 +37,8 @@ class ColorWheelWorld(Plane):
             c.set_color_mixture(ColorMixture.Add)
 
         self.__load_hues()
+        self.tooltip = self.insert(make_label_for_tooltip(game_font.DEFAULT))
+        self.set_tooltip_matter(self.tooltip)
 
     def reflow(self, width, height):
         cx, cy = width * 0.5, height * 0.5
@@ -49,11 +52,20 @@ class ColorWheelWorld(Plane):
     def can_select(self, matter):
         return isinstance(matter, Circlet)
 
-    # 实现 ColorMixtureWorld::after_select 方法
     def after_select(self, matter, yes):
         if yes:
             self.primaries[self.__selection_seq].set_color(matter.get_color())
             self.__selection_seq = (self.__selection_seq + 1) % len(self.primaries)
+
+    def update_tooltip(self, m, local_x, local_y, global_x, global_y):
+        updated = False
+
+        if isinstance(m, Circlet):
+            self.tooltip.set_text(" #%06X [Hue: %.2f] " % (m.get_color(), m.get_color_hue()))
+            self.no_selected()
+            updated = True    
+
+        return updated
 
 # private
     def __load_hues(self):
