@@ -103,7 +103,7 @@ Linux 环境。这也是为什么明明是个很小的工具，安装起来却�
 
 @handbook-scenario{SDL2}
 
-SDL2 是 Simple DirectMedia Layer 2.0，一个跨平台的 2D 游戏引擎，也是 Python 的游戏库也以它为基石。
+SDL2 是 Simple DirectMedia Layer 2.0，一个跨平台的 2D 游戏引擎，也是 Pygame 的内核。
 
 @centered{@bold{本节可以跳过，课程源码库已经自带 SDL2。但建议教师熟悉本节流程。}}
 
@@ -178,47 +178,53 @@ Visual Studio Code 是开源软件，别人可以一起贡献代码，因而安�
 它的安装更为简单，还是去同一个@hyperlink["https://visualstudio.microsoft.com/downloads/"]{页面}找到那个大大的
 Visual Studio Code，下载安装一气呵成。
 
-之后，当你打开一个明显是代码的文件时，它会提醒你安装相应语言的扩展，然后就可以愉快地编码了。要运行 C++ 有点麻烦，可能是因为微软的编译器
-依赖一大堆环境变量，而这些变量又随时可能变化，普遍程序员的配置成本太高了。前面我们配置的那个环境变量并不能直接运行 C++ 编译器，
-但里面有得到所有环境变量的程序。详细构建过程见@Secref{wisemon}。
+之后，当你打开一个明显是代码的文件时，它会提醒你安装相应语言的扩展，然后就可以愉快地编码了。
+要运行 C++ 有点麻烦，可能是因为微软的编译器依赖一大堆环境变量，而这些变量又随时可能变化，普遍程序员的配置成本太高了。
+前面我们配置的那个环境变量并不能直接运行 C++ 编译器，但里面有得到所有环境变量的程序。详细构建过程见@Secref{wisemon}。
 
 @handbook-scenario{Python}
 
 Python 是什么不需要我再强调了，地球人都知道，不过它也就“用的人多”这一个优点。
 
 虽然安装 Visual Studio 会同时安装一个 Python，不过我还是建议自己额外安装，最起码版本比较新。
-而且，现在在 PowerShell 里已经有 @exec{python.exe} 了，这是一个空壳，会引导去商店安装，不过我这商店一直无法联网，不折腾了。
+而且，PowerShell 里原本就有一个 @exec{python3.exe} ，这是一个空壳，运行它会打开微软商店的下载页，
+不过我这商店一直无法联网，不折腾了。
 
-去@hyperlink["https://www.python.org/downloads/windows/"]{官方网站}下载与你的体系结构相对应的
-@onscreen{installer}，现在一般都是@tt{64-bit}的。注意，一定要是@onscreen{installer}，不能是@onscreen{embeddable package}。
+去@hyperlink["https://www.python.org/downloads/windows/"]{官方网站}下载与你的系统结构相对应的
+@onscreen{installer}，现在一般都是@tt{64-bit}的。
+注意，一定要是@onscreen{installer}，不能是@onscreen{embeddable package}。
 
 @tamer-figure-here["python" "安装 Python"]{@stone-image["installation/python.png" #:scale figure-scale]}
 安装过程有个细节，务必在安装界面勾选@onscreen{add python.exe to PATH}(@tamer-figure-ref{python})。
-这样，一来你自己不用再折腾了，二来它会帮你压制 Windows 自带的那个商店壳子。
+这样，一来你自己不用再折腾了；二来它会帮你压制 Windows 自带的那个商店壳子。
 
-需要注意的是，就因为 Python 用的人多，导致一个系统里好多互补兼容的版本并存。
-于是，在自己安装 Python 的 Windows 里，运行 Python 程序只需启动 @exec{python} 就行了，
-其他情况有可能需要启动@exec{python3}。Windows自带的那个@exec{python3.exe}现在仍为商店空壳。
+需要注意的是，就因为 Python 用的人多，导致一个系统里通常会存在好多互不兼容的版本。
+于是，在 Windows 里，启动自己安装的 Python 只需运行 @exec{python} 就行了，
+其他情况有可能需要运行@exec{python3}。Windows自带的那个@exec{python3.exe}现在仍为商店空壳。
 我的课件里也会强调@exec{python3}。
 
 你也可以按自己的喜好安装其他 Python IDE，比如 PyCharm 之类的。
 
-@handbook-action{安装 PySDL2}
+@handbook-action{安装 Pygame}
 
-PySDL2 是 Python 对 SDL2 的封装。
+Pygame 是比较流行的 Python 游戏库，其内核是 SDL。
 
-在本系列课程中，PySDL2 是课程代码库和SDL2的中间层。也就是说，只有装了这个，
-Python 才跟 C++ 处于同一起跑线上，我的代码库的 Python 版就从这里开始。
+在本系列课程中，Pygame 是课程代码库和 SDL 的中间层。
+也就是说，为使Python和C++课程处于同一起跑线上，
+我的代码库会尽量降低对 Pygame (在SDL之上的扩展)的依赖。
+因此，对于已经熟悉 Pygame 的学生，他们过往课程的经验或许有用，
+但思维方式一定会有较大改变。你可能需要让学生和家长明白，
+这个改变肯定是好的。C++都能变得通俗易懂，把这份功力用在
+Python 上，自然是降维打击。
 
 保险起见，还是要先关闭当前 PowerShell 再重新打开，使之前配置的 @envvar{Path} 生效。
-执行以下命令安装 PySDL2
+执行以下命令安装 Pygame
 
 @itemlist[#:style 'compact
-          @commandline{python -m pip install pysdl2 pysdl2-dll pygame}]
+          @commandline{python -m pip install pygame}]
 
-那个 PyGame 是 Python 自己提供的建立在老版 SDL 基础之上的游戏引擎。
-按理说，不装它也没有问题，但实际情况是不装它我们的程序也运行不起来。
-大概是这几个软件包的依赖关系比较混乱，凑合着用吧。
+本来，PySDL2 是个更好的选项，但这个库问题太多了，它的开发者和维护者都相当业余的样子。
+因此重新启用 Pygame。
 
 @handbook-scenario{Scratch}
 
