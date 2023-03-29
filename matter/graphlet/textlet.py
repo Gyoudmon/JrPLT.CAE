@@ -7,12 +7,25 @@ from ...graphics.font import *
 from ...graphics.text import *
 
 ###################################################################################################
+def make_label_for_tooltip(font, fg_color = BLACK, bg_color = SNOW, bd_color = GOLD):
+    tooltip = Labellet("", font, fg_color)
+
+    tooltip.set_background_color(bg_color)
+    tooltip.set_border_color(bd_color)
+
+    return tooltip
+
+###################################################################################################
 class ITextlet(IGraphlet):
     def __init__(self):
         super(ITextlet, self).__init__()
         self.__raw = ""
         self._text_color = SILVER
         self._alpha = 1.0
+        self.__background_color = WHITE
+        self.__background_alpha = 0.0
+        self.__border_color = CYAN
+        self.__border_alpha = 0.0
         self._text_font = None
         self._text_surface = None
         self.set_text_color()
@@ -28,6 +41,18 @@ class ITextlet(IGraphlet):
             self._text_color = color_hex
             self._alpha = alpha
             self.__update_text_surface()
+            self.notify_updated()
+
+    def set_background_color(self, bg_hex, alpha = 1.0):
+        if self.__background_color != bg_hex or self.__background_alpha != alpha:
+            self.__background_color = bg_hex
+            self.__background_alpha = alpha
+            self.notify_updated()
+
+    def set_border_color(self, bd_hex, alpha = 1.0):
+        if self.__border_color != bd_hex or self.__border_alpha != alpha:
+            self.__border_color = bd_hex
+            self.__border_alpha = alpha
             self.notify_updated()
 
     def set_font(self, font, anchor = MatterAnchor.LT):
@@ -65,6 +90,12 @@ class ITextlet(IGraphlet):
 
     def draw(self, renderer, x, y, Width, Height):
         if self._text_surface:
+            if self.__background_alpha > 0.0:
+                game_fill_rect(renderer, x, y, Width, Height, self.__background_color, self.__background_alpha)
+            
+            if self.__border_alpha > 0.0:
+                game_draw_rect(renderer, x + 0.5, y + 0.5, Width - 1.0, Height - 1.0, self.__border_color, self.__border_alpha)
+
             game_render_surface(renderer, self._text_surface, (x, y))
 
 # protected

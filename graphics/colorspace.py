@@ -83,6 +83,16 @@ def RGB_FromHexadecimal(hex):
 def RGBA_FromHexadecimal(hex):
     return (hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF
 
+def RGB_Add(hex1, hex2):
+    r1, g1, b1 = RGB_FromHexadecimal(hex1)
+    r2, g2, b2 = RGB_FromHexadecimal(hex2)
+
+    r = min(r1 + r2, 255)
+    g = min(g1 + g2, 255)
+    b = min(b1 + b2, 255)
+
+    return Hexadecimal_From_RGB(r, g, b)
+
 def Hue_FromRGB(c):
     if isinstance(c, int):
         red, green, blue = RGB_FromHexadecimal(c)

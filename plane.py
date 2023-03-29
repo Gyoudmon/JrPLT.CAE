@@ -62,9 +62,13 @@ class Plane(object):
         self.__head_matter: typing.Optional(IMatter) = None
         self.__focused_matter: typing.Optional(IMatter) = None
         self.__hovering_matter: typing.Optional(IMatter) = None
+        self.__hovering_mlx, self.__hovering_mly = 0.0, 0.0
+        self.__hovering_mgx, self.__hovering_mgy = 0.0, 0.0
         self.__translate_x, self.__translate_y = 0.0, 0.0
         self.__scale_x, self.__scale_y = 1.0, 1.0
         self.__mission_done = False
+        self.__tooltip: typing.Optional(IMatter) = None
+        self.__tooltip_dx, self.__tooltip_dy = 0.0, 0.0
         self.size_cache_invalid()
 
     def __del__(self):
@@ -110,7 +114,7 @@ class Plane(object):
             while True:
                 info = child.info
 
-                if _unsafe_matter_unmasked(info, self.__mode):
+                if _unsafe_matter_unmasked(info, self.__mode) and child.visible():
                     mwidth, mheight = child.get_extent(info.x, info.y)
 
                     mx = (info.x + self.__translate_x) * self.__scale_x + X
@@ -484,23 +488,40 @@ class Plane(object):
         if state == 0:
             unmasked_matter = self.find_matter(x, y)
 
-            if unmasked_matter is not self.__hovering_matter:
-                self.__say_goodbye_to_hover_matter(state, x, y, dx, dy)
+            if (unmasked_matter is None) or (unmasked_matter is not self.__hovering_matter):
+                if unmasked_matter and (not unmasked_matter.concealled()):
+                    self.__say_goodbye_to_hover_matter(state, x, y, dx, dy)
+
+                if self.__tooltip and self.__tooltip.visible() and self.__tooltip is not unmasked_matter:
+                    self.__tooltip.show(False)
 
             if unmasked_matter:
-                self.__hovering_matter = unmasked_matter
                 info = unmasked_matter.info
                 local_x = x - info.x
                 local_y = y - info.y
                 
-                if unmasked_matter.events_allowed():
-                    unmasked_matter.on_havor(local_x, local_y)
+                if not unmasked_matter.concealled():
+                    self.__hovering_matter = unmasked_matter
+                    self.__hovering_mgx = x
+                    self.__hovering_mgy = y
+                    self.__hovering_mlx = local_x
+                    self.__hovering_mly = local_y
 
-                    if unmasked_matter.low_level_events_allowed():
-                        unmasked_matter.on_pointer_move(state, local_x, local_y)
+                    if unmasked_matter.events_allowed():
+                        unmasked_matter.on_havor(local_x, local_y)
+
+                        if unmasked_matter.low_level_events_allowed():
+                            unmasked_matter.on_pointer_move(state, local_x, local_y)
                 
-                self.on_hover(self.__hovering_matter, local_x, local_y)
-                handled = True
+                    self.on_hover(self.__hovering_matter, local_x, local_y)
+                    handled = True
+            
+                if self.__tooltip:
+                    if self.update_tooltip(unmasked_matter, local_x, local_y, x, y):
+                        if not self.__tooltip.visible():
+                            self.__tooltip.show(True)
+
+                        self.__place_tooltip(unmasked_matter)
 
         return handled
 
@@ -528,6 +549,10 @@ class Plane(object):
 
                     if m.events_allowed():
                         self.set_caret_owner(m)
+
+                    if self.__tooltip and self.__tooltip.visible():
+                        self.update_tooltip(m, local_x, local_y, local_x + info.x, local_y + info.y)
+                        self.__place_tooltip(m)
                 else:
                     self.no_selected()
 
@@ -551,6 +576,11 @@ class Plane(object):
                     break
         
         self.update(count, interval, uptime)
+
+        if self.__tooltip and self.__tooltip.visible():
+            if self.__hovering_matter:
+                self.update_tooltip(self.__hovering_matter, self.__hovering_mlx, self.__hovering_mly, self.__hovering_mgx, self.__hovering_mgy)
+                self.__place_tooltip(self.__hovering_matter)
     
 # public
     def on_enter(self, from_plane):
@@ -574,6 +604,20 @@ class Plane(object):
     def on_motion_start(self, m, sec, x, y, xspd, yspd): pass
     def on_motion_step(self, m, x, y, xspd, yspd, percentage): pass
     def on_motion_complete(self, m, x, y, xspd, yspd): pass
+
+# public
+    def set_tooltip_matter(self, m, dx = 0.0, dy = 0.0):
+        self.begin_update_sequence()
+
+        self.__tooltip = m
+        self.__tooltip.show(False)
+        self.__tooltip_dx = dx
+        self.__tooltip_dy = dy
+
+        self.end_update_sequence()
+
+    def update_tooltip(self, matter: IMatter, local_x, local_y, global_x, global_y):
+        pass
 
 # public, do nothing by default
     def can_interactive_move(self, m, local_x, local_y): return False
@@ -753,12 +797,29 @@ class Plane(object):
                     pos = (xtx + xtw * target[1], yty + yth * target[2])
 
         return pos
+    
+    def __place_tooltip(self, target):
+        self.move_to(self.__tooltip, (target, MatterAnchor.LB), MatterAnchor.LT, self.__tooltip_dx, self.__tooltip_dy)
+        
+        width, height = self.info.master.get_client_extent()
+        ttx, tty = self.get_matter_location(self.__tooltip, MatterAnchor.LB)
+
+        if tty > height:
+            self.move_to(self.__tooltip, (target, MatterAnchor.LT), MatterAnchor.LB, self.__tooltip_dx, self.__tooltip_dy)
+
+        if ttx < 0.0:
+            self.move(self.__tooltip, -ttx, 0.0)
+        else:
+            ttx, tty = self.get_matter_location(self.__tooltip, MatterAnchor.RB)
+
+            if ttx > width:
+                self.move(self.__tooltip, width - ttx, 0.0)
 
 # private
     def __move_matter_via_info(self, m, info: _MatterInfo, x, y, absolute):
         moved = False
 
-        if not info.gliding:
+        if (not info.gliding) or (m is not self.__tooltip):
             moved = self.__do_moving_via_info(m, info, x, y, absolute)
         else:
             if len(info.motion_queues) == 0:

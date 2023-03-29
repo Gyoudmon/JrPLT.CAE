@@ -16,6 +16,7 @@ class IMatter(IMovable):
         self.__anchor, self.__anchor_x, self.__anchor_y = MatterAnchor.LT, 0.0, 0.0
         self.__deal_with_events, self.__deal_with_low_level_events = False, False
         self.__findable = True
+        self.__invisible = False
 
     def __del__(self):
         self.info = None
@@ -67,9 +68,8 @@ class IMatter(IMovable):
         self.__deal_with_events = yes_or_no
         self.__deal_with_low_level_events = low_level
     
-    def enable_resizing(self, yes_no, anchor = MatterAnchor.CC):
+    def enable_resizing(self, yes_no):
         self.__resizable = yes_no
-        self.__resize_anchor = anchor
 
     def resizable(self):
         return self.__resizable
@@ -107,14 +107,14 @@ class IMatter(IMovable):
             
             self.info.master.notify_updated()
 
-    def resize(self, w, h):
+    def resize(self, w, h, anchor = MatterAnchor.CC):
         if self.__resizable:
             if w > 0.0 and h > 0.0:
                 x, y = self.get_location(MatterAnchor.LT)
                 width, height = self.get_extent(x, y)
 
                 if width != w or height != h:
-                    self.moor(self.__resize_anchor)
+                    self.moor(anchor)
                     self._on_resize(w, h, width, height)
                     self.notify_updated()
     
@@ -123,6 +123,14 @@ class IMatter(IMovable):
     
     def concealled(self):
         return not self.__findable
+    
+    def show(self, yes_or_no):
+        if self.__invisible == yes_or_no:
+            self.__invisible = (not yes_or_no)
+            self.notify_updated()
+
+    def visible(self):
+        return not self.__invisible
 
 # proteceted
     def _on_resized(self, width, height, old_width, old_height):
