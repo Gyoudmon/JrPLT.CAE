@@ -235,12 +235,12 @@ class Plane(object):
 
         return matter
 
-    def move(self, matter: IMatter, x, y):
+    def move(self, matter: IMatter, x, y, ignore_gliding = False):
         info = _plane_matter_info(self, matter)
 
         if info:
             if _unsafe_matter_unmasked(info, self.__mode):
-                if self.__move_matter_via_info(matter, info, x, y, False):
+                if self.__move_matter_via_info(matter, info, x, y, False, ignore_gliding):
                     self.notify_updated()
         elif self.__head_matter:
             child = self.__head_matter
@@ -249,7 +249,7 @@ class Plane(object):
                 info = child.info
 
                 if info.selected and _unsafe_matter_unmasked(info, self.__mode):
-                    self.__move_matter_via_info(matter, info, x, y, False)
+                    self.__move_matter_via_info(matter, info, x, y, False, ignore_gliding)
 
                 child = info.next
                 if child == self.__head_matter:
@@ -816,10 +816,10 @@ class Plane(object):
                 self.move(self.__tooltip, width - ttx, 0.0)
 
 # private
-    def __move_matter_via_info(self, m, info: _MatterInfo, x, y, absolute):
+    def __move_matter_via_info(self, m, info: _MatterInfo, x, y, absolute, ignore_gliding):
         moved = False
 
-        if (not info.gliding) or (m is not self.__tooltip):
+        if (not info.gliding) or (m is not self.__tooltip) or ignore_gliding:
             moved = self.__do_moving_via_info(m, info, x, y, absolute)
         else:
             if len(info.motion_queues) == 0:
@@ -843,14 +843,14 @@ class Plane(object):
         moved = False
 
         if sec <= 0.0:
-            moved = self.__move_matter_via_info(m, info, x, y, absolute)
+            moved = self.__move_matter_via_info(m, info, x, y, absolute, False)
         else:
             sec_delta = 0.0
             if self.info:
                 sec_delta = 1.0 / float(self.info.master.frame_rate())
             
             if (sec <= sec_delta) or (sec_delta == 0.0):
-                moved = self.__move_matter_via_info(m, info, x, y, absolute)
+                moved = self.__move_matter_via_info(m, info, x, y, absolute, False)
             else:
                 if m.motion_stopped():
                     info.motion_queues.clear()

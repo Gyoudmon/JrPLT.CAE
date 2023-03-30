@@ -94,15 +94,20 @@ class IMatter(IMovable):
         if anchor != MatterAnchor.LT:
             if self.info:
                 self.__anchor = anchor
-                self.__anchor_x, self.__anchor_y = self.info.master.get_matter_location(self, anchor)
+                self.__anchor_x, self.__anchor_y = self.info.master.get_matter_location(self, self.__anchor)
 
     def clear_moor(self):
         self.__anchor = MatterAnchor.LT
+        self.__anchor_x, self.__anchor_y = 0.0, 0.0
     
     def notify_updated(self):
         if self.info:
             if self.__anchor != MatterAnchor.LT:
-                self.info.master.move_to(self, (self.__anchor_x, self.__anchor_y), self.__anchor)
+                cx, cy = self.info.master.get_matter_location(self, self.__anchor)
+
+                if (self.__anchor_x != cx) or (self.__anchor_y != cy): 
+                    self.info.master.move(self, (self.__anchor_x - cx, self.__anchor_y - cy), True)
+                
                 self.clear_moor()
             
             self.info.master.notify_updated()
