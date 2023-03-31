@@ -7,8 +7,9 @@
       (define .ext (path-get-extension img))
       (define name (format "~a_~a~a" act-name (~r seq #:min-width 3 #:pad-string "0") .ext))
       (printf "cp ~a ~a~n" img name)
-      (rename-file-or-directory (build-path srcdir img)
-                                (build-path destdir name)))))
+      (copy-file #:exists-ok? #true
+                 (build-path srcdir img)
+                 (build-path destdir name)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main

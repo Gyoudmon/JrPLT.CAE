@@ -19,8 +19,9 @@
         (define .ext (path-get-extension act))
         (define name (format "~a_~a_~a~a" act-name dir (~r seq-idx #:min-width 3 #:pad-string "0") .ext))
         (printf "cp ~a ~a~n" act name)
-        (rename-file-or-directory (build-path srcdir act)
-                                  (build-path destdir name))))))
+        (copy-file #:exists-ok? #true
+                   (build-path srcdir act)
+                   (build-path destdir name))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
