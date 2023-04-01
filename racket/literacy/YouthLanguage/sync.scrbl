@@ -20,9 +20,9 @@
 @itemlist[#:style 'compact
           @item{@tt{cpp}: C++ 课程源码。}
           @item{@tt{python}: Python 课程源码。}
-          @item{@tt{racket}: Racket 课程源码。@bold{这是我自己的私有课程，为我女儿和徒弟级学生准备，放在这里是方便诸位自行学习，
-           假如课程源码需申请专利，届时应当移走该目录的内容。}
-           此外，此目录下也包含这篇手册的源码。这可以作为例子告诉学生，编程和写作是同类活动；即使将来只想做作家，懂编程也将如虎添翼。}]
+          @item{@tt{racket}: Racket 课程源码。@bold{这是我自己的私有课程，放在这里是方便诸位自行学习，假如课程源码需申请专利，届时应当移走该目录的内容。}
+           此外，此目录下也包含这篇手册的源码。这可以作为例子告诉学生，编程和写作是同类活动；即使将来只想做作家，懂编程也将如虎添翼。}
+          @item{@tt{mascot}: 课程素材，主要是图片。所有语言通用。}]
 
 对照@tamer-figure-ref{srctree}，每个课程的源码按如下目录组织（先把课程假想成软件，再把软件假想成数字生物，这样会更容易理解）。
 
@@ -54,7 +54,7 @@
                      @item{@tt{STEMA}: STEM 能力测试赛题源码。学生考前冲刺用的，也可作为非比赛学生夯实基本功的作业题。}
                      @item{@tt{sketch}: 草稿源码，每个文件都自带 main，用于演示语言的某一个细节。比如众所周知的 @racket{Hello, World!}。
                                  这是个特殊的目录，@tt{basis}肯定会用到，其他课可能会用到，可以现场发给学生，也可以把源码包含在课件里。}
-                     @item{@tt{pop}: 过程式风格示例源码。过程式风格更为注重细节，复杂度未必有多大，但代码量多半会让初学者生畏。
+                     @item{@tt{procedural}: 过程式风格示例源码。过程式风格更为注重细节，复杂度未必有多大，但代码量多半会让初学者生畏。
                                  因此仅作为对比材料发放给学生，学生根据自身情况课后自行决定是否掌握。}
                      @item{@tt{vcso}: 适用于 vcpkg 的 Windows 动态链接库，是二进制文件。有这个目录学生就不必自己安装了，
                                  详细信息见@Secref{vcpkg}}]}]
@@ -71,7 +71,7 @@
    (literacy . "出版物源码")
    ((village . "协作目录")
     (vcso . "Windows vcpkg 动态链接库")
-    (pop . "过程式风格示例代码")
+    (procedural . "过程式风格示例代码")
     (sketch . "课堂练习用草稿源码")
     (STEMA . "STEM 能力测试题库"))
    ((compiled . "Racket 编译缓存目录")
@@ -149,10 +149,11 @@ Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文�
 
 一般来说，不建议学生直接修改教师的源码，学生应该另外找一个目录，保持目录结构不变，创建好自己的课程目录。
 比如@filepath{G:\Course\YouthLanguage\cpp}，然后把教师目录下的@filepath{info.rkt}
-和已经配置好的入口文件复制到该目录下，最后单独@exec{clone}配套的源码库：
+和已经配置好的入口文件复制到该目录下，最后单独@exec{clone}配套的源码库和素材库：
 
 @itemlist[#:style 'compact
-          @commandline{git clone https://github.com/Gyoudmon/big-bang.cpp.git G:\Course\YouthLanguage\cpp\digitama\big_bang}]
+          @commandline{git clone https://github.com/Gyoudmon/big-bang.cpp.git G:\Course\YouthLanguage\cpp\digitama\big_bang}
+          @commandline{git clone https://github.com/Gyoudmon/mascot.git G:\Course\YouthLanguage\mascot}]
 
 使用 Windows 的学生还需要再同步一个@tt{vcso.git}，有这个就不用另外安装 vcpkg 了（就是那个可以跳过的@Secref{vcpkg}）。
 使用其他操作系统的学生无需同步这个共享库。
@@ -163,7 +164,8 @@ Python 源码不需要编译，直接运行与 C++ 入口文件名相同的文�
 Python 学生将其中的 @tt{big-bang.cpp.git} 替换成 @tt{big-bang.py.git} 即可，也不需要 @tt{vcso.git}：
 
 @itemlist[#:style 'compact
-          @commandline{git clone https://github.com/Gyoudmon/big-bang.py.git G:\Course\YouthLanguage\python\digitama\big_bang}]
+          @commandline{git clone https://github.com/Gyoudmon/big-bang.py.git G:\Course\YouthLanguage\python\digitama\big_bang}
+          @commandline{git clone https://github.com/Gyoudmon/mascot.git G:\Course\YouthLanguage\mascot}]
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-reference[]
