@@ -13,3 +13,6 @@
 [submodule "cpp/digitama/pltmos"]
 	path = cpp/digitama/pltmos
 	url = https://github.com/Gyoudmon/pltmos.git
+[submodule "mascot"]
+	path = mascot
+	url = https://github.com/Gyoudmon/mascot.git

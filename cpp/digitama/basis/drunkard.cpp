@@ -11,7 +11,6 @@ static const double step_duration = 0.2;
 void WarGrey::STEM::DrunkardWalkWorld::load(float width, float height) {
     this->beach = this->insert(new Sprite(digimon_path("asset/beach", ".png")));
     this->tent = this->insert(new SpriteGridSheet(digimon_path("asset/tents", ".png"), 1, 4));
-    // this->drunkard = this->insert(TrailStudent::randomly_create());
     this->drunkard = this->insert(new Agate());
     this->partner = this->insert(new Tita());
 
