@@ -58,19 +58,19 @@ void WarGrey::STEM::DrunkardWalkWorld::sibling_walk() {
 void WarGrey::STEM::DrunkardWalkWorld::drunkard_walk() {
     // 产生位于区间 [1, 100] 的随机数
     int chance = random_uniform(1, 100);
-    double dx = 0.0;
-    double dy = 0.0;
+    float dx = 0.0;
+    float dy = 0.0;
     
     if (chance < 10) {
         // no move
     } else if (chance < 58) {
-        dx = -1.0;
+        dx = -1.0F;
     } else if (chance < 60) {
-        dx = +1.0;
+        dx = +1.0F;
     } else if (chance < 80) {
-        dy = +1.0;
+        dy = +1.0F;
     } else {
-        dy = -1.0;
+        dy = -1.0F;
     }
 
     this->move(this->drunkard, dx, dy);
