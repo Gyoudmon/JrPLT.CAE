@@ -10,9 +10,56 @@
 (require racket/draw)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(struct sprite-info
+  (cwidth cheight seq size)
+  #:transparent
+  #:mutable)
+
+(define calculate-sprites-size
+  (lambda [sprites]
+    (for/fold ([cw 0] [ch 0])
+              ([s (in-list sprites)])
+      (values (max cw (send s get-width))
+              (max ch (send s get-height))))))
+
+(define make-sprite-info
+  (lambda [sprites]
+    (define-values (w h) (calculate-sprites-size sprites))
+    (sprite-info w h 0 (length sprites))))
+
+(define sprite-info-update-size!
+  (lambda [sinfo sprites]
+    (define-values (w h) (calculate-sprites-size sprites))
+
+    (set-sprite-info-cwidth! sinfo w)
+    (set-sprite-info-cheight! sinfo h)))
+
+(define sprite-info-step!
+  (lambda [sinfo]
+    (define seq (sprite-info-seq sinfo))
+    (define seq++ (add1 seq))
+
+    (if (>= seq++ (sprite-info-size sinfo))
+        (set-sprite-info-seq! sinfo 0)
+        (set-sprite-info-seq! sinfo seq++))
+    
+    seq))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define snip-master
+  (lambda [s]
+    (send (send s get-admin) get-editor)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sprite%
   (class snip% (super-new)
     (init-field path raw image)
+
+    (define gray-brush (make-object brush% "Gray"))
+    (define no-brush (make-object brush% "Gray" 'transparent))
+    (define gray-pen (make-object pen% "Gray" 1))
+    (define blue-pen (make-object pen% "SkyBlue" 1))
+    (define no-pen (make-object pen% "Black" 1 'transparent))
 
     (define/public (get-raw-width) (send raw get-width))
     (define/public (get-raw-height) (send raw get-height))
@@ -26,84 +73,138 @@
       (super get-extent dc x y &width &height &d &s &l &r))
 
     (define/override (draw dc x y left top right bottom dx dy draw-caret?)
-      (void))))
+      (define grid-size 16)
+      (define-values (w h) (values (get-width) (get-height)))
 
+      (send dc set-clipping-rect x y w h)
+      (send dc set-brush gray-brush)
+      (send dc set-pen no-pen)
+
+      (let draw-grid-row ([dy 0])
+        (when (< dy h)
+          (let draw-grid ([dx (if (even? (quotient dy grid-size)) 0 grid-size)])
+            (when (< dx w)
+              (send dc draw-rectangle (+ x dx) (+ y dy) grid-size grid-size)
+              (draw-grid (+ dx grid-size grid-size))))
+          (draw-grid-row (+ dy grid-size))))
+
+      (send dc set-brush no-brush)
+      (send dc set-pen (if (send (snip-master this) is-selected? this) blue-pen gray-pen))
+      (send dc draw-rectangle x y w h)
+      
+      (send dc draw-bitmap image x y))
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (send this set-snipclass (new snip-class%))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sprite-editor%
   (class frame% (super-new)
     (init-field sprites)
+    (init-field [grid-width 64] [grid-height 128] [grid-gap 4])
 
     (define master (make-custodian))
     
-    (define seq-count (length sprites))
-    (define &seq (box 0))
-
-    (define cwidth 0)
-    (define cheight 0)
+    (define infos
+      (for/hasheq ([(key value) (in-hash sprites)])
+        (values key (make-sprite-info value))))
     
     (define/override (on-superwindow-show yes?)
       (cond [(not yes?) (custodian-shutdown-all master)]
             [else (parameterize ([current-custodian master])
-                    (timer-thread 256 update-sprite))]))
-
-    (define (update-sprite-size)
-      (define-values (cw ch)
-        (for/fold ([cw 0] [ch 0])
-                  ([s (in-list sprites)])
-          (values (max cw (send s get-width))
-                  (max ch (send s get-height)))))
-      
-      (set! cwidth cw)
-      (set! cheight ch))
+                    (timer-thread 128 update-sprite))]))
 
     (define (update-sprite thrd interval uptime)
       (send demo% refresh-now update-demo))
 
     (define (update-demo dc)
-      (let ([seq (unbox &seq)])
-        (when (< seq seq-count)
-          (draw-sprite dc seq (list-ref sprites seq) 0 0)
-          (set-box! &seq (remainder (+ seq 1) seq-count)))))
-
-    (define (draw-sprite dc idx s x y)
-      (define sw (send s get-width))
-      (define sh (send s get-height))
-      (define ix (+ x (* (- cwidth sw) 0.5)))
-      (define iy (+ y (* (- cheight sh) 0.5)))
-
-      (send dc draw-text (number->string idx) (+ x cwidth) y)
-      (send dc draw-bitmap (send s get-image) ix iy))
+      (define s (send demo% min-height))
+      (for ([(key info) (in-hash infos)]
+            [pos (in-naturals)])
+        (define idx (sprite-info-step! info))
+        (define snip (list-ref (hash-ref sprites key) idx))
+        (draw-demo-sprite dc idx snip (* s pos) 0
+                          (sprite-info-cwidth info)
+                          (sprite-info-cheight info))))
+    
+    (define (draw-demo-sprite dc idx snip x y cwidth cheight)
+      (define S (send demo% min-height))
+      (define sw (send snip get-width))
+      (define sh (send snip get-height))
+      (define bx (+ x (* (- S cwidth) 0.5)))
+      (define by (+ y (* (- S cheight) 0.5)))
+      (define ix (+ bx (* (- cwidth sw) 0.5)))
+      (define iy (+ by (* (- cheight sh) 0.5)))
+      
+      (send dc draw-rectangle bx by cwidth cheight)
+      (send dc draw-text (number->string idx) x y)
+      (send dc draw-bitmap (send snip get-image) ix iy))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     (define spriteboard%
-      (class pasteboard% (super-new)))
+      (class pasteboard% (super-new)
+
+        (define/augment (can-select? s s?)
+          (displayln s)
+          #true)
+
+        (send this set-area-selectable #false)))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (define sboard (new spriteboard%))
+    (define sboard1 (new spriteboard%))
+    (define sboard2 (new spriteboard%))
+
+    (define tool-panel (new horizontal-pane% [parent this] [min-height 96] [stretchable-height #false]))
+    (define editor-panel (new horizontal-pane% [parent this]))
+
+    (define demo% (new canvas% [parent tool-panel] [min-height 96] [stretchable-height #false]))
     
-    (define editor%
-      (new editor-canvas% [parent this] [editor sboard]
+    (define editor1%
+      (new editor-canvas% [parent editor-panel] [editor sboard1]
            [style '(hide-hscroll hide-vscroll)]))
 
-    (define demo% (new canvas% [parent this]))
+    (define editor2%
+      (new editor-canvas% [parent editor-panel] [editor sboard2]
+           [style '(hide-hscroll hide-vscroll)]))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (update-sprite-size)))
+    (for ([(key costumes) (in-hash sprites)]
+          [idx (in-naturals)])
+      (for ([sprite (in-list costumes)]
+            [jdx (in-naturals)])
+        (define-values (board x y)
+          (if (even? idx)
+              (values sboard1 (* jdx (+ grid-width grid-gap)) (* (/ idx 2) (+ grid-height grid-gap)))
+              (values sboard2 (* jdx (+ grid-width grid-gap)) (* (/ (- idx 1) 2) (+ grid-height grid-gap)))))
+        (define w (send sprite get-width))
+        (define h (send sprite get-height))
+        (send board insert sprite
+              (+ x (quotient (- grid-width w) 2))
+              (+ y (quotient (- grid-height h) 2)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define load-citizen-action
-  (lambda [rootdir prefix]
-    (cond [(not (directory-exists? rootdir)) null]
-          [else (for/list ([action.png (in-list (directory-list rootdir #:build? #false))]
-                           #:when (string-prefix? (path->string action.png) prefix))
-                  (define full-action.png (build-path rootdir action.png))
-                  (define raw (read-bitmap full-action.png 'unknown/alpha))
-                  (make-object sprite% full-action.png raw raw))])))
+  (lambda [rootdir type]
+    (define px:name #px"(\\D+)(\\d+)?[.]png")
+
+    (cond [(not (directory-exists? rootdir)) (hasheq)]
+          [else (for/fold ([sprites (hasheq)])
+                          ([action.png (in-list (directory-list rootdir #:build? #false))]
+                           #:when (string-prefix? (path->string action.png) type))
+                  (define tokens (regexp-match px:name (path->string action.png)))
+                  (cond [(not tokens) sprites]
+                        [else (let* ([full-action.png (build-path rootdir action.png)]
+                                     [raw (read-bitmap full-action.png 'unknown/alpha)])
+                                (define-values (prefix subseq) (values (string->symbol (string-trim (cadr tokens) "_")) (caddr tokens)))
+                                (hash-set sprites prefix
+                                          (append (hash-ref sprites prefix list)
+                                                  (list (make-object sprite% full-action.png raw raw)))))]))])))
 
 (module+ main
   (define argv (current-command-line-arguments))
   (define argc (vector-length argv))
 
-  (define action (if (>= argc 2) (vector-ref argv 1) "walk_s"))
+  (define action (if (>= argc 2) (vector-ref argv 1) "walk"))
   (define rootdir
     (cond [(>= argc 1) (vector-ref argv 0)]
           [else (simple-form-path (build-path (or (collection-root) (current-directory))
@@ -112,8 +213,9 @@
   (define editor
     (new sprite-editor%
          [sprites (load-citizen-action rootdir action)]
-         [width 1200] [height 800] [parent #false]
+         [width 1200] [height 900] [parent #false]
          [label "Sprite Editor"]))
   
   (send editor show #true)
-  (send editor center 'both))
+  (send editor maximize #true)
+  #;(send editor center 'both))
