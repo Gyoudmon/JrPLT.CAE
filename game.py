@@ -13,6 +13,8 @@ from .cosmos import *
 from .matter.graphlet.textlet import *
 from .matter.graphlet.shapelet import *
 
+from .matter.sprite.folder import *
+
 from .trace import *
 
 ###############################################################################
@@ -23,6 +25,10 @@ class TheBigBang(Cosmos):
 
         if size:
             this.set_window_size(size[0], size[1])
+
+    def construct(self, argv):
+        enter_digimon_zone(argv[0])
+        imgdb_setup(digimon_zonedir())
 
 def launch_universe(world, module_name, size = None, fps = 60, trace = False):
     if trace:

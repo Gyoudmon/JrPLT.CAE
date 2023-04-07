@@ -10,7 +10,7 @@ def game_blank_image(width, height):
     return surface
 
 def game_load_image(file):
-    return pygame.image.load(file).convert(0, pygame.SRCALPHA)
+    return pygame.image.load(file).convert_alpha()
 
 def game_unload_image(image):
     del image

@@ -28,12 +28,19 @@ class IMatter(IMovable):
             plane = self.info.master
 
         return plane
+    
+    def preferred_loacal_fps(self):
+        return 0
+
+    def name(self):
+        return type(self).__name__
 
 # public
     def construct(self): pass
     def get_extent(self, x, y): return 0.0, 0.0
+    def get_original_extent(self, x, y): return self.get_extent(x, y)
     def get_margin(self, x, y): return 0.0, 0.0, 0.0, 0.0
-    def update(self, count, interval, uptime): pass
+    def update(self, count, interval, uptime): return 0 # the `duration` for next frame
     def draw(self, renderer, X, Y, Width, Height): pass
     def ready(self): return True
 
@@ -68,7 +75,7 @@ class IMatter(IMovable):
         self.__deal_with_events = yes_or_no
         self.__deal_with_low_level_events = low_level
     
-    def enable_resizing(self, yes_no):
+    def enable_resize(self, yes_no):
         self.__resizable = yes_no
 
     def resizable(self):
@@ -112,8 +119,49 @@ class IMatter(IMovable):
             
             self.info.master.notify_updated()
 
-    def resize(self, w, h, anchor = MatterAnchor.CC):
+    def notify_timeline_restart(self, count0, duration):
+        if self.info:
+            self.info.master.notify_matter_timeline_restart(self, count0, duration)
+
+    def scale(self, ratio, anchor = MatterAnchor.CC):
         if self.__resizable:
+            if isinstance(ratio, float) or isinstance(ratio, int):
+                x_ratio = y_ratio = ratio
+            else:
+                x_ratio, y_ratio = ratio
+
+            if x_ratio != 1.0 or y_ratio != 1.0:
+                x, y = self.get_location(MatterAnchor.LT)
+                width, height = self.get_extent(x, y)
+
+                self.moor(anchor)
+                self._on_resized(width * x_ratio, height * y_ratio, width, height)
+                self.notify_updated()
+
+    def scale_to(self, ratio, anchor = MatterAnchor.CC):
+        if self.__resizable:
+            if isinstance(ratio, float) or isinstance(ratio, int):
+                x_ratio = y_ratio = ratio
+            else:
+                x_ratio, y_ratio = ratio
+
+            x, y = self.get_location(MatterAnchor.LT)
+            cwidth, cheight = self.get_extent(x, y)
+            owidth, oheight = self.get_original_extent(x, y)
+            nwidth, nheight = owidth * x_ratio, oheight * y_ratio
+
+            if (nwidth != cwidth) or (nheight != cheight):
+                self.moor(anchor)
+                self._on_resized(nwidth, nheight, cwidth, cheight)
+                self.notify_updated()
+
+    def resize(self, size, anchor = MatterAnchor.CC):
+        if self.__resizable:
+            if isinstance(size, float) or isinstance(size, int):
+                w = h = size
+            else:
+                w, h = size
+
             if w > 0.0 and h > 0.0:
                 x, y = self.get_location(MatterAnchor.LT)
                 width, height = self.get_extent(x, y)

@@ -64,6 +64,7 @@ class Plane(object):
         self.__hovering_matter: typing.Optional(IMatter) = None
         self.__hovering_mlx, self.__hovering_mly = 0.0, 0.0
         self.__hovering_mgx, self.__hovering_mgy = 0.0, 0.0
+        self.__local_frame_delta, self.__local_frame_count, self.__local_elapse = 0, 1, 0
         self.__translate_x, self.__translate_y = 0.0, 0.0
         self.__scale_x, self.__scale_y = 1.0, 1.0
         self.__mission_done = False
@@ -564,10 +565,17 @@ class Plane(object):
 
             while True:
                 dwidth, dheight = self.info.master.get_extent()
-                info = child.info
+                info: _MatterInfo = child.info
                 
                 if _unsafe_matter_unmasked(info, self.__mode):
-                    child.update(count, interval, uptime)
+                    local_interval, local_elapse = _local_timeline_elapse(interval, info.local_frame_delta, info.local_elapse, info.duration)
+                    info.local_elapse = local_elapse
+
+                    if local_interval > 0:
+                        info.duration = child.update(info.local_frame_count, local_interval, uptime)
+                        info.local_frame_count += 1
+
+                    # Yes, do moving separately to make it more smooth
                     self.__do_motion_moving(child, info, dwidth, dheight)
                     
                 child = info.next
@@ -575,12 +583,17 @@ class Plane(object):
                 if child == self.__head_matter:
                     break
         
-        self.update(count, interval, uptime)
+        local_interval, local_elapse = _local_timeline_elapse(interval, self.__local_frame_delta, self.__local_elapse, 0)
+        self.__local_elapse = local_elapse
 
-        if self.__tooltip and self.__tooltip.visible():
-            if self.__hovering_matter:
-                self.update_tooltip(self.__hovering_matter, self.__hovering_mlx, self.__hovering_mly, self.__hovering_mgx, self.__hovering_mgy)
-                self.__place_tooltip(self.__hovering_matter)
+        if local_interval > 0:
+            self.update(self.__local_frame_count, local_interval, uptime)
+            self.__local_frame_count += 1
+
+            if self.__tooltip and self.__tooltip.visible():
+                if self.__hovering_matter:
+                    self.update_tooltip(self.__hovering_matter, self.__hovering_mlx, self.__hovering_mly, self.__hovering_mgx, self.__hovering_mgy)
+                    self.__place_tooltip(self.__hovering_matter)
     
 # public
     def on_enter(self, from_plane):
@@ -701,6 +714,27 @@ class Plane(object):
     def notify_updated(self):
         if self.info:
             self.info.master.notify_updated()
+
+# public
+    def set_matter_fps(self, m: IMatter, fps, restart = False):
+        info = _plane_matter_info(self, m)
+
+        if info:
+            _unsafe_set_matter_fps(info, fps, restart)
+
+    def set_local_fps(self, fps, restart = False):
+        df, fc, e = _unsafe_set_local_fps(fps, restart, self.__local_frame_delta, self.__local_frame_count, self.__local_elapse)
+        self.__local_frame_delta = df
+        self.__local_frame_count = fc
+        self.__local_elapse = e
+
+    def notify_matter_timeline_restart(self, m: IMatter, count0, duration):
+        info = _plane_matter_info(self, m)
+
+        if info:
+            info.duration = duration
+            info.local_frame_count = count0
+            info.local_elapse = 0  
 
 # private
     def __do_resize(self, m: IMatter, info, fx, fy, scale_x, scale_y, prev_scale_x = 1.0, prev_scale_y = 1.0):
@@ -996,8 +1030,9 @@ class Plane(object):
                     self.notify_updated()
 
 ###################################################################################################
-def _bind_matter_owership(master, mode, m):
+def _bind_matter_owership(master, mode, m: IMatter):
     m.info = _MatterInfo(master, mode)
+    _unsafe_set_matter_fps(m.info, m.preferred_loacal_fps(), True)
     
     return m.info
 
@@ -1046,3 +1081,40 @@ def _do_search_selected_matter(start: IMatter, mode, terminator):
 
 def _over_stepped(tx, cx, spd):
     return flsign(tx - cx) != flsign(spd)
+
+def _unsafe_set_local_fps(fps, restart, frame_delta, frame_count, elapse):
+    frame_delta = 0
+
+    if fps > 0:
+        frame_delta = 1000 / fps
+
+    if restart:
+        frame_count = 0
+        elapse = 0
+
+    return frame_delta, frame_count, elapse
+
+def _unsafe_set_matter_fps(info: _MatterInfo, fps, restart):
+    df, fc, e = _unsafe_set_local_fps(fps, restart, info.local_frame_delta, info.local_frame_count, info.local_elapse)
+    info.local_frame_delta = df
+    info.local_frame_count = fc
+    info.local_elapse = e
+
+def _local_timeline_elapse(global_interval, local_frame_delta, local_elapse, duration):
+    interval = 0
+
+    if local_frame_delta > 0 or duration > 0:
+        if duration > 0:
+            e = duration
+        else:
+            e = local_frame_delta
+
+        if local_elapse < e:
+            local_elapse += global_interval
+        else:
+            interval = local_elapse
+            local_elapse = 0
+    else:
+        interval = global_interval
+
+    return interval, local_elapse
