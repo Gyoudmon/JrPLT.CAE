@@ -8,7 +8,7 @@
 (require racket/flonum)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(define the-dc (make-object bitmap-dc% (make-bitmap 1 1 #true 2.0)))
+(define the-dc (make-object bitmap-dc% (make-bitmap 1 1 #true #:backing-scale 2.0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define digicore-snip%
@@ -34,7 +34,7 @@
       (define master (get-admin))
       (and master
            (let ([zone (send master get-editor)])
-             (and (is-a? zone pasteboard%)
+             (and zone
                   (send zone is-selected? this)))))
 
     (define/public (refresh-now)

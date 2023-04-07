@@ -9,6 +9,8 @@
 (require racket/string)
 (require racket/draw)
 
+(require "digicore.rkt")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (struct sprite-info
   (cwidth cheight seq size)
@@ -46,13 +48,8 @@
     seq))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(define snip-master
-  (lambda [s]
-    (send (send s get-admin) get-editor)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sprite%
-  (class snip% (super-new)
+  (class digicore-snip% (super-new)
     (init-field path raw image)
 
     (define gray-brush (make-object brush% "Gray"))
@@ -89,7 +86,7 @@
           (draw-grid-row (+ dy grid-size))))
 
       (send dc set-brush no-brush)
-      (send dc set-pen (if (send (snip-master this) is-selected? this) blue-pen gray-pen))
+      (send dc set-pen (if (send this selected?) blue-pen gray-pen))
       (send dc draw-rectangle x y w h)
       
       (send dc draw-bitmap image x y))
@@ -142,13 +139,7 @@
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     (define spriteboard%
-      (class pasteboard% (super-new)
-
-        (define/augment (can-select? s s?)
-          (displayln s)
-          #true)
-
-        (send this set-area-selectable #false)))
+      (class digicore-zone% (super-new)))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     (define sboard1 (new spriteboard%))
