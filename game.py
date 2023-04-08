@@ -13,6 +13,7 @@ from .cosmos import *
 from .matter.graphlet.textlet import *
 from .matter.graphlet.shapelet import *
 
+from .matter.sprite.mascot.character import *
 from .matter.sprite.folder import *
 
 from .trace import *
@@ -28,6 +29,7 @@ class TheBigBang(Cosmos):
 
     def construct(self, argv):
         enter_digimon_zone(argv[0])
+        digimon_mascot_setup("../mascot")
         imgdb_setup(digimon_zonedir())
 
 def launch_universe(world, module_name, size = None, fps = 60, trace = False):

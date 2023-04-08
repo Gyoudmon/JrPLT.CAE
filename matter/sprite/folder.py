@@ -97,11 +97,11 @@ class Sprite(ISprite):
             name = file_basename_from_path(png)
             datum = (name, costume)
 
-            if len(self.__costumes) == 0 or (self.__costumes[-1] < name):
+            if len(self.__costumes) == 0 or (self.__costumes[-1][0] < name):
                 self.__costumes.append(datum)
             else:
                 for idx in range(0, len(self.__costumes)):
-                    if self.__costumes[idx] < name:
+                    if self.__costumes[idx][0] < name:
                         self.__costumes.insert(idx, datum)
                         break
 

@@ -1,6 +1,6 @@
 from .forward import *
 from .graphics.image import *
-from .physics.motion import *
+from .physics.movable import *
 from .virtualization.iscreen import *
 
 ###############################################################################

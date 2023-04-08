@@ -1,5 +1,4 @@
 import pygame
-import math
 import random
 
 from ..imatter import *
@@ -65,8 +64,8 @@ class ISprite(IMatter):
             if self.__canvas_width <= 0.0 and self.__canvas_height <= 0.0:
                 self._draw_costume(renderer, self.__current_costume_idx, None, argv)
             else:
-                sx = math.abs(self.__xscale)
-                sy = math.abs(self.__yscale)
+                sx = abs(self.__xscale)
+                sy = abs(self.__yscale)
                 cwidth = self.__canvas_width
                 cheight = self.__canvas_height
                 width, height = self._get_costume_extent(self.__current_costume_idx)
