@@ -162,7 +162,13 @@ class IMovable(object):
 
         if changed:
             self.__on_velocity_changed()
-        
+    
+    def set_heading(self, direction, is_radian = False):
+        if not is_radian:
+            direction = degrees_to_radians(direction)
+
+        self.__check_heading_changing(direction)
+
     def get_heading(self, need_radian = True):
         return self.get_velocity_direction()
     
@@ -240,16 +246,19 @@ class IMovable(object):
     def __on_acceleration_changed(self):
         self.__ar = math.atan2(self.__ay, self.__ax)
 
-    def __check_velocity_changing(self):
+    def __on_velocity_changed(self):
         rad = math.atan2(self.__vy, self.__vx)
 
+        self.__check_heading_changing(rad)
+
+    def __check_heading_changing(self, rad):
         if self.__vr != rad:
             pvr = self.__vr
 
             self.__vr = rad
             self._on_heading_changed(rad, self.__vx, self.__vy, pvr)
 
-    def __on_velocity_changed(self):
+    def __check_velocity_changing(self):
         if self.__ax != 0.0 or self.__ay != 0.0:
             if self.__ar != self.__vr:
                 self.__on_velocity_changed()

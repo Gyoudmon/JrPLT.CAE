@@ -59,7 +59,7 @@ class ISprite(IMatter):
 
     def draw(self, renderer, x, y, Width, Height):
         if self.__current_costume_idx < self.costume_count():
-            argv = { 'dst': (x, y) }
+            argv = { 'dst': pygame.Rect(x, y, Width, Height) }
 
             if self.__canvas_width <= 0.0 and self.__canvas_height <= 0.0:
                 self._draw_costume(renderer, self.__current_costume_idx, None, argv)
@@ -210,32 +210,41 @@ class ISprite(IMatter):
     def switch_to_random_costume(self, idx0, idxn):
         self.switch_to_costume(self, random.randint(idx0, idxn))
 
-###################################################################################################
+###############################################################################
     def preferred_local_fps(self):
         return 10
     
-    def play(self, action, repetition = -1): pass
+    def play(self, action, repetition = -1):
+        if isinstance(action, str):
+            self.__play_action(action, repetition)
+        else:
+            self.__play_sequence(action[0], action[1], repetition)
 
     def play_all(self, repetition = -1):
-        self.play(0, self.costume_count(), repetition)
+        self.__play_sequence(0, self.costume_count(), repetition)
 
     def in_playing(self):
         return self.__animation_rest != 0
     
-    def stop(self): pass
+    def stop(self, rest = 0):
+        self.__animation_rest = max(rest, 0)
+        
+        if self.__animation_rest == 0:
+            self.__current_action_name = ''
+            self.__frame_refs.clear()
 
-###################################################################################################
+###############################################################################
     def flip(self, horizontal = True, vertical = False): pass
 
-###################################################################################################
+###############################################################################
     def costume_count(self):
         return 0
 
-    def greetings(self, repeat = 1): pass
+    def greetings(self, repeat = 1):
+        pass
 
-    def goodbye(self, repeat = 1): pass
-
-    def _get_costume_extent(self, idx): pass
+    def goodbye(self, repeat = 1):
+        pass
 
     def _costume_name_to_index(self, name):
         cidx = -1
@@ -253,14 +262,16 @@ class ISprite(IMatter):
 
         return cidx
     
-    def _costume_index_to_name(self, idx): pass
-
-    def _draw_costume(self, renderer, idx, src, argv):pass
-    
     def _get_initial_costume_index(self):
-        return 0    
-
-###################################################################################################
+        return 0
+    
+###############################################################################
+# abstract
+    def _get_costume_extent(self, idx): pass
+    def _costume_index_to_name(self, idx): pass
+    def _draw_costume(self, renderer, idx, src, argv): pass
+    
+###############################################################################
     def _preferred_idle_duration(self):
         return random.randint(2000, 4000)
 
@@ -276,3 +287,32 @@ class ISprite(IMatter):
 
     def _update_action_frames(self, frame_refs, next_branch):
         return -1
+
+###############################################################################
+    def __play_action(self, action, repetition):
+        self.__current_action_name = action
+        self.__animation_rest = repetition
+        self.__frame_refs.clear()
+        self.__next_branch = self._submit_action_frames(self.__frame_refs, self.__current_action_name)
+
+        if self.__frame_refs:
+            self.switch_to_costume(self.__frame_refs[0][0])
+            self.notify_timeline_restart(1, self.__frame_refs[0][1])
+
+        return len(self.__frame_refs)
+
+    def __play_sequence(self, idx0, count, repetition):
+        size = self.costume_count()
+
+        self.__current_action_name = ""
+        self.__animation_rest = repetition
+        self.__frame_refs.clear()
+        self.__next_branch = -1
+
+        if count >= size:
+            count = count % size + size
+        
+        for off in range(0, count):
+            self.__frame_refs.append((idx0 + off, 0))
+
+        return len(self.__frame_refs)

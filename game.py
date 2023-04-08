@@ -26,6 +26,8 @@ class TheBigBang(Cosmos):
 
         if size:
             this.set_window_size(size[0], size[1])
+        else:
+            this.set_window_size(1200, 0)
 
     def construct(self, argv):
         enter_digimon_zone(argv[0])

@@ -11,7 +11,7 @@ class IShapelet(IGraphlet):
     def __init__(self, color = -1, border_color = -1):
         super(IShapelet, self).__init__()
 
-        self.enable_resizing(True)
+        self.enable_resize(True)
         self.__geometry = None
         self.__mixture = ColorMixture.Alpha
         self.__color = _shape_color(color)

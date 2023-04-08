@@ -119,7 +119,7 @@ class IMatter(IMovable):
             
             self.info.master.notify_updated()
 
-    def notify_timeline_restart(self, count0, duration):
+    def notify_timeline_restart(self, count0 = 0, duration = 0):
         if self.info:
             self.info.master.notify_matter_timeline_restart(self, count0, duration)
 
