@@ -21,9 +21,13 @@ class DrunkardWalkWorld(Plane):
 
     def load(self, Width, Height):
         self.beach = self.insert(Sprite(digimon_path("asset/beach", ".png")))
+        self.drunkard = self.insert(TrailStudent.randomly_create())
+        self.partner = self.insert(TrailKid.randomly_create())
 
     def reflow(self, width, height):
         self.move_to(self.beach, (width * 0.5, height), MatterAnchor.CB)
+        self.move_to(self.drunkard, (width * 0.5, height * 0.5), MatterAnchor.CC)
+        self.move_to(self.partner, (self.drunkard, MatterAnchor.RC), MatterAnchor.LC)
 
     def can_select(self, matter):
         return True
