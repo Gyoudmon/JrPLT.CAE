@@ -40,10 +40,11 @@ class Sprite(ISprite):
 
                             if path.isfile(subentry):
                                 self.__load_decorate(decorate_name, subentry)
+                self.__costumes.sort(key = lambda c: c[0])
             else:
                 self.__load_costume(self.__pathname)
 
-        self._on_costumes_load()
+        self._on_costumes_load(self.__costumes)
         super().construct()
 
 # public
@@ -87,7 +88,7 @@ class Sprite(ISprite):
                 game_render_surface(renderer, decorate[c_name], dst, src, options)
     
 # protected
-    def _on_costumes_load(self): pass
+    def _on_costumes_load(self, costumes): pass
 
 # private
     def __load_costume(self, png):
@@ -95,15 +96,7 @@ class Sprite(ISprite):
 
         if costume:
             name = file_basename_from_path(png)
-            datum = (name, costume)
-
-            if len(self.__costumes) == 0 or (self.__costumes[-1][0] < name):
-                self.__costumes.append(datum)
-            else:
-                for idx in range(0, len(self.__costumes)):
-                    if self.__costumes[idx][0] < name:
-                        self.__costumes.insert(idx, datum)
-                        break
+            self.__costumes.append((name, costume))
 
     def __load_decorate(self, d_name, png):
         deco_costume = imgdb_ref(png)

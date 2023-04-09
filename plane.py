@@ -237,10 +237,10 @@ class Plane(object):
         return matter
 
     def move(self, matter: IMatter, x, y, ignore_gliding = False):
-        info = _plane_matter_info(self, matter)
+        if matter:
+            info = _plane_matter_info(self, matter)
 
-        if info:
-            if _unsafe_matter_unmasked(info, self.__mode):
+            if info and _unsafe_matter_unmasked(info, self.__mode):
                 if self.__move_matter_via_info(matter, info, x, y, False, ignore_gliding):
                     self.notify_updated()
         elif self.__head_matter:
@@ -853,7 +853,7 @@ class Plane(object):
     def __move_matter_via_info(self, m, info: _MatterInfo, x, y, absolute, ignore_gliding):
         moved = False
 
-        if (not info.gliding) or (m is not self.__tooltip) or ignore_gliding:
+        if (not info.gliding) or (m is self.__tooltip) or ignore_gliding:
             moved = self.__do_moving_via_info(m, info, x, y, absolute)
         else:
             if len(info.motion_queues) == 0:

@@ -113,7 +113,7 @@ class IMatter(IMovable):
                 cx, cy = self.info.master.get_matter_location(self, self.__anchor)
 
                 if (self.__anchor_x != cx) or (self.__anchor_y != cy): 
-                    self.info.master.move(self, (self.__anchor_x - cx, self.__anchor_y - cy), True)
+                    self.info.master.move(self, self.__anchor_x - cx, self.__anchor_y - cy, True)
                 
                 self.clear_moor()
             

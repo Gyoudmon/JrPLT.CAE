@@ -36,8 +36,8 @@ class Bracer(Citizen):
         return self.__mode
 
 # protected
-    def _on_costumes_load(self):
-        super(Bracer, self)._on_costumes_load()
+    def _on_costumes_load(self, costumes):
+        super(Bracer, self)._on_costumes_load(costumes)
         self.switch_mode(BracerMode.Walk)
     
     def _on_eward(self, theta_rad, vx, vy):
@@ -104,7 +104,7 @@ class Bracer(Citizen):
         self._retrigger_heading_change_event()
 
     def _on_win_mode(self, repeat):
-        self.play("win", repeat)
+        self.play("win_", repeat)
 
 # protected
     def _retrigger_heading_change_event(self):
