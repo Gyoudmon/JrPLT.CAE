@@ -32,9 +32,9 @@ class DrunkardWalkWorld(Plane):
     def update(self, count, interval, uptime):
         if not self.is_colliding(self.drunkard, self.partner):
             if self.partner.motion_stopped():
-                self.__sibling_walk()
+                self.__random_walk(self.partner)
 
-            self.__drunkard_walk()
+            self.__drunkard_walk(self.drunkard)
         elif self.partner.current_mode() != BracerMode.Win:
             self.partner.motion_stop()
             self.drunkard.switch_mode(BracerMode.Win, 1)
@@ -52,14 +52,16 @@ class DrunkardWalkWorld(Plane):
         self.move_to(self.partner, (width * 0.24, height * 0.9), MatterAnchor.LC)
 
 # private
-    def __sibling_walk(self):
-        dx = random.randint(-1, 1)
-        dy = random.randint(-1, 1)
+    def __random_walk(self, who):
+        # random.randint(-1, 1) 产生一个位于区间 [-1, 1] 的随机整数
+        dx = random.randint(-1, 1) # 左右移动或不动
+        dy = random.randint(-1, 1) # 上下移动或不动
 
-        self.glide(step_duration, self.partner, dx * step_size, dy * step_size)
+        self.glide(step_duration, who, dx * step_size, dy * step_size)
 
-    def __drunkard_walk(self):
-        chance = random.randint(1, 100)
+    def __drunkard_walk(self, who):
+        # 产生一个位于区间 [0, 100] 的随机整数
+        chance = random.randint(0, 100)
         dx = 0.0
         dy = 0.0
         
@@ -74,7 +76,7 @@ class DrunkardWalkWorld(Plane):
         else:
             dy = -1.0
 
-        self.move(self.drunkard, dx, dy)
+        self.move(who, dx, dy)
 
 ###############################################################################
 launch_universe(DrunkardWalkWorld, __name__)

@@ -15,14 +15,14 @@ namespace WarGrey::STEM {
         public:
             void on_mission_start(float width, float height) override;
 
-        public: // 为演示该设计思路的优点，运行游戏里的物体可以被选中
+        public: // 为演示角色边界框，运行游戏里的物体可以被选中
             bool can_select(WarGrey::STEM::IMatter* m) override { return true; }
 
-        private:
-            void sibling_walk();
-            void drunkard_walk();
+        private: // 漫步策略
+            void random_walk(WarGrey::STEM::Bracer* who);
+            void drunkard_walk(WarGrey::STEM::Bracer* who);
 
-        protected:
+        private: // 本游戏世界中的物体
             WarGrey::STEM::Bracer* drunkard;
             WarGrey::STEM::Bracer* partner;
             WarGrey::STEM::Sprite* beach;
