@@ -21,11 +21,13 @@ class DrunkardWalkWorld(Plane):
 
     def load(self, Width, Height):
         self.beach = self.insert(Sprite(digimon_path("asset/beach", ".png")))
+        self.tent = self.insert(SpriteGridSheet(digimon_path("asset/tents", '.png'), 1, 4))
         self.drunkard = self.insert(Agate())
         self.partner = self.insert(Tita())
 
     def reflow(self, width, height):
         self.move_to(self.beach, (width * 0.5, height), MatterAnchor.CB)
+        self.move_to(self.tent, (0.0, height), MatterAnchor.LB)
 
     def update(self, count, interval, uptime):
         if not self.is_colliding(self.drunkard, self.partner):
@@ -33,7 +35,7 @@ class DrunkardWalkWorld(Plane):
                 self.__sibling_walk()
 
             self.__drunkard_walk()
-        else:
+        elif self.partner.current_mode() != BracerMode.Win:
             self.partner.motion_stop()
             self.drunkard.switch_mode(BracerMode.Win, 1)
             self.partner.switch_mode(BracerMode.Win, 1)
