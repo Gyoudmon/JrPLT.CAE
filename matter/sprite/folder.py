@@ -44,8 +44,8 @@ class Sprite(ISprite):
             else:
                 self.__load_costume(self.__pathname)
 
-        self._on_costumes_load(self.__costumes)
-        super().construct()
+            self._on_costumes_load(self.__costumes)
+            super().construct()
 
 # public
     def wear(self, name):

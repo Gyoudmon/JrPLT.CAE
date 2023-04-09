@@ -1039,7 +1039,7 @@ def _bind_matter_owership(master, mode, m: IMatter):
 def _plane_matter_info(master, m):
     info = None
 
-    if m.info and m.info.master == master:
+    if m and m.info and m.info.master == master:
         info = m.info
     
     return info

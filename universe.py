@@ -28,6 +28,8 @@ def game_world_create(width, height):
     elif width <= 0 or height <= 0:
         flags |= pygame.RESIZABLE
         width, height = pygame.display.get_desktop_sizes()[0]
+    else:
+        flags |= pygame.RESIZABLE
     
     return pygame.display.set_mode((width, height), flags)
 
@@ -176,7 +178,10 @@ class Universe(IDisplay):
                 pass
 
     def get_window_size(self, logical = True):
-        return _get_window_size(self.__window, logical)
+        if self.__window:
+            return self.__window.get_size()
+        else:
+            return (0, 0)
 
     def get_renderer_name(self):
         return pygame.display.get_driver()
@@ -301,7 +306,3 @@ class Universe(IDisplay):
     def __do_redraw(self, renderer, x, y, width, height):
         game_world_reset(renderer, self.__fgc, self.__bgc, False)
         self.draw(renderer, x, y, width, height)
-
-###############################################################################
-def _get_window_size(surface, logical = True):
-    return pygame.Surface.get_size(surface)
