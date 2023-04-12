@@ -22,7 +22,7 @@ static const std::vector<std::vector<std::pair<int, int>>> task_info = {
     { /* { row, col } */ },
     { { 11, 15 }, { 11, 18 }, { 9, 21 } },
     { { 16, 23 }, { 16, 25 }, { 16, 27 }, { 16, 29 }, { 18, 24 } },
-    { { 21, 37 }, { 22, 37 }, { 19, 40 } }
+    { { 21, 34 }, { 20, 37 }, { 22, 37 }, { 19, 40 } }
 };
 
 /*************************************************************************************************/
@@ -77,7 +77,7 @@ namespace {
 
     public:
         bool can_select(IMatter* m) override {
-            return (dynamic_cast<Coinlet*>(m) != nullptr)
+            return isinstance(m, Coinlet)
                     || (m == this->tux)
                     || (m == this->agent);
         }

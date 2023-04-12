@@ -23,9 +23,6 @@ void WarGrey::STEM::ColorWheelWorld::load(float width, float height) {
 
     this->load_hues();
     TheBigBang::load(width, height);
-
-    this->tooltip = this->insert(make_label_for_tooltip(GameFont::Tooltip()));
-    this->set_tooltip_matter(this->tooltip);
 }
 
 void WarGrey::STEM::ColorWheelWorld::reflow(float width, float height) {

@@ -27,7 +27,6 @@ namespace WarGrey::STEM {
     private:
         std::vector<WarGrey::STEM::Circlet*> hues;
         std::vector<WarGrey::STEM::Ellipselet*> primaries;
-        WarGrey::STEM::Labellet* tooltip;
         WarGrey::STEM::Chromalet* chroma_dia;
 
     private:

@@ -1,12 +1,12 @@
 #pragma once // 确保只被 include 一次
 
-#include "digitama/big_bang/game.hpp"
+#include "../big_bang/bang.hpp"
 
 namespace WarGrey::STEM {
     enum class GameState { Run, Stop, Edit };
 
     /** 声明游戏宇宙 **/
-    class GameOfLife : public WarGrey::STEM::World {
+    class GameOfLife : public WarGrey::STEM::TheBigBang {
         public:
             GameOfLife(const char* title);
             virtual ~GameOfLife();

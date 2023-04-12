@@ -30,9 +30,6 @@ void WarGrey::STEM::ChromaticityDiagramWorld::load(float width, float height) {
     }
 
     TheBigBang::load(width, height);
-
-    this->tooltip = this->insert(make_label_for_tooltip(GameFont::Tooltip()));
-    this->set_tooltip_matter(this->tooltip);
 }
 
 void WarGrey::STEM::ChromaticityDiagramWorld::reflow(float width, float height) {

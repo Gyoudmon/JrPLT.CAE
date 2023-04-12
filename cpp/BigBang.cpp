@@ -9,6 +9,9 @@
 #include "digitama/basis/chromaticity.hpp"
 #include "digitama/basis/drunkard.hpp"
 
+#include "digitama/basis/self_avoid_walk.hpp"
+
+// Additional Demos
 #include "digitama/pltmos/stream.hpp"
 
 using namespace WarGrey::STEM;
@@ -44,6 +47,7 @@ namespace {
             this->push_plane(new ChromaticityDiagramWorld());
             
             // 第三阶段
+            this->push_plane(new SelfAvoidWalkWorld());
             this->push_plane(new TheBigBang());
             this->push_plane(new TheBigBang());
             this->push_plane(new StreamPlane(this->stream_source.c_str()));
