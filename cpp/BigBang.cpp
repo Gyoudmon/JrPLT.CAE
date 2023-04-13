@@ -9,7 +9,7 @@
 #include "digitama/basis/chromaticity.hpp"
 #include "digitama/basis/drunkard.hpp"
 
-#include "digitama/basis/self_avoid_walk.hpp"
+#include "digitama/basis/self_avoiding_walk.hpp"
 
 // Additional Demos
 #include "digitama/pltmos/stream.hpp"
@@ -47,7 +47,7 @@ namespace {
             this->push_plane(new ChromaticityDiagramWorld());
             
             // 第三阶段
-            this->push_plane(new SelfAvoidWalkWorld());
+            this->push_plane(new SelfAvoidingWalkWorld());
             this->push_plane(new TheBigBang());
             this->push_plane(new TheBigBang());
             this->push_plane(new StreamPlane(this->stream_source.c_str()));
