@@ -219,7 +219,7 @@ class IMovable(object):
 
         if horizon and vertical:
             self.__ar = math.nan
-            self.__vr = math.nan
+            # self.__vr = math.nan
             self._on_motion_stopped()
         else:
             self.__on_acceleration_changed()

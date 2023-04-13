@@ -40,6 +40,7 @@ class IMatter(IMovable):
     def get_extent(self, x, y): return 0.0, 0.0
     def get_original_extent(self, x, y): return self.get_extent(x, y)
     def get_margin(self, x, y): return 0.0, 0.0, 0.0, 0.0
+    def get_original_margin(self, x, y): return self.get_margin(x, y)
     def update(self, count, interval, uptime): return 0 # the `duration` for next frame
     def draw(self, renderer, X, Y, Width, Height): pass
     def ready(self): return True

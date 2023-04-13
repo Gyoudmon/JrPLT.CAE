@@ -48,6 +48,24 @@ class ISprite(IMatter):
                 h = self.__canvas_height
 
             return w, h
+    
+    def get_margin(self, x, y):
+        t, r, b, l = self.get_original_margin(x, y)
+
+        if self.__xscale >= 0.0:
+            l, r = l * self.__xscale, r * self.__xscale
+        else:
+            l, r = -r * self.__xscale, -l * self.__xscale
+
+        if self.__yscale >= 0.0:
+            t, b = t * self.__yscale, b * self.__yscale
+        else:
+            t, b = -b * self.__yscale, -t * self.__yscale
+
+        return t, r, b, l
+
+    def get_original_margin(self, x, y):
+        return 0.0, 0.0, 0.0, 0.0
 
     def on_resize(self, width, height, old_width, old_height):
         if self.__current_costume_idx < self.costume_count():
@@ -287,6 +305,13 @@ class ISprite(IMatter):
 
     def _update_action_frames(self, frame_refs, next_branch):
         return -1
+    
+###############################################################################
+    def _get_horizontal_scale(self):
+        return abs(self.__xscale)
+
+    def _get_vertical_scale(self):
+        return abs(self.__yscale)
 
 ###############################################################################
     def __play_action(self, action, repetition):

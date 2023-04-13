@@ -14,6 +14,8 @@ from .matter.graphlet.textlet import *
 from .matter.graphlet.shapelet import *
 
 from .matter.sprite.mascot.character import *
+from .matter.sprite.mascot.atlas.planetcute import *
+
 from .matter.sprite.folder import *
 from .matter.sprite.sheet import *
 
@@ -31,7 +33,7 @@ class TheBigBang(Cosmos):
         imgdb_setup(digimon_zonedir())
 
 ###############################################################################
-def launch_universe(world, module_name, size = (1200, 0), fps = 60, trace = False):
+def launch_universe(world, module_name, size = None, fps = 60, trace = False):
     if trace:
         register_tracer()
     

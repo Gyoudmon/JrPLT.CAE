@@ -179,7 +179,12 @@ class Plane(object):
 
         if info and _unsafe_matter_unmasked(info, self.__mode):
             sx, sy, sw, sh = _unsafe_get_matter_bound(matter, info)
-            fx, fy = matter_anchor_fraction(anchor)
+
+            if isinstance(anchor, MatterAnchor):
+                fx, fy = matter_anchor_fraction(anchor)
+            else:
+                fx, fy = anchor
+
             x = sx + sw * fx
             y = sy + sh * fy
 
@@ -337,14 +342,37 @@ class Plane(object):
     def size_cache_invalid(self):
         self.__mright = self.__mleft - 1.0
 
-    def is_colliding(self, matter: IMatter, target: IMatter):
+    def is_colliding(self, matter: IMatter, target):
+        '''
+        the target can be shaped as one of
+                target_matter
+                (target_matter, target_anchor)
+                (target_matter, target_x_fraction, target_y_fraction)
+        '''
+
+        okay = False
+
         slx, sty, sw, sh = self.get_matter_boundary(matter)
-        tlx, tty, tw, th = self.get_matter_boundary(target)
 
-        srx, sby = slx + sw, sty + sh
-        trx, tby = tlx + tw, tty + th
+        if slx is not False:
+            if isinstance(target, IMatter):
+                tlx, tty, tw, th = self.get_matter_boundary(target)
 
-        return rectangle_overlay(slx, sty, srx, sby, tlx, tty, trx, tby)
+                if tlx is not False:
+                    srx, sby = slx + sw, sty + sh
+                    trx, tby = tlx + tw, tty + th
+
+                    okay = rectangle_overlay(slx, sty, srx, sby, tlx, tty, trx, tby)
+            else:
+                if len(target) == 2:
+                    tx, ty = self.get_matter_location(target[0], target[1])
+                elif len(target) == 3:
+                    tx, ty = self.get_matter_location(target[0], (target[1], target[2]))
+
+                if tx is not False:
+                    okay = rectangle_contain(slx, sty, slx + sw, sty + sh, tx, ty)
+
+        return okay
 
 # public
     def find_next_selected_matter(self, start = None):
