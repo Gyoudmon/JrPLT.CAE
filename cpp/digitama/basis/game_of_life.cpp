@@ -49,7 +49,7 @@ void WarGrey::STEM::GameOfLifelet::construct(SDL_Renderer* renderer) {
         this->world[r] = new int[this->col];
     }
 
-    this->reset();
+    this->construct_random_world();
 }
 
 void WarGrey::STEM::GameOfLifelet::feed_extent(float x, float y, float* width, float* height) {
@@ -58,6 +58,8 @@ void WarGrey::STEM::GameOfLifelet::feed_extent(float x, float y, float* width, f
 }
 
 void WarGrey::STEM::GameOfLifelet::draw(SDL_Renderer* renderer, float x, float y, float Width, float Height) {
+    RGB_SetRenderDrawColor(renderer, 0U);
+
     game_draw_frame(renderer, x, y, Width, Height);
 
     // 绘制舞台的网格
@@ -65,7 +67,7 @@ void WarGrey::STEM::GameOfLifelet::draw(SDL_Renderer* renderer, float x, float y
         game_draw_grid(renderer, this->row, this->col, this->gridsize, this->gridsize, x, y);
     }
 
-    // 绘制生命
+    // 绘制生命状态
     game_fill_grid(renderer, this->world, this->row, this->col, this->gridsize, this->gridsize, x, y);
 }
 
@@ -73,14 +75,6 @@ void WarGrey::STEM::GameOfLifelet::show_grid(bool yes) {
     if (this->hide_grid == yes) {
         this->hide_grid = !yes;
         this->notify_updated();
-    }
-}
-
-void WarGrey::STEM::GameOfLifelet::construct_random_world() {
-    for (int i = 0; i < this->row; i++) {
-        for (int j = 0; j < this->col; j++) {
-            this->world[i][j] = ((random_raw() % 2 == 0) ? 1 : 0);
-        }
     }
 }
 
@@ -105,25 +99,31 @@ void WarGrey::STEM::GameOfLifelet::evolve(int** world, int* shadow, int row, int
 
 bool WarGrey::STEM::GameOfLifelet::pace_forward(int repeats) {
     bool evolved = false;
+    do {
+        bool self_evolved = false;
 
-    // 应用演化规则
-    this->evolve(this->world, this->shadow, this->row, this->col);
+        // 应用演化规则
+        this->evolve(this->world, this->shadow, this->row, this->col);
 
-    // 同步舞台状态
-    for (int r = 0; r < this->row; r ++) {
-        for (int c = 0; c < this->col; c ++) {
-            int state = this->shadow[r * this->col + c];
+        // 同步舞台状态
+        for (int r = 0; r < this->row; r ++) {
+            for (int c = 0; c < this->col; c ++) {
+                int state = this->shadow[r * this->col + c];
 
-            if (this->world[r][c] != state) {
-                this->world[r][c] = state;
-                evolved = true;
+                if (this->world[r][c] != state) {
+                    this->world[r][c] = state;
+                    self_evolved = true;
+                }
             }
         }
-    }
 
-    if (evolved) {
-        this->generation ++;
-    }
+        if (self_evolved) {
+            this->generation ++;
+            evolved = self_evolved;
+        }
+
+        repeats --;
+    } while (repeats > 0);
 
     return evolved;
 }
@@ -138,6 +138,16 @@ void WarGrey::STEM::GameOfLifelet::reset() {
     }
 }
 
+void WarGrey::STEM::GameOfLifelet::construct_random_world() {
+    for (int i = 0; i < this->row; i++) {
+        for (int j = 0; j < this->col; j++) {
+            this->world[i][j] = ((random_raw() % 2 == 0) ? 1 : 0);
+        }
+    }
+
+    this->generation = 0;
+}
+
 /*************************************************************************************************/
 WarGrey::STEM::GameOfLifeWorld::GameOfLifeWorld(float gridsize)
     : GameOfLifeWorld("生命游戏", gridsize) {}
@@ -149,20 +159,24 @@ WarGrey::STEM::GameOfLifeWorld::~GameOfLifeWorld() {}
 
 /*************************************************************************************************/
 void WarGrey::STEM::GameOfLifeWorld::load(float width, float height) {
-    int n = fl2fxi(flmin(width, height - generic_font_size(FontSize::xx_large)) / this->gridsize) - 1;
-
-    this->gameboard = this->insert(new GameOfLifelet(n, n, this->gridsize));
+    int n;
 
     TheBigBang::load(width, height);
+    
+    n = fl2fxi(flmin(width, height - this->get_titlebar_height()) / this->gridsize) - 1;
+    this->gameboard = this->insert(new GameOfLifelet(n, n, this->gridsize));
+
     this->switch_game_state(GameState::Run);
 }
 
 void WarGrey::STEM::GameOfLifeWorld::reflow(float width, float height) {
     TheBigBang::reflow(width, height);
-    this->move_to(this->gameboard, width * 0.5F, height * 0.5F, MatterAnchor::CC);
+    this->move_to(this->gameboard, width * 0.5F, (height + this->get_titlebar_height()) * 0.5F, MatterAnchor::CC);
 }
 
 void WarGrey::STEM::GameOfLifeWorld::update(uint64_t count, uint32_t interval, uint64_t uptime) {
+    this->gameboard->pace_forward(1);
+    printf("here\n");
 }
 
 /*************************************************************************************************/
