@@ -9,8 +9,8 @@ class IMovable(object):
         
         self.__border_strategies = {}
         self.__bounce_acc = False
-        self.__ar, self.__ax, self.__ay = 0.0, 0.0, 0.0
-        self.__vr, self.__vx, self.__vy = 0.0, 0.0, 0.0
+        self.__ar, self.__ax, self.__ay = math.nan, 0.0, 0.0
+        self.__vr, self.__vx, self.__vy = math.nan, 0.0, 0.0
         self.__tvx, self.__tvy = math.inf, math.inf
 
         self.set_border_strategy([BorderStrategy.IGNORE])
