@@ -2,14 +2,15 @@
 
 #include "../big_bang/bang.hpp"
 
-namespace WarGrey::STEM {
-    enum class GameState { Run, Stop, Edit };
+#include <map>
 
-/*************************************************************************************************/
+namespace WarGrey::STEM {
+    /*********************************************************************************************/
     /** 声明游戏物体 **/
     class GameOfLifelet : public WarGrey::STEM::IGraphlet {
     public:
-        GameOfLifelet(int row, int col, float gridsize);
+        GameOfLifelet(int n, float gridsize) : GameOfLifelet(n, n, gridsize) {}
+        GameOfLifelet(int row, int col, float gridsize) : row(row), col(col), gridsize(gridsize) {}
         virtual ~GameOfLifelet();
 
         void construct(SDL_Renderer* renderer) override;
@@ -19,79 +20,72 @@ namespace WarGrey::STEM {
         void draw(SDL_Renderer* renderer, float x, float y, float Width, float Height) override;
 
     public:
-        int preferred_local_fps() override { return 8; }
-
-    protected: // 演化策略, 默认留给子类实现
-        virtual void evolve(int** world, int* shadow, int row, int col);
+        void show_grid(bool yes);
+        void set_color(uint32_t hex);
+        void modify_life_at_location(float x, float y);
+        int current_generation() { return this->generation; }
 
     public:
-        void show_grid(bool yes);
         void construct_random_world();
         bool pace_forward(int repeats);
-        int current_generation() { return this->generation; }
         void reset();
+
+    protected: // 演化策略, 默认留给子类实现
+        virtual void evolve(int** world, int* shadow, int row, int col) = 0;
 
     private:
         int row;
         int col;
         int generation;
-        int** world;
-        int* shadow;
+        int** world = nullptr;
+        int* shadow = nullptr;
 
     private:
+        uint32_t color = BLACK;
         bool hide_grid;
 
     private:
         float gridsize;
     };
 
-/*************************************************************************************************/
+    /*********************************************************************************************/
     /** 声明游戏宇宙 **/
+    
+    enum class GameState { Auto, Stop, Edit, _ };
+
     class GameOfLifeWorld : public WarGrey::STEM::TheBigBang {
         public:
-            GameOfLifeWorld(float gridsize = 16.0F);
-            GameOfLifeWorld(const char* title, float gridsize = 16.0F);
-            virtual ~GameOfLifeWorld();
+            GameOfLifeWorld(float gridsize = 8.0F) : GameOfLifeWorld("生命游戏", gridsize) {}
+            GameOfLifeWorld(const char* title, float gridsize = 8.0F) : TheBigBang(title), gridsize(gridsize) {}
+            virtual ~GameOfLifeWorld() {}
 
         public:    // 覆盖游戏基本方法
             void load(float width, float height) override;
             void reflow(float width, float height) override;
             void update(uint64_t count, uint32_t interval, uint64_t uptime) override;
-            // void on_mission_start(float width, float height) override;
+            void on_mission_start(float width, float height) override;
 
+        public:
+            bool can_select(WarGrey::STEM::IMatter* m) override;
+            
         protected: // 覆盖输入事件处理方法
-            void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) override;  // 处理键盘事件
+            void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) override; // 处理键盘事件
+            void on_tap(WarGrey::STEM::IMatter* m, float x, float y) override;                  // 处理鼠标事件
 
         private:
             void switch_game_state(WarGrey::STEM::GameState new_state);
-            void construct_random_game_world();
-            bool forward_game_world(int repeats, bool force);
-
+            void update_instructions_state(const uint32_t* colors);
+            void pace_forward(int repeats = 1);
+            
         private: // 游戏物体
-            GameOfLifelet* gameboard;
+            WarGrey::STEM::GameOfLifelet* gameboard;
+            WarGrey::STEM::Labellet* generation;
+            std::map<char, WarGrey::STEM::Labellet*> instructions;
 
         private: // 游戏状态
-            WarGrey::STEM::GameState state;
+            WarGrey::STEM::GameState state = GameState::_;
 
         private:
             float gridsize;
     };
-
-/*************************************************************************************************/
-/*    class ConwayLifeWorld : public WarGrey::STEM::GameOfLifeWorld {
-        public:
-            ConwayLifeWorld();
-
-        protected:
-            void evolve(int** world, int* shadow, int stage_width, int stage_height) override;
-    };
-
-    class HighLifeWorld : public WarGrey::STEM::GameOfLifeWorld {
-        public:
-            HighLifeWorld();
-
-        protected:
-            void evolve(int** world, int* shadow, int stage_width, int stage_height) override;
-    };
-*/
 }

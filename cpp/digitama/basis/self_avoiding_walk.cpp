@@ -81,10 +81,10 @@ void WarGrey::STEM::SelfAvoidingWalkWorld::load(float width, float height) {
 
 void WarGrey::STEM::SelfAvoidingWalkWorld::reflow(float width, float height) {
     size_t walker_count = sizeof(this->walkers) / sizeof(Bracer*);
-    float y0, maze_x, maze_y;
+    float y0 = this->get_titlebar_height();
+    float maze_x, maze_y;
 
     TheBigBang::reflow(width, height);
-    this->feed_matter_location(this->agent, nullptr, &y0, MatterAnchor::LB);
     this->create_grid(int(walker_count), 1, 16.0F, y0, 64.0F, float(MAZE_SIZE) * this->cell_height);
 
     // 确保游戏世界被绘制在屏幕中心
