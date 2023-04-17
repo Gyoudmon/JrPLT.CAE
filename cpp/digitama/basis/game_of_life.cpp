@@ -11,6 +11,11 @@ using namespace WarGrey::STEM;
 using namespace std::filesystem;
 
 /*************************************************************************************************/
+#define DEFAULT_CONWAY_DEMO digimon_path("demo/conway/typical", ".gof")
+
+static const int default_frame_rate = 8;
+
+/*************************************************************************************************/
 static const char AUTO_KEY = 'a';
 static const char STOP_KEY = 's';
 static const char PACE_KEY = 'p';
@@ -18,11 +23,12 @@ static const char EDIT_KEY = 'e';
 static const char LOAD_KEY = 'l';
 static const char RAND_KEY = 'r';
 static const char RSET_KEY = 'z';
+static const char WRTE_KEY = 'w';
 
-static const char ordered_keys[] = { AUTO_KEY, STOP_KEY, PACE_KEY, EDIT_KEY, LOAD_KEY, RAND_KEY, RSET_KEY };
-static const uint32_t colors_for_auto[] = { GRAY, GREEN, GRAY, GRAY, GRAY, GRAY, GRAY };
-static const uint32_t colors_for_stop[] = { GREEN, GRAY, GREEN, GREEN, GRAY, GRAY, GRAY };
-static const uint32_t colors_for_edit[] = { GREEN, GRAY, GRAY, GREEN, GREEN, GREEN, GREEN };
+static const char ordered_keys[] = { AUTO_KEY, STOP_KEY, PACE_KEY, EDIT_KEY, LOAD_KEY, WRTE_KEY, RAND_KEY, RSET_KEY };
+static const uint32_t colors_for_auto[] = { GRAY, GREEN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY };
+static const uint32_t colors_for_stop[] = { GREEN, GRAY, GREEN, GREEN, GRAY, GRAY, GRAY, GRAY };
+static const uint32_t colors_for_edit[] = { GREEN, GRAY, GREEN, GRAY, GREEN, GREEN, GREEN, GREEN };
 
 /*************************************************************************************************/
 static inline int check_neighbor(int* world[], int row, int col, int r, int c) {
@@ -198,7 +204,7 @@ protected:
         for (int r = 0; r < row; r ++) {
             for (int c = 0; c < col; c ++) {
                 int n = count_neighbors(world, row, col, r, c);
-                int i = r * row + c;
+                int i = r * col + c;
 
                 if (n < 2) {            // 死亡(离群索居)
                     shadow[i] = 0;
@@ -222,7 +228,7 @@ protected:
         for (int r = 0; r < row; r ++) {
             for (int c = 0; c < col; c ++) {
                 int n = count_neighbors(world, row, col, r, c);
-                int i = r * row + c;
+                int i = r * col + c;
 
                 switch (n) {
                 case 3: case 6: shadow[i] = 1; break;
@@ -239,10 +245,11 @@ void WarGrey::STEM::GameOfLifeWorld::load(float width, float height) {
     TheBigBang::load(width, height);
 
     float board_height = height - this->get_titlebar_height() * 2.0F;
-    float board_width = width;
-    int n = fl2fxi(flmin(board_width, board_height) / this->gridsize) - 1;
+    float board_width = width - this->get_titlebar_height();
+    int col = fl2fxi(board_width / this->gridsize) - 1;
+    int row = fl2fxi(board_height / this->gridsize) - 1;
 
-    this->gameboard = this->insert(new ConwayLifelet(n, this->gridsize));
+    this->gameboard = this->insert(new ConwayLifelet(row, col, this->gridsize));
     this->generation = this->insert(new Labellet(GameFont::math(), GREEN, "%d", this->gameboard->current_generation()));
 
     this->instructions[AUTO_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 自行演化", AUTO_KEY));
@@ -251,9 +258,11 @@ void WarGrey::STEM::GameOfLifeWorld::load(float width, float height) {
     this->instructions[RAND_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 随机重建", RAND_KEY));
     this->instructions[RSET_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 世界归零", RSET_KEY));
     this->instructions[PACE_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 单步跟踪", PACE_KEY));
-    this->instructions[LOAD_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 加载例子", LOAD_KEY));
+    this->instructions[LOAD_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 载入范例", LOAD_KEY));
+    this->instructions[WRTE_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 保存范例", WRTE_KEY));
 
-    this->set_local_fps(10);
+    this->set_local_fps(default_frame_rate);
+    this->load_conway_demo();
 }
 
 void WarGrey::STEM::GameOfLifeWorld::reflow(float width, float height) {
@@ -299,7 +308,8 @@ void WarGrey::STEM::GameOfLifeWorld::on_char(char key, uint16_t modifiers, uint8
                 case RAND_KEY: this->agent->play_writing(1); this->gameboard->construct_random_world(); break;
                 case RSET_KEY: this->agent->play_empty_trash(1); this->gameboard->reset(); break;
                 case PACE_KEY: this->agent->play_processing(1); this->pace_forward(1); break;
-                case LOAD_KEY: this->agent->play_searching(1); this->load_demos(); break;
+                case LOAD_KEY: this->agent->play_searching(1); this->load_conway_demo(); break;
+                case WRTE_KEY: this->agent->play_print(1); this->save_conway_demo(); break;
                 }
 
                 this->notify_updated();
@@ -313,6 +323,7 @@ void WarGrey::STEM::GameOfLifeWorld::on_char(char key, uint16_t modifiers, uint8
 void WarGrey::STEM::GameOfLifeWorld::on_tap(IMatter* matter, float x, float y) {
     if (this->state == GameState::Edit) {
         this->gameboard->modify_life_at_location(x, y);
+        this->instructions[WRTE_KEY]->set_text_color(GREEN);
     }
 }
 
@@ -327,7 +338,7 @@ void WarGrey::STEM::GameOfLifeWorld::pace_forward(int repeats) {
         this->generation->set_text_color(GREEN);
         this->generation->set_text(MatterAnchor::RB, "%d", this->gameboard->current_generation());
     } else {
-        this->generation->set_text_color(CRIMSON);
+        this->generation->set_text_color(ORANGE);
         this->generation->set_text(MatterAnchor::RB, "%d", this->gameboard->current_generation());
         
         if (this->state == GameState::Auto) {
@@ -336,9 +347,9 @@ void WarGrey::STEM::GameOfLifeWorld::pace_forward(int repeats) {
     }
 }
 
-void WarGrey::STEM::GameOfLifeWorld::load_demos() {
+void WarGrey::STEM::GameOfLifeWorld::load_conway_demo() {
     if (!exists(this->demo_path)) {
-        this->demo_path = digimon_path("demo/game_of_life", ".stem");
+        this->demo_path = DEFAULT_CONWAY_DEMO;
     }
     
     try {
@@ -349,8 +360,27 @@ void WarGrey::STEM::GameOfLifeWorld::load_demos() {
         this->gameboard->load(this->demo_path, golin);
         golin.close();
     } catch (std::ifstream::failure &e) {
-        this->instructions[LOAD_KEY]->set_text_color(CHOCOLATE);
-        printf("Failed to load the demos: %s\n", e.what());
+        this->instructions[LOAD_KEY]->set_text_color(FIREBRICK);
+        printf("Failed to load the demo: %s\n", e.what());
+    }
+}
+
+void WarGrey::STEM::GameOfLifeWorld::save_conway_demo() {
+    if (!exists(this->demo_path)) {
+        this->demo_path = DEFAULT_CONWAY_DEMO;
+    }
+    
+    try {
+        std::ofstream golout;
+
+        golout.exceptions(std::ios_base::badbit | std::ios_base::failbit);
+        golout.open(this->demo_path);
+        this->gameboard->save(this->demo_path, golout);
+        golout.close();
+        this->instructions[WRTE_KEY]->set_text_color(ROYALBLUE);
+    } catch (std::ifstream::failure &e) {
+        this->instructions[WRTE_KEY]->set_text_color(FIREBRICK);
+        printf("Failed to save the demo: %s\n", e.what());
     }
 }
 
@@ -365,7 +395,7 @@ void WarGrey::STEM::GameOfLifeWorld::switch_game_state(GameState new_state) {
             this->update_instructions_state(colors_for_auto);
         }; break;
         case GameState::Stop: {
-            this->gameboard->set_color(BLACK);
+            this->gameboard->set_color(DIMGRAY);
             this->agent->play_rest_pose(1);
             this->update_instructions_state(colors_for_stop);
         }; break;

@@ -85,7 +85,8 @@ namespace WarGrey::STEM {
             void switch_game_state(WarGrey::STEM::GameState new_state);
             void update_instructions_state(const uint32_t* colors);
             void pace_forward(int repeats = 1);
-            void load_demos();
+            void load_conway_demo();
+            void save_conway_demo();
             
         private: // 游戏物体
             WarGrey::STEM::GameOfLifelet* gameboard;
