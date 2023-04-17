@@ -26,6 +26,7 @@ namespace WarGrey::STEM {
         int current_generation() { return this->generation; }
 
     public:
+        void save(const std::string& life_world, std::ofstream& golout);
         void construct_random_world();
         bool pace_forward(int repeats);
         void reset();
@@ -71,6 +72,10 @@ namespace WarGrey::STEM {
         protected: // 覆盖输入事件处理方法
             void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) override; // 处理键盘事件
             void on_tap(WarGrey::STEM::IMatter* m, float x, float y) override;                  // 处理鼠标事件
+
+        protected: // 处理保存事件
+            const char* usrdata_extension() override { return ".gol"; }
+            void on_save(const std::string& life_world, std::ofstream& golout) override;
 
         private:
             void switch_game_state(WarGrey::STEM::GameState new_state);

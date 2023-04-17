@@ -149,13 +149,25 @@ void WarGrey::STEM::GameOfLifelet::reset() {
 }
 
 void WarGrey::STEM::GameOfLifelet::construct_random_world() {
-    for (int i = 0; i < this->row; i++) {
-        for (int j = 0; j < this->col; j++) {
-            this->world[i][j] = ((random_raw() % 2 == 0) ? 1 : 0);
+    for (int r = 0; r < this->row; r++) {
+        for (int c = 0; c < this->col; c++) {
+            this->world[r][c] = ((random_raw() % 2 == 0) ? 1 : 0);
         }
     }
 
     this->generation = 0;
+}
+
+void WarGrey::STEM::GameOfLifelet::save(const std::string& life_world, std::ofstream& golout) {
+    if (world != nullptr) {
+        for (int r = 0; r < this->row; r++) {
+            for (int c = 0; c < this->col; c++) {
+                golout << this->world[r][c];
+            }
+            
+            golout << std::endl;
+        }
+    }
 }
 
 /*************************************************************************************************/
@@ -281,6 +293,10 @@ void WarGrey::STEM::GameOfLifeWorld::on_tap(IMatter* matter, float x, float y) {
     if (this->state == GameState::Edit) {
         this->gameboard->modify_life_at_location(x, y);
     }
+}
+
+void WarGrey::STEM::GameOfLifeWorld::on_save(const std::string& life_world, std::ofstream& golout) {
+    this->gameboard->save(life_world, golout);
 }
 
 /*************************************************************************************************/

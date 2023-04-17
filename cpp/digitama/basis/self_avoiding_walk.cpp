@@ -128,7 +128,7 @@ void WarGrey::STEM::SelfAvoidingWalkWorld::update(uint64_t count, uint32_t inter
                 } else {
                     this->walker->switch_mode(BracerMode::Win, 1);
                 }
-            } else if (this->is_colliding(this->tiles[this->row][this->col], this->walker, MatterAnchor::CC)) {
+            } else if (this->is_colliding(this->walker, this->tiles[this->row][this->col], MatterAnchor::CC)) {
                 if (is_inside_maze(this->row, this->col)) {
                     this->tiles[this->row][this->col]->set_type(maze_path_type);
                 }
