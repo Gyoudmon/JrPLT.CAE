@@ -26,10 +26,13 @@ namespace WarGrey::STEM {
         int current_generation() { return this->generation; }
 
     public:
-        void save(const std::string& life_world, std::ofstream& golout);
         void construct_random_world();
         bool pace_forward(int repeats);
         void reset();
+
+    public:
+        void load(const std::string& life_world, std::ifstream& golin);
+        void save(const std::string& life_world, std::ofstream& golout);
 
     protected: // 演化策略, 默认留给子类实现
         virtual void evolve(int** world, int* shadow, int row, int col) = 0;
@@ -56,8 +59,9 @@ namespace WarGrey::STEM {
 
     class GameOfLifeWorld : public WarGrey::STEM::TheBigBang {
         public:
-            GameOfLifeWorld(float gridsize = 8.0F) : GameOfLifeWorld("生命游戏", gridsize) {}
-            GameOfLifeWorld(const char* title, float gridsize = 8.0F) : TheBigBang(title), gridsize(gridsize) {}
+            GameOfLifeWorld(float gridsize = 8.0F) : GameOfLifeWorld(nullptr, gridsize) {}
+            GameOfLifeWorld(const std::string& life_demo, float gridsize = 8.0F)
+                : TheBigBang("生命游戏"), demo_path(life_demo), gridsize(gridsize) {}
             virtual ~GameOfLifeWorld() {}
 
         public:    // 覆盖游戏基本方法
@@ -81,6 +85,7 @@ namespace WarGrey::STEM {
             void switch_game_state(WarGrey::STEM::GameState new_state);
             void update_instructions_state(const uint32_t* colors);
             void pace_forward(int repeats = 1);
+            void load_demos();
             
         private: // 游戏物体
             WarGrey::STEM::GameOfLifelet* gameboard;
@@ -91,6 +96,7 @@ namespace WarGrey::STEM {
             WarGrey::STEM::GameState state = GameState::_;
 
         private:
+            std::string demo_path;
             float gridsize;
     };
 }

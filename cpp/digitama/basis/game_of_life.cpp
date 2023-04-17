@@ -5,20 +5,24 @@
 
 #include "../big_bang/physics/random.hpp"
 
+#include <filesystem>
+
 using namespace WarGrey::STEM;
+using namespace std::filesystem;
 
 /*************************************************************************************************/
 static const char AUTO_KEY = 'a';
 static const char STOP_KEY = 's';
+static const char PACE_KEY = 'p';
 static const char EDIT_KEY = 'e';
+static const char LOAD_KEY = 'l';
 static const char RAND_KEY = 'r';
 static const char RSET_KEY = 'z';
-static const char PACE_KEY = 'p';
 
-static const char ordered_keys[] = { AUTO_KEY, STOP_KEY, EDIT_KEY, RAND_KEY, RSET_KEY, PACE_KEY };
-static const uint32_t colors_for_auto[] = { GRAY, GREEN, GRAY, GRAY, GRAY, GRAY };
-static const uint32_t colors_for_stop[] = { GREEN, GRAY, GREEN, GRAY, GRAY, GREEN };
-static const uint32_t colors_for_edit[] = { GREEN, GRAY, GRAY, GREEN, GREEN, GREEN };
+static const char ordered_keys[] = { AUTO_KEY, STOP_KEY, PACE_KEY, EDIT_KEY, LOAD_KEY, RAND_KEY, RSET_KEY };
+static const uint32_t colors_for_auto[] = { GRAY, GREEN, GRAY, GRAY, GRAY, GRAY, GRAY };
+static const uint32_t colors_for_stop[] = { GREEN, GRAY, GREEN, GREEN, GRAY, GRAY, GRAY };
+static const uint32_t colors_for_edit[] = { GREEN, GRAY, GRAY, GREEN, GREEN, GREEN, GREEN };
 
 /*************************************************************************************************/
 static inline int check_neighbor(int* world[], int row, int col, int r, int c) {
@@ -158,6 +162,21 @@ void WarGrey::STEM::GameOfLifelet::construct_random_world() {
     this->generation = 0;
 }
 
+void WarGrey::STEM::GameOfLifelet::load(const std::string& life_world, std::ifstream& golin) {
+    std::string rowline;
+    int r = 0;
+
+    this->reset();
+
+    while ((r < this->row) && std::getline(golin, rowline)) {
+        for (int c = 0; c < rowline.size() && c < this->col; c ++) {
+            this->world[r][c] = (rowline[c] == '0') ? 0 : 1;
+        }
+
+        r ++;
+    }
+}
+
 void WarGrey::STEM::GameOfLifelet::save(const std::string& life_world, std::ofstream& golout) {
     if (world != nullptr) {
         for (int r = 0; r < this->row; r++) {
@@ -232,6 +251,7 @@ void WarGrey::STEM::GameOfLifeWorld::load(float width, float height) {
     this->instructions[RAND_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 随机重建", RAND_KEY));
     this->instructions[RSET_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 世界归零", RSET_KEY));
     this->instructions[PACE_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 单步跟踪", PACE_KEY));
+    this->instructions[LOAD_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 加载例子", LOAD_KEY));
 
     this->set_local_fps(10);
 }
@@ -279,6 +299,7 @@ void WarGrey::STEM::GameOfLifeWorld::on_char(char key, uint16_t modifiers, uint8
                 case RAND_KEY: this->agent->play_writing(1); this->gameboard->construct_random_world(); break;
                 case RSET_KEY: this->agent->play_empty_trash(1); this->gameboard->reset(); break;
                 case PACE_KEY: this->agent->play_processing(1); this->pace_forward(1); break;
+                case LOAD_KEY: this->agent->play_searching(1); this->load_demos(); break;
                 }
 
                 this->notify_updated();
@@ -308,6 +329,28 @@ void WarGrey::STEM::GameOfLifeWorld::pace_forward(int repeats) {
     } else {
         this->generation->set_text_color(CRIMSON);
         this->generation->set_text(MatterAnchor::RB, "%d", this->gameboard->current_generation());
+        
+        if (this->state == GameState::Auto) {
+            this->switch_game_state(GameState::Stop);
+        }
+    }
+}
+
+void WarGrey::STEM::GameOfLifeWorld::load_demos() {
+    if (!exists(this->demo_path)) {
+        this->demo_path = digimon_path("demo/game_of_life", ".stem");
+    }
+    
+    try {
+        std::ifstream golin;
+
+        golin.exceptions(std::ios_base::badbit | std::ios_base::failbit);
+        golin.open(this->demo_path);
+        this->gameboard->load(this->demo_path, golin);
+        golin.close();
+    } catch (std::ifstream::failure &e) {
+        this->instructions[LOAD_KEY]->set_text_color(CHOCOLATE);
+        printf("Failed to load the demos: %s\n", e.what());
     }
 }
 

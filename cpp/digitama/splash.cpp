@@ -251,6 +251,7 @@ void WarGrey::STEM::TheCosmos::construct(int argc, char* argv[]) {
     enter_digimon_zone(argv[0]);
     digimon_mascot_setup("../mascot");
     imgdb_setup(digimon_subdir("stone"));
+    
     this->parse_cmdline_options(argc, argv);
     
     this->splash = this->push_plane(new SplashPlane(this));

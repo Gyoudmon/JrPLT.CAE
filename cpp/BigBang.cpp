@@ -20,7 +20,7 @@ using namespace WarGrey::PLT;
 
 /*************************************************************************************************/
 namespace {
-    enum class CmdlineOps { StreamFile, _ };
+    enum class CmdlineOps { GameOfLifeDemo, StreamFile, _ };
 
     /* 定义本地宇宙类，并命名为 BigBangCosmos，继承自 TheCosmos 类 */
     class BigBangCosmos : public TheCosmos {
@@ -49,7 +49,7 @@ namespace {
             
             // 第三阶段
             this->push_plane(new SelfAvoidingWalkWorld());
-            this->push_plane(new GameOfLifeWorld());
+            this->push_plane(new GameOfLifeWorld(this->life_source));
             this->push_plane(new TheBigBang());
             this->push_plane(new StreamPlane(this->stream_source.c_str()));
         }
@@ -60,12 +60,18 @@ namespace {
             
             for (int idx = 1; idx < argc; idx ++) {
                 switch (opt) {
+                    case CmdlineOps::GameOfLifeDemo: {
+                        this->life_source = argv[idx];
+                        opt = CmdlineOps::_;
+                    }; break;
                     case CmdlineOps::StreamFile: {
                         this->stream_source = argv[idx];
                         opt = CmdlineOps::_;
                     }; break;
                     default: {
-                        if (strncmp("--pipe", argv[idx], 7) == 0) {
+                        if (strncmp("--life", argv[idx], 7) == 0) {
+                            opt = CmdlineOps::GameOfLifeDemo;
+                        } else if (strncmp("--pipe", argv[idx], 7) == 0) {
                             opt = CmdlineOps::StreamFile;
                         }
                     }
@@ -74,6 +80,7 @@ namespace {
         }
 
     private:
+        std::string life_source;
         std::string stream_source;
     };
 }
