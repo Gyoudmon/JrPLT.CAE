@@ -20,8 +20,8 @@ class DrunkardWalkWorld(Plane):
         self.tent = None
 
     def load(self, Width, Height):
-        self.beach = self.insert(Sprite(digimon_path("asset/beach", ".png")))
-        self.tent = self.insert(SpriteGridSheet(digimon_path("asset/tents", '.png'), 1, 4))
+        self.beach = self.insert(Sprite(digimon_path("assets/beach", ".png")))
+        self.tent = self.insert(SpriteGridSheet(digimon_path("assets/tents", '.png'), 1, 4))
         self.drunkard = self.insert(Agate())
         self.partner = self.insert(Tita())
 
