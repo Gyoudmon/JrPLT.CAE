@@ -11,6 +11,7 @@
 
 #include "digitama/basis/self_avoiding_walk.hpp"
 #include "digitama/basis/game_of_life.hpp"
+#include "digitama/basis/evolution.hpp"
 
 // Additional Demos
 #include "digitama/pltmos/stream.hpp"
@@ -50,7 +51,7 @@ namespace {
             // 第三阶段
             this->push_plane(new SelfAvoidingWalkWorld());
             this->push_plane(new GameOfLifeWorld(this->life_source));
-            this->push_plane(new TheBigBang());
+            this->push_plane(new EvolutionWorld(this->life_source));
             this->push_plane(new StreamPlane(this->stream_source.c_str()));
         }
 

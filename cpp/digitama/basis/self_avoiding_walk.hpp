@@ -22,7 +22,7 @@ namespace WarGrey::STEM {
             void after_select(WarGrey::STEM::IMatter* m, bool yes) override;
             bool update_tooltip(WarGrey::STEM::IMatter* m, float lx, float ly, float gx, float gy) override;
 
-        protected:
+        private:
             void reset_walkers(bool keep_mode);
             void reset_maze();
             

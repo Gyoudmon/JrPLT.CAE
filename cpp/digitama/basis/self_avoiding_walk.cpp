@@ -5,8 +5,8 @@ using namespace WarGrey::STEM;
 /*************************************************************************************************/
 static const double pace_duration = 0.5;
 
-static const GroundBlockType maze_ground_type = GroundBlockType::Dirt;
-static const GroundBlockType maze_path_type = GroundBlockType::Soil;
+static const GroundBlockType steppe_tile_type = GroundBlockType::Dirt;
+static const GroundBlockType jungle_tile_type = GroundBlockType::Soil;
 static const GroundBlockType maze_wall_type = GroundBlockType::Grass;
 
 /*************************************************************************************************/
@@ -47,11 +47,7 @@ void WarGrey::STEM::SelfAvoidingWalkWorld::load(float width, float height) {
     // 初始化世界
     for (int row = 0; row < MAZE_SIZE; row ++) {
         for (int col = 0; col < MAZE_SIZE; col ++) {
-            if (is_inside_maze(row, col)) {
-                this->tiles[row][col] = this->insert(new PlanetCuteTile(maze_ground_type), cx, cy, MatterAnchor::CC);
-            } else {
-                this->tiles[row][col] = this->insert(new PlanetCuteTile(maze_wall_type), cx, cy, MatterAnchor::CC);
-            }
+            this->tiles[row][col] = this->insert(new PlanetCuteTile(steppe_tile_type), cx, cy, MatterAnchor::CC);
         }
     }
 
@@ -66,14 +62,13 @@ void WarGrey::STEM::SelfAvoidingWalkWorld::load(float width, float height) {
     this->walkers[7] = this->insert(new Zin());
 
     /* locating */ {
-        float top, bottom;
+        float t, r, b, l;
 
         this->tiles[0][0]->feed_extent(0.0F, 0.0F, &this->cell_width, &this->cell_height);
-        this->tiles[0][0]->feed_margin(0.0F, 0.0F, &top);
-        bottom = this->tiles[0][0]->get_thickness();
+        this->tiles[0][0]->feed_map_overlay(&t, &r, &b, &l);
 
-        this->cell_width -= 1.0F;
-        this->cell_height -= (top + bottom);
+        this->cell_width -= (l + r);
+        this->cell_height -= (t + b);
     }
 
     TheBigBang::load(width, height);
@@ -130,7 +125,7 @@ void WarGrey::STEM::SelfAvoidingWalkWorld::update(uint64_t count, uint32_t inter
                 }
             } else if (this->is_colliding(this->walker, this->tiles[this->row][this->col], MatterAnchor::CC)) {
                 if (is_inside_maze(this->row, this->col)) {
-                    this->tiles[this->row][this->col]->set_type(maze_path_type);
+                    this->tiles[this->row][this->col]->set_type(jungle_tile_type);
                 }
             }
         } else if (!this->walker->in_playing()) {
@@ -149,6 +144,8 @@ void WarGrey::STEM::SelfAvoidingWalkWorld::after_select(IMatter* m, bool yes) {
         Bracer* bracer = dynamic_cast<Bracer*>(m);
 
         if (bracer != nullptr) {
+            float bottom_overlay;
+
             this->row = MAZE_SIZE / 2;
             this->col = MAZE_SIZE / 2;
 
@@ -156,11 +153,11 @@ void WarGrey::STEM::SelfAvoidingWalkWorld::after_select(IMatter* m, bool yes) {
             this->walker->switch_mode(BracerMode::Run);
             this->reset_maze();
 
-            this->move_to(this->walker,
-                            this->tiles[this->row][this->col], MatterAnchor::CC,
-                            MatterAnchor::CC, 0.0F, -this->tiles[this->row][this->col]->get_thickness());
+            this->tiles[this->row][this->col]->feed_map_overlay(nullptr, nullptr, &bottom_overlay);
+            this->move_to(this->walker, this->tiles[this->row][this->col], MatterAnchor::CC,
+                            MatterAnchor::CC, 0.0F, -bottom_overlay);
             
-            this->tiles[this->row][this->col]->set_type(maze_path_type);
+            this->tiles[this->row][this->col]->set_type(jungle_tile_type);
             this->maze[this->row][this->col] = true;
 
             this->no_selected();
@@ -187,7 +184,7 @@ void WarGrey::STEM::SelfAvoidingWalkWorld::reset_maze() {
             this->maze[row][col] = false;
                 
             if (is_inside_maze(row, col)) {
-                this->tiles[row][col]->set_type(maze_ground_type);
+                this->tiles[row][col]->set_type(steppe_tile_type);
             } else {
                 this->tiles[row][col]->set_type(maze_wall_type);
             }
