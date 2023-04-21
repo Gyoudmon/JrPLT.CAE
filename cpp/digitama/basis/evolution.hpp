@@ -30,17 +30,19 @@ namespace WarGrey::STEM {
         bool update_tooltip(WarGrey::STEM::IMatter* m, float lx, float ly, float gx, float gy) override;
 
     private:
-        void animal_live(Animal* animal, IToroidalMovingAnimal* self, float tile_width, float tile_height);
+        void animal_try_eat(Animal* animal, IToroidalMovingAnimal* self);
+        void animal_try_reproduce(Animal* animal, IToroidalMovingAnimal* self, std::vector<Animal*>& offsprings, float dx, float dy);
+        void animal_move(Animal* animal, IToroidalMovingAnimal* self, float tile_width, float tile_height);
         void clear_dead_animals();
 
     private:
         void reset_world();
-        void update_dayinfo();
+        void update_world_info();
             
     private: /* 本世界中的物体 */
         WarGrey::STEM::SteppeAtlas* steppe;
         std::vector<WarGrey::STEM::Animal*> animals;
-        WarGrey::STEM::Labellet* day_info;
+        WarGrey::STEM::Labellet* world_info;
  
     private: /* 本世界的参数设定 */
         int row;

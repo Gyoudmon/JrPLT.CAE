@@ -2,27 +2,61 @@
 
 #include "../../big_bang/datum/fixnum.hpp"
 
+#include <sstream>
+
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 static const float lifebar_height = 2.0F;
-static const double lifebar_alpha = 0.16;
+static const double lifebar_alpha = 0.08;
 
-static const int orientate_gene[MOVING_WAYS] = { 1, 1, 10, 1, 1, 1, 1, 1 };
-static const int random_gene[MOVING_WAYS] = { 1, 1, 1, 1, 1, 1, 1, 1 };
+static inline void random_gene_initialize(int gene[MOVING_WAYS]) {
+    for (int idx = 0; idx < MOVING_WAYS; idx ++) {
+        gene[idx] = random_uniform(1, 10);
+    }
+}
+
+static inline void gene_mutate(int gene[MOVING_WAYS]) {
+    int which = random_uniform(1, MOVING_WAYS) - 1;
+
+    gene[which] = fxmax(1, gene[which] + random_uniform(-1, 1));
+}
 
 /*************************************************************************************************/
-WarGrey::STEM::IToroidalMovingAnimal::IToroidalMovingAnimal(int row, int col, const int gene[MOVING_WAYS], double duration, int direction, int energy)
-        : duration(duration), row(row), col(col), direction(direction), energy(energy) {
-    this->r = row / 2;
-    this->c = col / 2;
+WarGrey::STEM::IToroidalMovingAnimal::IToroidalMovingAnimal(int row, int col, const int gene[MOVING_WAYS], double duration, int cycle, int energy)
+        : duration(duration), breeding_cycle(cycle), row(row), col(col), energy(energy) {
+    this->direction = random_uniform(0, MOVING_WAYS - 1);
+    this->r = row >> 1;
+    this->c = col >> 1;
+    this->cycle = cycle;
 
     this->full_energy = energy;
     this->reproduce_energy = energy / 5;
+    this->generation = 1;
 
-    for (int idx = 0; idx < MOVING_WAYS; idx ++) {
-        this->gene[idx] = gene[idx];
+    if (gene == nullptr) {
+        random_gene_initialize(this->gene);
+    } else {
+        for (int idx = 0; idx < MOVING_WAYS; idx ++) {
+            this->gene[idx] = gene[idx];
+        }
     }
+}
+
+std::string WarGrey::STEM::IToroidalMovingAnimal::description() {
+    std::stringstream s;
+
+    s << "子代: " << this->generation << ";";
+    s << " 生命: " << fl2fxi(float(this->energy) / float(this->full_energy) * 10000.0F) / 100.0F << "%;";
+    s << " 面向: " << this->direction << ";";
+
+    s << " 基因: [" << this->gene[0];
+    for (size_t idx = 1; idx < MOVING_WAYS; idx ++) {
+        s << ", " << this->gene[idx];
+    }
+    s << "].";
+
+    return s.str();
 }
 
 void WarGrey::STEM::IToroidalMovingAnimal::draw(SDL_Renderer* render, float x, float y, float width, float height) {
@@ -57,20 +91,20 @@ int WarGrey::STEM::IToroidalMovingAnimal::angle(int idx0, int rnd) {
 }
 
 void WarGrey::STEM::IToroidalMovingAnimal::move(int* delta_row, int* delta_col) {
-    int dr = 0;
-    int dc = 0;
     int orow = this->r;
     int ocol = this->c;
-
+    int dr = 0;
+    int dc = 0;
+    
     switch (this->direction) {
-    case 0: dr = dc = -1; break;
-    case 1: dr = -1; break;
-    case 2: dr = -1; dc = +1; break;
-    case 3: dc = +1; break;
-    case 4: dc = dr = +1; break;
-    case 5: dr = +1; break;
-    case 6: dr = +1; dc = -1; break;
-    case 7: dc = -1; break;
+    case 0: dr = -1; break;
+    case 1: dr = -1; dc = +1; break;
+    case 2: dc = +1; break;
+    case 3: dc = dr = +1; break;
+    case 4: dr = +1; break;
+    case 5: dr = +1; dc = -1; break;
+    case 6: dc = -1; break;
+    case 7: dr = dc = -1; break;
     default: /* deadcode */;
     }
 
@@ -78,13 +112,41 @@ void WarGrey::STEM::IToroidalMovingAnimal::move(int* delta_row, int* delta_col) 
     this->c = safe_index(ocol + dc, this->col);
     this->energy -= 1;
 
+    if (this->cycle > 0) {
+        this->cycle -= 1;
+    }
+
     SET_BOX(delta_row, this->r - orow);
     SET_BOX(delta_col, this->c - ocol);
 }
 
+void WarGrey::STEM::IToroidalMovingAnimal::eat(int food_energy) {
+    int gain_energy = food_energy * random_uniform(10, 20) / 100;
+
+    this->energy = fxmin(this->full_energy, this->energy + gain_energy);
+}
+
+IToroidalMovingAnimal* WarGrey::STEM::IToroidalMovingAnimal::asexually_reproduce() {
+    auto offspring = new IToroidalMovingAnimal(this->row, this->col, this->gene, this->duration, this->breeding_cycle, this->full_energy);
+
+    gene_mutate(offspring->gene);
+    offspring->generation = this->generation + 1;
+    offspring->energy = this->energy >> 1;
+    offspring->r = this->r;
+    offspring->c = this->c;
+    
+    this->cycle = this->breeding_cycle;
+
+    return offspring;
+}
+
 /*************************************************************************************************/
 WarGrey::STEM::TMRooster::TMRooster(int row, int col, int direction, int energy) {
-    this->attach_metadata(new IToroidalMovingAnimal(row, col, orientate_gene, 0.5, direction, energy));
+    this->attach_metadata(new IToroidalMovingAnimal(row, col, nullptr, 0.5, direction, energy));
+}
+
+WarGrey::STEM::TMRooster::TMRooster(IToroidalMovingAnimal* self) {
+    this->attach_metadata(self);
 }
 
 void WarGrey::STEM::TMRooster::draw(SDL_Renderer* render, float x, float y, float width, float height) {
@@ -92,8 +154,17 @@ void WarGrey::STEM::TMRooster::draw(SDL_Renderer* render, float x, float y, floa
     this->unsafe_metadata<IToroidalMovingAnimal>()->draw(render, x, y, width, height);
 }
 
+Animal* WarGrey::STEM::TMRooster::asexually_reproduce() {
+    return new TMRooster(this->unsafe_metadata<IToroidalMovingAnimal>()->asexually_reproduce());
+}
+
+/*************************************************************************************************/
 WarGrey::STEM::TMCow::TMCow(int row, int col, int direction, int energy) {
-    this->attach_metadata(new IToroidalMovingAnimal(row, col, random_gene, 2.0, direction, energy));
+    this->attach_metadata(new IToroidalMovingAnimal(row, col, nullptr, 2.0, direction, energy));
+}
+
+WarGrey::STEM::TMCow::TMCow(IToroidalMovingAnimal* self) {
+    this->attach_metadata(self);
 }
 
 void WarGrey::STEM::TMCow::draw(SDL_Renderer* render, float x, float y, float width, float height) {
@@ -101,11 +172,42 @@ void WarGrey::STEM::TMCow::draw(SDL_Renderer* render, float x, float y, float wi
     this->unsafe_metadata<IToroidalMovingAnimal>()->draw(render, x, y, width, height);
 }
 
+Animal* WarGrey::STEM::TMCow::asexually_reproduce() {
+    return new TMCow(this->unsafe_metadata<IToroidalMovingAnimal>()->asexually_reproduce());
+}
+
+/*************************************************************************************************/
 WarGrey::STEM::TMCat::TMCat(int row, int col, int direction, int energy) {
-    this->attach_metadata(new IToroidalMovingAnimal(row, col, random_gene, 0.4, direction, energy));
+    this->attach_metadata(new IToroidalMovingAnimal(row, col, nullptr, 0.4, direction, energy));
+}
+
+WarGrey::STEM::TMCat::TMCat(IToroidalMovingAnimal* self) {
+    this->attach_metadata(self);
 }
 
 void WarGrey::STEM::TMCat::draw(SDL_Renderer* render, float x, float y, float width, float height) {
     Cat::draw(render, x, y, width, height);
     this->unsafe_metadata<IToroidalMovingAnimal>()->draw(render, x, y, width, height);
+}
+
+Animal* WarGrey::STEM::TMCat::asexually_reproduce() {
+    return new TMCat(this->unsafe_metadata<IToroidalMovingAnimal>()->asexually_reproduce());
+}
+
+/*************************************************************************************************/
+WarGrey::STEM::TMPigeon::TMPigeon(int row, int col, int direction, int energy) {
+    this->attach_metadata(new IToroidalMovingAnimal(row, col, nullptr, 0.3, direction, energy));
+}
+
+WarGrey::STEM::TMPigeon::TMPigeon(IToroidalMovingAnimal* self) {
+    this->attach_metadata(self);
+}
+
+void WarGrey::STEM::TMPigeon::draw(SDL_Renderer* render, float x, float y, float width, float height) {
+    Pigeon::draw(render, x, y, width, height);
+    this->unsafe_metadata<IToroidalMovingAnimal>()->draw(render, x, y, width, height);
+}
+
+Animal* WarGrey::STEM::TMPigeon::asexually_reproduce() {
+    return new TMPigeon(this->unsafe_metadata<IToroidalMovingAnimal>()->asexually_reproduce());
 }

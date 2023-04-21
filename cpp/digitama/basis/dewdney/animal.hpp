@@ -10,8 +10,10 @@ namespace WarGrey::STEM {
     /*********************************************************************************************/
     class IToroidalMovingAnimal : public WarGrey::STEM::IMatterMetadata {
     public:
-        IToroidalMovingAnimal(int row, int col, const int gene[MOVING_WAYS], double duration, int direction, int energy);
+        IToroidalMovingAnimal(int row, int col, const int gene[MOVING_WAYS], double duration, int cycle, int energy);
         virtual ~IToroidalMovingAnimal() {}
+
+        std::string description();
 
     public:
         void draw(SDL_Renderer* renderer, float x, float y, float width, float height);
@@ -19,13 +21,17 @@ namespace WarGrey::STEM {
     public:
         void turn();
         void move(int* dr = nullptr, int* dc = nullptr);
-        bool is_alive() const { return this->energy > 0; }
+        void eat(int food_energy);
+        IToroidalMovingAnimal* asexually_reproduce();
 
     public:
+        bool is_alive() const { return this->energy > 0; }
+        bool can_reproduce() const { return (this->energy >= this->reproduce_energy) && (this->cycle <= 0); }
         double pace_duration() { return this->duration; }
+        int current_generation() { return this->generation; }
         int current_row() { return r; }
         int current_col() { return c; }
-
+    
     private:
         int angle(int idx0, int rnd);
 
@@ -34,12 +40,15 @@ namespace WarGrey::STEM {
         int full_energy;
         int reproduce_energy;
         int gene[MOVING_WAYS];
+        int breeding_cycle;
         int row;
         int col;
 
     private:
+        int generation;
         int direction;
         int energy;
+        int cycle;
         int r;
         int c;
     };
@@ -47,28 +56,53 @@ namespace WarGrey::STEM {
     /*********************************************************************************************/
     class TMRooster : public WarGrey::STEM::Rooster {
     public:
-        TMRooster(int row, int col, int direction = 0, int energy = 300);
+        TMRooster(int row, int col, int cycle = 30, int energy = 300);
+        TMRooster(WarGrey::STEM::IToroidalMovingAnimal* self);
         virtual ~TMRooster() {}
 
     public:
         void draw(SDL_Renderer* renderer, float x, float y, float width, float height) override;
+
+    public:
+        Animal* asexually_reproduce() override;
+    };
+
+    class TMPigeon : public WarGrey::STEM::Pigeon {
+    public:
+        TMPigeon(int row, int col, int cycle = 30, int energy = 300);
+        TMPigeon(WarGrey::STEM::IToroidalMovingAnimal* self);
+        virtual ~TMPigeon() {}
+
+    public:
+        void draw(SDL_Renderer* renderer, float x, float y, float width, float height) override;
+
+    public:
+        Animal* asexually_reproduce() override;
     };
 
     class TMCow : public WarGrey::STEM::Cow {
     public:
-        TMCow(int row, int col, int direction = 0, int energy = 600);
+        TMCow(int row, int col, int cycle = 365, int energy = 600);
+        TMCow(WarGrey::STEM::IToroidalMovingAnimal* self);
         virtual ~TMCow() {}
 
     public:
         void draw(SDL_Renderer* renderer, float x, float y, float width, float height) override;
+
+    public:
+        Animal* asexually_reproduce() override;
     };
 
     class TMCat : public WarGrey::STEM::Cat {
     public:
-        TMCat(int row, int col, int direction = 0, int energy = 1000);
+        TMCat(int row, int col, int cycle = 58, int energy = 1000);
+        TMCat(WarGrey::STEM::IToroidalMovingAnimal* self);
         virtual ~TMCat() {}
 
     public:
         void draw(SDL_Renderer* renderer, float x, float y, float width, float height) override;
+
+    public:
+        Animal* asexually_reproduce() override;
     };
 }

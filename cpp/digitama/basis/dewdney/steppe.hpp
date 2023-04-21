@@ -3,26 +3,34 @@
 #include "../../big_bang/bang.hpp"
 
 namespace WarGrey::STEM {
-    static const GroundBlockType fossil_tile_type = GroundBlockType::Dirt;
-    static const GroundBlockType steppe_tile_type = GroundBlockType::Plain;
-    static const GroundBlockType plant_tile_type = GroundBlockType::Grass;
-
     /*********************************************************************************************/
     class SteppeAtlas : public WarGrey::STEM::PlanetCuteAtlas {
     public:
         SteppeAtlas(int row, int col);
-        virtual ~SteppeAtlas() {}
+        virtual ~SteppeAtlas() noexcept;
 
     public:
         int preferred_local_fps() override { return 4; }
         int update(uint64_t count, uint32_t interval, uint64_t uptime) override;
 
     public:
+        void animal_die_at(int r, int c);
+        void plant_grow_at(int r, int c);
+        void plant_be_eaten_at(int r, int c);
+        int get_plant_energy(int r, int c);
+
+    public:
         void reset();
         int current_day() { return this->day; }
 
+    protected:
+        void on_tilemap_load(WarGrey::STEM::shared_costume_t atlas) override;
+
     private:
         void random_plant(int r0, int c0, int row_size, int col_size);
+
+    private:
+        int** energies;
 
     private:
         int day;
