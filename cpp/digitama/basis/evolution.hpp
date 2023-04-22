@@ -41,7 +41,8 @@ namespace WarGrey::STEM {
     private: /* 本世界中的物体 */
         WarGrey::STEM::SteppeAtlas* steppe;
         std::vector<WarGrey::STEM::Animal*> animals;
-        WarGrey::STEM::Historylet* history;
+        WarGrey::STEM::Historylet* phistory;
+        WarGrey::STEM::Historylet* ehistory;
         WarGrey::STEM::Labellet* world_info;
  
     private: /* 本世界的参数设定 */

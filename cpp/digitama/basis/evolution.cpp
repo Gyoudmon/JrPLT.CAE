@@ -23,7 +23,8 @@ void WarGrey::STEM::EvolutionWorld::load(float width, float height) {
     // 初始化世界
     this->steppe = this->insert(new SteppeAtlas(this->row, this->col));
     this->world_info = this->insert(new Labellet(GameFont::serif(), BLACK, matrics_fmt, 0));
-    this->history = this->insert(new Historylet(200.0F, 100.0F, ROYALBLUE));
+    this->phistory = this->insert(new Historylet(200.0F, 100.0F, ROYALBLUE));
+    this->ehistory = this->insert(new Historylet(200.0F, 100.0F, ORANGE));
 
     this->animals.push_back(this->insert(new TMRooster(this->row, this->col)));
     this->animals.push_back(this->insert(new TMPigeon(this->row, this->col)));
@@ -45,7 +46,8 @@ void WarGrey::STEM::EvolutionWorld::reflow(float width, float height) {
     
     this->move_to(this->steppe, cx, cy, MatterAnchor::CC);
     this->move_to(this->world_info, this->steppe, MatterAnchor::RT, MatterAnchor::RB, 0.0F, top_overlay * 0.5F);
-    this->move_to(this->history, this->world_info, MatterAnchor::RT, MatterAnchor::RB);
+    this->move_to(this->ehistory, this->world_info, MatterAnchor::RT, MatterAnchor::RB);
+    this->move_to(this->phistory, this->ehistory, MatterAnchor::LC, MatterAnchor::RC, -top_overlay);
 }
 
 void WarGrey::STEM::EvolutionWorld::on_mission_start(float width, float height) {
@@ -53,9 +55,11 @@ void WarGrey::STEM::EvolutionWorld::on_mission_start(float width, float height) 
 
     this->steppe->feed_map_overlay(nullptr, nullptr, &bottom_overlay);
     
-    // Animals remain the same to simulate the natural disaster
     this->reset_world();
-    this->history->clear();
+    this->phistory->clear();
+    this->ehistory->clear();
+
+    // Animals remain the same to simulate the natural disaster
     for (auto animal : this->animals) {
         auto self = animal->unsafe_metadata<IToroidalMovingAnimal>();
 
@@ -68,7 +72,8 @@ void WarGrey::STEM::EvolutionWorld::on_mission_start(float width, float height) 
 void WarGrey::STEM::EvolutionWorld::update(uint64_t count, uint32_t interval, uint64_t uptime) {
     if (this->animals.empty()) {
         this->world_info->set_text_color(FIREBRICK);
-        this->history->set_color(CRIMSON);
+        this->phistory->set_color(CRIMSON);
+        this->ehistory->set_color(CRIMSON);
     } else {
         std::vector<Animal*> offsprings;
         float tile_width, tile_height, bottom_overlay;
@@ -168,7 +173,7 @@ void WarGrey::STEM::EvolutionWorld::clear_dead_animals() {
 
 /**************************************************************************************************/
 bool WarGrey::STEM::EvolutionWorld::can_select(IMatter* m) {
-    return (m == this->agent) || (m == this->history);
+    return (m == this->agent);
 }
 
 void WarGrey::STEM::EvolutionWorld::after_select(IMatter* m, bool yes) {
@@ -177,7 +182,8 @@ void WarGrey::STEM::EvolutionWorld::after_select(IMatter* m, bool yes) {
 void WarGrey::STEM::EvolutionWorld::reset_world() {
     this->steppe->reset();
     this->world_info->set_text_color(FORESTGREEN);
-    this->history->set_color(ROYALBLUE);
+    this->phistory->set_color(ROYALBLUE);
+    this->ehistory->set_color(ORANGE);
     this->update_world_info();
 }
 
@@ -199,7 +205,9 @@ bool WarGrey::STEM::EvolutionWorld::update_tooltip(IMatter* m, float lx, float l
 void WarGrey::STEM::EvolutionWorld::update_world_info() {
     int day = this->steppe->current_day();
     int n = int(this->animals.size());
+    int e = this->steppe->get_total_energy();
     
-    this->world_info->set_text(MatterAnchor::RB, matrics_fmt, day, n, this->steppe->get_total_energy());
-    this->history->push_back_datum(float(day), float(n));
+    this->world_info->set_text(MatterAnchor::RB, matrics_fmt, day, n, e);
+    this->phistory->push_back_datum(float(day), float(n));
+    this->ehistory->push_back_datum(float(day), float(e));
 }
