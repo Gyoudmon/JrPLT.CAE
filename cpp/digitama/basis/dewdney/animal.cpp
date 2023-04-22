@@ -80,7 +80,7 @@ void WarGrey::STEM::IToroidalMovingAnimal::turn() {
     }
 
     rnd = random_uniform(0, sum - 1);
-    this->direction = safe_index(this->direction + this->angle(0, rnd), MOVING_WAYS);
+    this->direction = (this->direction + this->angle(0, rnd)) % MOVING_WAYS;
 }
 
 int WarGrey::STEM::IToroidalMovingAnimal::angle(int idx0, int rnd) {
