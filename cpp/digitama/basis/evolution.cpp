@@ -2,6 +2,8 @@
 
 #include "../big_bang/datum/fixnum.hpp"
 
+#include <algorithm>
+
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
