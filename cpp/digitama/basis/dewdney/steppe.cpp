@@ -10,13 +10,13 @@ static const GroundBlockType fertile_tile_type = GroundBlockType::Soil;
 static const GroundBlockType steppe_tile_type = GroundBlockType::Plain;
 static const GroundBlockType plant_tile_type = GroundBlockType::Grass;
     
-static const int plant_energy = 80;
-static const int plant_max_energy = 240;
+static const int plant_energy = 120;
+static const int plant_max_energy = plant_energy * 4;
 
 /*************************************************************************************************/
 WarGrey::STEM::SteppeAtlas::SteppeAtlas(int row, int col) : PlanetCuteAtlas(row, col, steppe_tile_type) {
-    this->jungle_row = 6 + row % 2;
-    this->jungle_col = 4 + col % 2;
+    this->jungle_row = 8 + row % 2;
+    this->jungle_col = 6 + col % 2;
 
     this->jungle_r = (row - this->jungle_row) / 2;
     this->jungle_c = (col - this->jungle_col) / 2;
@@ -54,11 +54,9 @@ void WarGrey::STEM::SteppeAtlas::on_tilemap_load(shared_costume_t atlas) {
     this->energies = new int*[this->map_row];
     for (int r = 0; r < this->map_row; r ++) {
         this->energies[r] = new int[this->map_col];
-
-        for (int c = 0; c < this->map_col; c ++) {
-            this->energies[r][c] = 0;   
-        }
     }
+
+    this->reset();
 }
 
 void WarGrey::STEM::SteppeAtlas::reset() {
@@ -69,6 +67,7 @@ void WarGrey::STEM::SteppeAtlas::reset() {
         }
     }
 
+    this->total_energy = 0;
     this->day = 0;
 }
 
@@ -83,8 +82,11 @@ int WarGrey::STEM::SteppeAtlas::get_plant_energy(int r, int c) {
 void WarGrey::STEM::SteppeAtlas::plant_grow_at(int r, int c) {
     r = safe_index(r, this->map_row);
     c = safe_index(c, this->map_col);
+    
+    int origin_energy = this->energies[r][c];
 
     this->energies[r][c] = fxmin(this->energies[r][c] + plant_energy, plant_max_energy);
+    this->total_energy += (this->energies[r][c] - origin_energy);
     this->set_tile_type(r, c, plant_tile_type);
 }
 
@@ -92,6 +94,7 @@ void WarGrey::STEM::SteppeAtlas::plant_be_eaten_at(int r, int c) {
     r = safe_index(r, this->map_row);
     c = safe_index(c, this->map_col);
 
+    this->total_energy -= this->energies[r][c];
     this->energies[r][c] = 0;
     this->set_tile_type(r, c, seed_tile_type);
 }
@@ -100,7 +103,10 @@ void WarGrey::STEM::SteppeAtlas::animal_die_at(int r, int c) {
     r = safe_index(r, this->map_row);
     c = safe_index(c, this->map_col);
 
-    // TODO: how to calculate the energy produced by dead body?
-    this->energies[r][c] = 0;
+    /** TODO
+     * How to calculate the energy produced by dead body?
+     * Meanwhile leaving the energy as-is.
+     */
+
     this->set_tile_type(r, c, fertile_tile_type);
 }

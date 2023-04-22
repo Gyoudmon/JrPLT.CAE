@@ -5,14 +5,14 @@
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-static const char* matrics_fmt = "在线天数: %d    动物总数: %d";
+static const char* matrics_fmt = "在线天数: %d    消费者总数: %d    生产者能量总和: %d";
 
 /*************************************************************************************************/
 void WarGrey::STEM::EvolutionWorld::load(float width, float height) {
     TheBigBang::load(width, height);
     
     float world_width = width;
-    float world_height = height - this->get_titlebar_height();
+    float world_height = height;
     float logic_width;
     
     this->col = fl2fxi(world_width / this->size_hint) - 1;
@@ -21,6 +21,7 @@ void WarGrey::STEM::EvolutionWorld::load(float width, float height) {
     // 初始化世界
     this->steppe = this->insert(new SteppeAtlas(this->row, this->col));
     this->world_info = this->insert(new Labellet(GameFont::serif(), BLACK, matrics_fmt, 0));
+    this->history = this->insert(new Historylet(200.0F, 100.0F, ROYALBLUE));
 
     this->animals.push_back(this->insert(new TMRooster(this->row, this->col)));
     this->animals.push_back(this->insert(new TMPigeon(this->row, this->col)));
@@ -35,10 +36,14 @@ void WarGrey::STEM::EvolutionWorld::load(float width, float height) {
 void WarGrey::STEM::EvolutionWorld::reflow(float width, float height) {
     TheBigBang::reflow(width, height);
     float cx = width * 0.5F;
-    float cy = height * 0.5F;
+    float cy = (height + this->get_titlebar_height()) * 0.5F;
+    float top_overlay;
+
+    this->steppe->feed_map_overlay(&top_overlay);
     
     this->move_to(this->steppe, cx, cy, MatterAnchor::CC);
-    this->move_to(this->world_info, this->steppe, MatterAnchor::RB, MatterAnchor::RT);
+    this->move_to(this->world_info, this->steppe, MatterAnchor::RT, MatterAnchor::RB, 0.0F, top_overlay * 0.5F);
+    this->move_to(this->history, this->world_info, MatterAnchor::RT, MatterAnchor::RB);
 }
 
 void WarGrey::STEM::EvolutionWorld::on_mission_start(float width, float height) {
@@ -48,6 +53,7 @@ void WarGrey::STEM::EvolutionWorld::on_mission_start(float width, float height) 
     
     // Animals remain the same to simulate the natural disaster
     this->reset_world();
+    this->history->clear();
     for (auto animal : this->animals) {
         auto self = animal->unsafe_metadata<IToroidalMovingAnimal>();
 
@@ -60,6 +66,7 @@ void WarGrey::STEM::EvolutionWorld::on_mission_start(float width, float height) 
 void WarGrey::STEM::EvolutionWorld::update(uint64_t count, uint32_t interval, uint64_t uptime) {
     if (this->animals.empty()) {
         this->world_info->set_text_color(FIREBRICK);
+        this->history->set_color(CRIMSON);
     } else {
         std::vector<Animal*> offsprings;
         float tile_width, tile_height, bottom_overlay;
@@ -68,10 +75,12 @@ void WarGrey::STEM::EvolutionWorld::update(uint64_t count, uint32_t interval, ui
         this->steppe->feed_logic_tile_extent(&tile_width, &tile_height);
         this->steppe->feed_map_overlay(nullptr, nullptr, &bottom_overlay);
 
-        for (auto animal : this->animals) {        
+        for (auto animal : this->animals) {  
+            auto self = animal->unsafe_metadata<IToroidalMovingAnimal>();
+          
+            self->on_time_fly(this->steppe->current_day());
+
             if (animal->motion_stopped()) {
-                auto self = animal->unsafe_metadata<IToroidalMovingAnimal>();
-    
                 if (self->is_alive()) {
                     this->animal_try_eat(animal, self);
                     this->animal_try_reproduce(animal, self, offsprings, 0.0F, bottom_overlay);
@@ -157,7 +166,7 @@ void WarGrey::STEM::EvolutionWorld::clear_dead_animals() {
 
 /**************************************************************************************************/
 bool WarGrey::STEM::EvolutionWorld::can_select(IMatter* m) {
-    return (m == this->agent) || isinstance(m, Animal);
+    return (m == this->agent) || (m == this->history);
 }
 
 void WarGrey::STEM::EvolutionWorld::after_select(IMatter* m, bool yes) {
@@ -166,6 +175,7 @@ void WarGrey::STEM::EvolutionWorld::after_select(IMatter* m, bool yes) {
 void WarGrey::STEM::EvolutionWorld::reset_world() {
     this->steppe->reset();
     this->world_info->set_text_color(FORESTGREEN);
+    this->history->set_color(ROYALBLUE);
     this->update_world_info();
 }
 
@@ -178,7 +188,6 @@ bool WarGrey::STEM::EvolutionWorld::update_tooltip(IMatter* m, float lx, float l
         auto self = animal->unsafe_metadata<IToroidalMovingAnimal>();
 
         this->tooltip->set_text(" %s: %s ", animal->name(), self->description().c_str());
-
         updated = true;
     }
 
@@ -186,6 +195,9 @@ bool WarGrey::STEM::EvolutionWorld::update_tooltip(IMatter* m, float lx, float l
 }
 
 void WarGrey::STEM::EvolutionWorld::update_world_info() {
-    this->world_info->set_text(MatterAnchor::RB, matrics_fmt,
-        this->steppe->current_day(), int(this->animals.size()));
+    int day = this->steppe->current_day();
+    int n = int(this->animals.size());
+    
+    this->world_info->set_text(MatterAnchor::RB, matrics_fmt, day, n, this->steppe->get_total_energy());
+    this->history->push_back_datum(float(day), float(n));
 }

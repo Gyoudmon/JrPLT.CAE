@@ -1,6 +1,7 @@
 #pragma once // 确保只被 include 一次
 
 #include "../big_bang/bang.hpp"
+#include "../big_bang/matter/graphlet/historylet.hpp"
 
 #include "dewdney/steppe.hpp"
 #include "dewdney/animal.hpp"
@@ -11,9 +12,7 @@ namespace WarGrey::STEM {
     /*********************************************************************************************/
     class EvolutionWorld : public WarGrey::STEM::TheBigBang {
     public:
-        EvolutionWorld(float size_hint = 32.0F) : EvolutionWorld("", size_hint) {}
-        EvolutionWorld(const std::string& world, float size_hint = 32.0F)
-            : TheBigBang("演化游戏"), world_path(world), size_hint(size_hint) {}
+        EvolutionWorld(float size_hint = 32.0F) : TheBigBang("演化游戏"), size_hint(size_hint) {}
         virtual ~EvolutionWorld() {}
         
     public:
@@ -42,6 +41,7 @@ namespace WarGrey::STEM {
     private: /* 本世界中的物体 */
         WarGrey::STEM::SteppeAtlas* steppe;
         std::vector<WarGrey::STEM::Animal*> animals;
+        WarGrey::STEM::Historylet* history;
         WarGrey::STEM::Labellet* world_info;
  
     private: /* 本世界的参数设定 */
@@ -49,7 +49,6 @@ namespace WarGrey::STEM {
         int col;
 
     private:
-        std::string world_path;
         float size_hint;
     };
 }

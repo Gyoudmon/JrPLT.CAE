@@ -8,7 +8,7 @@ using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
 static const float lifebar_height = 2.0F;
-static const double lifebar_alpha = 0.08;
+static const double lifebar_alpha = 0.64;
 
 static inline void random_gene_initialize(int gene[MOVING_WAYS]) {
     for (int idx = 0; idx < MOVING_WAYS; idx ++) {
@@ -28,7 +28,8 @@ WarGrey::STEM::IToroidalMovingAnimal::IToroidalMovingAnimal(int row, int col, co
     this->direction = random_uniform(0, MOVING_WAYS - 1);
     this->r = row >> 1;
     this->c = col >> 1;
-    this->cycle = cycle;
+    this->countdown = cycle;
+    this->bio_clock = 0;
 
     this->full_energy = energy;
     this->reproduce_energy = energy / 5;
@@ -48,7 +49,7 @@ std::string WarGrey::STEM::IToroidalMovingAnimal::description() {
 
     s << "子代: " << this->generation << ";";
     s << " 生命: " << fl2fxi(float(this->energy) / float(this->full_energy) * 10000.0F) / 100.0F << "%;";
-    s << " 面向: " << this->direction << ";";
+    s << " 繁殖倒计时: " << this->countdown << ";";
 
     s << " 基因: [" << this->gene[0];
     for (size_t idx = 1; idx < MOVING_WAYS; idx ++) {
@@ -61,9 +62,11 @@ std::string WarGrey::STEM::IToroidalMovingAnimal::description() {
 
 void WarGrey::STEM::IToroidalMovingAnimal::draw(SDL_Renderer* render, float x, float y, float width, float height) {
     float lifebar_width = float(this->energy) / float(this->full_energy);
+    float breed_width = 1.0F - float(fxmax(this->countdown, 0)) / float(this->breeding_cycle);
 
     if (this->energy >= this->reproduce_energy) {
         game_draw_rect(render, x, y, lifebar_width * width, lifebar_height, ROYALBLUE, lifebar_alpha);
+        game_draw_line(render, x, y + lifebar_height, x + breed_width * width, y + lifebar_height, ORANGE, lifebar_alpha);
     } else {
         game_draw_rect(render, x, y, lifebar_width * width, lifebar_height, CRIMSON, lifebar_alpha);
     }
@@ -110,11 +113,6 @@ void WarGrey::STEM::IToroidalMovingAnimal::move(int* delta_row, int* delta_col) 
 
     this->r = safe_index(orow + dr, this->row);
     this->c = safe_index(ocol + dc, this->col);
-    this->energy -= 1;
-
-    if (this->cycle > 0) {
-        this->cycle -= 1;
-    }
 
     SET_BOX(delta_row, this->r - orow);
     SET_BOX(delta_col, this->c - ocol);
@@ -126,6 +124,22 @@ void WarGrey::STEM::IToroidalMovingAnimal::eat(int food_energy) {
     this->energy = fxmin(this->full_energy, this->energy + gain_energy);
 }
 
+void WarGrey::STEM::IToroidalMovingAnimal::on_time_fly(int day) {
+    if (this->bio_clock != day) {
+        if (day > this->bio_clock) {
+            int diff = (day - this->bio_clock);
+
+            this->countdown -= diff;
+            this->energy -= diff;
+        } else { // 世界被重制了
+            this->countdown = this->breeding_cycle;
+            this->energy = this->full_energy;
+        }
+    
+        this->bio_clock = day;
+    }
+}
+
 IToroidalMovingAnimal* WarGrey::STEM::IToroidalMovingAnimal::asexually_reproduce() {
     auto offspring = new IToroidalMovingAnimal(this->row, this->col, this->gene, this->duration, this->breeding_cycle, this->full_energy);
 
@@ -134,8 +148,9 @@ IToroidalMovingAnimal* WarGrey::STEM::IToroidalMovingAnimal::asexually_reproduce
     offspring->energy = this->energy >> 1;
     offspring->r = this->r;
     offspring->c = this->c;
+    offspring->bio_clock = this->bio_clock;
     
-    this->cycle = this->breeding_cycle;
+    this->countdown = this->breeding_cycle;
 
     return offspring;
 }

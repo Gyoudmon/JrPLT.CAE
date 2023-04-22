@@ -51,7 +51,7 @@ namespace {
             // 第三阶段
             this->push_plane(new SelfAvoidingWalkWorld());
             this->push_plane(new GameOfLifeWorld(this->life_source));
-            this->push_plane(new EvolutionWorld(this->life_source));
+            this->push_plane(new EvolutionWorld());
             this->push_plane(new StreamPlane(this->stream_source.c_str()));
         }
 

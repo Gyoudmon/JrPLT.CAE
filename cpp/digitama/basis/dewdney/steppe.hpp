@@ -18,6 +18,7 @@ namespace WarGrey::STEM {
         void plant_grow_at(int r, int c);
         void plant_be_eaten_at(int r, int c);
         int get_plant_energy(int r, int c);
+        int get_total_energy() { return this->total_energy; }
 
     public:
         void reset();
@@ -31,6 +32,7 @@ namespace WarGrey::STEM {
 
     private:
         int** energies;
+        int total_energy;
 
     private:
         int day;

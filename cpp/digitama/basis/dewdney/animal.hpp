@@ -26,12 +26,15 @@ namespace WarGrey::STEM {
 
     public:
         bool is_alive() const { return this->energy > 0; }
-        bool can_reproduce() const { return (this->energy >= this->reproduce_energy) && (this->cycle <= 0); }
+        bool can_reproduce() const { return (this->energy >= this->reproduce_energy) && (this->countdown <= 0); }
         double pace_duration() { return this->duration; }
         int current_generation() { return this->generation; }
         int current_row() { return r; }
         int current_col() { return c; }
-    
+
+    public:
+        void on_time_fly(int day);
+
     private:
         int angle(int idx0, int rnd);
 
@@ -45,10 +48,13 @@ namespace WarGrey::STEM {
         int col;
 
     private:
+        int bio_clock;
         int generation;
+        int countdown;
+    
+    private:
         int direction;
         int energy;
-        int cycle;
         int r;
         int c;
     };
@@ -59,6 +65,8 @@ namespace WarGrey::STEM {
         TMRooster(int row, int col, int cycle = 30, int energy = 300);
         TMRooster(WarGrey::STEM::IToroidalMovingAnimal* self);
         virtual ~TMRooster() {}
+
+        const char* name() override { return "公鸡"; }
 
     public:
         void draw(SDL_Renderer* renderer, float x, float y, float width, float height) override;
@@ -73,6 +81,8 @@ namespace WarGrey::STEM {
         TMPigeon(WarGrey::STEM::IToroidalMovingAnimal* self);
         virtual ~TMPigeon() {}
 
+        const char* name() override { return "鸽子"; }
+
     public:
         void draw(SDL_Renderer* renderer, float x, float y, float width, float height) override;
 
@@ -86,6 +96,8 @@ namespace WarGrey::STEM {
         TMCow(WarGrey::STEM::IToroidalMovingAnimal* self);
         virtual ~TMCow() {}
 
+        const char* name() override { return "奶牛"; }
+
     public:
         void draw(SDL_Renderer* renderer, float x, float y, float width, float height) override;
 
@@ -98,6 +110,8 @@ namespace WarGrey::STEM {
         TMCat(int row, int col, int cycle = 58, int energy = 1000);
         TMCat(WarGrey::STEM::IToroidalMovingAnimal* self);
         virtual ~TMCat() {}
+
+        const char* name() override { return "食草猫"; }
 
     public:
         void draw(SDL_Renderer* renderer, float x, float y, float width, float height) override;
