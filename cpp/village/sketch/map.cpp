@@ -42,12 +42,19 @@ int main(int argc, char* argv[]) {
     mp[5][30] = new PObject(530);
     mp[5][40] = new PObject(540);
     mp[5][50] = new PObject(550);
-    mp[6][10] = new PObject(610);
-    mp[6][20] = new PObject(620);
-    mp[6][30] = new PObject(630);
-    mp[6][40] = new PObject(640);
-    mp[6][50] = new PObject(650);
-    mp[6][60] = new PObject(660);
+    mp[6] = {};
+
+    /* by-reference insertion */ {
+        auto& lp = mp[6];
+
+        lp[10] = new PObject(610);
+        lp[20] = new PObject(620);
+        lp[30] = new PObject(630);
+        lp[40] = new PObject(640);
+        lp[50] = new PObject(650);
+        lp[60] = new PObject(660);
+    }
+
     print_map(mp);
 
     printf("===\n");
