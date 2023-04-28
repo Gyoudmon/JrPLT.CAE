@@ -25,7 +25,7 @@ namespace WarGrey::STEM {
         int current_day() { return this->day; }
 
     protected:
-        void on_tilemap_load(WarGrey::STEM::shared_costume_t atlas) override;
+        void on_tilemap_load(WarGrey::STEM::shared_texture_t atlas) override;
 
     private:
         void random_plant(int r0, int c0, int row_size, int col_size);

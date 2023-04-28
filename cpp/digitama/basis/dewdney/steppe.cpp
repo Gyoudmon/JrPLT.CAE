@@ -48,7 +48,7 @@ void WarGrey::STEM::SteppeAtlas::random_plant(int r0, int c0, int row_size, int 
     this->plant_grow_at(r, c);
 }
 
-void WarGrey::STEM::SteppeAtlas::on_tilemap_load(shared_costume_t atlas) {
+void WarGrey::STEM::SteppeAtlas::on_tilemap_load(shared_texture_t atlas) {
     PlanetCuteAtlas::on_tilemap_load(atlas);
 
     this->energies = new int*[this->map_row];
