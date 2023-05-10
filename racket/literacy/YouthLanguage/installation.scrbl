@@ -37,13 +37,13 @@ Racket 是我最常用的语言，它是现代 Lisp 最前卫的方言之一，�
 
 @itemlist[#:style 'compact
           @item{在 PowerShell 里输入 @exec{sysdm.cpl} 回车打开@tamer-figure-ref{sysdm}的“系统属性”窗口。
-           @tamer-figure-here["sysdm" "系统属性"]{@stone-image["installation/sysdm_cpl.png" #:scale figure-scale]}}
+           @tamer-figure!["sysdm" "系统属性"]{@stone-image["installation/sysdm_cpl.png" #:scale figure-scale]}}
 
           @item{在“高级”标签页最下方有个“环境变量”，点击打开 @tamer-figure-ref{env}。
-           @tamer-figure-here["env" "环境变量"]{@stone-image["installation/env.png" #:scale figure-scale]}}
+           @tamer-figure!["env" "环境变量"]{@stone-image["installation/env.png" #:scale figure-scale]}}
           
           @item{编辑“系统变量”里的 @envvar{Path}，对照@tamer-figure-ref{path}，把 @filepath{C:\Program Files\Racket} 加进去。
-           越靠上的路径优先级越高。@tamer-figure-here["path" "编辑环境变量"]{@stone-image["installation/path.png" #:scale 0.36]}}]
+           越靠上的路径优先级越高。@tamer-figure!["path" "编辑环境变量"]{@stone-image["installation/path.png" #:scale 0.36]}}]
 
 至此，关闭 PowerShell 再重新打开就可以运行 racket 命令了。
 可以用@exec{where.exe}（后缀@exec{.exe}不能省略）命令来确定某个程序能不能被找到，
@@ -81,7 +81,7 @@ Racket 在本系列课程中充当 C++ 构建工具，一行简短的命令搞�
 
 @handbook-scenario{git}
 
-@tamer-figure-here["git_path" "git 环境变量"]{@stone-image["installation/git_path.png" #:scale 0.42]}
+@tamer-figure!["git_path" "git 环境变量"]{@stone-image["installation/git_path.png" #:scale 0.42]}
 git 是目前应用最广泛的版本管理工具。建议大家有空了熟悉一下 git 的基本用法。
 
 在本系列课程中，git 既用于管理我们自己的代码库，也用于管理和安装依赖的第三方库。
@@ -136,7 +136,7 @@ vcpkg 没有现成的可执行文件，而是直接提供源码用 git 来安装
 
 @handbook-scenario{Visual Studio}
 
-@tamer-figure-here["vs" "安装 Visual Studio（含 C++ 和 Python）"]{@stone-image["installation/vs.jpg" #:scale 0.32]}
+@tamer-figure!["vs" "安装 Visual Studio（含 C++ 和 Python）"]{@stone-image["installation/vs.jpg" #:scale 0.32]}
 Visual Studio 是微软自己的标准IDE(集成开发环境，包括编辑、编译、合作等一系列专业软件开发的工作流)。
 
 @centered{@bold{如果你不想安装如此庞大的 IDE，可以跳到@seclink["vc_BuildTools"]{vs_BuildTools}，安装纯命令行工具。}}
@@ -151,7 +151,7 @@ Python，可以再勾选@onscreen{Python Development}，然后在右侧的@onscr
 
 @handbook-action[#:tag "vc_BuildTools"]{仅安装 vs_BuildTools}
 
-@tamer-figure-here["vsbt" "安装 VS Build Tools"]{@stone-image["installation/vs_buildtools.png" #:scale 0.24]}
+@tamer-figure!["vsbt" "安装 VS Build Tools"]{@stone-image["installation/vs_buildtools.png" #:scale 0.24]}
 安装 Visual Studio 时会自动安装一份 vs_BuildTools，但其实这套工具也可以单独安装，可以省下不少硬盘空间（因为它不提供图形界面）。
 对于本系列课程，Visual Studio 并不是必须的。
 
@@ -194,7 +194,7 @@ Python 是什么不需要我再强调了，地球人都知道，不过它也就�
 @onscreen{installer}，现在一般都是@tt{64-bit}的。
 注意，一定要是@onscreen{installer}，不能是@onscreen{embeddable package}。
 
-@tamer-figure-here["python" "安装 Python"]{@stone-image["installation/python.png" #:scale figure-scale]}
+@tamer-figure!["python" "安装 Python"]{@stone-image["installation/python.png" #:scale figure-scale]}
 安装过程有个细节，务必在安装界面勾选@onscreen{add python.exe to PATH}(@tamer-figure-ref{python})。
 这样，一来你自己不用再折腾了；二来它会帮你压制 Windows 自带的那个商店壳子。
 
