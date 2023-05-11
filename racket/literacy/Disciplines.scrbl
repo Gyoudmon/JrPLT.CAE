@@ -1,9 +1,9 @@
-#lang scribble/report
+#lang scribble/base
 
 @require{literacy.rkt}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-@handbook-title/pkg-desc[]
+@handbook-title{青少计算机科学课程简介}
 
 程序设计对于未成年人和成年人来说，都是足够新颖的技能，
 零基础的这两个群体在初学阶段没有太大的认知差别。
@@ -20,6 +20,8 @@
 @handbook-smart-table[]
 
 @include-section{preface.scrbl}
+@include-section{Disciplines/characteristics.scrbl}
+@include-section{Disciplines/big-bang.scrbl}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-@handbook-appendix[#:index-section? #false #:numbered? #false]
+@handbook-appendix[#:index-section? #true #:numbered? #false]

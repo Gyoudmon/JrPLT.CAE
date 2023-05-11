@@ -8,6 +8,10 @@
 
 (require scribble/manual)
 
+(require (for-syntax racket/base))
+(require (for-syntax racket/syntax))
+(require (for-syntax syntax/parse))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Just in case for README.md
 (enter-digimon-zone!)
@@ -20,6 +24,45 @@
 
 (tamer-default-figure-label "图")
 (tamer-default-code-label "段")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define-for-syntax (parse-optional-pair stx)
+  (syntax-case stx []
+    [(min max) (list #'min #'max)]
+    [v #'v]))
+
+(define-syntax (discipline-desc stx)
+  (syntax-parse stx #:datum-literals []
+    [(_ (~alt (~once (~seq #:langs [langs ...]))
+              (~once (~seq #:grades [grades ...]))
+              (~once (~seq #:period period))
+              (~once (~seq #:note note)))
+        ...)
+     (with-syntax* ([(period:min period:max) (parse-optional-pair #'period)])
+       (syntax/loc stx
+         (nested #:style 'vertical-inset
+                 (para (emph "语言：")
+                       (add-between (list langs ...) " "))
+
+                 (para (emph "学段：")
+                       (add-between (list grades ...) " "))
+                 
+                 (para (emph "课时：")
+                       (add-between (map (λ [v] (elem #:style "disTag" ($ (number->string v))))
+                                         (filter exact-nonnegative-integer? (list period:min period:max)))
+                                    " - "))
+
+                 (para (emph "备注：") (emph note)))))]))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define tag:C++ (elem #:style "langTag" "C++"))
+(define tag:Python (elem #:style "langTag" "Python"))
+(define tag:Scratch (elem #:style "langTag" "Scratch"))
+
+(define tag:early (elem #:style "disTag" "小学低年级"))
+(define tag:elementary (elem #:style "disTag" "小学高年级"))
+(define tag:middle (elem #:style "disTag" "中学生"))
+(define tag:teacher (elem #:style "disTag" "教师"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define stone-image

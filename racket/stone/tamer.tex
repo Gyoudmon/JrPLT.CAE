@@ -1,0 +1,14 @@
+\usepackage{tcolorbox}
+
+\newtcbox{\langBox}[1][]{tcbox raise base,nobeforeafter,
+  rounded corners=all,size=small,
+  colframe=cyan,colback=cyan!42,
+  colupper=white}
+
+\newtcbox{\tagBox}[1][]{tcbox raise base,nobeforeafter,
+  rounded corners=all,size=small,
+  colframe=blue,colback=blue!42,
+  colupper=white}
+
+\newcommand{\langTag}[1]{\langBox{\uppercase{\scriptsize{#1}}}}
+\newcommand{\disTag}[1]{\tagBox{\footnotesize{#1}}}
