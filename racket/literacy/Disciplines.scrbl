@@ -1,4 +1,4 @@
-#lang scribble/base
+#lang scribble/sigplan @nocopyright
 
 @require{literacy.rkt}
 
