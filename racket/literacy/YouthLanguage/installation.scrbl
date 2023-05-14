@@ -64,6 +64,14 @@ Racket 在本系列课程中充当 C++ 构建工具，一行简短的命令搞�
 @itemlist[#:style 'compact
           @commandline{raco pkg install -i --auto digimon}]
 
+或
+
+@itemlist[#:style 'compact
+          @commandline{raco pkg install -i --auto --link [digimon 本地目录]}]
+
+上面那个直接通过官方软件包服务器安装，但可能需要能够稳定访问 GitHub，
+下面那个适合开发人员(或其他不能直接访问 GitHub 的情况)，需先复制一份源码到自己硬盘里。
+
 详细的构建过程见@Secref{wisemon}。
 
 下面这几个软件包可能对大家有点用，如果感兴趣可以继续安装，没兴趣就跳过。
