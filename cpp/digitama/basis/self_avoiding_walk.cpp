@@ -166,9 +166,9 @@ void WarGrey::STEM::SelfAvoidingWalkWorld::after_select(IMatter* m, bool yes) {
 }
 
 void WarGrey::STEM::SelfAvoidingWalkWorld::reset_walkers(bool keep_mode) {
-    size_t walker_count = sizeof(this->walkers) / sizeof(Bracer*);
+    int walker_count = int(sizeof(this->walkers) / sizeof(Bracer*));
     
-    for (size_t idx = 0; idx < walker_count; idx++) {
+    for (int idx = 0; idx < walker_count; idx++) {
         this->move_to_grid(this->walkers[idx], idx, 0, MatterAnchor::CB);
         this->walkers[idx]->set_heading(90.0);
 
