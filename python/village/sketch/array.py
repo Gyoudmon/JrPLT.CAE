@@ -21,6 +21,7 @@ if __name__ == "__main__":
 
     print()
     print("list comprehension")
-    right_as = [[0 for c in range(COL_SIZE)] for r in range(ROW_SIZE)]
+    right_as = [[0 for c in range(COL_SIZE)]
+                 for r in range(ROW_SIZE)]
     initialize_array(right_as, ROW_SIZE, COL_SIZE)
     print_array(right_as)

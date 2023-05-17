@@ -19,7 +19,7 @@
 ;(tamer-indexed-block-hide-chapter-index #true)
 
 (tamer-block-label-separator #false)
-(tamer-block-label-tail ". ")
+(tamer-block-label-tail "： ")
 (tamer-block-label-style 'bold)
 
 (tamer-default-figure-label "图")

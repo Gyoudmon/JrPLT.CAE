@@ -54,6 +54,7 @@
                      @item{@tt{STEMA}: STEM 能力测试赛题源码。学生考前冲刺用的，也可作为非比赛学生夯实基本功的作业题。}
                      @item{@tt{sketch}: 草稿源码，每个文件都自带 main，用于演示语言的某一个细节。比如众所周知的 @racket{Hello, World!}。
                                  这是个特殊的目录，@tt{basis}肯定会用到，其他课可能会用到，可以现场发给学生，也可以把源码包含在课件里。}
+                     @item{@tt{flowchart}: 软件工程图表相关 Graphviz 源码。}
                      @item{@tt{procedural}: 过程式风格示例源码。过程式风格更为注重细节，复杂度未必有多大，但代码量多半会让初学者生畏。
                                  因此仅作为对比材料发放给学生，学生根据自身情况课后自行决定是否掌握。}
                      @item{@tt{vcso}: 适用于 vcpkg 的 Windows 动态链接库，是二进制文件。有这个目录学生就不必自己安装了，
@@ -71,6 +72,7 @@
    (literacy . "出版物源码")
    ((village . "协作目录")
     (vcso . "Windows vcpkg 动态链接库")
+    (flowchart . "Graphviz 源码")
     (procedural . "过程式风格示例代码")
     (sketch . "课堂练习用草稿源码")
     (STEMA . "STEM 能力测试题库"))
