@@ -61,7 +61,7 @@ class ITextlet(IGraphlet):
         if font:
             self._text_font = font
         else:
-            self._text_font = game_font.DEFAULT
+            self._text_font = GameFont.DEFAULT
 
         self._on_font_changed()
         self.notify_updated()
@@ -108,7 +108,7 @@ class ITextlet(IGraphlet):
 
         if self.__raw:
             self._text_surface = game_text_surface(self.__raw, self._text_font,
-                TextRenderMode.Blender, self._text_color, self._text_color, 0)
+                TextRenderMode.Blender, self._text_color, None, 0)
         else:
             self._text_surface = None            
 

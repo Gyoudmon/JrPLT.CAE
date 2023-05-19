@@ -12,13 +12,13 @@ from .virtualization.display import *
 
 ###############################################################################
 def game_initialize():
-    if game_font.DEFAULT is None:
+    if GameFont.DEFAULT is None:
         pygame.init()
         atexit.register(pygame.quit)
 
-        game_fonts_initialize()
+        GameFonts_initialize()
 
-        #atexit.register(game_fonts_destroy)
+        #atexit.register(GameFonts_destroy)
 
 def game_world_create(width, height):
     flags = pygame.SHOWN

@@ -17,14 +17,14 @@ class TextRenderMode(enum.Enum):
 ###################################################################################################
 def game_text_size(font: pygame.font.Font, text):
     if not font: 
-        font = game_font.DEFAULT
+        font = GameFont.DEFAULT
 
     return font.size(text)
 
 ###################################################################################################
 def game_text_surface(text, font: pygame.font.Font, mode, fgc, bgc, wrap):
     if not font:
-        font = game_font.DEFAULT
+        font = GameFont.DEFAULT
     
     if bgc:
         bg = rgba(bgc)

@@ -4,6 +4,28 @@ from .colorspace import *               # 色彩空间相关函数, 前面那个
 from ..physics.mathematics import *     # 图形学、线性代数相关函数
 
 ###############################################################################
+def game_draw_grid(surface, row, col, cell_width, cell_height, xoff, yoff, cs, alpha = 0xFF):
+    xend = xoff + col * cell_width
+    yend = yoff + row * cell_height
+
+    for c in range(0, col + 1):
+        x = xoff + c * cell_width
+
+        for r in range(0, row + 1):
+            y = yoff + r * cell_height
+            game_draw_line(surface, xoff, y, xend, y, cs, alpha)
+
+        game_draw_line(surface, x, yoff, x, yend, cs, alpha)
+
+def game_fill_grid(surface, grids, row, col, cell_width, cell_height, xoff, yoff, cs, alpha = 0xFF):
+    for c in range(col):
+        for r in range(row):
+            if (grids[r][c] > 0):
+                x = xoff + c * cell_width
+                y = yoff + r * cell_height
+                game_fill_rect(surface, x, y, cell_width, cell_height, cs, alpha)
+
+###############################################################################
 def game_draw_line(surface, x1, y1, x2, y2, cs, alpha = 0xFF):
     pygame.draw.line(surface, rgba(cs, alpha), (x1, y1), (x2, y2), 1)
 
