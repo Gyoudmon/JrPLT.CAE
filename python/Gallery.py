@@ -19,11 +19,8 @@ class Gallery(Plane):
         this.sea = None
 
     def load(this, width, height):
-        this.label = this.insert(Labellet("精灵和图元陈列馆", game_font.unicode, BLACK))
+        this.label = this.insert(Labellet("精灵和图元陈列馆", GameFont.Title, BLACK))
         raft_width, raft_height = this.label.get_extent(0.0, 0.0)
-
-        raft_width *= 2.0
-        raft_height *= 2.0
 
         this.sea = this.insert(Ellipselet(raft_width * 1.618, raft_height, DEEPSKYBLUE))
                 
@@ -36,7 +33,7 @@ class Gallery(Plane):
         this.bow = this.insert(RegularPolygonlet(3, raft_height * 0.5, KHAKI, BURLYWOOD, 180.0))
         this.stern = this.insert(RegularPolygonlet(3, raft_height * 0.5, KHAKI, BURLYWOOD))
                 
-        this.caption = this.insert(Labellet(this.info.master.display().get_renderer_name(), game_font.DEFAULT, BLACK))
+        this.caption = this.insert(Labellet(this.info.master.display().get_renderer_name(), GameFont.DEFAULT, BLACK))
 
     def reflow(this, width, height):
         _, raft_height = this.label.get_extent(0.0, 0.0)

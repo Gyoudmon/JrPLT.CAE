@@ -16,7 +16,7 @@ class ShapeWorld(Universe):
 
     # 实现 ShapeWorld::draw 函数，本例中绘制一系列几何图形
     def draw(self, renderer, x, y, width, height):
-        game_draw_blended_text(game_font.unicode, renderer,
+        game_draw_blended_text(GameFont.Title, renderer,
             self.get_foreground_color(), 10, 10, "基本图形陈列馆(过程版)")
 
         ### 绘制椭圆院子 ###

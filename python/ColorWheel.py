@@ -37,7 +37,7 @@ class ColorWheelWorld(Plane):
             c.set_color_mixture(ColorMixture.Add)
 
         self.__load_hues()
-        self.tooltip = self.insert(make_label_for_tooltip(game_font.DEFAULT))
+        self.tooltip = self.insert(make_label_for_tooltip(GameFont.DEFAULT))
         self.set_tooltip_matter(self.tooltip)
 
     def reflow(self, width, height):
