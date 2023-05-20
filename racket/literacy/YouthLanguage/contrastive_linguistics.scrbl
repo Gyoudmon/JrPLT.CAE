@@ -5,21 +5,16 @@
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-root-story{对比语言学}
 
-@handbook-scenario{类型系统}
+假设存在一个包罗万象的程序语言，
+那我们学习任何一门具体的程序语言时会碰到的东西
+也一定能在学习这个假想的语言时碰到。
+@idea{如果一定要从语言角度来解释“如何学编程”，
+那就是学习这个包括万象的假想语言，
+并知道如何将它翻译成老板/客户希望你用的具体的语言。}
 
-@handbook-scenario{函数签名}
+基于以上理念，本章主要通过对比 C++ 和 Python 来认识程序语言中的基本概念。
 
-@handbook-scenario{数系与数塔}
-
-@handbook-scenario{字符与字符串}
-
-@handbook-scenario{容器}
-
-@handbook-scenario{枚举}
-
-@handbook-scenario{类}
-
-@handbook-scenario{抽象类与接口}
+@include-section{contrastive/type.system.scrbl}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-reference[]
