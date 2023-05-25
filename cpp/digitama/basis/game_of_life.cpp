@@ -25,7 +25,7 @@ static const char WRTE_KEY = 'w';
 
 static const char ordered_keys[] = { AUTO_KEY, STOP_KEY, PACE_KEY, EDIT_KEY, LOAD_KEY, WRTE_KEY, RAND_KEY, RSET_KEY };
 static const uint32_t colors_for_auto[] = { GRAY, GREEN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY };
-static const uint32_t colors_for_stop[] = { GREEN, GRAY, GREEN, GREEN, GRAY, GRAY, GRAY, GRAY };
+static const uint32_t colors_for_stop[]  = { GREEN, GRAY, GREEN, GREEN, GRAY, GRAY, GRAY, GRAY };
 static const uint32_t colors_for_edit[] = { GREEN, GRAY, GREEN, GRAY, GREEN, GREEN, GREEN, GREEN };
 
 /*************************************************************************************************/

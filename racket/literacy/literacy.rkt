@@ -70,19 +70,19 @@
     (image (digimon-path 'stone path) #:scale scale)))
 
 (define tamer-c++
-  (lambda [id caption subpath start [end #px"END"] [open? #true]]
-    (tamer-code! #:open-range? open?
-                 id caption (build-path ".." "cpp" "digitama" "IMS" subpath)
-                 start end)))
+  (lambda [id caption subpath start [end #px"END"] [ocness 'open]]
+    (tamer-code! #:oc-ness ocness #:rootdir (build-path ".." "cpp")
+                 id caption subpath start end)))
 
 (define tamer-c++-class
   (lambda [id caption subpath]
-    (tamer-code-class id caption (build-path ".." "cpp" "digitama" "IMS" subpath))))
+    (tamer-code-class #:rootdir (build-path ".." "cpp")
+                      id caption subpath)))
 
 (define tamer-c++-function
   (lambda [id caption subpath #:ns [ns 'WarGrey::IMS] #:subpattern [subpattern #false]]
-    (tamer-code-function #:ns ns #:subpattern subpattern
-                         id caption (build-path ".." "cpp" "digitama" "IMS" subpath))))
+    (tamer-code-function #:rootdir (build-path ".." "cpp") #:ns ns #:subpattern subpattern
+                         id caption subpath)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define desc

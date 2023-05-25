@@ -89,7 +89,7 @@
 
            以下几个子目录在我们的课程中也可能用到：      
            @itemlist[#:style 'compact
-                     @item{@tamer-deftech{typesetting}: 存放 @tech{literacy}的输出，比如本手册 @filepath{compiled/typesettings/YouLanguage.pdf}。}
+                     @item{@tamer-deftech{typesetting}: 存放 @tech{literacy}的输出，比如本手册 @filepath{literacy/compiled/typesetting/YouLanguage.pdf}。}
                      @item{@tamer-deftech{native}: 存放 C++ 二进制文件的输出，比如 @filepath{compiled/native/win32/x86_64/BigBang}。
                                  注意，它这里面会根据体系结构和操作系统划分子目录。}]}]
 
