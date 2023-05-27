@@ -22,11 +22,11 @@ namespace WarGrey::STEM {
         void show_grid(bool yes);
         void set_color(uint32_t hex);
         void modify_life_at_location(float x, float y);
-        int current_generation() { return this->generation; }
+        int get_generation() { return this->generation; }
 
     public:
         void construct_random_world();
-        bool pace_forward(int repeats);
+        bool pace_forward();
         void reset();
 
     public:

@@ -3,6 +3,28 @@
 from ...big_bang.game import *
 
 ###############################################################################
+def count_in_neighbor(world, row, col, r, c):
+    row_okay = r >= 0 and r < row
+    col_okay = c >= 0 and c < col
+
+    if row_okay and col_okay and world[r][c] > 0:
+        return 1
+    else:
+        return 0
+
+def count_neighbors(world, row, col, r, c):
+    up = count_in_neighbor(world, row, col, r - 1, c + 0)  # up
+    dn = count_in_neighbor(world, row, col, r + 1, c + 0)  # down
+    lt = count_in_neighbor(world, row, col, r + 0, c - 1)  # left
+    rt = count_in_neighbor(world, row, col, r + 0, c + 1)  # right
+    lp = count_in_neighbor(world, row, col, r - 1, c - 1)  # left-up
+    rn = count_in_neighbor(world, row, col, r + 1, c + 1)  # right-down
+    ln = count_in_neighbor(world, row, col, r + 1, c - 1)  # left-down
+    rp = count_in_neighbor(world, row, col, r - 1, c + 1)  # right-up
+
+    return up + dn + lt + rt + lp + rn + ln + rp
+
+###############################################################################
 class GameOfLifelet(IGraphlet):
     def __init__(self, size, gridsize = 8.0):
         # 通过父类的构造函数设置窗口标题和帧频
@@ -20,6 +42,10 @@ class GameOfLifelet(IGraphlet):
         self.world = None
         self.shadow = None
 
+    def __del__(self):
+        # 可以什么都不做
+        pass
+
     def construct(self):
         super(GameOfLifelet, self).construct()
         self.shadow = [0] * (self.row * self.col)
@@ -35,13 +61,22 @@ class GameOfLifelet(IGraphlet):
     def draw(self, renderer, x, y, Width, Height):
         game_draw_rect(renderer, x, y, Width - 1, Height - 1, self.color)
 
+        # 绘制网格
         if not self.hide_grid:
             game_draw_grid(renderer, self.row, self.col, self.gridsize, self.gridsize, x, y, self.color)
         
+        # 绘制生命状态
         game_fill_grid(renderer, self.world, self.row, self.col, self.gridsize, self.gridsize, x, y, self.color)
 
 ###############################################################################
+    def reset(self):
+        self.generation = 0
+        for r in range(self.row):
+            for c in range(self.col):
+                self.world[r][c] = 0
+
     def construct_random_world(self):
+        self.generation = 0
         for r in range(self.row):
             for c in range(self.col):
                 if random.randint(1, 100) % 2 == 0:
@@ -49,10 +84,41 @@ class GameOfLifelet(IGraphlet):
                 else:
                     self.world[r][c] = 0
 
-        self.generation = 0
+    def pace_forward(self):
+        evolved = False
 
-    def pace_forward(self, repeats):
-        pass
+        # 应用演化规则
+        self.evolve(self.world, self.shadow, self.row, self.col)
+        
+        # 同步舞台状态
+        for r in range(self.row):
+            for c in range(self.col):
+                state = self.shadow[r * self.col + c]
+
+                if self.world[r][c] != state:
+                    self.world[r][c] = state
+                    evolved = True
+        
+        if evolved:
+            self.generation += 1
+
+        return evolved
+
+
+    def evolve(self, world, shadow, row, col):
+        for r in range(row):
+            for c in range(col):
+                n = count_neighbors(world, row, col, r, c)
+                i = r * col + c
+
+                if n < 2:    # 独孤死(离群索居)
+                    shadow[i] = 0
+                elif n > 3:  # 内卷死(过渡竞争)
+                    shadow[i] = 0
+                elif n == 3: # 无性繁殖
+                    shadow[i] = 1
+                else:
+                    shadow[i] = world[r][c]
 
 ###############################################################################
     def show_grid(self, yes):

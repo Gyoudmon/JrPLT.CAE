@@ -35,9 +35,11 @@ namespace WarGrey::STEM {
         void on_save(const std::string& life_world, std::ofstream& golout) override;
 
     private:
+        void load_gameboard(float width, float height);
+        void load_instructions(float width, float height);
         void switch_game_state(WarGrey::STEM::GameState new_state);
         void update_instructions_state(const uint32_t* colors);
-        void pace_forward(int repeats = 1);
+        void pace_forward();
         void load_conway_demo();
         void save_conway_demo();
             

@@ -42,25 +42,14 @@ class GameOfLifeWorld(Plane):
         self.instructions  = {}
 
         # 私有变量
+        self.__state: GameState = GameState._
         self.__gridsize = gridsize
 
     def load(self, width, height):
-        border_height = height - 108.0
-        border_width = border_height
-        col = round(border_width / self.__gridsize) - 1
-        row = round(border_height / self.__gridsize) - 1
-
-        self.gameboard = self.insert(GameOfLifelet((row, col), self.__gridsize))
-        self.generation = self.insert(Labellet(generation_fmt % (self.gameboard.generation), GameFont.math, GREEN))
-
-        self.instructions[AUTO_KEY] = self.insert(Labellet("%c. 自行演化" % AUTO_KEY, GameFont.monospace))
-        self.instructions[STOP_KEY] = self.insert(Labellet("%c. 停止演化" % STOP_KEY, GameFont.monospace))
-        self.instructions[EDIT_KEY] = self.insert(Labellet("%c. 手动编辑" % EDIT_KEY, GameFont.monospace))
-        self.instructions[RAND_KEY] = self.insert(Labellet("%c. 随机重建" % RAND_KEY, GameFont.monospace))
-        self.instructions[RSET_KEY] = self.insert(Labellet("%c. 世界归零" % RSET_KEY, GameFont.monospace))
-        self.instructions[PACE_KEY] = self.insert(Labellet("%c. 单步跟踪" % PACE_KEY, GameFont.monospace))
-        self.instructions[LOAD_KEY] = self.insert(Labellet("%c. 载入范例" % LOAD_KEY, GameFont.monospace))
-        self.instructions[WRTE_KEY] = self.insert(Labellet("%c. 保存范例" % WRTE_KEY, GameFont.monospace))
+        self.__load_gameboard(width, height)
+        self.__load_instructions(width, height)
+        
+        self.set_local_fps(default_frame_rate)
 
     def reflow(self, width, height):
         self.move_to(self.gameboard, (width * 0.5, height * 0.5), MatterAnchor.CC)
@@ -73,16 +62,82 @@ class GameOfLifeWorld(Plane):
                     MatterAnchor.LB, 16.0)
 
     def update(self, count, interval, uptime):
-        self.gameboard.pace_forward(1)
+        if self.__state == GameState.Auto:
+            self.__pace_forward()
     
 # protected
     def on_mission_start(self, width, height):
-        self.__update_instructions_state(colors_for_auto)
+        self.__switch_game_state(GameState.Stop)
+
+    def on_char(self, keycode, modifiers, repeats, pressed):
+        if not pressed:
+            key = chr(keycode)
+            if key in self.instructions:
+                if self.instructions[key].get_text_color() == GREEN:
+                    if key == AUTO_KEY: self.__switch_game_state(GameState.Auto)
+                    elif key == STOP_KEY: self.__switch_game_state(GameState.Stop)
+                    elif key == EDIT_KEY: self.__switch_game_state(GameState.Edit)
+                    elif key == RAND_KEY: self.gameboard.construct_random_world()
+                    elif key == RSET_KEY: self.gameboard.reset()
+                    elif key == PACE_KEY: self.__pace_forward()
+                    elif key == LOAD_KEY: self.load_conway_demo()
+                    elif key == WRTE_KEY: self.save_conway_demo()
+
+                    self.notify_updated()
+                else:
+                    self.instructions[key].set_text_color(CRIMSON)
 
 # private
+    def __load_gameboard(self, width, height):
+        border_height = height - 108.0
+        border_width = border_height
+        col = round(border_width / self.__gridsize) - 1
+        row = round(border_height / self.__gridsize) - 1
+
+        self.gameboard = self.insert(GameOfLifelet((row, col), self.__gridsize))
+        self.generation = self.insert(Labellet(generation_fmt % (self.gameboard.generation), GameFont.math, GREEN))
+
+    def __load_instructions(self, width, height):
+        self.instructions[AUTO_KEY] = self.insert(Labellet("%c. 自行演化" % AUTO_KEY, GameFont.monospace))
+        self.instructions[STOP_KEY] = self.insert(Labellet("%c. 停止演化" % STOP_KEY, GameFont.monospace))
+        self.instructions[EDIT_KEY] = self.insert(Labellet("%c. 手动编辑" % EDIT_KEY, GameFont.monospace))
+        self.instructions[RAND_KEY] = self.insert(Labellet("%c. 随机重建" % RAND_KEY, GameFont.monospace))
+        self.instructions[RSET_KEY] = self.insert(Labellet("%c. 世界归零" % RSET_KEY, GameFont.monospace))
+        self.instructions[PACE_KEY] = self.insert(Labellet("%c. 单步跟踪" % PACE_KEY, GameFont.monospace))
+        self.instructions[LOAD_KEY] = self.insert(Labellet("%c. 载入范例" % LOAD_KEY, GameFont.monospace))
+        self.instructions[WRTE_KEY] = self.insert(Labellet("%c. 保存范例" % WRTE_KEY, GameFont.monospace))
+
+    def __switch_game_state(self, new_state):
+        if self.__state != new_state:
+            if new_state == GameState.Auto:
+                self.gameboard.set_color(LIGHTBLUE)
+                self.gameboard.show_grid(False)
+                self.__update_instructions_state(colors_for_auto)
+            elif new_state == GameState.Stop:
+                self.gameboard.set_color(DIMGRAY)
+                self.__update_instructions_state(colors_for_stop)
+            elif new_state == GameState.Edit:
+                self.gameboard.set_color(ROYALBLUE)
+                self.gameboard.show_grid(True)
+                self.__update_instructions_state(colors_for_edit)
+        
+            self.__state = new_state
+            self.notify_updated()
+
     def __update_instructions_state(self, colors):
         for idx in range(len(ordered_keys)):
             self.instructions[ordered_keys[idx]].set_text_color(colors[idx])
+
+    def __pace_forward(self):
+        if self.gameboard.pace_forward():
+            self.generation.set_text_color(GREEN)
+            self.generation.set_text(generation_fmt % (self.gameboard.generation), MatterAnchor.RB)
+        else:
+            self.generation.set_text_color(ORANGE)
+            self.generation.set_text(generation_fmt % (self.gameboard.generation), MatterAnchor.RB)
+        
+            if self.__state == GameState.Auto:
+                self.__switch_game_state(GameState.Stop)
 
 ###############################################################################
 launch_universe(GameOfLifeWorld, __name__)

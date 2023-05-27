@@ -32,14 +32,24 @@ static const uint32_t colors_for_edit[] = { GREEN, GRAY, GREEN, GRAY, GREEN, GRE
 void WarGrey::STEM::GameOfLifeWorld::load(float width, float height) {
     TheBigBang::load(width, height);
 
+    this->load_gameboard(width, height);
+    this->load_instructions(width, height);
+
+    this->set_local_fps(default_frame_rate);
+    this->load_conway_demo();
+}
+
+void WarGrey::STEM::GameOfLifeWorld::load_gameboard(float width, float height) {
     float board_height = height - this->get_titlebar_height() * 2.0F;
     float board_width = width - this->get_titlebar_height();
     int col = fl2fxi(board_width / this->gridsize) - 1;
     int row = fl2fxi(board_height / this->gridsize) - 1;
 
     this->gameboard = this->insert(new ConwayLifelet(row, col, this->gridsize));
-    this->generation = this->insert(new Labellet(GameFont::math(), GREEN, generation_fmt, this->gameboard->current_generation()));
+    this->generation = this->insert(new Labellet(GameFont::math(), GREEN, generation_fmt, this->gameboard->get_generation()));
+}
 
+void WarGrey::STEM::GameOfLifeWorld::load_instructions(float width, float height) {
     this->instructions[AUTO_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 自行演化", AUTO_KEY));
     this->instructions[STOP_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 停止演化", STOP_KEY));
     this->instructions[EDIT_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 手动编辑", EDIT_KEY));
@@ -48,9 +58,6 @@ void WarGrey::STEM::GameOfLifeWorld::load(float width, float height) {
     this->instructions[PACE_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 单步跟踪", PACE_KEY));
     this->instructions[LOAD_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 载入范例", LOAD_KEY));
     this->instructions[WRTE_KEY] = this->insert(new Labellet(GameFont::monospace(), "%c. 保存范例", WRTE_KEY));
-
-    this->set_local_fps(default_frame_rate);
-    this->load_conway_demo();
 }
 
 void WarGrey::STEM::GameOfLifeWorld::reflow(float width, float height) {
@@ -72,9 +79,8 @@ void WarGrey::STEM::GameOfLifeWorld::on_mission_start(float width, float height)
 }
 
 void WarGrey::STEM::GameOfLifeWorld::update(uint64_t count, uint32_t interval, uint64_t uptime) {
-    switch (this->state) {
-    case GameState::Auto: { this->pace_forward(1); }; break;
-    default: /* do nothing */; break;
+    if (this->state == GameState::Auto) {
+        this->pace_forward();
     }
 }
 
@@ -95,7 +101,7 @@ void WarGrey::STEM::GameOfLifeWorld::on_char(char key, uint16_t modifiers, uint8
                 case EDIT_KEY: this->switch_game_state(GameState::Edit); break;
                 case RAND_KEY: this->agent->play_writing(1); this->gameboard->construct_random_world(); break;
                 case RSET_KEY: this->agent->play_empty_trash(1); this->gameboard->reset(); break;
-                case PACE_KEY: this->agent->play_processing(1); this->pace_forward(1); break;
+                case PACE_KEY: this->agent->play_processing(1); this->pace_forward(); break;
                 case LOAD_KEY: this->agent->play_searching(1); this->load_conway_demo(); break;
                 case WRTE_KEY: this->agent->play_print(1); this->save_conway_demo(); break;
                 }
@@ -120,14 +126,13 @@ void WarGrey::STEM::GameOfLifeWorld::on_save(const std::string& life_world, std:
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::GameOfLifeWorld::pace_forward(int repeats) {
-    if (this->gameboard->pace_forward(1)) {
-        this->notify_updated();
+void WarGrey::STEM::GameOfLifeWorld::pace_forward() {
+    if (this->gameboard->pace_forward()) {
         this->generation->set_text_color(GREEN);
-        this->generation->set_text(MatterAnchor::RB, generation_fmt, this->gameboard->current_generation());
+        this->generation->set_text(MatterAnchor::RB, generation_fmt, this->gameboard->get_generation());
     } else {
         this->generation->set_text_color(ORANGE);
-        this->generation->set_text(MatterAnchor::RB, generation_fmt, this->gameboard->current_generation());
+        this->generation->set_text(MatterAnchor::RB, generation_fmt, this->gameboard->get_generation());
         
         if (this->state == GameState::Auto) {
             this->switch_game_state(GameState::Stop);
