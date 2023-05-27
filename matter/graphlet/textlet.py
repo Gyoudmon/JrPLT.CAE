@@ -43,6 +43,9 @@ class ITextlet(IGraphlet):
             self.__update_text_surface()
             self.notify_updated()
 
+    def get_text_color(self):
+        return self._text_color
+
     def set_background_color(self, bg_hex, alpha = 1.0):
         if self.__background_color != bg_hex or self.__background_alpha != alpha:
             self.__background_color = bg_hex
