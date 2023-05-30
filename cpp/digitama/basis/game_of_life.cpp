@@ -88,7 +88,14 @@ void WarGrey::STEM::GameOfLifeWorld::update(uint64_t count, uint32_t interval, u
 bool WarGrey::STEM::GameOfLifeWorld::can_select(IMatter* m) {
     return m == this->agent
         || ((this->state == GameState::Edit)
-                && (m == this->gameboard));  
+            && (m == this->gameboard));
+}
+
+void WarGrey::STEM::GameOfLifeWorld::on_tap(IMatter* matter, float x, float y) {
+    if (isinstance(matter, GameOfLifelet)) {
+        this->gameboard->toggle_life_at_location(x, y);
+        this->instructions[WRTE_KEY]->set_text_color(GREEN);
+    }
 }
 
 void WarGrey::STEM::GameOfLifeWorld::on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) {
@@ -111,13 +118,6 @@ void WarGrey::STEM::GameOfLifeWorld::on_char(char key, uint16_t modifiers, uint8
                 this->instructions[key]->set_text_color(CRIMSON);
             }
         }
-    }
-}
-
-void WarGrey::STEM::GameOfLifeWorld::on_tap(IMatter* matter, float x, float y) {
-    if (this->state == GameState::Edit) {
-        this->gameboard->modify_life_at_location(x, y);
-        this->instructions[WRTE_KEY]->set_text_color(GREEN);
     }
 }
 

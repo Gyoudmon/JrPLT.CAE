@@ -21,7 +21,7 @@ namespace WarGrey::STEM {
     public:
         void show_grid(bool yes);
         void set_color(uint32_t hex);
-        void modify_life_at_location(float x, float y);
+        void toggle_life_at_location(float x, float y);
         int get_generation() { return this->generation; }
 
     public:

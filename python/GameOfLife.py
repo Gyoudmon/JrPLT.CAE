@@ -3,6 +3,7 @@
 from digitama.big_bang.game import *        # 导入游戏模块，内含 Plane 类和常用函数
 from digitama.basis.conway.lifelet import * # 导入游戏图元
 
+import os
 import enum
 
 ###############################################################################
@@ -32,7 +33,7 @@ class GameState(enum.Enum):
 
 ###############################################################################
 class GameOfLifeWorld(Plane):
-    def __init__(self, gridsize = 8.0):
+    def __init__(self, life_demo = "", gridsize = 8.0):
         # 通过父类的构造函数设置窗口标题和帧频
         super(GameOfLifeWorld, self).__init__("生命游戏")
 
@@ -44,6 +45,7 @@ class GameOfLifeWorld(Plane):
         # 私有变量
         self.__state: GameState = GameState._
         self.__gridsize = gridsize
+        self.__demo_path = life_demo
 
     def load(self, width, height):
         self.__load_gameboard(width, height)
@@ -64,10 +66,49 @@ class GameOfLifeWorld(Plane):
     def update(self, count, interval, uptime):
         if self.__state == GameState.Auto:
             self.__pace_forward()
+
+# public
+    def default_conway_demo(self):
+        return digimon_path("demo/conway/typical", ".gof")
+
+    def save_conway_demo(self):
+        if not os.path.exists(self.__demo_path):
+            self.__demo_path = self.default_conway_demo()
+    
+        try:
+            os.makedirs(os.path.dirname(self.__demo_path), exist_ok=True)
+
+            golout = open(self.__demo_path, 'w')
+            self.gameboard.save(self.__demo_path, golout)
+            golout.close()
+            self.instructions[WRTE_KEY].set_text_color(ROYALBLUE)
+        except IOError as reason:
+            self.instructions[WRTE_KEY].set_text_color(FIREBRICK)
+            print("Failed to save the demo: %s" % reason)
+
+    def load_conway_demo(self):
+        if not os.path.exists(self.__demo_path):
+            self.__demo_path = self.default_conway_demo()
+    
+        try:
+            golin = open(self.__demo_path, 'r')
+            self.gameboard.load(self.__demo_path, golin)
+            golin.close()
+        except IOError as reason:
+            self.instructions[LOAD_KEY].set_text_color(FIREBRICK)
+            print("Failed to load the demo: %s" % reason)
     
 # protected
     def on_mission_start(self, width, height):
         self.__switch_game_state(GameState.Stop)
+
+    def can_select(self, matter):
+        return self.__state == GameState.Edit and isinstance(matter, GameOfLifelet)
+    
+    def on_tap(self, matter, x, y):
+        if isinstance(matter, GameOfLifelet):
+            self.gameboard.toggle_life_at_location(x, y)
+            self.instructions[WRTE_KEY].set_text_color(GREEN)
 
     def on_char(self, keycode, modifiers, repeats, pressed):
         if not pressed:

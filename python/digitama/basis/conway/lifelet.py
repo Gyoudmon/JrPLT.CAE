@@ -2,6 +2,8 @@
 
 from ...big_bang.game import *
 
+import io
+
 ###############################################################################
 def count_in_neighbor(world, row, col, r, c):
     row_okay = r >= 0 and r < row
@@ -84,6 +86,17 @@ class GameOfLifelet(IGraphlet):
                 else:
                     self.world[r][c] = 0
 
+    def toggle_life_at_location(self, x, y):
+        c = int(math.floor(x / self.gridsize))
+        r = int(math.floor(y / self.gridsize))
+
+        if self.world[r][c] == 0:
+            self.world[r][c] = 1
+        else:
+            self.world[r][c] = 0
+
+        self.notify_updated()
+
     def pace_forward(self):
         evolved = False
 
@@ -104,7 +117,6 @@ class GameOfLifelet(IGraphlet):
 
         return evolved
 
-
     def evolve(self, world, shadow, row, col):
         for r in range(row):
             for c in range(col):
@@ -119,6 +131,32 @@ class GameOfLifelet(IGraphlet):
                     shadow[i] = 1
                 else:
                     shadow[i] = world[r][c]
+
+###############################################################################
+    def load(self, life_world, golin):
+        self.reset()
+
+        r = 0
+        for rowline in golin:
+            if r < self.row:
+                r += 1
+                c = 0
+                for c in rowline:
+                    if c < self.col:
+                        self.world[r][c] = (rowline[c] == '0') ? 0 : 1
+                    else:
+                        break
+            else:
+                break
+
+    def save(self, life_world, golout: io.TextIOWrapper):
+        if self.world:
+            for r in range(self.row):
+                for c in range(self.col):
+                    print(self.world[r][c], end="", file=golout)
+                
+                print('\n', end="", file=golout)
+
 
 ###############################################################################
     def show_grid(self, yes):

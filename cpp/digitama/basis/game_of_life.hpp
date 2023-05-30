@@ -44,8 +44,8 @@ namespace WarGrey::STEM {
         void save_conway_demo();
             
     private: // 游戏物体
-        WarGrey::STEM::GameOfLifelet* gameboard;
         WarGrey::STEM::Labellet* generation;
+        WarGrey::STEM::GameOfLifelet* gameboard;
         std::map<char, WarGrey::STEM::Labellet*> instructions;
 
     private: // 游戏状态

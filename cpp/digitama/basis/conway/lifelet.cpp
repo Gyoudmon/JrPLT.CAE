@@ -69,7 +69,7 @@ void WarGrey::STEM::GameOfLifelet::draw(SDL_Renderer* renderer, float x, float y
     game_fill_grid(renderer, this->world, this->row, this->col, this->gridsize, this->gridsize, x, y);
 }        
 
-void WarGrey::STEM::GameOfLifelet::modify_life_at_location(float x, float y) {
+void WarGrey::STEM::GameOfLifelet::toggle_life_at_location(float x, float y) {
     int c = fl2fxi(flfloor(x / this->gridsize));
     int r = fl2fxi(flfloor(y / this->gridsize));
 
