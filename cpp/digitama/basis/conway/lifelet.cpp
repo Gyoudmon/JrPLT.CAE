@@ -190,8 +190,8 @@ void WarGrey::STEM::HighLifelet::evolve(int** world, int* shadow, int row, int c
             int i = r * col + c;
 
             switch (n) {
-            case 3: case 6: shadow[i] = 1; break;
             case 2: shadow[i] = world[r][c]; break;
+            case 3: case 6: shadow[i] = 1; break;
             default: shadow[i] = 0;
             }
         }

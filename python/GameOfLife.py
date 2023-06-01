@@ -52,6 +52,7 @@ class GameOfLifeWorld(Plane):
         self.__load_instructions(width, height)
         
         self.set_local_fps(default_frame_rate)
+        self.__load_conway_demo()
 
     def reflow(self, width, height):
         self.move_to(self.gameboard, (width * 0.5, height * 0.5), MatterAnchor.CC)
@@ -66,37 +67,6 @@ class GameOfLifeWorld(Plane):
     def update(self, count, interval, uptime):
         if self.__state == GameState.Auto:
             self.__pace_forward()
-
-# public
-    def default_conway_demo(self):
-        return digimon_path("demo/conway/typical", ".gof")
-
-    def save_conway_demo(self):
-        if not os.path.exists(self.__demo_path):
-            self.__demo_path = self.default_conway_demo()
-    
-        try:
-            os.makedirs(os.path.dirname(self.__demo_path), exist_ok=True)
-
-            golout = open(self.__demo_path, 'w')
-            self.gameboard.save(self.__demo_path, golout)
-            golout.close()
-            self.instructions[WRTE_KEY].set_text_color(ROYALBLUE)
-        except IOError as reason:
-            self.instructions[WRTE_KEY].set_text_color(FIREBRICK)
-            print("Failed to save the demo: %s" % reason)
-
-    def load_conway_demo(self):
-        if not os.path.exists(self.__demo_path):
-            self.__demo_path = self.default_conway_demo()
-    
-        try:
-            golin = open(self.__demo_path, 'r')
-            self.gameboard.load(self.__demo_path, golin)
-            golin.close()
-        except IOError as reason:
-            self.instructions[LOAD_KEY].set_text_color(FIREBRICK)
-            print("Failed to load the demo: %s" % reason)
     
 # protected
     def on_mission_start(self, width, height):
@@ -112,7 +82,11 @@ class GameOfLifeWorld(Plane):
 
     def on_char(self, keycode, modifiers, repeats, pressed):
         if not pressed:
-            key = chr(keycode)
+            try:
+                key = chr(keycode)
+            except ValueError:
+                key = keycode
+                
             if key in self.instructions:
                 if self.instructions[key].get_text_color() == GREEN:
                     if key == AUTO_KEY: self.__switch_game_state(GameState.Auto)
@@ -121,8 +95,8 @@ class GameOfLifeWorld(Plane):
                     elif key == RAND_KEY: self.gameboard.construct_random_world()
                     elif key == RSET_KEY: self.gameboard.reset()
                     elif key == PACE_KEY: self.__pace_forward()
-                    elif key == LOAD_KEY: self.load_conway_demo()
-                    elif key == WRTE_KEY: self.save_conway_demo()
+                    elif key == LOAD_KEY: self.__load_conway_demo()
+                    elif key == WRTE_KEY: self.__save_conway_demo()
 
                     self.notify_updated()
                 else:
@@ -130,12 +104,12 @@ class GameOfLifeWorld(Plane):
 
 # private
     def __load_gameboard(self, width, height):
-        border_height = height - 108.0
+        border_height = height - generic_font_size(FontSize.xx_large) * 2.0
         border_width = border_height
         col = round(border_width / self.__gridsize) - 1
         row = round(border_height / self.__gridsize) - 1
 
-        self.gameboard = self.insert(GameOfLifelet((row, col), self.__gridsize))
+        self.gameboard = self.insert(HighLifelet((row, col), self.__gridsize))
         self.generation = self.insert(Labellet(generation_fmt % (self.gameboard.generation), GameFont.math, GREEN))
 
     def __load_instructions(self, width, height):
@@ -179,6 +153,37 @@ class GameOfLifeWorld(Plane):
         
             if self.__state == GameState.Auto:
                 self.__switch_game_state(GameState.Stop)
+
+# private
+    def __default_conway_demo(self):
+        return digimon_path("demo/conway/typical", ".gof")
+
+    def __save_conway_demo(self):
+        if not os.path.exists(self.__demo_path):
+            self.__demo_path = self.__default_conway_demo()
+    
+        try:
+            os.makedirs(os.path.dirname(self.__demo_path), exist_ok=True)
+
+            golout = open(self.__demo_path, 'w')
+            self.gameboard.save(self.__demo_path, golout)
+            golout.close()
+            self.instructions[WRTE_KEY].set_text_color(ROYALBLUE)
+        except IOError as reason:
+            self.instructions[WRTE_KEY].set_text_color(FIREBRICK)
+            print("Failed to save the demo: %s" % reason)
+
+    def __load_conway_demo(self):
+        if not os.path.exists(self.__demo_path):
+            self.__demo_path = self.__default_conway_demo()
+    
+        try:
+            golin = open(self.__demo_path, 'r')
+            self.gameboard.load(self.__demo_path, golin)
+            golin.close()
+        except IOError as reason:
+            self.instructions[LOAD_KEY].set_text_color(FIREBRICK)
+            print("Failed to load the demo: %s" % reason)
 
 ###############################################################################
 launch_universe(GameOfLifeWorld, __name__)

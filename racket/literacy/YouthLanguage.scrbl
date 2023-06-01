@@ -40,9 +40,15 @@
  (book-bib-entry #:date "2011" #:edition "1st"
                  "LoL" "Land of Lisp: Learn to Program in Lisp, One Game at a Time!"
                  "Conrad Barski, MD" "No Starch Press")
+ (book-bib-entry #:date "2012" #:edition "2nd"
+                 "PL" "Programming Language: Application and Interpretation"
+                 "Shriram Krishnamurthi" #false)
  (book-bib-entry #:date "2012" #:url "https://natureofcode.com/book/"
                  "NoC" "The Nature of Code"
                  "Daniel Shiffman" #false)
+ (book-bib-entry #:date "2009"
+                 "TCC" "冒号课堂：编程范式与OOP思想"
+                 "郑辉" "电子工业出版社")
  (book-bib-entry #:date "2022"
                  "6kids" "少儿计算思维养成记：六个孩子的编程学习笔记"
                  (list "包若宁" "卜文远" "傅鼎荃" "魏文珊" "张秦汉" "卜东波") "机械工业出版社")

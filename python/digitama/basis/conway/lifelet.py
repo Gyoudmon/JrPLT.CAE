@@ -118,6 +118,55 @@ class GameOfLifelet(IGraphlet):
         return evolved
 
     def evolve(self, world, shadow, row, col):
+        raise Exception("Abstract Method, Please implement it in subclasses")
+
+###############################################################################
+    def load(self, life_world, golin):
+        self.reset()
+
+        r = 0
+        for rowline in golin:
+            if r < self.row:
+                c = 0
+                for col in rowline:
+                    # WARNING: the `rowline` contains the trailing `newline`
+                    if c < self.col:
+                        if col == '1':
+                            self.world[r][c] = 1
+                        else:
+                            self.world[r][c] = 0
+                        c += 1
+                    else:
+                        break
+                r += 1
+            else:
+                break
+
+    def save(self, life_world, golout: io.TextIOWrapper):
+        if self.world:
+            for r in range(self.row):
+                for c in range(self.col):
+                    print(self.world[r][c], end="", file=golout)
+                
+                print('\n', end="", file=golout)
+
+###############################################################################
+    def show_grid(self, yes):
+        if self.hide_grid == yes:
+            self.hide_grid = not yes
+            self.notify_updated()
+
+    def set_color(self, hex):
+        if self.color != hex:
+            self.color = hex
+            self.notify_updated()
+
+###############################################################################
+class ConwayLifelet(GameOfLifelet):
+    def __init__(self, size, gridsize = 8):
+        super().__init__(size, gridsize)
+
+    def evolve(self, world, shadow, row, col):
         for r in range(row):
             for c in range(col):
                 n = count_neighbors(world, row, col, r, c)
@@ -132,39 +181,19 @@ class GameOfLifelet(IGraphlet):
                 else:
                     shadow[i] = world[r][c]
 
-###############################################################################
-    def load(self, life_world, golin):
-        self.reset()
+class HighLifelet(GameOfLifelet):
+    def __init__(self, size, gridsize = 8):
+        super().__init__(size, gridsize)
 
-        r = 0
-        for rowline in golin:
-            if r < self.row:
-                r += 1
-                c = 0
-                for c in rowline:
-                    if c < self.col:
-                        self.world[r][c] = (rowline[c] == '0') ? 0 : 1
-                    else:
-                        break
-            else:
-                break
+    def evolve(self, world, shadow, row, col):
+        for r in range(row):
+            for c in range(col):
+                n = count_neighbors(world, row, col, r, c)
+                i = r * col + c
 
-    def save(self, life_world, golout: io.TextIOWrapper):
-        if self.world:
-            for r in range(self.row):
-                for c in range(self.col):
-                    print(self.world[r][c], end="", file=golout)
-                
-                print('\n', end="", file=golout)
-
-
-###############################################################################
-    def show_grid(self, yes):
-        if self.hide_grid == yes:
-            self.hide_grid = not yes
-            self.notify_updated()
-
-    def set_color(self, hex):
-        if self.color != hex:
-            self.color = hex
-            self.notify_updated()
+                if n == 2:
+                    shadow[i] = world[r][c]
+                elif n == 3 or n == 6:
+                    shadow[i] = 1
+                else:
+                    shadow[i] = 0
