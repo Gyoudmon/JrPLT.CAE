@@ -3,28 +3,22 @@
 @require{literacy.rkt}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-@handbook-title/pkg-desc[]
+@handbook-title{对比语言学}
 @authorsaddresses{@unsafe-author-info["ADDRESS"]}
 
-@abstract{程序设计对于未成年人和成年人来说，都是足够新颖的技能，
- 零基础的这两个群体在初学阶段没有太大的认知差别。
- 核心问题在于，如何帮助学生(包括成年人和未成年人)建立新的思维模式。
- 这个过程的长短显然因人而异，因此，我的计算机科学课会尝试解决这个问题，
- 并找到一个平衡点，既要有铺垫时间来给初学者训练基础技能(如英文键盘打字)、
- 认识基本概念(如变量、语法和语义)、感受编程的乐趣；
- 又不能铺垫太长导致初学者耐心耗尽被动劝退。
- 而且，这个问题的解决只能从更高维度入手(比如课程的整体设计和教学过程的实施)，
- 而不是简单地带学生读懂每一行代码的语法细节。
-
- 本文的主要读者是青少年计算机科学课系列课程的所有教师。}
+@abstract{假设存在一个包罗万象的程序语言，
+ 那我们学习任何一门具体的程序语言时会碰到的东西
+ 也一定能在学习这个假想的语言时碰到。
+ 如果一定要从语言角度来解释"如何学编程"，
+ 那就是学习这个包括万象的假想语言，
+ 并知道如何将它翻译成老板/客户希望你用的具体的语言。
+ 基于此，本文主要通过对比 C++ 和 Python 来认识程序语言中的基本概念。}
 
 @handbook-smart-table[]
 
-@include-section{preface.scrbl}
-
-@include-section{YouthLanguage/installation.scrbl}
-@include-section{YouthLanguage/sync.scrbl}
-@include-section{YouthLanguage/contrastive_linguistics.scrbl}
+@include-section{Linguistics/variable.scrbl}
+@include-section{Linguistics/type.system.scrbl}
+@include-section{Linguistics/enumeration.scrbl}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-appendix[#:index-section? #true #:numbered? #false

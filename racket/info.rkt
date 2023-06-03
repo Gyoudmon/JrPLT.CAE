@@ -10,8 +10,9 @@
 (define pkg-authors '("WarGrey Gyoudmon Ju"))
 (define test-omit-paths 'all)
 
-(define typesettings '(["literacy/YouthLanguage.scrbl" xelatex]
+(define typesettings '(["literacy/ContrastiveLinguistics.scrbl" xelatex]
+                       ["literacy/Setup.scrbl" xelatex #px"Installation/.*png$"]
                        ["literacy/Disciplines.scrbl" xelatex #px"Discipline/.*png$"]
                        ["literacy/Metrics.scrbl" xelatex #:always-make]))
 
-(define literacy-samples '(["literacy/YouthLanguage/sync.scrbl"]))
+#;(define literacy-samples '(["literacy/Setup/sync.scrbl"]))
