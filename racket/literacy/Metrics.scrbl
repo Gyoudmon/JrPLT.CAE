@@ -17,8 +17,6 @@
 
 @handbook-smart-table[]
 
-@include-section{preface.scrbl}
-
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-appendix[#:index-section? #true #:numbered? #false
  (book-bib-entry #:date "2015" #:edition "8th"

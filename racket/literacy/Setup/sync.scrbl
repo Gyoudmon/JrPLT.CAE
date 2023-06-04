@@ -122,8 +122,7 @@
                      @item{@tamer-deftech{typesetting}: 存放 @tech{literacy}的输出。
                                  比如本手册 @filepath{literacy/compiled/typesetting/YouLanguage.pdf}。}
                      @item{@tamer-deftech{native}: 存放 C++ 二进制文件的输出。
-                                 比如 @filepath{compiled/native/win32/x86_64/BigBang}。
-                                 注意，里面还会根据体系结构和操作系统划分子目录。}]}]
+                                 比如 @filepath{compiled/native/BigBang}。}]}]
 
 @tt{compiled} 和 Python 源码目录里的 @tt{__pycache__} 功能相同。
 
@@ -187,7 +186,7 @@
 无论用哪种方式，编译完了之后的可执行文件，
 都在与入口文件相同目录的 @filepath{compiled/native} 子目录里。
 比如， @tech{info.rkt} 中已经配置了 @filepath{cpp/FontBrowser.cpp}，
-它在 Windows 下对应的可执行文件名是@filepath{cpp/compiled/native/win32/x86_64/FontBrowser.exe}。
+它在 Windows 下对应的可执行文件名是@filepath{cpp/compiled/native/FontBrowser.exe}。
 
 Python 源码不需要编译，直接运行相应的入口文件即可。
 但需要注意的是，由于 Python 奇葩的模块管理规则，
