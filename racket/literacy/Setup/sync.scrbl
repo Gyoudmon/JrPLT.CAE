@@ -21,12 +21,9 @@
 @itemlist[#:style 'compact
           @item{@tt{cpp}: C++ 课程源码。}
           @item{@tt{python}: Python 课程源码。}
-          @item{@tt{racket}: Racket 课程源码。
-           @bold{这是我自己的私有课程，放在这里是方便诸位自行学习，
-            假如课程源码需申请专利，届时应当移走该目录的内容。}
-           此外，此目录下也包含这篇手册的源码。
-           这可以作为例子告诉学生，编程和写作是同类活动；
-           即使将来只想做作家，懂编程也将如虎添翼。}
+          @item{@tt{racket}: 学会编程能做的事情远远多于做软件。
+           这个目录里包含所有的其他源码： 课程文档源码(比如你正在读的这篇)、
+           生成课件图片素材的源码、配套游戏引擎测试源码等等。}
           @item{@tt{mascot}: 课程素材，主要是图片。所有语言通用。}]
 
 对照@tamer-figure-ref{srctree}，
@@ -83,9 +80,7 @@
                      @item{@tt{gv}: 软件工程图表相关 Graphviz 源码。}
                      @item{@tt{procedural}: 过程式风格示例源码。
                                  过程式风格更为注重细节，复杂度未必有多大，但代码量多半会让初学者生畏。
-                                 因此仅作为对比材料发放给学生，学生根据自身情况课后自行决定是否掌握。}
-                     @item{@tt{vcso}: 适用于 vcpkg 的 Windows 动态链接库，是二进制文件。
-                                 有这个目录学生就不必自己安装第三方库了，详细信息见@Secref{vcpkg}}]}]
+                                 因此仅作为对比材料发放给学生，学生根据自身情况课后自行决定是否掌握。}]}]
 
 以上条目未必都会出现在同一课程目录里，如果出现，一定符合上述解释。
 比如 @tt{literacy} 就只出现在 @tt{racket} 里，手册只需写一份就行。
@@ -99,7 +94,6 @@
    (stone . "资源目录")
    (literacy . "出版物源码")
    ((village . "协作目录")
-    (vcso . "Windows vcpkg 动态链接库")
     (gv . "Graphviz 源码")
     (procedural . "过程式风格示例代码")
     (sketch . "课堂练习用草稿源码")
@@ -213,9 +207,12 @@ Python 源码不需要编译，直接运行相应的入口文件即可。
 使用其他操作系统的学生无需同步这个共享库。
 
 @itemlist[#:style 'compact
-          @commandline{git clone https://github.com/Gyoudmon/vcso.git cpp\village\vcso}]
+          @commandline{git clone https://github.com/Gyoudmon/vcso.git C:\opt\vcso}]
 
-Python 学生将其中的 @tt{big-bang.cpp.git} 替换成 @tt{big-bang.py.git} 即可，也不需要 @tt{vcso.git}：
+@bold{注意，@tt{vcso.git} 的安装位置不建议修改。}
+
+Python 学生将其中的 @tt{big-bang.cpp.git} 替换成 @tt{big-bang.py.git} 即可，
+也不需要 @tt{vcso.git}：
 
 @itemlist[#:style 'compact
           @commandline{cd G:\Course\YouthLanguage}
