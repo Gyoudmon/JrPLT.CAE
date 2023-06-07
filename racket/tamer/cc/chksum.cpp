@@ -1,10 +1,32 @@
 ﻿#include "../../digitama/big_bang/wormhole/checksum/crc32.hpp"
+#include "../../digitama/big_bang/datum/string.hpp"
 
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
+extern "C" {
+	__ffi__ uint32_t hex_chksum_crc32(const char* message, size_t size) {
+		return checksum_crc32(reinterpret_cast<const uint8_t*>(message), 0, size);
+	}
+	
+	__ffi__ const char* str_chksum_crc32(const char* message, size_t size) {
+		static char sum[9];
+		uint32_t crc = checksum_crc32(reinterpret_cast<const uint8_t*>(message), 0, size);
+		std::string hex = hexnumber(crc, 4);
+
+		return strncpy(sum, hex.c_str(), sizeof(sum) / sizeof(char));
+	}
+
+	__ffi__ uint32_t acc_chksum_crc32(const char* part1, size_t psz1, const char* part2, size_t psz2, const char* part3, size_t psz3) {
+		uint32_t acc_crc = checksum_crc32(reinterpret_cast<const uint8_t*>(part1), 0, psz1);
+		
+		checksum_crc32(&acc_crc, reinterpret_cast<const uint8_t*>(part2), 0, psz2);
+		
+		return checksum_crc32(acc_crc, reinterpret_cast<const uint8_t*>(part3), 0, psz3);
+	}
+}
+
 /*
-namespace WarGrey::Tamer::Jargon::Checksum {
 	private class IPv4 : public TestClass<IPv4> {
 	public:
 		TEST_METHOD(Break) {
@@ -47,24 +69,4 @@ namespace WarGrey::Tamer::Jargon::Checksum {
 			Assert::AreEqual(0x0, int(checksum_ipv4(header)), L"verify the header's checksum");
 		}
 	};
-
-	private class CRC32 : public TestClass<CRC32> {
-	public:
-		TEST_METHOD(Vector) {
-			Assert::AreEqual("00000000", (char*)hexnumber(checksum_crc32(""), 4).c_str(), L"Empty Message");
-			Assert::AreEqual("414FA339", (char*)hexnumber(checksum_crc32("The quick brown fox jumps over the lazy dog"), 4).c_str(), L"rosettacode");
-			Assert::AreEqual(0x7E450C04UL, checksum_crc32("73871727080876A0"), L"S63 Data Protection Scheme(P12)");
-			Assert::AreEqual(780699093UL, checksum_crc32("NO4D061320000830BEB9BFE3C7C6CE68B16411FD09F96982"), L"S63 Data Protection Scheme(P50)");
-		}
-
-		TEST_METHOD(Accumulated) {
-			unsigned long acc_crc = 0;
-
-			checksum_crc32(&acc_crc, "NO4D0613");
-			checksum_crc32(&acc_crc, "20000830");
-
-			Assert::AreEqual(780699093UL, checksum_crc32(acc_crc, "BEB9BFE3C7C6CE68B16411FD09F96982"), L"Accumulated CRC32");
-		}
-	};
-}
 */

@@ -11,7 +11,7 @@
  将来等此课程成熟、源码库可以作为独立软件产品（比如 C++ 版的 Scratch）发布时，再重新按照软件项目的标准量化。}
 
 @handbook-statistics[git-size-ring-chart git-loc-time-series
-                     #:ignore '(#px"vcso") #:gitstat-width 450 #:gitstat-radius 80
+                     #:ignore '(#px"racket.digitama.big_bang") #:gitstat-width 450 #:gitstat-radius 80
                      #:altcolors '(["Racket" . Green]
                                    ["Python" . Khaki])]
 
