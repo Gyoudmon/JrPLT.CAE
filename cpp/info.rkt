@@ -9,8 +9,8 @@
 
 (define sdl2-config
   '((config SDL2)
-    (include [windows "village\\vcso\\include"])
-    (libpath [windows "village\\vcso\\lib"])))
+    (include [windows "C:\\opt\\vcso\\include"])
+    (libpath [windows "C:\\opt\\vcso\\lib"])))
 
 (define native-compiled-subpath '())
 

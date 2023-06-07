@@ -4,9 +4,6 @@
 [submodule "python/basis/digitama"]
 	path = python/digitama/big_bang
 	url = https://github.com/Gyoudmon/big-bang.py.git
-[submodule "cpp/basis/village/vcso"]
-	path = cpp/village/vcso
-	url = https://github.com/Gyoudmon/vcso.git
 [submodule "racket/digitama/big-bang"]
 	path = racket/digitama/big-bang
 	url = https://github.com/Gyoudmon/big-bang.rkt.git
