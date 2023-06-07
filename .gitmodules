@@ -10,3 +10,6 @@
 [submodule "mascot"]
 	path = mascot
 	url = https://github.com/Gyoudmon/mascot.git
+[submodule "racket/digitama/big_bang"]
+	path = racket/digitama/big_bang
+	url = https://github.com/Gyoudmon/big-bang.cpp

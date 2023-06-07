@@ -15,8 +15,7 @@
 (define native-compiled-subpath '())
 
 (define native-launcher-names
-  `(["digitama/big_bang/BigBang.cpp" so ,sdl2-config]
-    ["BigBang.cpp" console ,sdl2-config]
+  `(["BigBang.cpp" console ,sdl2-config]
     ["FontBrowser.cpp" console ,sdl2-config]
     ["village/procedural/shape.cpp" console ,sdl2-config]
     ["village/procedural/paddleball.cpp" console ,sdl2-config]))
