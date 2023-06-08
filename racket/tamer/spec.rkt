@@ -3,6 +3,7 @@
 (require digimon/spec)
 
 (require "cc/chksum.rkt")
+(require "cc/asnder.rkt")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define ipv4-headers
@@ -14,6 +15,7 @@
 (define message
   (bytes #x00 #x01 #xf2 #x03 #xf4 #xf5 #xf6 #xf7))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-feature prelude #:do
   (describe "Checksum" #:do
     (describe "CRC32" #:do
@@ -38,7 +40,69 @@
           (expect-zero (chksum_ipv4_verify header))))
       (it "should return '0xFFFF' for header's tru-form sum when verifying the checksum" #:do
         (for ([header (in-list ipv4-headers)])
-          (expect-= (chksum_ipv4_true_form header) #xFFFF))))))
+          (expect-= (chksum_ipv4_true_form header) #xFFFF)))))
+
+  (describe "ASN.1 DER" #:do
+    (describe "Base" #:do
+      (describe "Length" #:do
+        (it-tame-length 127 #"\x7F")
+        (it-tame-length 128 #"\x81\x80")
+        (it-tame-length 201 #"\x81\xC9")
+        (it-tame-length 435 #"\x82\x01\xB3")))
+    (describe "Primitive Data Type" #:do
+      (describe "Fixed Integer" #:do
+        (it-tame-fixnum 0 #"\x02\x01\x00")
+        (it-tame-fixnum +1 #"\x02\x01\x01")
+        (it-tame-fixnum -1 #"\x02\x01\xFF")
+        (it-tame-fixnum +127 #"\x02\x01\x7F")
+        (it-tame-fixnum -127 #"\x02\x01\x81")
+        (it-tame-fixnum +128 #"\x02\x02\x00\x80")
+        (it-tame-fixnum -128 #"\x02\x01\x80")
+        (it-tame-fixnum +255 #"\x02\x02\x00\xFF")
+        (it-tame-fixnum -255 #"\x02\x02\xFF\x01")
+        (it-tame-fixnum +256 #"\x02\x02\x01\x00")
+        (it-tame-fixnum -256 #"\x02\x02\xFF\x00")
+        (context "Natural" #:do
+          (it-tame-natural #"807fbc" #"\x02\x04\x00\x80\x7f\xbc")
+          (it-tame-natural ; (expt 17 80)
+           #"7fbc8ce9af7a9eb54c817fc7c1c796d1b1c80bddbcbacb15942480f5aa4ee120d27f93ebcf43275d01"
+           (bytes #x02 #x29 #x7f #xbc #x8c #xe9 #xaf #x7a #x9e #xb5 #x4c #x81 #x7f #xc7 #xc1 #xc7
+                  #x96 #xd1 #xb1 #xc8 #x0b #xdd #xbc #xba #xcb #x15 #x94 #x24 #x80 #xf5 #xaa #x4e
+                  #xe1 #x20 #xd2 #x7f #x93 #xeb #xcf #x43 #x27 #x5d #x01))))
+      (describe "Floating Number" #:do
+        (it-tame-flonum +0.0 #"\x09\x00")
+        (it-tame-flonum +inf.0 #"\x09\x01\x40")
+        (it-tame-flonum -inf.0 #"\x09\x01\x41")
+        (it-tame-flonum +nan.0 #"\x09\x01\x42")
+        (it-tame-flonum -0.0 #"\x09\x01\x43")
+        (it-tame-flonum 0.1 #"\x09\x09\x80\xC9\x0C\xCC\xCC\xCC\xCC\xCC\xCD")
+        (it-tame-flonum 0.2 #"\x09\x09\x80\xCA\x0C\xCC\xCC\xCC\xCC\xCC\xCD")
+        (it-tame-flonum 0.3 #"\x09\x09\x80\xCA\x13\x33\x33\x33\x33\x33\x33")
+        (it-tame-flonum 0.4 #"\x09\x09\x80\xCB\x0C\xCC\xCC\xCC\xCC\xCC\xCD")
+        (it-tame-flonum 0.5 #"\x09\x03\x80\xFF\x01")
+        (it-tame-flonum 0.6 #"\x09\x09\x80\xCB\x13\x33\x33\x33\x33\x33\x33")
+        (it-tame-flonum 0.7 #"\x09\x09\x80\xCC\x0B\x33\x33\x33\x33\x33\x33")
+        (it-tame-flonum 0.8 #"\x09\x09\x80\xCC\x0C\xCC\xCC\xCC\xCC\xCC\xCD")
+        (it-tame-flonum 0.9 #"\x09\x09\x80\xCB\x1C\xCC\xCC\xCC\xCC\xCC\xCD")
+        (it-tame-flonum 1.0 #"\x09\x03\x80\x00\x01")
+        (it-tame-flonum 1.1 #"\x09\x09\x80\xCD\x08\xCC\xCC\xCC\xCC\xCC\xCD")
+        (it-tame-flonum 1.2 #"\x09\x09\x80\xCC\x13\x33\x33\x33\x33\x33\x33")
+        (it-tame-flonum 1.3 #"\x09\x09\x80\xCC\x14\xCC\xCC\xCC\xCC\xCC\xCD")
+        (it-tame-flonum 1.4 #"\x09\x09\x80\xCD\x0B\x33\x33\x33\x33\x33\x33")
+        (it-tame-flonum 1.5 #"\x09\x03\x80\xFF\x03")
+        (it-tame-flonum 1.6 #"\x09\x09\x80\xCD\x0C\xCC\xCC\xCC\xCC\xCC\xCD")
+        (it-tame-flonum 2.718281828459045 #"\x09\x09\x80\xCD\x15\xBF\x0A\x8B\x14\x57\x69")
+        (it-tame-flonum 3.141592653589793 #"\x09\x09\x80\xD0\x03\x24\x3F\x6A\x88\x85\xA3")
+        (it-tame-flonum 0.5772156649015329 #"\x09\x09\x80\xCB\x12\x78\x8C\xFC\x6F\xB6\x19")
+        (it-tame-flonum 1.618033988749895 #"\x09\x09\x80\xCF\x03\x3C\x6E\xF3\x72\xFE\x95")
+        (it-tame-flonum 0.915965594177219 #"\x09\x09\x80\xCB\x1D\x4F\x97\x13\xE8\x13\x5D")
+        (it-tame-flonum -0.0015625 #"\x09\x09\xC0\xC3\x0C\xCC\xCC\xCC\xCC\xCC\xCD")
+        (it-tame-flonum -15.625 #"\x09\x03\xC0\xFD\x7D")
+        (it-tame-flonum 180.0 #"\x09\x04\x80\x00\x00\xB4"))
+      (describe "Miscellaneous" #:do
+        (it-tame-null (void) #"\x05\x00")
+        (it-tame-boolean #true #"\x01\x01\xFF")
+        (it-tame-boolean #false #"\x01\x01\x00")))))
 
 
 

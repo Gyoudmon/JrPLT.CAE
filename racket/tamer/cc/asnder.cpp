@@ -1,101 +1,159 @@
-﻿#include "CppUnitTest.h"
+﻿
+#include "../../digitama/big_bang/wormhole/jargon/asn_der.hpp"
 
-#include "asn/der.hpp"
+#include "../../digitama/big_bang/datum/fixnum.hpp"
+#include "../../digitama/big_bang/datum/flonum.hpp"
+#include "../../digitama/big_bang/datum/natural.hpp"
+#include "../../digitama/big_bang/datum/enum.hpp"
 
-#include "datum/string.hpp"
-#include "datum/flonum.hpp"
-#include "datum/natural.hpp"
-
-#include "syslog.hpp"
-
-using namespace WarGrey::SCADA;
-using namespace WarGrey::GYDM;
-
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
-namespace WarGrey::Tamer::Jargon::ASN1 {
-	define_asn_enum(log, Log, Debug, Info, Notice, Warning, Error, Critical, Alarm, Panic, _ );
+define_asn_enum(log, Log, Debug, Info, Notice, Warning, Error, Critical, Alarm, Panic, _ );
 
-	static size_t asn_utf_8_span(std::wstring& str) {
-		return asn_utf8_span(str);
+/*
+static size_t asn_utf_8_span(std::wstring& str) {
+	return asn_utf8_span(str);
+}
+
+static octets asn_utf_8_to_octets(std::wstring& str) {
+	return asn_utf8_to_octets(str);
+}
+
+static std::wstring asn_bytes_to_utf8(octets& bint, size_t* offset = nullptr) {
+	return asn_octets_to_utf8(bint, offset);
+}
+
+static int64_t asn_bytes_to_fixnum(octets& bint, size_t* offset = nullptr) {
+	return asn_octets_to_fixnum(bint, offset);
+}
+
+static bool asn_bytes_to_boolean(octets& bint, size_t* offset = nullptr) {
+	return asn_octets_to_boolean(bint, offset);
+}
+
+static std::string asn_bytes_to_ia5(octets& bint, size_t* offset = nullptr) {
+	return asn_octets_to_ia5(bint, offset);
+}
+
+static Log asn_bytes_to_log(octets& bint, size_t* offset = nullptr) {
+	return asn_octets_to_log(bint, offset);
+}
+*/
+
+struct LogMessage : public IASNSequence {
+public:
+	LogMessage(Log level, const char* message, int64_t timestamp, const char* topic)
+		: IASNSequence(4), level(level), message(message), timestamp(timestamp), topic(topic) {}
+
+	LogMessage(const octets& basn, size_t* offset = nullptr) : IASNSequence(4) {
+		this->from_octets(basn, offset);
 	}
 
-	static octets asn_utf_8_to_octets(std::wstring& str) {
-		return asn_utf8_to_octets(str);
-	}
+public:
+	Log level;
+	std::string message;
+	int64_t timestamp;
+	std::string topic;
 
-	static std::wstring asn_bytes_to_utf8(octets& bint, size_t* offset = nullptr) {
-		return asn_octets_to_utf8(bint, offset);
-	}
+protected:
+	size_t field_payload_span(size_t idx) override {
+		size_t span = 0;
 
-	static long long asn_bytes_to_fixnum(octets& bint, size_t* offset = nullptr) {
-		return asn_octets_to_fixnum(bint, offset);
-	}
-
-	static bool asn_bytes_to_boolean(octets& bint, size_t* offset = nullptr) {
-		return asn_octets_to_boolean(bint, offset);
-	}
-
-	static std::string asn_bytes_to_ia5(octets& bint, size_t* offset = nullptr) {
-		return asn_octets_to_ia5(bint, offset);
-	}
-
-	static Log asn_bytes_to_log(octets& bint, size_t* offset = nullptr) {
-		return asn_octets_to_log(bint, offset);
-	}
-
-	private struct LogMessage : public IASNSequence {
-	public:
-		LogMessage(Log level, Platform::String^ message, long long timestamp, std::string topic)
-			: IASNSequence(4), level(level), message(message), timestamp(timestamp), topic(topic) {}
-
-		LogMessage(octets& basn, size_t* offset = nullptr) : IASNSequence(4) {
-			this->from_octets(basn, offset);
+		switch (idx) {
+		case 0: span = asn_log_span(this->level); break;
+		case 1: span = asn_utf8_span(this->message); break;
+		case 2: span = asn_fixnum_span(this->timestamp); break;
+		case 3: span = asn_ia5_span(this->topic); break;
 		}
 
-	public:
-		Log level;
-		Platform::String^ message;
-		long long timestamp;
-		std::string topic;
+		return span;
+	}
 
-	protected:
-		size_t field_payload_span(size_t idx) override {
-			size_t span = 0;
-
-			switch (idx) {
-			case 0: span = asn_log_span(this->level); break;
-			case 1: span = asn_utf8_span(this->message); break;
-			case 2: span = asn_fixnum_span(this->timestamp); break;
-			case 3: span = asn_ia5_span(this->topic); break;
-			}
-
-			return span;
+	size_t fill_field(size_t idx, uint8_t* octets, size_t offset) override {
+		switch (idx) {
+		case 0: offset = asn_log_into_octets(this->level, octets, offset); break;
+		case 1: offset = asn_utf8_into_octets(this->message, octets, offset); break;
+		case 2: offset = asn_fixnum_into_octets(this->timestamp, octets, offset); break;
+		case 3: offset = asn_ia5_into_octets(this->topic, octets, offset); break;
 		}
 
-		size_t fill_field(size_t idx, uint8* octets, size_t offset) override {
-			switch (idx) {
-			case 0: offset = asn_log_into_octets(this->level, octets, offset); break;
-			case 1: offset = asn_utf8_into_octets(this->message, octets, offset); break;
-			case 2: offset = asn_fixnum_into_octets(this->timestamp, octets, offset); break;
-			case 3: offset = asn_ia5_into_octets(this->topic, octets, offset); break;
-			}
+		return offset;
+	}
 
-			return offset;
+	void extract_field(size_t idx, const uint8_t* basn, size_t* offset) override {
+		switch (idx) {
+		case 0: this->level = asn_octets_to_log(basn, offset); break;
+		case 1: this->message = asn_octets_to_utf8(basn, offset); break;
+		case 2: this->timestamp = asn_octets_to_fixnum(basn, offset); break;
+		case 3: this->topic = asn_octets_to_ia5(basn, offset); break;
 		}
+	}
+};
 
-		void extract_field(size_t idx, const uint8* basn, size_t* offset) override {
-			switch (idx) {
-			case 0: this->level = asn_octets_to_log(basn, offset); break;
-			case 1: this->message = make_wstring(asn_octets_to_utf8(basn, offset)); break;
-			case 2: this->timestamp = asn_octets_to_fixnum(basn, offset); break;
-			case 3: this->topic = asn_octets_to_ia5(basn, offset); break;
-			}
-		}
-	};
+extern "C" {
+	__ffi__ size_t asn_tame_length(size_t size, size_t* span, size_t* offset, uint8_t* basn, size_t bsize) {
+		asn_length_into_octets(size, basn);
+
+		(*span) = asn_length_span(size);
+		(*offset) = 0;
+		
+		return asn_octets_to_length(basn, offset);
+	}
+
+	__ffi__ int64_t asn_tame_fixnum(int64_t fixnum, size_t* span, size_t* offset, uint8_t* basn, size_t bsize) {
+		asn_fixnum_into_octets(fixnum, basn);
+		
+		(*span) = asn_span(asn_fixnum_span, fixnum);
+		(*offset) = 0;
+		
+		return asn_octets_to_fixnum(basn, offset);
+	}
+
+	__ffi__ const uint8_t* asn_tame_natural(const char* nstr, size_t* span, size_t* offset, uint8_t* basn, size_t bsize) {
+		static Natural nat;
+
+		Natural n(16U, std::string(nstr));
+		asn_natural_into_octets(n, basn);
+		
+		(*span) = asn_span(asn_natural_span, n);
+		(*offset) = 0;
+		nat = asn_octets_to_natural(basn, offset);
+
+		return nat.to_bytes().c_str();
+	}
+	
+	__ffi__ double asn_tame_flonum(double real, size_t* span, size_t* offset, uint8_t* basn, size_t bsize) {
+		octets flonum = asn_flonum_to_octets(real);
+
+		memcpy(basn, flonum.c_str(), bsize);
+		(*span) = asn_span(asn_flonum_span, real);
+		(*offset) = 0;
+			
+		return asn_octets_to_flonum(basn, offset);
+	}
+
+	__ffi__ bool asn_tame_boolean(bool b, size_t* span, size_t* offset, uint8_t* basn, size_t bsize) {
+		asn_boolean_into_octets(b, basn);
+		
+		(*span) = asn_span(asn_boolean_span, b);
+		(*offset) = 0;
+		
+		return asn_octets_to_boolean(basn, offset);
+	}
+
+	__ffi__ void asn_tame_null(size_t* span, size_t* offset, uint8_t* basn, size_t bsize) {
+		asn_null_into_octets(nullptr, basn);
+		
+		(*span) = asn_span(asn_null_span, nullptr);
+		(*offset) = 0;
+		
+		asn_octets_to_null(basn, offset);
+	}
+}
 
 	/*********************************************************************************************/
+/*
 	static bool bytes_eq(const char* b10, const uint8* b2, size_t size, Platform::String^ message) {
 		uint8* b1 = (uint8*)b10;
 		bool eq = true;
@@ -121,83 +179,15 @@ namespace WarGrey::Tamer::Jargon::ASN1 {
 	static void assert(octets& n, const char* control, Platform::String^ message) {
 		Assert::IsTrue(bytes_eq(control, n.c_str(), n.size(), message), message->Data());
 	}
+*/
 
 	/*********************************************************************************************/
-	private class DERBase : public TestClass<DERBase> {
-	public:
-		TEST_METHOD(Length) {
-			test_length(127, "\x7F");
-			test_length(128, "\x81\x80");
-			test_length(201, "\x81\xC9");
-			test_length(435, "\x82\x01\xB3");
-		}
-
-	private:
-		void test_length(size_t size, const char* control) {
-			octets length = asn_length_to_octets(size);
-			size_t offset = 0;
-
-			assert(length, control, make_wstring(L"length %d", size));
-			Assert::AreEqual(size, asn_octets_to_length(length, &offset), make_wstring(L"length[%d] size", size)->Data());
-			Assert::AreEqual(length.size(), offset, make_wstring(L"length[%d] offset", size)->Data());
-			Assert::AreEqual(asn_length_span(size), offset, make_wstring(L"length[%d] span", size)->Data());
-		}
-	};
-
+/*
 	private class DERPrimitive : public TestClass<DERPrimitive> {
 	public:
-		TEST_METHOD(Fixnum) {
-			const wchar_t* msgfmt = L"Integer[%ld]";
-
-			test_primitive(0ll,    asn_fixnum_span, asn_fixnum_to_octets, asn_bytes_to_fixnum, "\x02\x01\x00",     msgfmt);
-			test_primitive(+1ll,   asn_fixnum_span, asn_fixnum_to_octets, asn_bytes_to_fixnum, "\x02\x01\x01",     msgfmt);
-			test_primitive(-1ll,   asn_fixnum_span, asn_fixnum_to_octets, asn_bytes_to_fixnum, "\x02\x01\xFF",     msgfmt);
-			test_primitive(+127ll, asn_fixnum_span, asn_fixnum_to_octets, asn_bytes_to_fixnum, "\x02\x01\x7F",     msgfmt);
-			test_primitive(-127ll, asn_fixnum_span, asn_fixnum_to_octets, asn_bytes_to_fixnum, "\x02\x01\x81",     msgfmt);
-			test_primitive(+128ll, asn_fixnum_span, asn_fixnum_to_octets, asn_bytes_to_fixnum, "\x02\x02\x00\x80", msgfmt); // NOTE the embedded null
-			test_primitive(-128ll, asn_fixnum_span, asn_fixnum_to_octets, asn_bytes_to_fixnum, "\x02\x01\x80",     msgfmt);
-			test_primitive(+255ll, asn_fixnum_span, asn_fixnum_to_octets, asn_bytes_to_fixnum, "\x02\x02\x00\xFF", msgfmt);
-			test_primitive(+256ll, asn_fixnum_span, asn_fixnum_to_octets, asn_bytes_to_fixnum, "\x02\x02\x01\x00", msgfmt);
-		}
-
 		TEST_METHOD(Natural) {
 			test_natural("807fbc", "paded zero is an embedded null");
 			test_natural("7fbc8ce9af7a9eb54c817fc7c1c796d1b1c80bddbcbacb15942480f5aa4ee120d27f93ebcf43275d01", "17^80");
-		}
-
-		TEST_METHOD(Real) {
-			test_real(0.0,       "\x09\x00");
-			test_real(+infinity, "\x09\x01\x40");
-			test_real(-infinity, "\x09\x01\x41");
-			test_real(flnan,     "\x09\x01\x42");
-			test_real(-0.0,      "\x09\x01\x43");
-
-			test_real(0.1, "\x09\x09\x80\xC9\x0C\xCC\xCC\xCC\xCC\xCC\xCD");
-			test_real(0.2, "\x09\x09\x80\xCA\x0C\xCC\xCC\xCC\xCC\xCC\xCD");
-			test_real(0.3, "\x09\x09\x80\xCA\x13\x33\x33\x33\x33\x33\x33");
-			test_real(0.4, "\x09\x09\x80\xCB\x0C\xCC\xCC\xCC\xCC\xCC\xCD");
-			test_real(0.5, "\x09\x03\x80\xFF\x01");
-			test_real(0.6, "\x09\x09\x80\xCB\x13\x33\x33\x33\x33\x33\x33");
-			test_real(0.7, "\x09\x09\x80\xCC\x0B\x33\x33\x33\x33\x33\x33");
-			test_real(0.8, "\x09\x09\x80\xCC\x0C\xCC\xCC\xCC\xCC\xCC\xCD");
-			test_real(0.9, "\x09\x09\x80\xCB\x1C\xCC\xCC\xCC\xCC\xCC\xCD");
-			test_real(1.0, "\x09\x03\x80\x00\x01");
-			test_real(1.1, "\x09\x09\x80\xCD\x08\xCC\xCC\xCC\xCC\xCC\xCD");
-			test_real(1.2, "\x09\x09\x80\xCC\x13\x33\x33\x33\x33\x33\x33");
-			test_real(1.3, "\x09\x09\x80\xCC\x14\xCC\xCC\xCC\xCC\xCC\xCD");
-			test_real(1.4, "\x09\x09\x80\xCD\x0B\x33\x33\x33\x33\x33\x33");
-			test_real(1.5, "\x09\x03\x80\xFF\x03");
-			test_real(1.6, "\x09\x09\x80\xCD\x0C\xCC\xCC\xCC\xCC\xCC\xCD");
-
-			test_real(2.718281828459045,  "\x09\x09\x80\xCD\x15\xBF\x0A\x8B\x14\x57\x69");
-			test_real(3.141592653589793,  "\x09\x09\x80\xD0\x03\x24\x3F\x6A\x88\x85\xA3");
-			test_real(0.5772156649015329, "\x09\x09\x80\xCB\x12\x78\x8C\xFC\x6F\xB6\x19");
-			test_real(1.618033988749895,  "\x09\x09\x80\xCF\x03\x3C\x6E\xF3\x72\xFE\x95");
-			test_real(0.915965594177219,  "\x09\x09\x80\xCB\x1D\x4F\x97\x13\xE8\x13\x5D");
-
-			test_real(-0.0015625, "\x09\x09\xC0\xC3\x0C\xCC\xCC\xCC\xCC\xCC\xCD");
-			test_real(-15.625, "\x09\x03\xC0\xFD\x7D");
-			test_real(180.0, "\x09\x04\x80\x00\x00\xB4");
 		}
 
 		TEST_METHOD(Enumerated) {
@@ -216,29 +206,7 @@ namespace WarGrey::Tamer::Jargon::ASN1 {
 				"\x0C\x09\xCE\xBB\x73\x68\x00\x0A\x73\x73\x68", L"String UTF8[%s]");
 		}
 
-		TEST_METHOD(Miscellaneous) {
-			test_primitive(true,  asn_boolean_span, asn_boolean_to_octets, asn_bytes_to_boolean, "\x01\x01\xFF", L"Boolean %d");
-			test_primitive(false, asn_boolean_span, asn_boolean_to_octets, asn_bytes_to_boolean, "\x01\x01\x00", L"Boolean %d");
-		}
-
 	private:
-		template<typename T, typename Span, typename T2O, typename O2T> 
-		void test_primitive(T datum, Span span, T2O asn_to_octets, O2T octets_to_asn, const char* representation, const wchar_t* msgfmt) {
-			Platform::String^ message = make_wstring(msgfmt, datum);
-			octets basn = asn_to_octets(datum);
-
-			Assert::IsTrue(bytes_eq(representation, basn.c_str(), basn.size(), message), message->Data());
-			Assert::AreEqual(basn.size(), asn_span(span, datum), message->Data());
-
-			{ // decode
-				size_t offset = 0;
-				T restored = octets_to_asn(basn, &offset);
-				
-				Assert::AreEqual(datum, restored, message->Data());
-				Assert::AreEqual(basn.size(), offset, message->Data());
-			}
-		}
-
 		void test_natural(Platform::String^ representation, const char* readable_name) {
 			Platform::String^ message = make_wstring(L"Natural[%S]", readable_name);
 			::Natural nat((uint8)16U, (const uint16*)representation->Data(), 0, representation->Length());
@@ -250,30 +218,6 @@ namespace WarGrey::Tamer::Jargon::ASN1 {
 
 			asn_natural_into_octets(nat, (uint8*)bnat.c_str(), 0);
 			Assert::IsTrue(nat == asn_octets_to_natural(bnat), message->Data());
-		}
-
-		void test_real(double real, const char* representation) {
-			Platform::String^ message = make_wstring(L"Real[%lf]", real);
-			octets breal = asn_real_to_octets(real);
-
-			Assert::IsTrue(bytes_eq(representation, breal.c_str(), breal.size(), message), message->Data());
-			Assert::AreEqual(breal.size(), asn_span(asn_real_span, real), message->Data());
-
-			asn_real_into_octets(real, (uint8*)breal.c_str(), 0);
-			Assert::IsTrue(bytes_eq(representation, breal.c_str(), breal.size(), message), message->Data());
-
-			{ // decode
-				size_t offset = 0;
-				double restored = asn_octets_to_real(breal, &offset);
-
-				if (flisnan(real)) {
-					Assert::IsTrue(flisnan(restored), message->Data());
-				} else if (real == 0.0) {
-					Assert::AreEqual(flsign(real), flsign(restored), message->Data());
-				} else {
-					Assert::AreEqual(real, restored, message->Data());
-				}
-			}
 		}
 
 		template<typename T, typename T2O, typename O2T>
@@ -334,3 +278,4 @@ namespace WarGrey::Tamer::Jargon::ASN1 {
 		}
 	};
 }
+*/
