@@ -109,6 +109,19 @@
           [basn : (_bytes o bsize)]
           [bsize : _size = (bytes-length expt)]
           -> [datum : _log]
+          -> (values basn datum span offset)))
+
+  (define-asnder asn_tame_sequence
+    (_fun (level desc timestamp topic expt) ::
+          [level : _log]
+          [desc : _string/utf-8]
+          [timestamp : _int64]
+          [topic : _symbol]
+          [span : (_ptr o _size)]
+          [offset : (_ptr o _size)]
+          [basn : (_bytes o bsize)]
+          [bsize : _size = (bytes-length expt)]
+          -> [datum : _bool]
           -> (values basn datum span offset))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -127,7 +140,8 @@
  [asn_tame_null (-> Void Bytes (Values Bytes Void Index Index))]
  [asn_tame_ia5_string (-> Symbol Bytes (Values Bytes Symbol Index Index))]
  [asn_tame_utf8_string (-> String Bytes (Values Bytes String Index Index))]
- [asn_tame_enum (-> Symbol Bytes (Values Bytes Symbol Index Index))])
+ [asn_tame_enum (-> Symbol Bytes (Values Bytes Symbol Index Index))]
+ [asn_tame_sequence (-> Symbol String Integer Symbol Bytes (Values Bytes Boolean Index Index))])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-behavior (it-tame-natural datum expected-basn)
@@ -156,6 +170,19 @@
          (expect-= offset expected-length (format "asn_octets_to_~a (offset)" type))
          (expect-= span expected-length (format "asn_~a_span" type))))
 
+(define-behavior (it-tame-sequence level message timestamp topic expected-basn)
+  #:it ["sequence: λ { ~s, ~s, ~s, ~s } -> '~a'"
+        level message timestamp topic
+        (bytes->hexstring #:separator "\\x" #:before-first "\\x" #:upcase? #true
+                          expected-basn)]
+  #:do (let-values ([(basn okay span offset) (asn_tame_sequence level message timestamp topic expected-basn)]
+                    [(expected-length) (bytes-length expected-basn)])
+         (expect-bytes= basn expected-basn "asn_sequence_to_octets")
+         (expect-true okay "asn_octets_to_sequence (datum)")
+         (expect-= offset expected-length "asn_octets_to_sequence (offset)")
+         (expect-= span expected-length "asn_sequence_span")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-syntax (it-tame-length stx)
   (syntax-case stx []
     [(_ datum expected-basn)

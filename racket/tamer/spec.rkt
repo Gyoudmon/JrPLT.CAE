@@ -75,6 +75,7 @@
                   #x0b #xdd #xbc #xba #xcb #x15 #x94 #x24 #x80 #xf5
                   #xaa #x4e #xe1 #x20 #xd2 #x7f #x93 #xeb #xcf #x43
                   #x27 #x5d #x01))))
+
       (describe "Floating Number" #:do
         (it-tame-flonum +0.0 #"\x09\x00")
         (it-tame-flonum +inf.0 #"\x09\x01\x40")
@@ -105,15 +106,21 @@
         (it-tame-flonum -0.0015625 #"\x09\x09\xC0\xC3\x0C\xCC\xCC\xCC\xCC\xCC\xCD")
         (it-tame-flonum -15.625 #"\x09\x03\xC0\xFD\x7D")
         (it-tame-flonum 180.0 #"\x09\x04\x80\x00\x00\xB4"))
+
       (describe "String" #:do
         (context "IA5 String" #:do
           (it-tame-ia5 '|6.0.5361.2| #"\x16\x0A\x36\x2E\x30\x2E\x35\x33\x36\x31\x2E\x32"))
         (context "UTF8 String" #:do
           (it-tame-utf8 "λsh\x0\nssh" #"\x0C\x09\xCE\xBB\x73\x68\x00\x0A\x73\x73\x68")))
+
       (describe "Miscellaneous" #:do
         (it-tame-null (void) #"\x05\x00")
         (it-tame-boolean #true #"\x01\x01\xFF")
-        (it-tame-boolean #false #"\x01\x01\x00")))))
+        (it-tame-boolean #false #"\x01\x01\x00")))
+
+    (describe "Sequence" #:do
+      (it-tame-sequence 'Debug "测试" 1585280242148 'tamer
+                        #"\x30\x1a\x0a\x01\x00\x0c\x06\xe6\xb5\x8b\xe8\xaf\x95\x02\x06\x01\x71\x1a\x10\xd1\xe4\x16\x05\x74\x61\x6d\x65\x72"))))
 
 
 
