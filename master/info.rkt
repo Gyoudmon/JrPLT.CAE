@@ -16,8 +16,10 @@
     (include [windows "C:\\opt\\vcso\\include"])
     (libpath [windows "C:\\opt\\vcso\\lib"])))
 
-#;(define native-launcher-names
-  `(["BigBang.cpp" console ,sdl2-config]))
+(define native-compiled-subpath '())
+
+(define native-launcher-names
+  `(["YouthLanguageLobby.cpp" console ,sdl2-config]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define typesettings

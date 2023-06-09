@@ -1,0 +1,58 @@
+{
+    "configurations": [
+        {
+            "name": "青少计算机科学@macOS",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/compiled/native/YouthLanguageLobby",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "青少计算机科学@macOS[Release]"
+        },
+        
+        {
+            "name": "macDBG青少计算机科学",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/compiled/native/debug/YouthLanguageLobby",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "青少计算机科学@macOS[Debug]"
+        },
+
+        {
+            "name": "win青少计算机科学",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/compiled/native/YouthLanguageLobby.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "preLaunchTask": "青少计算机科学@Windows[Release]"
+        },
+        
+        {
+            "name": "winDBG青少计算机科学",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/compiled/native/debug/YouthLanguageLobby.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "preLaunchTask": "青少计算机科学@Windows[Debug]"
+        }
+    ],
+    "version": "2.0.0"
+}

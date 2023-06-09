@@ -7,6 +7,7 @@
 (define pkg-authors '(wargrey))
 (define test-omit-paths 'all)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sdl2-config
   '((config SDL2)
     (include [windows "C:\\opt\\vcso\\include"])
