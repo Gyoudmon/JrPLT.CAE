@@ -50,25 +50,31 @@
         (it-tame-length 201 #"\x81\xC9")
         (it-tame-length 435 #"\x82\x01\xB3")))
     (describe "Primitive Data Type" #:do
-      (describe "Fixed Integer" #:do
-        (it-tame-fixnum 0 #"\x02\x01\x00")
-        (it-tame-fixnum +1 #"\x02\x01\x01")
-        (it-tame-fixnum -1 #"\x02\x01\xFF")
-        (it-tame-fixnum +127 #"\x02\x01\x7F")
-        (it-tame-fixnum -127 #"\x02\x01\x81")
-        (it-tame-fixnum +128 #"\x02\x02\x00\x80")
-        (it-tame-fixnum -128 #"\x02\x01\x80")
-        (it-tame-fixnum +255 #"\x02\x02\x00\xFF")
-        (it-tame-fixnum -255 #"\x02\x02\xFF\x01")
-        (it-tame-fixnum +256 #"\x02\x02\x01\x00")
-        (it-tame-fixnum -256 #"\x02\x02\xFF\x00")
+      (describe "Integer" #:do
+        (context "Fixed Number" #:do
+          (it-tame-fixnum 0 #"\x02\x01\x00")
+          (it-tame-fixnum +1 #"\x02\x01\x01")
+          (it-tame-fixnum -1 #"\x02\x01\xFF")
+          (it-tame-fixnum +127 #"\x02\x01\x7F")
+          (it-tame-fixnum -127 #"\x02\x01\x81")
+          (it-tame-fixnum +128 #"\x02\x02\x00\x80")
+          (it-tame-fixnum -128 #"\x02\x01\x80")
+          (it-tame-fixnum +255 #"\x02\x02\x00\xFF")
+          (it-tame-fixnum -255 #"\x02\x02\xFF\x01")
+          (it-tame-fixnum +256 #"\x02\x02\x01\x00")
+          (it-tame-fixnum -256 #"\x02\x02\xFF\x00")
+          (describe "Enumeration" #:do
+            (it-tame-enum 'Debug #"\x0A\x01\x00")
+            (it-tame-enum 'Error #"\x0A\x01\x04")))
         (context "Natural" #:do
           (it-tame-natural #"807fbc" #"\x02\x04\x00\x80\x7f\xbc")
           (it-tame-natural ; (expt 17 80)
            #"7fbc8ce9af7a9eb54c817fc7c1c796d1b1c80bddbcbacb15942480f5aa4ee120d27f93ebcf43275d01"
-           (bytes #x02 #x29 #x7f #xbc #x8c #xe9 #xaf #x7a #x9e #xb5 #x4c #x81 #x7f #xc7 #xc1 #xc7
-                  #x96 #xd1 #xb1 #xc8 #x0b #xdd #xbc #xba #xcb #x15 #x94 #x24 #x80 #xf5 #xaa #x4e
-                  #xe1 #x20 #xd2 #x7f #x93 #xeb #xcf #x43 #x27 #x5d #x01))))
+           (bytes #x02 #x29 #x7f #xbc #x8c #xe9 #xaf #x7a #x9e #xb5
+                  #x4c #x81 #x7f #xc7 #xc1 #xc7 #x96 #xd1 #xb1 #xc8
+                  #x0b #xdd #xbc #xba #xcb #x15 #x94 #x24 #x80 #xf5
+                  #xaa #x4e #xe1 #x20 #xd2 #x7f #x93 #xeb #xcf #x43
+                  #x27 #x5d #x01))))
       (describe "Floating Number" #:do
         (it-tame-flonum +0.0 #"\x09\x00")
         (it-tame-flonum +inf.0 #"\x09\x01\x40")
@@ -99,6 +105,11 @@
         (it-tame-flonum -0.0015625 #"\x09\x09\xC0\xC3\x0C\xCC\xCC\xCC\xCC\xCC\xCD")
         (it-tame-flonum -15.625 #"\x09\x03\xC0\xFD\x7D")
         (it-tame-flonum 180.0 #"\x09\x04\x80\x00\x00\xB4"))
+      (describe "String" #:do
+        (context "IA5 String" #:do
+          (it-tame-ia5 '|6.0.5361.2| #"\x16\x0A\x36\x2E\x30\x2E\x35\x33\x36\x31\x2E\x32"))
+        (context "UTF8 String" #:do
+          (it-tame-utf8 "λsh\x0\nssh" #"\x0C\x09\xCE\xBB\x73\x68\x00\x0A\x73\x73\x68")))
       (describe "Miscellaneous" #:do
         (it-tame-null (void) #"\x05\x00")
         (it-tame-boolean #true #"\x01\x01\xFF")
