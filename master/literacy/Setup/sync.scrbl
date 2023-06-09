@@ -21,7 +21,7 @@
 @itemlist[#:style 'compact
           @item{@tt{cpp}: C++ 课程源码。}
           @item{@tt{python}: Python 课程源码。}
-          @item{@tt{racket}: 学会编程能做的事情远远多于做软件。
+          @item{@tt{master}: 学会编程能做的事情远远多于做软件。
            这个目录里包含所有的其他源码： 课程文档源码(比如你正在读的这篇)、
            生成课件图片素材的源码、配套游戏引擎测试源码等等。}
           @item{@tt{mascot}: 课程素材，主要是图片。所有语言通用。}]
@@ -83,7 +83,7 @@
                                  因此仅作为对比材料发放给学生，学生根据自身情况课后自行决定是否掌握。}]}]
 
 以上条目未必都会出现在同一课程目录里，如果出现，一定符合上述解释。
-比如 @tt{literacy} 就只出现在 @tt{racket} 里，手册只需写一份就行。
+比如 @tt{literacy} 就只出现在 @tt{master} 里，手册只需写一份就行。
 
 @tamer-figure["srctree" "源码目录结构"]{
  @filesystem-tree[
