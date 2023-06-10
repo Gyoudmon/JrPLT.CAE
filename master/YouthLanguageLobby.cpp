@@ -27,6 +27,9 @@ namespace {
             this->set_window_size(1200, 0);
             GameFont::fontsize(21);
 
+            this->network_initialize();
+            this->udp_listen(2333);
+
             this->push_plane(new LobbyPlane());
         }
 
