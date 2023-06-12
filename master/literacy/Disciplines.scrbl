@@ -22,6 +22,7 @@
 @include-section{preface.scrbl}
 @include-section{Disciplines/characteristics.scrbl}
 @include-section{Disciplines/big-bang.scrbl}
+@include-section{Disciplines/faq.scrbl}
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-appendix[#:index-section? #true #:numbered? #false]
