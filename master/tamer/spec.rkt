@@ -38,7 +38,7 @@
       (it "should return zero for header's 1's complement code when verifying the checksum" #:do
         (for ([header (in-list ipv4-headers)])
           (expect-zero (chksum_ipv4_verify header))))
-      (it "should return '0xFFFF' for header's tru-form sum when verifying the checksum" #:do
+      (it "should return '0xFFFF' for header's true-form sum when verifying the checksum" #:do
         (for ([header (in-list ipv4-headers)])
           (expect-= (chksum_ipv4_true_form header) #xFFFF)))))
 

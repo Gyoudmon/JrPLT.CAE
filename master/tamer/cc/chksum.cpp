@@ -74,25 +74,24 @@ extern "C" {
 	__ffi__ uint16_t chksum_ipv4_true_form(char* header, size_t size) {
 		static const size_t checksum_idx = 10;
 		uint8_t* uheader = reinterpret_cast<uint8_t*>(header);
-		uint32_t Hsum = 0U;
-		uint32_t Lsum = 0U;
-		uint32_t sum = 0U;
+		uint32_t HL = 0U;
 
 		if (size > checksum_idx + 2) {
 			checksum_ipv4_set(uheader, size, checksum_idx);
 		}
 
 		if ((size & 0x01) == 0x01) {
-			Hsum += uheader[--size];
+			HL += (uheader[--size] << 8U);
 		}
 
 		for (size_t idx = 0; idx < size; idx += 2) {
-			Hsum += uheader[idx];
-			Lsum += uheader[idx + 1];
+			HL += ((uheader[idx] << 8U) ^ uheader[idx + 1]);
 		}
 
-		sum = (Hsum << 8U) ^ Lsum;
+		while (HL > 0xFFFFU) {
+			HL = ((HL >> 16U) + (HL & 0xFFFFU));
+		}
 
-		return (sum >> 16U) ^ (sum & 0xFFFFU);
+		return static_cast<uint16_t>(HL);
 	}
 }
