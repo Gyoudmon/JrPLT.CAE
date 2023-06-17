@@ -64,6 +64,9 @@
 (define tag:middle (elem #:style "disTag" "中学生"))
 (define tag:teacher (elem #:style "disTag" "教师"))
 
+(define tag:TLDR (elem #:style "tldrTag" "浅层回答"))
+(define tag:deep (elem #:style "deepTag" "深度回答"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define stone-image
   (lambda [path #:scale [scale 1.0]]
