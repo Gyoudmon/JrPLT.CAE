@@ -41,7 +41,7 @@
                      (list "delete" "删除" "销毁一个类的实例")
                      (list "do" "干活" "直到型循环的开始")
                      (list "else" "其他、额外" "条件分支的其他情形")
-                     (list "for" "对于" "迭代型循环的开始")
+                     (list "for(for each)" "对于……中的每一个" "迭代型循环的开始")
                      (list "friend" "朋友" "声明类/函数的友元类/函数")
                      (list "if" "如果" "条件分支的开始")
                      (list "namespace" "-" "名字空间，该空间内不能同名")
@@ -82,7 +82,7 @@
                (list "nullptr" "-" "空指针值")
                (list "short" "短的" "短整数类型")
                (list "signed" "-" "整数类型可带正负号")
-               (list "string" "细绳、弦、串" "字符串")
+               (list "string" "细绳、弦、串" "字符串类型")
                (list "true" "真的" "布尔类型的值：真")
                (list "unsigned" "-" "整数类型不带正负号")
                (list "void" "空虚、无效" "无类型或类型不重要"))]
