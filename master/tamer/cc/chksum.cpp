@@ -27,11 +27,13 @@ extern "C" {
 	}
 	
 	__ffi__ const char* str_chksum_crc32(const char* message, size_t size) {
-		static char sum[9];
+		static char sum[9] = { '\0' };
 		uint32_t crc = checksum_crc32(reinterpret_cast<const uint8_t*>(message), 0, size);
 		std::string hex = hexnumber(crc, 4);
 
-		return strncpy(sum, hex.c_str(), sizeof(sum) / sizeof(char));
+		hex.copy(sum, sizeof(sum) / sizeof(char), 0);
+		
+		return sum;
 	}
 
 	__ffi__ uint32_t acc_chksum_crc32(const char* part1, size_t psz1, const char* part2, size_t psz2, const char* part3, size_t psz3) {
