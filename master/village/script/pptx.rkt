@@ -14,7 +14,7 @@
 (define-type CourseWare (List Path (Listof (Listof String)) Bytes))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(define-cmdlet-option courseware-flags #: PPTX-Flags
+(define-cmdlet-option courseware-flags #: CourseWare-Flags
   #:program 'pptx
   #:args (source . other-sources)
           
@@ -41,7 +41,8 @@
       (define cware : CourseWare (list course.pptx ps signature))
 
       (when (and /dev/cwout)
-        (write-courseware cware /dev/cwout))
+        (write-courseware cware /dev/cwout)
+        (flush-output /dev/cwout))
       
       cware)))
 
@@ -67,13 +68,15 @@
     (displayln (car cware) /dev/cwout)
     (display (bytes->hexstring (caddr cware)) /dev/cwout)
 
-    (for ([ps (in-list (cadr cware))])
-      (newline /dev/cwout)
-
-      (for ([p (in-list ps)])
-        (when (non-empty-string? p)
-          (displayln p /dev/cwout))))))
-
+    (if (pair? (cadr cware))
+        (for ([ps (in-list (cadr cware))])
+          (newline /dev/cwout)
+          
+          (for ([p (in-list ps)])
+            (when (non-empty-string? p)
+              (displayln p /dev/cwout))))
+        (newline /dev/cwout))))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
   (define-values (options λargv) (parse-courseware-flags (current-command-line-arguments)))
