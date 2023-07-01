@@ -23,8 +23,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define typesettings
-  '(["literacy/ContrastiveLinguistics.scrbl" xelatex]
-    ["literacy/Setup.scrbl" xelatex #px"Installation/.*png$"]
+  '(["literacy/Setup.scrbl" xelatex #px"Installation/.*png$"]
     ["literacy/Disciplines.scrbl" xelatex #px"Discipline/.*png$"]
     ["literacy/Vocabulary.scrbl" xelatex]
     ["literacy/Metrics.scrbl" xelatex #:always-make]))
