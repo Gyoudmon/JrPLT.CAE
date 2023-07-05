@@ -11,7 +11,7 @@
   #:program 'schema
   #:args [source]
           
-  #:banner "export the raw info into a sqlite database"
+  #:banner "import the raw info into a sqlite database"
   #:once-each
   [[(reset) "clear the database file if exists"] 
    [(#\o dest) #:=> cmdopt-string->path dest #: Path
