@@ -1,8 +1,11 @@
 #lang typed/racket/base
 
 (provide (all-defined-out))
+(provide (all-from-out schema))
+(provide (all-from-out schema/sqlite3))
 
 (require schema)
+(require schema/sqlite3)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-schema CourseWares
@@ -10,8 +13,6 @@
     ([uuid       : Integer #:default (pk64:timestamp)]
      [sha1       : String  #:not-null #:unique]
      [path       : String  #:not-null]
-     [domain     : Symbol]
-     [subdomain  : Symbol  #:default #false]
-     [topic      : String  #:default #false]
+     [categories : String]
      [content    : String  #:default #false]
      [duplicates : String  #:default #false])))

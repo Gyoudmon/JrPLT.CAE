@@ -3,7 +3,6 @@
 (require racket/string)
 
 (require digimon/cmdopt)
-(require schema/sqlite3)
 
 (require "schema.rkt")
 
