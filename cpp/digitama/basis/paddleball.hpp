@@ -1,3 +1,4 @@
+//digitama/basis/shape.hpp 
 #pragma once // 确保只被 include 一次
 
 #include "../big_bang/bang.hpp"
