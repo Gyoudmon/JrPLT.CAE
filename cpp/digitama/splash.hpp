@@ -1,4 +1,4 @@
-#include "big_bang/game.hpp"
+#include <gstem/game.hpp>
 
 namespace WarGrey::STEM {
     class TheCosmos : public WarGrey::STEM::Cosmos {

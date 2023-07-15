@@ -1,7 +1,7 @@
 #include "splash.hpp"
 
-#include "big_bang/bang.hpp"
-#include "big_bang/datum/string.hpp"
+#include <gstem/bang.hpp>
+#include <gstem/datum/string.hpp>
 
 using namespace WarGrey::STEM;
 

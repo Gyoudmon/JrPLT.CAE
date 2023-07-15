@@ -13,8 +13,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sdl2-config
   '((config SDL2)
-    (include [windows "C:\\opt\\vcso\\include"])
-    (libpath [windows "C:\\opt\\vcso\\lib"])))
+    (lib gstem)
+    (include [windows "C:\\opt\\vcso\\include"]
+             [macosx "/opt/GYDMstem/include"])
+    (libpath [windows "C:\\opt\\vcso\\lib"]
+             [macosx "/opt/GYDMstem/lib"])))
 
 (define native-compiled-subpath '())
 

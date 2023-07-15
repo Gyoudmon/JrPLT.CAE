@@ -1,7 +1,7 @@
 #include "lifelet.hpp"
 
-#include "../../big_bang/graphics/image.hpp"
-#include "../../big_bang/physics/random.hpp"
+#include <gstem/graphics/image.hpp>
+#include <gstem/physics/random.hpp>
 
 using namespace WarGrey::STEM;
 

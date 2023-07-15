@@ -1,4 +1,4 @@
-#include "../../digitama/big_bang/game.hpp"
+#include <gstem/game.hpp>
 
 using namespace WarGrey::STEM;
 

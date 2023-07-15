@@ -1,6 +1,6 @@
 #pragma once // 确保只被 include 一次
 
-#include "../big_bang/bang.hpp"
+#include <gstem/bang.hpp>
 
 #include "conway/lifelet.hpp"
 

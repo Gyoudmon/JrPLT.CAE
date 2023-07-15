@@ -1,4 +1,4 @@
-#include "big_bang/bang.hpp"
+#include <gstem/bang.hpp>
 
 /*************************************************************************************************/
 namespace WarGrey::STEM {

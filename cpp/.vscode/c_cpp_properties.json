@@ -3,7 +3,8 @@
         {
             "name": "macOS",
             "includePath": [
-                "/usr/local/include"
+                "/usr/local/include",
+                "/opt/GYDMstem/include"
             ],
             "defines": [
                 "__macosx__",
@@ -22,6 +23,7 @@
             "configurationProvider": "makefile-tools",
             "compilerArgs": []
         },
+
         {
             "name": "win32",
             "includePath": [

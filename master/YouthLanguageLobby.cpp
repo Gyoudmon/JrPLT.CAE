@@ -1,9 +1,9 @@
-#include "digitama/big_bang/game.hpp"
-#include "digitama/big_bang/network.hpp"
+#include <gstem/game.hpp>
+#include <gstem/datum/time.hpp>
+
+#include <gstem/network.hpp>
 
 #include "digitama/lobby/plane.hpp"
-
-#include "digitama/big_bang/datum/time.hpp"
 
 #include <vector>
 #include <filesystem>

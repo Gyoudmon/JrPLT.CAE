@@ -1,6 +1,6 @@
 #include "animal.hpp"
 
-#include "../../big_bang/datum/fixnum.hpp"
+#include <gstem/datum/fixnum.hpp>
 
 #include <sstream>
 

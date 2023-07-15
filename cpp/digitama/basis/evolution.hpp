@@ -1,7 +1,7 @@
 #pragma once // 确保只被 include 一次
 
-#include "../big_bang/bang.hpp"
-#include "../big_bang/matter/graphlet/historylet.hpp"
+#include <gstem/bang.hpp>
+#include <gstem/matter/graphlet/historylet.hpp>
 
 #include "dewdney/steppe.hpp"
 #include "dewdney/animal.hpp"

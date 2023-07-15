@@ -1,6 +1,6 @@
 #include "game_of_life.hpp"
 
-#include "../big_bang/graphics/text.hpp"
+#include <gstem/graphics/text.hpp>
 
 #include <filesystem>
 
