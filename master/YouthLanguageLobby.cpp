@@ -1,7 +1,7 @@
-#include <gstem/game.hpp>
-#include <gstem/datum/time.hpp>
+#include <gydm_stem/game.hpp>
+#include <gydm_stem/datum/time.hpp>
 
-#include <gstem/network.hpp>
+#include <gydm_stem/network.hpp>
 
 #include "digitama/lobby/plane.hpp"
 

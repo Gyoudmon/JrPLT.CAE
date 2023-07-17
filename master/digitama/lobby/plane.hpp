@@ -1,4 +1,4 @@
-#include <gstem/game.hpp>
+#include <gydm_stem/game.hpp>
 
 using namespace WarGrey::STEM;
 

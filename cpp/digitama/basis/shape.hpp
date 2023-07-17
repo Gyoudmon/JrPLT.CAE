@@ -2,7 +2,7 @@
 #pragma once // 确保只被 include 一次
 
 // 导入宇宙大爆炸模块，内含 TheBigBang 类和常用函数
-#include <gstem/bang.hpp>
+#include <gydm_stem/bang.hpp>
 
 namespace WarGrey::STEM /* 以 WarGrey::STEM 的名义提供工具 */ {
     // 创建自定义数据类型，并命名为 ShapeWorld，继承自 TheBigBang

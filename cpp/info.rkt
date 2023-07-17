@@ -10,7 +10,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sdl2-config
   '((config SDL2)
-    (lib gstem)
+    (lib gydm.stem)
     (include [windows "C:\\opt\\vcso\\include"]
              [macosx "/opt/GYDMstem/include"])
     (libpath [windows "C:\\opt\\vcso\\lib"]

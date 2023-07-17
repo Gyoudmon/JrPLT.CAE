@@ -1,4 +1,4 @@
-#include <gstem/bang.hpp>
+#include <gydm_stem/bang.hpp>
 
 /*************************************************************************************************/
 namespace WarGrey::STEM {
