@@ -31,8 +31,8 @@
             ],
             "defines": [
                 "__windows__",
-                "__lambda__=",
-                "__ffi__=",
+                "__lambda__=__declspec(dllexport)",
+                "__ffi__=__declspec(dllexport)",
                 "DECLSPEC=",
                 "SDLCALL="
             ]
