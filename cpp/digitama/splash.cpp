@@ -249,6 +249,13 @@ void WarGrey::STEM::TheCosmos::construct(int argc, char* argv[]) {
     GameFont::fontsize(21);
     
     enter_digimon_zone(argv[0]);
+
+#ifdef __windows__
+    digimon_appdata_setup("C:\\opt\\vcso\\");
+#else
+    digimon_appdata_setup("/opt/GYDMstem/");
+#endif
+
     digimon_mascot_setup("../mascot");
     imgdb_setup(digimon_subdir("stone"));
     
