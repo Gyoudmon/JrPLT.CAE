@@ -11,9 +11,9 @@
 (define sdl2-config
   '((config SDL2)
     (lib gydm.stem pltmos)
-    (include [windows "C:\\opt\\vcso\\include"]
+    (include [windows "C:\\opt\\GYDMstem\\include"]
              [macosx "/opt/GYDMstem/include"])
-    (libpath [windows "C:\\opt\\vcso\\lib"]
+    (libpath [windows "C:\\opt\\GYDMstem\\lib"]
              [macosx "/opt/GYDMstem/lib"])))
 
 (define native-compiled-subpath '())

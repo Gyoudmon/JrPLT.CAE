@@ -1,7 +1,9 @@
 #include "splash.hpp"
 
 #include <gydm_stem/bang.hpp>
+
 #include <gydm_stem/datum/string.hpp>
+#include <gydm_stem/datum/path.hpp>
 
 using namespace WarGrey::STEM;
 
@@ -251,7 +253,7 @@ void WarGrey::STEM::TheCosmos::construct(int argc, char* argv[]) {
     enter_digimon_zone(argv[0]);
 
 #ifdef __windows__
-    digimon_appdata_setup("C:\\opt\\vcso\\");
+    digimon_appdata_setup("C:\\opt\\GYDMstem\\");
 #else
     digimon_appdata_setup("/opt/GYDMstem/");
 #endif

@@ -27,7 +27,7 @@
         {
             "name": "win32",
             "includePath": [
-                "C:\\opt\\vcso\\include"
+                "C:\\opt\\GYDMstem\\include"
             ],
             "defines": [
                 "__windows__",
