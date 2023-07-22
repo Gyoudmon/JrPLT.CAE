@@ -8,8 +8,6 @@
 @handbook-root-story{源码库同步}
 
 这是暂定方案，如有更方便的方法，随时更新。
-教师之间推荐@seclink["wan_sync"]{广域网完整同步}方法，
-也可以像学生一样使用@seclink["student_workspace"]{学生目录}法。
 
 @handbook-scenario{源码库结构}
 
@@ -123,107 +121,9 @@
 此外，Python 目录本身也有一系列约定俗成的规则，
 但目前我们的课程不会涉及相关概念，暂且不表。
 
-@handbook-scenario[#:tag "wan_sync"]{广域网完整同步}
-
-本系列所有课程的源码都组织在一个版本库(repository)里，
-其中共享源码(也就是前文一再提及的“配套的软件库”)以子库(submodule)的形式独立存在，以方便单独共享。
-于是，初次同步，先选一个用于存放源码的目录，比如 @filepath{G:\Laboratory}，
-然后打开 PowerShell 执行以下命令：
-
-@itemlist[#:style 'compact
-          @commandline{cd G:\Laboratory\YouthLanguage}
-          @commandline{git clone --recurse-submodules https://github.com/Gyoudmon/YouthLanguage.git .}
-          @commandline{git submodule foreach git checkout master}]
-
-第三步很重要，要不然拉过来的子库源码不属于任何分支，
-这是 git submodule 经常被人诟病的地方。
-以后需要更新时，只需
-
-@itemlist[#:style 'compact
-          @commandline{cd G:\Laboratory\YouthLanguage}
-          @commandline{git pull}
-          @commandline{git submodule foreach git pull}]
-
-建议大家平时学一下 git 的基本用法，
-避免不小心修改了拉回来的代码，
-导致下次 @exec{pull} 时冲突没法正常同步。
-如果真碰到这事了，又嫌学 git 麻烦，
-那就删掉这个文件夹，从头开始重新 @exec{clone}。
-
-@handbook-scenario[#:tag "wisemon"]{C++ 代码的编译和运行}
-
-在开发软件的过程中，打开 PowerShell 并且 @exec{cd} 到当前项目目录是个好习惯。
-在本系列课程中，一般就是指 @tech{info.rkt} 文件所在的目录。
-如果涉及多个项目，每个项目单独开一个 PowerShell 比较合理，不用来回切换了。
-如果使用 Visual Studio Code，本课程源码自带运行和调试配置，无需额外折腾。
-
-对于 @tt{sketch} 这种草稿性质的代码，
-一般不需要特别复杂的编译参数，可以直接编译
-
-@itemlist[#:style 'compact
-          @commandline{raco wisemon -d cc [入口文件.cpp]}]
-
-其中，@exec{raco} 是 Racket 提供的命令行；
-@exec{wisemon} 是我的构建工具；
-@DFlag{-d} 表示输出编译过程，但不要太啰嗦；
-@exec{cc}是 C/C++ 编译器（C Compiler）的首字母缩写。
-
-对于 @tt{basis} 这样的复杂项目，编译参数通常都会很复杂，
-因为我会在 @filepath{info.rkt} 里配置好，然后直接编译
-
-@itemlist[#:style 'compact
-          @commandline{raco wisemon -d cc}]
-
-这次连入口文件都不用指定，
-它会自己解析 @tech{info.rkt} 文件找到要编译的文件，
-并设置好相应的参数。
-无论用哪种方式，编译完了之后的可执行文件，
-都在与入口文件相同目录的 @filepath{compiled/native} 子目录里。
-比如， @tech{info.rkt} 中已经配置了 @filepath{cpp/FontBrowser.cpp}，
-它在 Windows 下对应的可执行文件名是@filepath{cpp/compiled/native/FontBrowser.exe}。
-
-Python 源码不需要编译，直接运行相应的入口文件即可。
-但需要注意的是，由于 Python 奇葩的模块管理规则，
-入口模块应当创建在项目目录下，
-否则它会罢工并抱怨“你在用撞大运的方式编程”
-(Python的作者是个走了狗屎运的普信男)。
-
-@handbook-scenario[#:tag "student_workspace"]{学生目录}
-
-一般来说，不建议学生直接修改教师的源码，
-学生应该另外找一个目录，保持目录结构不变，创建好自己的课程目录。
-比如@filepath{G:\Course\YouthLanguage}，
-然后把教师目录下的@filepath{info.rkt}
-和已经配置好的入口文件复制到该目录下，
-最后单独@exec{clone}配套的源码库和素材库：
-
-@itemlist[#:style 'compact
-          @commandline{cd G:\Course\YouthLanguage}
-          @commandline{git clone https://github.com/Gyoudmon/big-bang.cpp.git cpp\digitama\big_bang}
-          @commandline{git clone https://github.com/Gyoudmon/mascot.git mascot}]
-
-使用 Windows 的学生还需要再同步一个@tt{vcso.git}。
-有这个就不用另外安装 vcpkg 了（就是那个可以跳过的@Secref{vcpkg}）。
-使用其他操作系统的学生无需同步这个共享库。
-
-@itemlist[#:style 'compact
-          @commandline{git clone https://github.com/Gyoudmon/vcso.git C:\opt\vcso}]
-
-@bold{注意，@tt{vcso.git} 的安装位置不建议修改。}
-
-Python 学生将其中的 @tt{big-bang.cpp.git} 替换成 @tt{big-bang.py.git} 即可，
-也不需要 @tt{vcso.git}：
-
-@itemlist[#:style 'compact
-          @commandline{cd G:\Course\YouthLanguage}
-          @commandline{git clone https://github.com/Gyoudmon/big-bang.py.git python\digitama\big_bang}
-          @commandline{git clone https://github.com/Gyoudmon/mascot.git mascot}]
-
 @handbook-scenario[#:tag "nanny_sync"]{保姆级同步}
 
-实际上，因为一些众所周知的原因，
-学生的个人电脑大概率不能正常访问 GitHub。
-因此，教师需要在自己的电脑上(或者配个树莓派)搭建一个简单的 git 服务器，
+教师需要在自己的电脑上(或者配个树莓派)搭建一个简单的 git 服务器，
 详细过程请自行搜索资料学习（最简单的方案无需安装额外软件，
 但要先启动 OpenSSH Server 服务。
 OpenSSH 是时下应用比较广泛的加密隧道，
@@ -237,14 +137,17 @@ OpenSSH 是时下应用比较广泛的加密隧道，
 
 目前需要自行维护的裸库有:
 
-@itemlist[#:style 'compact
-          @item{@tt{digimon.git}: 我的 C++ 构建工具}
-          @item{@tt{basis.git}: C++ 版语言基础课的作品源码}
-          @item{@tt{basis.py.git}: Python 版语言基础课的作品源码}
-          @item{@tt{big-bang.git}: C++ 版游戏引擎源码}
-          @item{@tt{big-bang.py.git}: Python 版游戏引擎源码}
-          @item{@tt{mascot.git}: 游戏引擎自带图片素材}
-          @item{@tt{vcso.git}: Windows 必要的动态链接库}]
+@itemlist[
+ #:style 'compact
+
+ @item{@tt{digimon.git}: 我的 C++ 构建工具}
+ @item{@tt{basis.git}: C++ 版语言基础课的作品源码}
+ @item{@tt{basis.py.git}: Python 版语言基础课的作品源码}
+ @item{@tt{mascot.git}: 游戏引擎自带图片素材}
+ @item{@tt{GYDMstem.git}: 以动态链接库形式发布的游戏引擎及其依赖的第三方库}
+ @item{@tt{big-bang.py.git}: Python 版游戏引擎源码}
+ @item{@tt{big-bang.git}: C++ 版游戏引擎源码(可选)}
+ ]
 
 现以 @tt{digimon.git} 为例说明管理裸库的一般步骤
 (命令行中的变量用红色底纹装饰)。
@@ -285,9 +188,9 @@ OpenSSH 是时下应用比较广泛的加密隧道，
            @itemlist[#:style 'compact
                      @commandline{git clone @litchar{stem}@string[#\@]@litchar{IP}@string[#\:]@litchar{digimon}.git C:\opt\digimon}
                      @commandline{git clone @litchar{stem}@string[#\@]@litchar{IP}@string[#\:]@litchar{mascot}.git C:\opt\mascot}
-                     @commandline{git clone @litchar{stem}@string[#\@]@litchar{IP}@string[#\:]@litchar{vcso}.git C:\opt\vcso}]}
+                     @commandline{git clone @litchar{stem}@string[#\@]@litchar{IP}@string[#\:]@litchar{GYDMstem}.git C:\opt\GYDMstem}]}
           
-          @item{安装构建软件：
+          @item{安装构建软件(需以超级管理员权限运行 PowerShell)：
            @itemlist[#:style 'compact
                      @commandline{raco pkg install -i --auto --link C:\opt\digimon}]}]
 
@@ -295,9 +198,7 @@ OpenSSH 是时下应用比较广泛的加密隧道，
 教师需要精细控制源码库的内容，包括但不限于：
 
 @itemlist[#:style 'compact
-          @para{去掉开发库中的所有子库(@emph{submodule})，但保持目录结构不变。
-           子库可以以源码形式提供，也可以以动态链接库的形式提供。
-           前者方便学生自行研究源码，后者便于学生保持工作目录清爽。}
+          @para{去掉与本课程无关的代码，但保持目录结构不变。游戏引擎已经包含在@tt{GYDMstem}中无需额外配置。}
           @para{修改学生程序的配置选项，使得构建程序和项目作品知道去@filepath{C:\opt}找资源。}]
 
 建议学生克隆两份，一份用作范例源码，仅接受更新不做修改；
@@ -315,16 +216,15 @@ OpenSSH 是时下应用比较广泛的加密隧道，
  @filesystem-tree[
  '(basis
    (digitama
-    (big_bang . "游戏内核源码")
     (basis . "教师的基础课程源码")
     (NAME . "学生[NAME]的基础课程源码")))]}
 
-于是，如果课程源码库已经包含子库源码，学生只需一步克隆：
+一般情况下，学生只需一步克隆：
 
 @itemlist[#:style 'compact
           @commandline{git clone @litchar{stem}@string[#\@]@litchar{IP}@string[#\:]@litchar{basis}.git [学生工作总目录]}]
 
-如果没有包含，学生又想要子库源码，那就按需继续克隆：
+如果有特殊学生想要游戏引擎源码，那就按需继续克隆：
 
 @itemlist[#:style 'compact
           @commandline{git clone @litchar{stem}@string[#\@]@litchar{IP}@string[#\:]@litchar{basis}.git [学生工作总目录]/digitama/big_bang}]
@@ -337,12 +237,55 @@ OpenSSH 是时下应用比较广泛的加密隧道，
 
 对于学生个人项目，建议移除@tt{remote}地址，
 或者干脆直接删掉@filepath{.git}配置目录。
+
+对于普通源码，教师可以只准备一个包罗万象的大库，也可以按班级单独准备。
+逼真一些地模拟软件开发过程应该是学生每次上课都先同步代码，
+不过这过程似乎麻烦了点，就不瞎折腾了。
+
 对于团队项目，教师需要在服务器端专门为每个团队每个项目新建一个裸库，
 方便团队成员之间共享各自负责的模块。
 
+@handbook-scenario[#:tag "wisemon"]{C++ 代码的编译和运行}
+
+在开发软件的过程中，打开 PowerShell 并且 @exec{cd} 到当前项目目录是个好习惯。
+在本系列课程中，一般就是指 @tech{info.rkt} 文件所在的目录。
+如果涉及多个项目，每个项目单独开一个 PowerShell 比较合理，不用来回切换了。
+如果使用 Visual Studio Code，本课程源码自带运行和调试配置，无需额外折腾。
+
+对于 @tt{sketch} 这种草稿性质的代码，
+一般不需要特别复杂的编译参数，可以直接编译
+
+@itemlist[#:style 'compact
+          @commandline{raco wisemon -d cc [入口文件.cpp]}]
+
+其中，@exec{raco} 是 Racket 提供的命令行；
+@exec{wisemon} 是我的构建工具；
+@DFlag{-d} 表示输出编译过程，但不要太啰嗦；
+@exec{cc}是 C/C++ 编译器（C Compiler）的首字母缩写。
+
+对于 @tt{basis} 这样的复杂项目，编译参数通常都会很复杂，
+因为我会在 @filepath{info.rkt} 里配置好，然后直接编译
+
+@itemlist[#:style 'compact
+          @commandline{raco wisemon -d cc}]
+
+这次连入口文件都不用指定，
+它会自己解析 @tech{info.rkt} 文件找到要编译的文件，
+并设置好相应的参数。
+无论用哪种方式，编译完了之后的可执行文件，
+都在与入口文件相同目录的 @filepath{compiled/native} 子目录里。
+比如， @tech{info.rkt} 中已经配置了 @filepath{cpp/FontBrowser.cpp}，
+它在 Windows 下对应的可执行文件名是@filepath{cpp/compiled/native/FontBrowser.exe}。
+
+Python 源码不需要编译，直接运行相应的入口文件即可。
+但需要注意的是，由于 Python 奇葩的模块管理规则，
+入口模块应当创建在项目目录下，
+否则它会罢工并抱怨“你在用撞大运的方式编程”
+(Python的作者是个走了狗屎运的普信男)。
+
 终于写完了，青少年学C++第零难：搞定工作环境。
 这个世界上开发软件众多，但竟然没有一个对青少年友好，
-即使它们的目标受众是学生。
+即使它们宣称自己的目标受众是学生。
 
 @;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 @handbook-reference[]
