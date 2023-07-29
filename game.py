@@ -1,5 +1,7 @@
 import pygame
 
+import sys
+
 from .graphics.colorspace import *
 from .graphics.named_colors import *
 from .graphics.geometry import *
@@ -29,8 +31,12 @@ class TheBigBang(Cosmos):
 
     def construct(self, argv):
         enter_digimon_zone(argv[0])
-        digimon_mascot_setup("../mascot")
         imgdb_setup(digimon_zonedir())
+
+        if sys.platform == 'win32':
+            digimon_mascot_setup("C:\\opt\\GYDMstem\\stone\\mascot")
+        else:
+            digimon_mascot_setup("/opt/GYDMstem/stone/mascot")
 
 ###############################################################################
 def launch_universe(world, module_name, size = None, fps = 60, trace = False):
