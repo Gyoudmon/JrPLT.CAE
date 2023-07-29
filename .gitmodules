@@ -1,6 +1,3 @@
 [submodule "python/basis/digitama"]
 	path = python/digitama/big_bang
 	url = https://github.com/Gyoudmon/big-bang.py.git
-[submodule "mascot"]
-	path = mascot
-	url = https://github.com/Gyoudmon/mascot.git
