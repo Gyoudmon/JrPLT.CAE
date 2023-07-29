@@ -21,8 +21,7 @@
           @item{@tt{python}: Python 课程源码。}
           @item{@tt{master}: 学会编程能做的事情远远多于做软件。
            这个目录里包含所有的其他源码： 课程文档源码(比如你正在读的这篇)、
-           生成课件图片素材的源码、课程宣传用项目等等。}
-          @item{@tt{mascot}: 课程素材，主要是图片。所有语言通用。}]
+           生成课件图片素材的源码、课程宣传用项目等等。}]
 
 对照@tamer-figure-ref{srctree}，
 每个课程的源码按如下目录组织（先把课程假想成软件，再把软件假想成数字生物，这样会更容易理解）。
@@ -143,8 +142,7 @@ OpenSSH 是时下应用比较广泛的加密隧道，
  @item{@tt{digimon.git}: 我的 C++ 构建工具}
  @item{@tt{basis.git}: C++ 版语言基础课的作品源码}
  @item{@tt{basis.py.git}: Python 版语言基础课的作品源码}
- @item{@tt{mascot.git}: 游戏引擎自带图片素材}
- @item{@tt{GYDMstem.git}: 以动态链接库形式发布的游戏引擎及其依赖的第三方库}
+ @item{@tt{GYDMstem.git}: 课程运行时文件，含游戏引擎动态链接库及其依赖的第三方库，资源文件，数据文件等}
  @item{@tt{big-bang.py.git}: Python 版游戏引擎源码}
  @item{@tt{big-bang.git}: C++ 版游戏引擎源码(可选)}
  ]
