@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "快捷运行@macOS",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/compiled/native/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "快捷构建@macOS"
+        },
+        
+        {
+            "name": "快捷运行@Windows",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${fileDirname}/compiled/native/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": true,
+            "preLaunchTask": "快捷构建@Windows"
+        }
+    ]
+}
