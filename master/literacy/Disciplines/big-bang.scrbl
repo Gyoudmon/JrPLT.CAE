@@ -10,7 +10,7 @@
 @discipline-desc[
  #:langs [tag:C++ tag:Python]
  #:grades [tag:elementary tag:middle tag:teacher]
- #:period [24 32]
+ #:period [48 64]
  #:note "对于有基础的学生，也需要从本课程中先修部分知识"]
 
 @margin-note{取名为@tech{宇宙大爆炸}是顺应了宇宙发展“从无到有”的自然规律。}

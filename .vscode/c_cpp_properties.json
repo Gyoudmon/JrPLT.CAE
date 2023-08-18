@@ -3,7 +3,10 @@
         {
             "name": "macOS",
             "includePath": [
-                "/usr/local/include"
+                "/opt/GYDMstem/include",
+                "/usr/local/include",
+                "C:\\opt\\GYDMstem\\include",
+                "cpp"
             ],
             "defines": [
                 "__macosx__",
