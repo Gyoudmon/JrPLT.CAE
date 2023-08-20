@@ -3,8 +3,8 @@
 (require bitmap)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(define cols : Byte 15)
-(define rows : Byte 5)
+(define cols : Byte 12)
+(define rows : Byte 15)
 
 (define wani : Dryland-Wani (make-dryland-wani 16))
 
