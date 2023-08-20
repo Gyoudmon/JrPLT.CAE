@@ -27,7 +27,7 @@ def 踢(猫, 左):
 def 踢(猫, 谁, 哪只):
     # 根据函数签名，还原自然语言描述
     # kick the cat with one's this foot
-    print(f"用{谁}的{哪只}脚踢了{猫}, {猫}很气愤")
+    print(f"踢{猫}, 用{谁}的{哪只}脚, {猫}很气愤")
 
 # 2. 引出“对象”概念
 
@@ -36,6 +36,7 @@ class BadPerson(object):
     def __init__(self, name):
         # 坏人有名字，用于通报批评
         self.name = name
+        print(f"{name}已就绪")
 
     # 坏人会踢人
     # 方法令人不齿：欺软怕硬，欺负弱小
