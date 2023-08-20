@@ -44,7 +44,7 @@ int main(int 参数数量, char* 参数小组[]) {
 
     参数小组[0] = const_cast<char*>("Cat");
     for (int i = 0; i < 参数数量; i ++) {
-        BadPerson(参数小组[i]).踢(参数小组[i + 1], "right");
+        踢(参数小组[i + 1], 参数小组[i], "right");
     }
     
     return 0;
