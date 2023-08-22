@@ -30,12 +30,12 @@ struct Person {
         printf("%s: 君美甚，%s何能及君也!\n", this->name, 比较者->name);
     }
 
-    // 人会自省，但多少有点偏心
+    // 人会自省，但多少有点偏心，颜值相同时也会觉得自己更美
     void 自省(const Person* 比较者) const {
         if (this->颜值 < 比较者->颜值) {
             printf("[%s窥镜而自视: 吾诚知不如%s美!]\n", this->name, 比较者->name);
         } else {
-            printf("[%s窥镜而自视: 吾诚知%s何能及吾也!]\n", this->name, 比较者->name);
+            printf("[%s窥镜而自视: 吾诚知%s不若吾之美也!]\n", this->name, 比较者->name);
         }
     }
 
