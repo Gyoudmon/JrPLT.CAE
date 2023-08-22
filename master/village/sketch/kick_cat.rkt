@@ -46,7 +46,7 @@
 (define bad-person%
   (class object% (super-new)
     ; 坏人需要有名字，方便通报批评
-    (init-field [name 5])
+    (init-field name)
 
     (printf "~a已就绪~n" name)
 
