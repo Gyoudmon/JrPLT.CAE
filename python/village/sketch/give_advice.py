@@ -9,16 +9,16 @@ class Person(object):
         self.颜值 = good_looking
         print(f"{name}已就绪")
 
-    # 人会提关于颜值比较的问题
+    # 人会臭美，喜欢问别人谁颜值高
     def 问(self, 回答者, 比较者):
         print(f"{self.name}: 吾孰与{比较者.name}美？")
         回答者.曰(self, 比较者)
     
-    # 人会回答关于颜值比较的问题
+    # 人会奉承，见人说人话 见鬼说鬼话
     def 曰(self, 提问者, 比较者):
         print(f"{self.name}: 君美甚，{比较者.name}何能及君也！")
 
-    # 人会自省，但多少有点偏心
+    # 人会自省，但多少有点偏心，即使颜值相同也会觉得自己更美
     def 自省(self, 比较者):
         if self.颜值 < 比较者.颜值:
             print(f"[{self.name}窥镜而自视：吾诚知不如{比较者.name}美！]")

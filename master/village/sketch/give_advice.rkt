@@ -11,16 +11,16 @@
 
     (printf "~a已就绪~n" name)
 
-    ; 人会提关于颜值比较的问题
+    ; 人会臭美，喜欢问别人谁颜值比较高
     (define/public (问 回答者 比较者)
       (printf "~a: 吾孰与~a美?~n" name (get-field name 比较者))
       (send 回答者 曰 this 比较者))
     
-    ; 人会回答关于颜值比较的问题
+    ; 人会奉承，见人说人话 见鬼说鬼话
     (define/public (曰 提问者 比较者)
       (printf "~a: 君美甚，~a何能及君也!~n" name (get-field name 比较者)))
 
-    ; 人会自省，但多少有点偏心
+    ; 人会自省，但多少有点偏心，颜值相同也觉得自己更美
     (define/public (自省 比较者)
       (if (< (get-field 颜值 this)
              (get-field 颜值 比较者))
