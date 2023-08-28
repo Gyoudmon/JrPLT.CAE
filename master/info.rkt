@@ -1,6 +1,6 @@
 #lang info
 
-(define collection "Youth Language")
+(define collection "Linguisteen")
 (define pkg-desc "青少计算机科学")
 
 (define deps '("digimon" "pict"))
