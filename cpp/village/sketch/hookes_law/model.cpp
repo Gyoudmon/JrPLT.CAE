@@ -3,15 +3,15 @@
 // 场景：胡克定律
 
 // 实验得出关系表达式：Δl = 0.16m
-float Δl1(float m) {
+double Δl1(double m) {
     return 0.16 * m;
 }
 
-float Δl2(float m) {
+double Δl2(double m) {
     return 0.20 * m;
 }
 
-float Δl3(float m) {
+double Δl3(double m) {
     return 0.15 * m;
 }
 
@@ -20,9 +20,9 @@ int main(int 参数数量, char* 参数小组[]) {
     printf("Hooke's Law: %s\n", 参数小组[0]);
 
     // 数学建模阶段    
-    printf("delta l1: %f\n", Δl1(20.0F));
-    printf("delta l2: %f\n", Δl2(40.0F));
-    printf("delta l3: %f\n", Δl3(80.0F));
+    printf("delta l1: %lf\n", Δl1(20.0));
+    printf("delta l2: %lf\n", Δl2(40.0));
+    printf("delta l3: %lf\n", Δl3(80.0));
 
     return 0;
 }
