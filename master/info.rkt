@@ -22,7 +22,8 @@
 (define native-compiled-subpath '())
 
 (define native-launcher-names
-  `(["YouthLanguageLobby.cpp" console ,sdl2-config]))
+  `(["GradeManagementSystem.cpp" console ,sdl2-config]
+    ["YouthLanguageLobby.cpp" console ,sdl2-config]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define typesettings
