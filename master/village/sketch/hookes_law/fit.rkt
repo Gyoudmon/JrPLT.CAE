@@ -54,7 +54,7 @@
   (parameterize ([plot-pen-color-map 'pastel2])
     (plot #:title "胡克定律探究实验"
           #:x-label "砝码质量(m)" #:y-label "弹簧伸长长度(ΔL)"
-          #:x-min 0 #:x-max 108 #:y-min 0 #:y-max 10
+          #:x-min 0 #:x-max 100 #:y-min 0 #:y-max 10
           #:width 600 #:height 600
           
           (list* (points #:sym 'fullcircle1 #:color 'black
@@ -66,5 +66,5 @@
                                                   [c (in-naturals 4)])
                    (define-values (k f) (make-rough-hookes-law xy))
                    (function #:label (format "ΔL = ~am" (~r k #:precision 4))
-                             #:color c
+                             #:color c #:alpha 0.5
                              f))))))
