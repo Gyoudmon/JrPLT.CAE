@@ -22,9 +22,9 @@
                  [Σy : Real 0.0]
                  [Σxy : Real 0.0]
                  [Σx² : Real 0.0])
-                ([xy (in-list data)])
-        (define x : Real (vector-ref xy 0))
-        (define y : Real (vector-ref xy 1))
+                ([datum (in-list data)])
+        (define x : Real (vector-ref datum 0))
+        (define y : Real (vector-ref datum 1))
         
         (values (+ Σx x)
                 (+ Σy y)
@@ -43,18 +43,18 @@
 
 (module+ main
   (define data : (Listof (Vector Real Real))
-    (list #(100 8)
-          #(40 3.4)
-          #(20 1.6)
-          #(60 5)
-          #(80 7.4)))
+    (list #(100 16)
+          #(80 13)
+          #(60 10)
+          #(40 7)
+          #(20 3)))
   
   (define-values (k b fx) (hookes-fit/least-square-method data))
 
   (parameterize ([plot-pen-color-map 'pastel2])
     (plot #:title "胡克定律探究实验"
           #:x-label "砝码质量(m)" #:y-label "弹簧伸长长度(ΔL)"
-          #:x-min 0 #:x-max 100 #:y-min 0 #:y-max 10
+          #:x-min 0 #:x-max 100 #:y-min 0 #:y-max 20
           #:width 600 #:height 600
           
           (list* (points #:sym 'fullcircle1 #:color 'black
