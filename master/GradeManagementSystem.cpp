@@ -102,7 +102,25 @@ namespace {
                         int idx = dsk->get_seat_by(local_x, local_y);
 
                         if (idx > 0) {
+                            uint64_t stuTarget = this->model->get_student_at_seat(this->the_clsId, dsk->get_index(), idx);
+                            
                             dsk->sit(this->students[this->the_sNo], idx, gliding_duration);
+
+                            if (stuTarget > 0U) { // 交换座位
+                                uint64_t the_dsk, the_st;
+
+                                this->model->feed_student_seat(this->the_sNo, &the_dsk, &the_st);
+
+                                if (the_dsk > 0U) {
+                                    this->desks[the_dsk - 1]->sit(this->students[stuTarget], the_st, gliding_duration);
+                                    this->model->bind_student_to_seat(stuTarget, the_dsk, the_st);
+                                } else {
+                                    this->model->bind_student_to_seat(stuTarget, 0, the_st);
+                                    this->glide_to(gliding_duration, this->students[stuTarget],
+                                        this->doors[this->the_clsId], MatterAnchor::RC,
+                                        MatterAnchor::LC);
+                                }
+                            }
 
                             if (this->model->get_student_class(this->the_sNo) == 0U) {
                                 this->model->bind_student_to_class(this->the_sNo, this->the_clsId);
@@ -573,14 +591,16 @@ namespace {
 
         void reflow_students(double duration = gliding_duration) {
             if (!this->students.empty()) {
-                float nocls_stu_x, nocls_stu_y, grid_height;
+                float nocls_stu_x, nocls_stu_y, grid_width, grid_height, grid_y;
                 uint64_t desk_idx, seat_idx;
                 float gap = 4.0F;
          
                 this->feed_matter_location(this->side_border, &nocls_stu_x, &nocls_stu_y, MatterAnchor::LB);
-                this->students.begin()->second->feed_extent(0.0F, 0.0F, nullptr, &grid_height);
-                nocls_stu_x *= 0.80F;
+                this->students.begin()->second->feed_extent(0.0F, 0.0F, &grid_width, &grid_height);
+                nocls_stu_x *= 0.90F;
+                grid_width += gap;
                 grid_height += gap;
+                grid_y = grid_height * 3.0F;
 
                 for (auto stu : this->students) {
                     uint64_t stuClsId = this->model->get_student_class(stu.second->primary_key());
@@ -589,7 +609,13 @@ namespace {
 
                     if (stuClsId == 0U) {
                         this->glide_to(duration, stu.second, nocls_stu_x, nocls_stu_y, MatterAnchor::RB);
-                        nocls_stu_y -= grid_height;
+
+                        if (nocls_stu_y > grid_y) {
+                            nocls_stu_y -= grid_height;
+                        } else {
+                            this->feed_matter_location(this->side_border, nullptr, &nocls_stu_y, MatterAnchor::LB);
+                            nocls_stu_x -= grid_width;
+                        }
                     } else {
                         if (stu.second->visible()) {
                             this->model->feed_student_seat(stu.first, &desk_idx, &seat_idx);
