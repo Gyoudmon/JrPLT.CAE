@@ -46,18 +46,14 @@ void WarGrey::IMS::IMenu::select_menu(char key) {
 }
 
 /*************************************************************************************************/
-static const char TLM_IMPT_KEY = '1';
-static const char TLM_EXPT_KEY = '2';
-static const char TLM_CLSS_KEY = '3';
-static const char TLM_CRSE_KEY = '4';
-static const char TLM_STDT_KEY = '5';
-static const char TLM_GRDE_KEY = '6';
+static const char TLM_CLSS_KEY = '1';
+static const char TLM_CRSE_KEY = '2';
+static const char TLM_STDT_KEY = '3';
+static const char TLM_GRDE_KEY = '4';
 
 std::vector<std::pair<char, std::string>> WarGrey::IMS::TopLevelMenu::prepare_menu_items() {
     return {
         { MENU_RETURN_KEY, "退出系统"},
-        { TLM_IMPT_KEY, "加载数据"},
-        { TLM_EXPT_KEY, "保存数据"},
         { TLM_CLSS_KEY, "班级管理"},
         { TLM_CRSE_KEY, "课程管理"},
         { TLM_STDT_KEY, "学生管理"},
@@ -71,8 +67,6 @@ void WarGrey::IMS::TopLevelMenu::on_menu_key(IMenuEventListener* master, MenuTyp
     case TLM_CRSE_KEY: master->on_menu_switch(self, MenuType::Discipline); break;
     case TLM_STDT_KEY: master->on_menu_switch(self, MenuType::Student); break;
     case TLM_GRDE_KEY: master->on_menu_switch(self, MenuType::Grade); break;
-    case TLM_IMPT_KEY: master->on_menu_task(self, MenuTask::ImportData); break;
-    case TLM_EXPT_KEY: master->on_menu_task(self, MenuTask::ExportData); break;
     case MENU_RETURN_KEY: master->on_menu_task(self, MenuTask::Exit); break;
     default: /* do nothing */;
     }
@@ -128,7 +122,8 @@ static const char STDT_CREATE_KEY = '1';
 static const char STDT_UPDATE_KEY = '2';
 static const char STDT_DELETE_KEY = '3';
 static const char STDT_CLASS_KEY = '4';
-static const char STDT_CLEAR_KEY = '5';
+static const char STDT_AVATAR_KEY = '5';
+static const char STDT_CLEAR_KEY = '6';
 
 std::vector<std::pair<char, std::string>> WarGrey::IMS::StudentMenu::prepare_menu_items() {
     return {
@@ -137,6 +132,7 @@ std::vector<std::pair<char, std::string>> WarGrey::IMS::StudentMenu::prepare_men
         { STDT_UPDATE_KEY, "更新学生信息"},
         { STDT_DELETE_KEY, "删除学生信息"},
         { STDT_CLASS_KEY,  "绑定班级"},
+        { STDT_AVATAR_KEY, "更改角色形象和性别"},
         { STDT_CLEAR_KEY,  "清理游离学生"}
     };
 }
@@ -147,6 +143,7 @@ void WarGrey::IMS::StudentMenu::on_menu_key(IMenuEventListener* master, MenuType
     case STDT_UPDATE_KEY: master->on_menu_task(self, MenuTask::UpdateStudent); break;
     case STDT_DELETE_KEY: master->on_menu_task(self, MenuTask::DeleteStudent); break;
     case STDT_CLASS_KEY: master->on_menu_task(self, MenuTask::BindClass); break;
+    case STDT_AVATAR_KEY: master->on_menu_task(self, MenuTask::UpdateAvatar); break;
     case STDT_CLEAR_KEY: master->on_menu_task(self, MenuTask::ClearStudent); break;
     case MENU_RETURN_KEY: master->on_menu_switch(self, MenuType::TopLevel); break;
     default: /* do nothing */;

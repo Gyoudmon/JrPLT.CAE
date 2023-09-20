@@ -21,6 +21,7 @@ namespace WarGrey::IMS {
         
         virtual void on_student_created(uint64_t pk, shared_student_t entity, bool in_batching) = 0;
         virtual void on_student_updated(uint64_t pk, shared_student_t entity) = 0;
+        virtual void on_student_avatar_updated(uint64_t pk, shared_student_t entity) = 0;
         virtual void on_student_deleted(uint64_t pk, shared_student_t entity, bool in_batching) = 0;
     };
 
@@ -44,6 +45,7 @@ namespace WarGrey::IMS {
 
         void create_student_from_user_input(const char* text, size_t size);
         void update_student_from_user_input(const char* text, size_t size);
+        void update_student_avatar_from_user_input(const char* text, size_t size);
         void delete_student_as_user_request(const char* text, size_t size);
 
         void register_student_scores_from_user_input(uint64_t sNo, uint64_t disCode, uint64_t ts, const char* text, size_t size);

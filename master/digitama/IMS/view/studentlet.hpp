@@ -29,5 +29,9 @@ namespace WarGrey::IMS {
         uint32_t sbar_color = 0U;
         double sbar_alpha = 0.0;
         double sbar_percentage = 0.0;
+
+    private:
+        WarGrey::STEM::shared_texture_t name_texture;
+        SDL_FRect name_region;
     };
 }

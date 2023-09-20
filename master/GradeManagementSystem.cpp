@@ -54,7 +54,10 @@ namespace {
             this->load_classroom(width, height);
             this->load_avatars(width, height);
 
-            this->on_menu_task(MenuType::TopLevel, MenuTask::ImportData);
+            try {
+                this->model->import_from_file(this->gmsin);
+                this->reflow_model_sprites(gliding_duration);
+            } catch (const std::exception& e) {}
 
             this->load_grade_reports(width, height);
         }
@@ -145,6 +148,15 @@ namespace {
                     if ((idx >= 0) && (idx < self->count())) {
                         self->on_menu_char(this, this->the_menu_type, key);
                     }
+                } else if (key == 'w') {
+                    if (!this->gmsout.empty()) {
+                        try {
+                            this->model->export_to_file(this->gmsout);
+                            this->log_message(GREEN, "done exporting to %s.", this->gmsout.c_str());
+                        } catch (const std::exception& e) {
+                            this->log_message(CRIMSON, "%s", e.what());
+                        }
+                    }
                 } else if (int(key) == 27) { // ESC
                     this->the_task = MenuTask::_;
                     this->menus[this->the_menu_type]->unsafe_plane<IMenu>()->select_menu('\0');
@@ -164,6 +176,7 @@ namespace {
                             case MenuTask::DeleteDiscipline: this->model->delete_discipline_as_user_request(text, size); break;
                             case MenuTask::CreateStudent: this->model->create_student_from_user_input(text, size); break;
                             case MenuTask::UpdateStudent: this->model->update_student_from_user_input(text, size); break;
+                            case MenuTask::UpdateAvatar: this->model->update_student_avatar_from_user_input(text, size); break;
                             case MenuTask::DeleteStudent: this->model->delete_student_as_user_request(text, size); break;
                             case MenuTask::CreateGrade: this->on_grade_text(text, size); break;
                             case MenuTask::UpdateGrade: this->on_grade_text(text, size); break;
@@ -249,12 +262,11 @@ namespace {
                 case MenuTask::DeleteDiscipline: this->start_input_text("请输入待删除课程的代号: "); break;
                 case MenuTask::CreateStudent: this->start_input_text("请按格式输入新生信息(%s): ", StudentEntity::prompt()); break;
                 case MenuTask::UpdateStudent: this->start_input_text("请按格式输入待修改学生的信息(%s): ", StudentEntity::update_prompt()); break;
+                case MenuTask::UpdateAvatar: this->start_input_text("请按格式输入待修改学生的信息(%s): ", StudentEntity::update_gender_prompt()); break;
                 case MenuTask::DeleteStudent: this->start_input_text("请输入待删除学生的学号: "); break;
                 case MenuTask::CreateGrade: this->on_grade_task(false); break;
                 case MenuTask::UpdateGrade: this->on_grade_task(false); break;
                 case MenuTask::DeleteGrade: this->on_grade_task(false); break;
-                case MenuTask::ImportData: this->model->import_from_file(this->gmsin); this->reflow_model_sprites(gliding_duration); break;
-                case MenuTask::ExportData: this->model->export_to_file(this->gmsout); this->log_message(GREEN, "done."); break;
                 case MenuTask::ClearStudent: this->model->clear_detached_students(); this->log_message(GREEN, "done."); break;
                 case MenuTask::ClearGrade: this->model->clear_detached_grades(); this->log_message(GREEN, "done."); break;
                 default: /* do nothing */;
@@ -428,6 +440,20 @@ namespace {
             this->log_message(FORESTGREEN, "学生(%s)信息已修改.", this->students[pk]->name());
         }
 
+        void on_student_avatar_updated(uint64_t pk, shared_student_t entity) override {
+            this->on_student_deleted(pk, entity, true);
+            this->on_student_created(pk, entity, false);
+        }
+
+        void on_student_deleted(uint64_t pk, shared_student_t entity, bool in_batching) override {
+            this->remove(this->students[pk]);
+            this->students.erase(pk);
+
+            if (!in_batching) {
+                this->reflow_students(gliding_duration);
+            }
+        }
+
         void on_student_changed(uint64_t sNo) {
             this->the_sNo = sNo;
 
@@ -439,15 +465,6 @@ namespace {
 
             this->update_student_report(sNo);
             this->continue_grade_task_if_possible();
-        }
-
-        void on_student_deleted(uint64_t pk, shared_student_t entity, bool in_batching) override {
-            this->remove(this->students[pk]);
-            this->students.erase(pk);
-
-            if (!in_batching) {
-                this->reflow_students(gliding_duration);
-            }
         }
 
     private:
@@ -784,7 +801,7 @@ namespace {
 
     private:
         MenuType the_menu_type = MenuType::TopLevel;
-        MenuTask the_task = MenuTask::ImportData;
+        MenuTask the_task = MenuTask::_;
         uint64_t the_clsId = 0U;
         uint64_t the_disCode = 0U;
         uint64_t the_sNo = 0U;

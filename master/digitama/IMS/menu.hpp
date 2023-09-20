@@ -8,9 +8,9 @@
 namespace WarGrey::IMS {
     enum class MenuType { TopLevel, Class, Discipline, Student, Grade };
     enum class MenuTask { Exit,
-        ImportData, ExportData, CreateClass, DeleteClass,
+        CreateClass, DeleteClass,
         CreateDiscipline, UpdateDiscipline, DeleteDiscipline,
-        CreateStudent, UpdateStudent, DeleteStudent, BindClass, ClearStudent,
+        CreateStudent, UpdateStudent, DeleteStudent, BindClass, UpdateAvatar, ClearStudent,
         CreateGrade, UpdateGrade, DeleteGrade, ClearGrade,
         _
     };

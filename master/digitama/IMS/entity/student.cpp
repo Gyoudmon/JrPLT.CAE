@@ -37,6 +37,10 @@ const char* WarGrey::IMS::StudentEntity::update_prompt() {
     return "{ No:nat, nickname:str }";
 }
 
+const char* WarGrey::IMS::StudentEntity::update_gender_prompt() {
+    return "{ No:nat, avatar:byte, gender:str }";
+}
+
 /*************************************************************************************************/
 WarGrey::IMS::StudentEntity::StudentEntity(const std::string& s, int idx) {
     size_t pos = size_t(idx);
@@ -63,13 +67,54 @@ WarGrey::IMS::StudentEntity::StudentEntity(const std::string& s, int idx) {
 bool WarGrey::IMS::StudentEntity::update(const char* s, size_t end, size_t idx) {
     std::string new_nname = "";
     uint64_t new_age = 0U;
-    bool updated = true;
+    bool updated = false;
     
     scan_skip_space(s, &idx, end);
     new_nname = scan_string(s, &idx, end, field_delimiter);
 
     if (!new_nname.empty()) {
         this->nickname = new_nname;
+        updated = true;
+    }
+
+    return updated;
+}
+
+bool WarGrey::IMS::StudentEntity::update_avatar_gender(const char* s, size_t end, size_t idx) {
+    StudentGender new_gender = StudentGender::_;
+    uint64_t new_avatar = 0U;
+    bool updated = false;
+    
+    scan_skip_space(s, &idx, end);
+
+    new_avatar = scan_natural(s, &idx, end) % 0x100;
+    scan_skip_delimiter(s, &idx, end, field_delimiter);
+
+    new_gender = name_to_gender(scan_string(s, &idx, end, field_delimiter).c_str());
+    if (new_gender == StudentGender::_) throw exn_gms("无效性别");
+
+    if ((new_avatar != this->avatar) || (new_gender != this->gender)) {
+        this->avatar = new_avatar;
+        this->gender = new_gender;
+        updated = true;
+    }
+
+    return updated;
+}
+
+void WarGrey::IMS::StudentEntity::toggle_gender() {
+    if (this->gender == StudentGender::Girl) {
+        this->gender = StudentGender::Boy;
+    } else {
+        this->gender = StudentGender::Girl;
+    }
+}
+
+bool WarGrey::IMS::StudentEntity::update_avatar(int aNo) {
+    bool updated = false;
+
+    if (this->avatar != aNo) {
+        this->avatar = aNo;
         updated = true;
     }
 

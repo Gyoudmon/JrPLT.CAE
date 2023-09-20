@@ -16,7 +16,6 @@ namespace WarGrey::IMS {
     private:
         WarGrey::STEM::Labellet* title;
         std::vector<WarGrey::STEM::Labellet*> labels;
-        std::vector<WarGrey::STEM::TrailKid*> kids;
-        std::vector<WarGrey::STEM::TrailStudent*> youths;
+        std::vector<WarGrey::STEM::TrailStudent*> avatars;
     };
 }

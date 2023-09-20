@@ -10,6 +10,7 @@ namespace WarGrey::IMS {
         static bool match(const std::string& line, int* offset);
         static const char* prompt();
         static const char* update_prompt();
+        static const char* update_gender_prompt();
 
     public:
         StudentEntity(const char* s, int idx = 0) : StudentEntity(std::string(s), idx) {}
@@ -18,6 +19,9 @@ namespace WarGrey::IMS {
 
     public:
         bool update(const char* s, size_t end, size_t idx = 0);
+        bool update_avatar_gender(const char* s, size_t end, size_t idx = 0);
+        bool update_avatar(int aNo);
+        void toggle_gender();
 
     public:
         uint8_t get_avatar() { return this->avatar; }
