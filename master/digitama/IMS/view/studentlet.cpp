@@ -20,7 +20,7 @@ void WarGrey::IMS::StudentSprite::draw(SDL_Renderer* renderer, float x, float y,
 
     if (this->name_texture.use_count() == 0) {
         this->name_texture = std::make_shared<Texture>(game_blended_text_texture(renderer, this->nickname,
-            GameFont::Default(FontSize::xx_small), SNOW));
+            GameFont::fangsong(FontSize::xx_small), SNOW));
         this->name_texture->feed_extent(&this->name_region.w, &this->name_region.h);
     }
 

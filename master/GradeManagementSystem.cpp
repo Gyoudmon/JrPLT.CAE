@@ -490,7 +490,7 @@ namespace {
             this->agent = this->insert(new Linkmon());
             this->title = this->insert(new Labellet(GameFont::Title(), BLACK, "%s", this->name()));
             this->side_border = this->insert(new VLinelet(height, GRAY));
-            this->tooltip = this->insert(make_label_for_tooltip(GameFont::Tooltip()));
+            this->tooltip = this->insert(make_label_for_tooltip(GameFont::fangsong()));
             
             this->set_sentry_sprite(this->agent);
             this->set_tooltip_matter(this->tooltip);
