@@ -189,7 +189,7 @@ class Plane(object):
 
         return self.__mleft, self.__mtop, w, h
     
-    def bring_to_front(self, m, target):
+    def bring_to_front(self, m, target = None):
         tinfo = _plane_matter_info(self, target)
 
         if not tinfo:
@@ -212,7 +212,7 @@ class Plane(object):
             
                 self.notify_updated()
 
-    def bring_forward(self, m, n):
+    def bring_forward(self, m, n = 1):
         sinfo = _plane_matter_info(self, m)
     
         if sinfo:
@@ -225,7 +225,7 @@ class Plane(object):
 
             self.bring_to_front(m, target)
 
-    def send_to_back(self, m, target):
+    def send_to_back(self, m, target = None):
         tinfo = _plane_matter_info(self, target)
 
         if not tinfo:
@@ -248,7 +248,7 @@ class Plane(object):
 
                 self.notify_updated()
 
-    def send_backward(self, m, n):
+    def send_backward(self, m, n = 1):
         sinfo = _plane_matter_info(self, m)
     
         if sinfo:
@@ -1107,8 +1107,8 @@ class Plane(object):
                     self.notify_updated()
 
 ###################################################################################################
-def _bind_matter_owership(master, mode, m: IMatter):
-    m.info = _MatterInfo(master, mode)
+def _bind_matter_owership(master, m: IMatter):
+    m.info = _MatterInfo(master)
     _unsafe_set_matter_fps(m.info, m.preferred_loacal_fps(), True)
     
     return m.info
