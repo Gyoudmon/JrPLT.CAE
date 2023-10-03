@@ -30,6 +30,6 @@
   '(["literacy/Setup.scrbl" xelatex #px"Installation/.*png$"]
     ["literacy/Disciplines.scrbl" xelatex #px"Discipline/.*png$"]
     ["literacy/Vocabulary.scrbl" xelatex]
-    ["literacy/Metrics.scrbl" xelatex #:always-make]))
+    ["literacy/Metrics.scrbl" xelatex #:explicitly-make]))
 
 #;(define literacy-samples '(["literacy/Setup/sync.scrbl"]))

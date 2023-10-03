@@ -31,18 +31,19 @@ class ColorMixtureWorld(Plane):
         self.blue.set_color_mixture(ColorMixture.Add)
 
     def reflow(self, width, height):
-        self.move_to(self.green, (0.0, height * 0.5), MatterAnchor.LC)
+        self.move_to(self.green, (width * 0.5, height * 0.5), MatterAnchor.CC)
         self.move_to(self.red, (self.green, MatterAnchor.CT), MatterAnchor.CB)
         self.move_to(self.blue, (self.green, MatterAnchor.CB), MatterAnchor.CT)
 
     def can_select(self, matter):
-        return True
+        return isinstance(matter, Circlet)
 
     # 实现 ColorMixtureWorld::after_select 方法
     def after_select(self, matter, yes):
         if not yes:
-            if isinstance(matter, Circlet):
-                self.glide_to_mouse(gliding_duration, matter, MatterAnchor.CC)
+            self.glide_to_mouse(gliding_duration, matter, MatterAnchor.CC)
+        else:
+            self.send_to_back(matter)
 
     def on_tap_selected(self, matter, x, y):
         self.no_selected()
