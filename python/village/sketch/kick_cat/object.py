@@ -27,7 +27,7 @@ class BadPerson(object):
         # I kick the cat with this foot
         print(f"{self.name}用{这只}脚踢了{弱者}, {弱者}很气愤")
 
-# 角色就绪
+# 实例化，找个人来扮演这个角色
 老板 = BadPerson("老板")
 员工 = BadPerson("员工")
 孩子 = BadPerson("孩子")

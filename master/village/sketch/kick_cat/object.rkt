@@ -16,6 +16,12 @@
 
 ; 2. 主语作为“对象”
 
+; 角色：老板
+;   功能： 踢人
+;   属性： 名字
+;         地位
+;         性别
+
 ; 定义类和方法
 (define bad-person%
   (class object% (super-new)
@@ -31,7 +37,7 @@
       (printf "~a用~a脚踢了~a, ~a很气愤~n"
               name 这只 弱者 弱者))))
 
-; 角色就绪
+; 角色就绪 实例化，找个人扮演角色，得到东西较“对象”，绑定给变量
 (define 老板 (new bad-person% [name "老板"]))
 (define 员工 (new bad-person% [name "员工"]))
 (define 孩子 (new bad-person% [name "孩子"]))

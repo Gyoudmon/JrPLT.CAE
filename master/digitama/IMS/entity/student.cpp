@@ -66,7 +66,6 @@ WarGrey::IMS::StudentEntity::StudentEntity(const std::string& s, int idx) {
 
 bool WarGrey::IMS::StudentEntity::update(const char* s, size_t end, size_t idx) {
     std::string new_nname = "";
-    uint64_t new_age = 0U;
     bool updated = false;
     
     scan_skip_space(s, &idx, end);
