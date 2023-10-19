@@ -6,10 +6,10 @@
 #include <map>
 
 namespace WarGrey::IMS {
-    enum class MenuType { TopLevel, Class, Discipline, Student, Grade };
+    enum class MenuType { TopLevel, Class, Discipline, Student, Grade, Clear };
     enum class MenuTask { Exit,
         CreateClass, DeleteClass,
-        CreateDiscipline, UpdateDiscipline, DeleteDiscipline,
+        CreateDiscipline, DeleteDiscipline,
         CreateStudent, UpdateStudent, DeleteStudent, BindClass, UpdateAvatar, ClearStudent,
         CreateGrade, UpdateGrade, DeleteGrade, ClearGrade,
         _
@@ -36,6 +36,9 @@ namespace WarGrey::IMS {
         size_t count() { return this->menuitems.size(); }
         void select_menu(char key);
 
+    public:
+        virtual uint8_t menu_key_base() { return 0; }
+
     protected:
         virtual void on_menu_key(IMenuEventListener* master, MenuType self, char key) = 0;
         virtual std::vector<std::pair<char, std::string>> prepare_menu_items() = 0;
@@ -51,8 +54,11 @@ namespace WarGrey::IMS {
     /*********************************************************************************************/
     class TopLevelMenu : public WarGrey::IMS::IMenu {
     public:
-        TopLevelMenu() : IMenu("系统菜单") {}
+        TopLevelMenu() : IMenu("默认菜单") {}
         virtual ~TopLevelMenu() {}
+
+    public:
+        uint8_t menu_key_base() override { return 0; }
 
     protected:
         void on_menu_key(IMenuEventListener* master, MenuType self, char key) override;
@@ -61,8 +67,11 @@ namespace WarGrey::IMS {
 
     class ClassMenu : public WarGrey::IMS::IMenu {
     public:
-        ClassMenu() : IMenu("班级管理菜单") {}
+        ClassMenu() : IMenu("班级信息菜单") {}
         virtual ~ClassMenu() {}
+
+    public:
+        uint8_t menu_key_base() override { return 1; }
 
     protected:
         void on_menu_key(IMenuEventListener* master, MenuType self, char key) override;
@@ -71,9 +80,12 @@ namespace WarGrey::IMS {
 
     class DisciplineMenu : public WarGrey::IMS::IMenu {
     public:
-        DisciplineMenu() : IMenu("课程管理菜单") {}
+        DisciplineMenu() : IMenu("课程信息菜单") {}
         virtual ~DisciplineMenu() {}
 
+    public:
+        uint8_t menu_key_base() override { return 1; }
+    
     protected:
         void on_menu_key(IMenuEventListener* master, MenuType self, char key) override;
         std::vector<std::pair<char, std::string>> prepare_menu_items() override;
@@ -81,8 +93,11 @@ namespace WarGrey::IMS {
 
     class StudentMenu : public WarGrey::IMS::IMenu {
     public:
-        StudentMenu() : IMenu("学生管理菜单") {}
+        StudentMenu() : IMenu("学生信息菜单") {}
         virtual ~StudentMenu() {}
+
+    public:
+        uint8_t menu_key_base() override { return 1; }
 
     protected:
         void on_menu_key(IMenuEventListener* master, MenuType self, char key) override;
@@ -93,6 +108,22 @@ namespace WarGrey::IMS {
     public:
         GradeMenu() : IMenu("成绩管理菜单") {}
         virtual ~GradeMenu() {}
+
+    public:
+        uint8_t menu_key_base() override { return 1; }
+
+    protected:
+        void on_menu_key(IMenuEventListener* master, MenuType self, char key) override;
+        std::vector<std::pair<char, std::string>> prepare_menu_items() override;
+    };
+
+    class ClearMenu : public WarGrey::IMS::IMenu {
+    public:
+        ClearMenu() : IMenu("清理菜单") {}
+        virtual ~ClearMenu() {}
+
+    public:
+        uint8_t menu_key_base() override { return 0; }
 
     protected:
         void on_menu_key(IMenuEventListener* master, MenuType self, char key) override;

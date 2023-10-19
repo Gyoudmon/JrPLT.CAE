@@ -13,16 +13,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sdl2-config
   '((config SDL2)
-    (lib gydm.stem)
+    (lib gydm_stem)
     (include [windows "C:\\opt\\GYDMstem\\include"]
              [macosx "/opt/GYDMstem/include"])
     (libpath [windows "C:\\opt\\GYDMstem\\lib"]
              [macosx "/opt/GYDMstem/lib"])))
 
 (define native-compiled-subpath '())
+(define native-compiled-bindir '("bin"))
+(define native-compiled-incdir '())
+(define native-compiled-libdir '())
+(define native-compiled-release '())
+(define native-compiled-debug '("debug"))
 
 (define native-launcher-names
-  `(["GradeManagementSystem.cpp" console ,sdl2-config]
+  `(["STEMClassroom.cpp" console ,sdl2-config]
     ["YouthLanguageLobby.cpp" console ,sdl2-config]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

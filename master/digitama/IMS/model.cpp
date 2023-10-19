@@ -251,17 +251,14 @@ void WarGrey::IMS::GMSModel::create_class_from_user_input(const char* text, size
     this->register_class(std::make_shared<ClassEntity>(text, 0), false);
 }
 
-void WarGrey::IMS::GMSModel::delete_class_as_user_request(const char* text, size_t size) {
-    size_t pos = 0;
-    uint64_t cls_pk = scan_natural(text, &pos, size);
+void WarGrey::IMS::GMSModel::delete_class_as_user_request(uint64_t clsId) {
+    if (this->classes.find(clsId) != this->classes.end()) {
+        shared_class_t entity = this->classes[clsId];
 
-    if (this->classes.find(cls_pk) != this->classes.end()) {
-        shared_class_t entity = this->classes[cls_pk];
-
-        this->classes.erase(cls_pk);
-        this->listener->on_class_deleted(cls_pk, entity, false);
+        this->classes.erase(clsId);
+        this->listener->on_class_deleted(clsId, entity, false);
     } else {
-        throw exn_gms("查无此班(%llu)", cls_pk);
+        throw exn_gms("查无此班(%llu)", clsId);
     }
 }
 
@@ -269,25 +266,7 @@ void WarGrey::IMS::GMSModel::create_discipline_from_user_input(const char* text,
     this->register_discipline(std::make_shared<DisciplineEntity>(text, 0), false);
 }
 
-void WarGrey::IMS::GMSModel::update_discipline_from_user_input(const char* text, size_t size) {
-    size_t pos = 0U;
-    uint64_t disCode = scan_natural(text, &pos, size);
-
-    if (this->disciplines.find(disCode) != this->disciplines.end()) {
-        scan_skip_delimiter(text, &pos, size, field_delimiter);
-
-        if (this->disciplines[disCode]->update(text, size, pos)) {
-            this->listener->on_discipline_updated(disCode, this->disciplines[disCode]);
-        }
-    } else {
-        throw exn_gms("查无此课(%llu)", disCode);
-    }
-}
-
-void WarGrey::IMS::GMSModel::delete_discipline_as_user_request(const char* text, size_t size) {
-    size_t pos = 0U;
-    uint64_t disCode = scan_natural(text, &pos, size);
-
+void WarGrey::IMS::GMSModel::delete_discipline_as_user_request(uint64_t disCode) {
     if (this->disciplines.find(disCode) != this->disciplines.end()) {
         shared_discipline_t entity = this->disciplines[disCode];
 
@@ -303,14 +282,9 @@ void WarGrey::IMS::GMSModel::create_student_from_user_input(const char* text, si
     this->register_student(std::make_shared<StudentEntity>(text, 0), false);
 }
 
-void WarGrey::IMS::GMSModel::update_student_from_user_input(const char* text, size_t size) {
-    size_t pos = 0U;
-    uint64_t sNo = scan_natural(text, &pos, size);
-
+void WarGrey::IMS::GMSModel::update_student_from_user_input(uint64_t sNo, const char* text, size_t size) {
     if (this->students.find(sNo) != this->students.end()) {
-        scan_skip_delimiter(text, &pos, size, field_delimiter);
-
-        if (this->students[sNo]->update(text, size, pos)) {
+        if (this->students[sNo]->update(text, size)) {
             this->listener->on_student_updated(sNo, this->students[sNo]);
         }
     } else {
@@ -318,14 +292,9 @@ void WarGrey::IMS::GMSModel::update_student_from_user_input(const char* text, si
     }
 }
 
-void WarGrey::IMS::GMSModel::update_student_avatar_from_user_input(const char* text, size_t size) {
-    size_t pos = 0U;
-    uint64_t sNo = scan_natural(text, &pos, size);
-
+void WarGrey::IMS::GMSModel::update_student_avatar_from_user_input(uint64_t sNo, const char* text, size_t size) {
     if (this->students.find(sNo) != this->students.end()) {
-        scan_skip_delimiter(text, &pos, size, field_delimiter);
-
-        if (this->students[sNo]->update_avatar_gender(text, size, pos)) {
+        if (this->students[sNo]->update_avatar_gender(text, size)) {
             this->listener->on_student_avatar_updated(sNo, this->students[sNo]);
         }
     } else {
@@ -333,10 +302,7 @@ void WarGrey::IMS::GMSModel::update_student_avatar_from_user_input(const char* t
     }
 }
 
-void WarGrey::IMS::GMSModel::delete_student_as_user_request(const char* text, size_t size) {
-    size_t pos = 0;
-    uint64_t sNo = scan_natural(text, &pos, size);
-
+void WarGrey::IMS::GMSModel::delete_student_as_user_request(uint64_t sNo) {
     if (this->students.find(sNo) != this->students.end()) {
         shared_student_t entity = this->students[sNo];
 

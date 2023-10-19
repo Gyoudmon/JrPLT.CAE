@@ -5,7 +5,7 @@
             "name": "C++ 快捷运行",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/compiled/native/${fileBasenameNoExtension}",
+            "program": "${fileDirname}/compiled/native/bin/${fileBasenameNoExtension}",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -15,7 +15,7 @@
             "preLaunchTask": "快捷构建",
 
             "windows": {
-                "program": "${fileDirname}/compiled/native/${fileBasenameNoExtension}.exe",
+                "program": "${fileDirname}/compiled/native/bin/${fileBasenameNoExtension}.exe",
                 "type": "cppvsdbg"    
             }
         }

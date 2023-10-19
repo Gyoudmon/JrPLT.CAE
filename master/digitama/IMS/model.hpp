@@ -16,7 +16,6 @@ namespace WarGrey::IMS {
         virtual void on_class_deleted(uint64_t pk, shared_class_t entity, bool in_batching) = 0;
 
         virtual void on_discipline_created(uint64_t pk, shared_discipline_t entity, bool in_batching) = 0;
-        virtual void on_discipline_updated(uint64_t pk, shared_discipline_t entity) = 0;
         virtual void on_discipline_deleted(uint64_t pk, shared_discipline_t entity, bool in_batching) = 0;
         
         virtual void on_student_created(uint64_t pk, shared_student_t entity, bool in_batching) = 0;
@@ -37,16 +36,15 @@ namespace WarGrey::IMS {
     public:
         /* Entity Manipulation */
         void create_class_from_user_input(const char* text, size_t size);
-        void delete_class_as_user_request(const char* text, size_t size);
+        void delete_class_as_user_request(uint64_t clsId);
 
         void create_discipline_from_user_input(const char* text, size_t size);
-        void update_discipline_from_user_input(const char* text, size_t size);
-        void delete_discipline_as_user_request(const char* text, size_t size);
+        void delete_discipline_as_user_request(uint64_t disCode);
 
         void create_student_from_user_input(const char* text, size_t size);
-        void update_student_from_user_input(const char* text, size_t size);
-        void update_student_avatar_from_user_input(const char* text, size_t size);
-        void delete_student_as_user_request(const char* text, size_t size);
+        void update_student_from_user_input(uint64_t sNo, const char* text, size_t size);
+        void update_student_avatar_from_user_input(uint64_t sNo, const char* text, size_t size);
+        void delete_student_as_user_request(uint64_t sNo);
 
         void register_student_scores_from_user_input(uint64_t sNo, uint64_t disCode, uint64_t ts, const char* text, size_t size);
         void update_student_scores_from_user_input(uint64_t sNo, uint64_t disCode, uint64_t ts, const char* text, size_t size);

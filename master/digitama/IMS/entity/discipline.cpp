@@ -14,15 +14,12 @@ const char* WarGrey::IMS::DisciplineEntity::prompt() {
     return "{ code:nat, name:str }";
 }
 
-const char* WarGrey::IMS::DisciplineEntity::update_prompt() {
-    return "{ code:nat }";
-}
-
 const char* WarGrey::IMS::DisciplineEntity::type_to_name(DisciplineType type) {
     switch (type) {
     case DisciplineType::Mathematics: return "Mathematics";
     case DisciplineType::Programming: return "Programming";
     case DisciplineType::STEM: return "STEM";
+    case DisciplineType::Printing3D: return "3DPrinting";
     case DisciplineType::Physics: return "Physics";
     case DisciplineType::Chemistry: return "Chemistry";
     case DisciplineType::Biology: return "Biology";
@@ -37,6 +34,8 @@ DisciplineType WarGrey::IMS::DisciplineEntity::name_to_type(const char* name) {
         return DisciplineType::Programming;
     } else if (strcasecmp(name, "STEM") == 0) {
         return DisciplineType::STEM;
+    } else if ((strcasecmp(name, "3dprinting") == 0) || (strcasecmp(name, "3d") == 0)) {
+        return DisciplineType::Printing3D;
     } else if (strcasecmp(name, "physics") == 0) {
         return DisciplineType::Physics;
     } else if (strcasecmp(name, "chemistry") == 0) {
@@ -61,11 +60,6 @@ WarGrey::IMS::DisciplineEntity::DisciplineEntity(const std::string& s, int idx) 
     scan_skip_delimiter(src, &pos, end, field_delimiter);
 
     this->type = name_to_type(scan_string(src, &pos, end, field_delimiter).c_str());
-}
-
-bool WarGrey::IMS::DisciplineEntity::update(const char* s, size_t end, size_t idx) {
-    // No fields to update
-    return false;
 }
 
 std::string WarGrey::IMS::DisciplineEntity::to_string() {

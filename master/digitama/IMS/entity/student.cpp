@@ -34,11 +34,11 @@ const char* WarGrey::IMS::StudentEntity::prompt() {
 }
 
 const char* WarGrey::IMS::StudentEntity::update_prompt() {
-    return "{ No:nat, nickname:str }";
+    return "{ nickname:str }";
 }
 
 const char* WarGrey::IMS::StudentEntity::update_gender_prompt() {
-    return "{ No:nat, avatar:byte, gender:str }";
+    return "{ avatar:byte, gender:str }";
 }
 
 /*************************************************************************************************/

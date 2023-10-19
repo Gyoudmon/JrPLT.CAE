@@ -258,6 +258,8 @@ void WarGrey::IMS::Gradelet::clear(MatterAnchor anchor) {
             this->clear_score(renderer, idx);
         }
 
+        this->set_total_score(renderer, 0U, flnan);
+
         this->notify_updated();
         this->clear_moor();
     }
