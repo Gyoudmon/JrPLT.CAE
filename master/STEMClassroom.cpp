@@ -350,7 +350,7 @@ namespace {
             if (this->the_timestamp == 0U) {
                 this->start_input_text("请按格式输入成绩时间戳(YYYYMMDD): ");
             } else {
-                this->start_input_text("当前成绩时间戳 %llu, 可直接修改, 亦可按 ENTER 确认. ", this->the_timestamp);
+                this->start_input_text("当前成绩时间戳 %llu, 直接修改或 ENTER 确认. ", this->the_timestamp);
             }
 
             return false;
@@ -481,7 +481,7 @@ namespace {
             this->the_sNo = sNo;
 
             if (this->the_sNo > 0U) {
-                this->stuLabel->set_text(MatterAnchor::RB, "%s[%llu]", this->students[this->the_sNo]->name(), this->the_sNo);
+                this->stuLabel->set_text(MatterAnchor::RB, "%s", this->students[this->the_sNo]->name());
             } else {
                 this->stuLabel->set_text(MatterAnchor::RB, "-");
             }
@@ -543,7 +543,7 @@ namespace {
     private:
         void load_classroom(float width, float height) {
             this->platform = this->insert(new Rectanglet(platform_width, platform_height, STEELBLUE));
-            this->clsLabel = this->insert(new Labellet(GameFont::monospace(FontSize::x_large), GHOSTWHITE, "%u", this->the_clsId));
+            this->clsLabel = this->insert(new Labellet(GameFont::monospace(FontSize::x_large), GHOSTWHITE, "[班级]"));
             this->stuLabel = this->insert(new Labellet(GameFont::serif(), GHOSTWHITE, "%s", "[学生]"));
             
             for (size_t idx = 1; idx <= DESK_COUNT; idx ++) {
@@ -783,7 +783,7 @@ namespace {
                 }
             }
 
-            if (clsId == 0U) {
+            if (clsId > 0U) {
                 this->clsReport->set_title("%llu班 平均成绩", clsId);
             } else {
                 this->clsReport->set_title(default_class_report_title, clsId);
@@ -826,7 +826,7 @@ namespace {
                     this->stuReport->set_score_via_points(lts, s_pts);
                 }
 
-                this->stuReport->set_title("%s[%llu]", this->students[sNo]->name(), sNo);
+                this->stuReport->set_title("%s", this->students[sNo]->name());
             }
         }
 
