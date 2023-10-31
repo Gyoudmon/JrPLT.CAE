@@ -20,7 +20,7 @@ class ShapeWorld(Plane):
 
     # 实现 ShapeWorld::load 方法，在舞台上加入基础几何图形的实例，注意添加顺序
     def load(self, Width, Height):
-        self.label = self.insert(Labellet("基本图形陈列馆(对象版)", GameFont.Title, BLACK))
+        self.label = self.insert(Labellet(self.name(), GameFont.Title, BLACK))
 
         # 苍绿色院子
         self.garden = self.insert(Ellipselet(200.0, 80.0, PALEGREEN, KHAKI))

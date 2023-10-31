@@ -850,7 +850,7 @@ namespace {
                     if (score >= 80.0) {
                         color = GREEN;
                     } else if (score >= 60.0) {
-                        color = YELLOWGREEN;
+                        color = ORANGE;
                     }
 
                     this->students[sNo]->set_score_percentage(score / 100.0, color);
