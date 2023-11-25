@@ -1,5 +1,4 @@
 #include <gydm_stem/game.hpp>
-#include <gydm_stem/graphics/text.hpp>
 
 using namespace WarGrey::STEM;
 
@@ -62,7 +61,7 @@ namespace {
 #else
                     if (true) {
 #endif
-                        game_draw_blended_text(f, renderer, this->get_foreground_color(),
+                        Pen::draw_blended_text(f, renderer, this->get_foreground_color(),
                             x, y, "%s: %s", fonts[i].c_str(), text.c_str());
                         
                         y = y + this->fontsize + 2;
