@@ -53,14 +53,14 @@ void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, floa
     float cw, ch;
     
     /* background decoration */ {
-        game_fill_rect(renderer, x, y, width, height, BLACK, 0.5);
-        game_draw_rect(renderer, x, y, width, height, ROYALBLUE, 1.0);
+        Brush::fill_rect(renderer, x, y, width, height, BLACK, 0.5);
+        Brush::draw_rect(renderer, x, y, width, height, ROYALBLUE, 1.0);
     }
 
     /* draw title */ {
         this->title->feed_extent(&cw, &ch);
-        game_draw_image(renderer, this->title->self(), x + (width - cw) * 0.5F, y);
-        game_draw_line(renderer, x, y + ch, rx, y + ch, line_color);
+        Brush::stamp(renderer, this->title->self(), x + (width - cw) * 0.5F, y);
+        Brush::draw_line(renderer, x, y + ch, rx, y + ch, line_color);
     }
 
     if (dis_height > 0.0F) {
@@ -70,15 +70,15 @@ void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, floa
             float dff_w = 0.0F;
         
             this->disciplines[idx]->feed_extent(&cw, &ch);
-            game_draw_image(renderer, this->disciplines[idx]->self(), dis_lx, dis_row_by - ch, cw, ch);
+            Brush::stamp(renderer, this->disciplines[idx]->self(), dis_lx, dis_row_by - ch, cw, ch);
         
             if (this->diffs[idx].use_count() > 0) {
                 this->diffs[idx]->feed_extent(&dff_w, &ch);
-                game_draw_image(renderer, this->diffs[idx]->self(), dis_rx - dff_w, dis_row_by - ch, dff_w, ch);
+                Brush::stamp(renderer, this->diffs[idx]->self(), dis_rx - dff_w, dis_row_by - ch, dff_w, ch);
             }
         
             this->scores[idx]->feed_extent(&cw, &ch);
-            game_draw_image(renderer, this->scores[idx]->self(), dis_rx - cw - dff_w, dis_row_by - ch, cw, ch);
+            Brush::stamp(renderer, this->scores[idx]->self(), dis_rx - cw - dff_w, dis_row_by - ch, cw, ch);
             
             dis_row_by += dis_height;
         }
@@ -86,9 +86,9 @@ void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, floa
 
     /* draw tail */ {
         this->total_score->feed_extent(&cw, &ch);
-        game_draw_image(renderer, this->timestamp->self(), dis_lx, by - ch);
-        game_draw_image(renderer, this->total_score->self(), dis_rx - cw, by - ch);
-        game_draw_line(renderer, x, by - ch, rx, by - ch, line_color);
+        Brush::stamp(renderer, this->timestamp->self(), dis_lx, by - ch);
+        Brush::stamp(renderer, this->total_score->self(), dis_rx - cw, by - ch);
+        Brush::draw_line(renderer, x, by - ch, rx, by - ch, line_color);
     }
 }
 

@@ -105,8 +105,8 @@ namespace {
 
         // 定义和实现 PaddleBallWorld::draw 方法，在舞台上绘制出当前位置的球和桨
         void draw(SDL_Renderer* renderer, int x, int y, int width, int height) override {
-            game_fill_circle(renderer, this->ball.x, this->ball.y, ball_radius, this->ball.color);
-            game_fill_rect(renderer, this->paddle.x, this->paddle.y, paddle_width, paddle_height, FORESTGREEN);
+            Brush::fill_circle(renderer, this->ball.x, this->ball.y, ball_radius, this->ball.color);
+            Brush::fill_rect(renderer, this->paddle.x, this->paddle.y, paddle_width, paddle_height, FORESTGREEN);
         }
 
     protected: // 覆盖键盘事件处理方法
