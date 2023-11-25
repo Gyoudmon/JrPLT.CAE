@@ -308,7 +308,7 @@ class Plane(object):
                 info = child.info
 
                 if info.selected:
-                    self.__move_matter_via_info(matter, info, x, y, False, ignore_gliding)
+                    self.__move_matter_via_info(child, info, x, y, False, ignore_gliding)
 
                 child = info.next
                 if child == self.__head_matter:
@@ -329,7 +329,7 @@ class Plane(object):
                 info = child.info
 
                 if info.selected:
-                    self.__glide_matter_via_info(matter, info, sec, x, y, False)
+                    self.__glide_matter_via_info(child, info, sec, x, y, False)
 
                 child = info.next
                 if child == self.__head_matter:
