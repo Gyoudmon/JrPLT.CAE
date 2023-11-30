@@ -6,7 +6,6 @@
 
 #include "digitama/basis/color_mixture.hpp"
 #include "digitama/basis/color_wheel.hpp"
-#include "digitama/basis/chromaticity.hpp"
 #include "digitama/basis/drunkard.hpp"
 
 #include "digitama/basis/self_avoiding_walk.hpp"
@@ -15,9 +14,11 @@
 
 // Additional Demos
 #include <pltmos/stream.hpp>
+#include <scsmos/schematics/optics/chromaticity.hpp>
 
 using namespace WarGrey::STEM;
 using namespace WarGrey::PLT;
+using namespace WarGrey::SCSM;
 
 /*************************************************************************************************/
 namespace {
@@ -46,7 +47,7 @@ namespace {
             this->push_plane(new ColorWheelWorld());
             this->push_plane(new TheBigBang());
             this->push_plane(new DrunkardWalkWorld());
-            this->push_plane(new ChromaticityDiagramWorld());
+            this->push_plane(new ChromaticityDiagramPlane());
             
             // 第三阶段
             this->push_plane(new SelfAvoidingWalkWorld());
