@@ -14,10 +14,8 @@
 (define sdl2-config
   '((config SDL2)
     (lib gydm_stem)
-    (include [windows "C:\\opt\\GYDMstem\\include"]
-             [macosx "/opt/GYDMstem/include"])
-    (libpath [windows "C:\\opt\\GYDMstem\\lib"]
-             [macosx "/opt/GYDMstem/lib"])))
+    (include "C:\\opt\\GYDMstem\\include")
+    (libpath "C:\\opt\\GYDMstem\\lib")))
 
 (define native-compiled-subpath '())
 (define native-compiled-bindir '("bin"))
@@ -27,8 +25,7 @@
 (define native-compiled-debug '("debug"))
 
 (define native-launcher-names
-  `(["STEMClassroom.cpp" console ,sdl2-config]
-    ["YouthLanguageLobby.cpp" console ,sdl2-config]))
+  `(["STEMClassroom.cpp" console ,sdl2-config]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define typesettings

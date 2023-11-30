@@ -13,7 +13,7 @@ void WarGrey::IMS::StudentSprite::draw(SDL_Renderer* renderer, float x, float y,
     if ((this->sbar_alpha > 0.0) && (this->sbar_percentage > 0.0)) {
         float ly = y + 1.0F;
 
-        game_draw_line(renderer, x, ly,
+        Brush::draw_line(renderer, x, ly,
             x + Width * this->sbar_percentage, ly,
             this->sbar_color, this->sbar_alpha);
     }
@@ -28,8 +28,8 @@ void WarGrey::IMS::StudentSprite::draw(SDL_Renderer* renderer, float x, float y,
         this->name_region.x = x + (Width - this->name_region.w) * 0.5F;
         this->name_region.y = y + Height - this->name_region.h;
 
-        game_fill_rect(renderer, x, this->name_region.y, Width, this->name_region.h, BLACK, 0.48);
-        game_draw_image(renderer, this->name_texture->self(), this->name_region.x, this->name_region.y);
+        Brush::fill_rect(renderer, x, this->name_region.y, Width, this->name_region.h, BLACK, 0.48);
+        Brush::stamp(renderer, this->name_texture->self(), this->name_region.x, this->name_region.y);
     }
 }
 

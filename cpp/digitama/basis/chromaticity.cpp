@@ -40,7 +40,7 @@ void WarGrey::STEM::ChromaticityDiagramWorld::reflow(float width, float height) 
     TheBigBang::reflow(width, height);
     
     for (auto c : this->hues) {
-        circle_point(wheel_radius, float(c->get_color_hue()) - 90.0F, &x, &y, false);
+        circle_point(wheel_radius, float(c->get_fill_hue()) - 90.0F, &x, &y, false);
         this->move_to(c, cx + x, cy + y, MatterAnchor::CC);
     }
 
@@ -68,9 +68,9 @@ void WarGrey::STEM::ChromaticityDiagramWorld::after_select(IMatter* m, bool yes)
         auto com = dynamic_cast<Circlet*>(m);
 
         if (com != nullptr) {
-            uint32_t pcolor = static_cast<uint32_t>(com->get_color());
+            uint32_t pcolor = static_cast<uint32_t>(com->get_fill_color());
 
-            this->primaries[this->selection_seq]->set_color(pcolor);
+            this->primaries[this->selection_seq]->set_fill_color(pcolor);
             this->chroma_dia->set_pseudo_primary_color(pcolor, this->selection_seq);
             this->selection_seq = (this->selection_seq + 1) % this->primaries.size();
         } else if (m == this->chroma_dia) {
@@ -90,9 +90,9 @@ bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x
     auto cc = dynamic_cast<Ellipselet*>(m);
 
     if (com != nullptr) {
-        uint32_t hex = com->get_color();
+        uint32_t hex = static_cast<uint32_t>(com->get_fill_color());
 
-        this->tooltip->set_text(" #%06X [Hue: %.2f] ", hex, com->get_color_hue());
+        this->tooltip->set_text(" #%06X [Hue: %.2f] ", hex, com->get_fill_hue());
         this->tooltip->set_background_color(GHOSTWHITE);
 
         this->no_selected();
@@ -106,7 +106,7 @@ bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x
             this->feed_matter_location(this->primaries[idx], &cx, &cy, MatterAnchor::CC);
 
             if (point_distance(gx, gy, cx, cy) <= primary_radius) {
-                hex = RGB_Add(hex, static_cast<uint32_t>(this->primaries[idx]->get_color()));
+                hex = RGB_Add(hex, static_cast<uint32_t>(this->primaries[idx]->get_fill_color()));
             }
         }
 
@@ -123,7 +123,7 @@ bool WarGrey::STEM::ChromaticityDiagramWorld::update_tooltip(IMatter* m, float x
             
             switch (this->chroma_dia->get_standard()) {
                 case CIE_Standard::Primary: {
-                    this->tooltip->set_text(" CIE Primary：%06X (%.3lf, %.3lf, %.3lf) ",
+                    this->tooltip->set_text(" CIE Primary: %06X (%.3lf, %.3lf, %.3lf) ",
                         hex, co_x, co_y, 1.0 - co_x - co_y);
                  }; break;
                 case CIE_Standard::D65: {

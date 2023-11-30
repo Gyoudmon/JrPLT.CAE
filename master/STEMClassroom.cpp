@@ -133,11 +133,11 @@ namespace {
             bool updated = false;
             
             if (m != this->agent) {
-                auto entity = dynamic_cast<ISprite*>(m);
+                auto student = dynamic_cast<StudentSprite*>(m);
                 auto desk = dynamic_cast<IDesk*>(m);
 
-                if (entity != nullptr) {
-                    this->tooltip->set_text(" %s ", entity->name());
+                if (student != nullptr) {
+                    this->tooltip->set_text(" %s[%u] ", student->name(), student->primary_key());
                     updated = true;
                 } else if (desk != nullptr) {
                     this->tooltip->set_text(" %d ", desk->get_seat_by(lx, ly));
@@ -826,7 +826,7 @@ namespace {
                     this->stuReport->set_score_via_points(lts, s_pts);
                 }
 
-                this->stuReport->set_title("%s", this->students[sNo]->name());
+                this->stuReport->set_title("%s[%u]", this->students[sNo]->name(), sNo);
             }
         }
 
