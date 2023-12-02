@@ -69,7 +69,7 @@ bool WarGrey::STEM::ColorWheelWorld::update_tooltip(IMatter* m, float x, float y
             this->feed_matter_location(this->primaries[idx], &cx, &cy, MatterAnchor::CC);
 
             if (point_distance(gx, gy, cx, cy) <= primary_radius) {
-                hex = RGB_Add(hex, static_cast<uint32_t>(this->primaries[idx]->get_fill_color()));
+                hex = RGB_Add(hex, this->primaries[idx]->get_fill_color());
             }
         }
 
@@ -86,7 +86,7 @@ void WarGrey::STEM::ColorWheelWorld::load_hues() {
     float deg = 0.0F;
 
     while (deg < 360.0F) {
-        this->hues.push_back(this->insert(new Circlet(hue_radius, deg, 1.0, 1.0)));
+        this->hues.push_back(this->insert(new Circlet(hue_radius, Hexadecimal_From_HSV(deg, 1.0, 1.0))));
         deg += delta_deg;
     }
 }
