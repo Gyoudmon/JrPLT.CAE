@@ -22,7 +22,7 @@ namespace WarGrey::IMS {
 
     class HexagonalDesklet : public WarGrey::STEM::RegularPolygonlet, public WarGrey::IMS::IDesk {
     public:
-        HexagonalDesklet(size_t idx, float radius, uint32_t color, int32_t border_color = -1)
+        HexagonalDesklet(size_t idx, float radius, const WarGrey::STEM::RGBA& color, const WarGrey::STEM::RGBA& border_color = WarGrey::STEM::transparent)
             : WarGrey::STEM::RegularPolygonlet(6, radius, color, border_color), IDesk(idx) {}
         virtual ~HexagonalDesklet() noexcept {}
 

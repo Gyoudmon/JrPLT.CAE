@@ -61,8 +61,8 @@ namespace {
 #else
                     if (true) {
 #endif
-                        Pen::draw_blended_text(f, renderer, this->get_foreground_color(),
-                            x, y, "%s: %s", fonts[i].c_str(), text.c_str());
+                        Pen::draw_blended_text(f, renderer, this->get_foreground_color(), x, y,
+                                                make_nstring("%s: %s", fonts[i].c_str(), text.c_str()));
                         
                         y = y + this->fontsize + 2;
                         if (y > height - this->fontsize) {

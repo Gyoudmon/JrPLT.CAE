@@ -19,15 +19,14 @@ namespace WarGrey::IMS {
 
     public:
         void set_nickname(const std::string& name);
-        void set_score_percentage(double percentage, uint32_t color = 0x00FF00U, double alpha = 1.0);
+        void set_score_percentage(double percentage, const WarGrey::STEM::RGBA& color = 0x00FF00U);
 
     private:
         uint64_t No;
         std::string nickname;
 
     private:
-        uint32_t sbar_color = 0U;
-        double sbar_alpha = 0.0;
+        WarGrey::STEM::RGBA sbar_color = WarGrey::STEM::transparent;
         double sbar_percentage = 0.0;
 
     private:

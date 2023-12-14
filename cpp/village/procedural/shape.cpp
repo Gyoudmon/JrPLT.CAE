@@ -22,7 +22,7 @@ namespace {
         // 定义和实现 ShapeWorld::draw 方法，本例中绘制一系列几何图形
         void draw(SDL_Renderer* renderer, int x, int y, int width, int height) override {
             Pen::draw_blended_text(GameFont::fangsong(), renderer,
-                this->get_foreground_color(), 10, 10, "基本图形陈列馆(过程式)");
+                this->get_foreground_color(), 10, 10, "图形宇宙(过程式)");
 
             /** 绘制椭圆院子 **/
             Brush::fill_ellipse(renderer, 400, 500, 200, 80, PALEGREEN);                  // 画苍绿色椭圆

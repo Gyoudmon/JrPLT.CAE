@@ -53,8 +53,8 @@ void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, floa
     float cw, ch;
     
     /* background decoration */ {
-        Brush::fill_rect(renderer, x, y, width, height, DIMGRAY, 0.5);
-        Brush::draw_rect(renderer, x, y, width, height, ROYALBLUE, 1.0);
+        Brush::fill_rect(renderer, x, y, width, height, RGBA(DIMGRAY, 0.5));
+        Brush::draw_rect(renderer, x, y, width, height, RGBA(ROYALBLUE, 1.0));
     }
 
     /* draw title */ {

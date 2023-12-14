@@ -8,7 +8,7 @@ from digitama.big_bang.game import *    # 导入游戏模块，内含 Plane 类�
 class ShapeWorld(Plane):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题和帧频
-        super(ShapeWorld, self).__init__("基本图形陈列馆(对象版)")
+        super(ShapeWorld, self).__init__("图形世界(对象版)")
 
         # 本游戏世界有以下物体
         self.label = None

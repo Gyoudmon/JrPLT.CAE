@@ -162,9 +162,9 @@ namespace {
                     if (!this->gmsout.empty()) {
                         try {
                             this->model->export_to_file(this->gmsout);
-                            this->log_message(GREEN, "done exporting to %s.", this->gmsout.c_str());
+                            this->log_message(Log::Info, make_nstring("done exporting to %s.", this->gmsout.c_str()));
                         } catch (const std::exception& e) {
-                            this->log_message(CRIMSON, "%s", e.what());
+                            this->log_message(Log::Fatal, e.what());
                         }
                     }
                 } else if (int(key) == 27) { // ESC
@@ -195,7 +195,7 @@ namespace {
                         default: /* do nothing */;
                         }
                     } catch (const std::exception& e) {
-                        this->log_message(CRIMSON, "%s", e.what());
+                        this->log_message(Log::Fatal, e.what());
                     }
                 } else if (this->the_grade_subtask != GradeTask::_) {
                     this->on_grade_text(text, size);
@@ -234,7 +234,7 @@ namespace {
                     this->update_class_report(this->the_clsId);
                     this->update_student_report(this->the_sNo);
                     this->update_students_score_bars(this->the_disCode, this->the_sNo);
-                    this->log_message(FORESTGREEN, "Done.");
+                    this->log_message(Log::Info, "Done.");
                 }
 
                 this->the_grade_subtask = GradeTask::_;
@@ -261,10 +261,10 @@ namespace {
                     default: /* do nothing */;
                     }
 
-                    this->log_message(GREEN, "Done.");
+                    this->log_message(Log::Info, "Done.");
                     this->switch_menu();
                 } catch (const std::exception& e) {
-                    this->log_message(CRIMSON, "%s", e.what());
+                    this->log_message(Log::Fatal, e.what());
                 }
             }
         }
@@ -310,7 +310,7 @@ namespace {
                 default: /* do nothing */;
                 }
             } catch (const std::exception& e) {
-                this->log_message(CRIMSON, "%s", e.what());
+                this->log_message(Log::Fatal, e.what());
             }
         }
 
@@ -452,7 +452,7 @@ namespace {
         void on_student_updated(uint64_t pk, shared_student_t entity) override {
             this->students[pk]->set_nickname(entity->get_nickname());
             this->on_student_changed(pk);
-            this->log_message(FORESTGREEN, "学生(%s)信息已修改.", this->students[pk]->name());
+            this->log_message(Log::Info, make_nstring("学生(%s)信息已修改.", this->students[pk]->name()));
         }
 
         void on_student_avatar_updated(uint64_t pk, shared_student_t entity) override {
@@ -693,7 +693,7 @@ namespace {
                         this->model->bind_student_to_seat(this->the_sNo, dsk->get_index(), idx);
                     }
                 } else {
-                    this->log_message(FIREBRICK, "请先绑定班级");
+                    this->log_message(Log::Error, "请先绑定班级");
                 }
             }
         }
@@ -736,7 +736,7 @@ namespace {
             this->avatar = this->insert(new Continent(new AvatarPlane("学生形象")));
 
             this->avatar->set_border_color(ROYALBLUE);
-            this->avatar->set_background_color(DIMGRAY, 0.64);
+            this->avatar->set_background_color(RGBA(DIMGRAY, 0.64));
 
             this->avatar->show(false);
             this->avatar->camouflage(true);

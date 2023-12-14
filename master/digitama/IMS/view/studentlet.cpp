@@ -10,12 +10,8 @@ WarGrey::IMS::StudentSprite::StudentSprite(uint64_t No, std::string nickname, ui
 void WarGrey::IMS::StudentSprite::draw(SDL_Renderer* renderer, float x, float y, float Width, float Height) {
     Sprite::draw(renderer, x, y, Width, Height);
 
-    if ((this->sbar_alpha > 0.0) && (this->sbar_percentage > 0.0)) {
-        float ly = y + 1.0F;
-
-        Brush::draw_line(renderer, x, ly,
-            x + Width * this->sbar_percentage, ly,
-            this->sbar_color, this->sbar_alpha);
+    if (this->sbar_color.is_opacity() && (this->sbar_percentage > 0.0)) {
+        Brush::draw_hline(renderer, x, y + 1.0F, Width * this->sbar_percentage, this->sbar_color);
     }
 
     if (this->name_texture.use_count() == 0) {
@@ -28,7 +24,7 @@ void WarGrey::IMS::StudentSprite::draw(SDL_Renderer* renderer, float x, float y,
         this->name_region.x = x + (Width - this->name_region.w) * 0.5F;
         this->name_region.y = y + Height - this->name_region.h;
 
-        Brush::fill_rect(renderer, x, this->name_region.y, Width, this->name_region.h, BLACK, 0.48);
+        Brush::fill_rect(renderer, x, this->name_region.y, Width, this->name_region.h, RGBA(BLACK, 0.48));
         Brush::stamp(renderer, this->name_texture->self(), this->name_region.x, this->name_region.y);
     }
 }
@@ -41,12 +37,11 @@ void WarGrey::IMS::StudentSprite::set_nickname(const std::string& name) {
     }
 }
 
-void WarGrey::IMS::StudentSprite::set_score_percentage(double percentage, uint32_t color, double alpha) {
-    if ((this->sbar_percentage != percentage) || (color != this->sbar_color) || (alpha != this->sbar_alpha)) {
+void WarGrey::IMS::StudentSprite::set_score_percentage(double percentage, const RGBA& color) {
+    if ((this->sbar_percentage != percentage) || (color != this->sbar_color)) {
         this->sbar_percentage = percentage;
         this->sbar_color = color;
-        this->sbar_alpha = alpha;
-
+        
         this->notify_updated();
     }
 }
