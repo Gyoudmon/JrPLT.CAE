@@ -17,6 +17,12 @@
     (include "C:\\opt\\GYDMstem\\include")
     (libpath "C:\\opt\\GYDMstem\\lib")))
 
+(define scsm-config
+  '((config SDL2)
+    (lib gydm_stem scsmos)
+    (include "C:\\opt\\GYDMstem\\include")
+    (libpath "C:\\opt\\GYDMstem\\lib")))
+
 (define native-compiled-subpath '())
 (define native-compiled-bindir '("bin"))
 (define native-compiled-incdir '())
@@ -25,7 +31,8 @@
 (define native-compiled-debug '("debug"))
 
 (define native-launcher-names
-  `(["STEMClassroom.cpp" console ,sdl2-config]))
+  `(["STEMClassroom.cpp" console ,sdl2-config]
+    ["LotteryMachine.cpp" console ,scsm-config]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define typesettings
