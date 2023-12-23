@@ -31,8 +31,8 @@
 (define native-compiled-debug '("debug"))
 
 (define native-launcher-names
-  `(["STEMClassroom.cpp" console ,sdl2-config]
-    ["LotteryMachine.cpp" console ,scsm-config]))
+  `(["LotteryMachine.cpp" console ,scsm-config]
+    ["STEMClassroom.cpp" console ,sdl2-config]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define typesettings
