@@ -1,6 +1,7 @@
 #include <iostream>
 
 // 场景：胡克定律
+// l(m, 初始长度, 限度) = 0.1614 * m + 初始长度
 
 // 定义函数:
 double l(double m, double 初始长度, double 限度) {

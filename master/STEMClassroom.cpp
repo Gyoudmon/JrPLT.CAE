@@ -250,7 +250,7 @@ namespace {
             scan_skip_space(text, &pos, size);
             answer = scan_string(text, &pos, size);
 
-            if ((strcasecmp(answer.c_str(), "y") == 0) || (strcasecmp(answer.c_str(), "yes") == 0)) {
+            if (string_ci_equal(answer, "y") || string_ci_equal(answer, "yes")) {
                 try {
                     switch (task) {
                     case MenuTask::DeleteClass: this->model->delete_class_as_user_request(this->the_clsId); break;

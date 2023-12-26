@@ -10,7 +10,7 @@ def is_light_on_by_simulation(m):
     else:
         return not is_light_on_by_simulation(m - 1)
 
-def print_status(is_on):
+def print_state(is_on):
     if is_on:
         print(1)
     else:
@@ -19,8 +19,8 @@ def print_status(is_on):
 ###############################################################
 def main():
     m = int(input())
-    is_on = is_light_on_by_remainder(m)
-    print_status(is_on)
+    answer = is_light_on_by_remainder(m)
+    print_state(answer)
 
 ###############################################################
 if __name__ == "__main__":

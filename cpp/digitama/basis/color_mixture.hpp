@@ -24,7 +24,7 @@ namespace WarGrey::STEM {
         WarGrey::STEM::Circlet* blue;
 
     private:
-        WarGrey::STEM::Rectanglet* half_bg;
+        WarGrey::STEM::Rectanglet* half_white;
         WarGrey::STEM::Circlet* cyan;
         WarGrey::STEM::Circlet* yellow;
         WarGrey::STEM::Circlet* magenta;
