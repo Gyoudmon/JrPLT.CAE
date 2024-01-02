@@ -1,6 +1,6 @@
 #include <iostream>
 
-#define cstring const char*
+typedef const char* cstring;
 
 // 用 struct 关键字定义【类】, 角色
 struct BadPerson {

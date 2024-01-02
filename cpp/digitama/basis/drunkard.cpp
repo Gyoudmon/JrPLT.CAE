@@ -1,12 +1,13 @@
 #include "drunkard.hpp"
 
-using namespace WarGrey::STEM;
+using namespace GYDM;
+using namespace Linguisteen;
 
 static const float step_size = 2.0F;
 static const double step_duration = 0.2;
 
 /*************************************************************************************************/
-void WarGrey::STEM::DrunkardWalkWorld::load(float width, float height) {
+void Linguisteen::DrunkardWalkWorld::load(float width, float height) {
     this->beach = this->insert(new Sprite(digimon_path("assets/beach", ".png")));
     this->tent = this->insert(new SpriteGridSheet(digimon_path("assets/tents", ".png"), 1, 4));
     this->track = this->insert(new Tracklet(width, height));
@@ -22,23 +23,23 @@ void WarGrey::STEM::DrunkardWalkWorld::load(float width, float height) {
     TheBigBang::load(width, height);
 }
 
-void WarGrey::STEM::DrunkardWalkWorld::reflow(float width, float height) {
-    this->move_to(this->beach, width * 0.5F, height, MatterAnchor::CB);
-    this->move_to(this->tent, 0.0F, height, MatterAnchor::LB);
-    this->move_to(this->track, width * 0.5F, height * 0.5F, MatterAnchor::CB);
+void Linguisteen::DrunkardWalkWorld::reflow(float width, float height) {
+    this->move_to(this->beach, { width * 0.5F, height }, MatterAnchor::CB);
+    this->move_to(this->tent, { 0.0F, height }, MatterAnchor::LB);
+    this->move_to(this->track, { width * 0.5F, height * 0.5F }, MatterAnchor::CB);
     
     TheBigBang::reflow(width, height);
 }
 
-void WarGrey::STEM::DrunkardWalkWorld::on_mission_start(float width, float height) {
+void Linguisteen::DrunkardWalkWorld::on_mission_start(float width, float height) {
     this->drunkard->switch_mode(BracerMode::Walk);
     this->drunkard->set_heading(-180.0);
 
-    this->move_to(this->drunkard, width * 0.95F, height * 0.9F, MatterAnchor::CC);
-    this->move_to(this->partner, width * 0.24F, height * 0.9F, MatterAnchor::CC);
+    this->move_to(this->drunkard, { width * 0.95F, height * 0.9F }, MatterAnchor::CC);
+    this->move_to(this->partner, { width * 0.24F, height * 0.9F }, MatterAnchor::CC);
 }
 
-void WarGrey::STEM::DrunkardWalkWorld::update(uint64_t interval, uint32_t count, uint64_t uptime) {
+void Linguisteen::DrunkardWalkWorld::update(uint64_t interval, uint32_t count, uint64_t uptime) {
     if (!this->is_colliding(this->drunkard, this->partner)) {
         if (this->partner->motion_stopped()) {
             this->random_walk(this->partner);
@@ -53,17 +54,17 @@ void WarGrey::STEM::DrunkardWalkWorld::update(uint64_t interval, uint32_t count,
 }
 
 /*************************************************************************************************/
-void WarGrey::STEM::DrunkardWalkWorld::random_walk(Bracer* who) {
+void Linguisteen::DrunkardWalkWorld::random_walk(Bracer* who) {
     // random_uniform(-1, 1) 产生一个位于区间 [-1, 1] 的随机整数
     int dx = (random_uniform(-1, 1)); // 左右移动或不动
     int dy = (random_uniform(-1, 1)); // 上下移动或不动
 
     this->pen_down(who);
-    this->glide(step_duration, who, dx * step_size, dy * step_size);
+    this->glide(step_duration, who, { dx * step_size, dy * step_size });
     this->pen_up(who);
 }
 
-void WarGrey::STEM::DrunkardWalkWorld::drunkard_walk(Bracer* who) {
+void Linguisteen::DrunkardWalkWorld::drunkard_walk(Bracer* who) {
     // 产生位于区间 [0, 100] 的随机整数
     int chance = random_uniform(0, 100);
     float dx = 0.0;

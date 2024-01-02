@@ -19,7 +19,6 @@ int main(int 参数数量, char* 参数小组[]) {
 
     // 最终程序
     int idx = 1;
-    
     while (idx < 参数数量) {
         double mass = strtod(参数小组[idx], nullptr);
         double length = l(mass, 50.0, 100.0);

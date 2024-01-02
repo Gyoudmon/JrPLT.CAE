@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gydm_stem/game.hpp>
+#include <gydm/game.hpp>
 
 #include <vector>
 #include <map>
@@ -22,7 +22,7 @@ namespace WarGrey::IMS {
     };
 
     /*********************************************************************************************/
-    class IMenu : public WarGrey::STEM::Plane {
+    class IMenu : public GYDM::Plane {
     using Plane::Plane;
 
     public:
@@ -45,7 +45,7 @@ namespace WarGrey::IMS {
         
     private:
         std::vector<std::pair<char, std::string>> menuitems;
-        std::map<char, WarGrey::STEM::Labellet*> menulabels;
+        std::map<char, GYDM::Labellet*> menulabels;
 
     private:
         char current_menuitem = '\0';

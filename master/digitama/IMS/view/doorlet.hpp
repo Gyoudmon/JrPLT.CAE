@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gydm_stem/game.hpp>
+#include <gydm/game.hpp>
 
 namespace WarGrey::IMS {
-    class DoorSprite : public WarGrey::STEM::Sprite {
+    class DoorSprite : public GYDM::Sprite {
     public:
         DoorSprite(uint64_t seq);
         virtual ~DoorSprite() {}

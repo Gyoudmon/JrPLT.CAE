@@ -1,19 +1,61 @@
-#include <gydm_stem/game.hpp>
-#include <scsmos/motion/lottery.hpp>
+#include <gydm/game.hpp>
+#include <stemos/motion/lottery.hpp>
 
+using namespace GYDM;
 using namespace WarGrey::STEM;
-using namespace WarGrey::SCSM;
 
 /*************************************************************************************************/
 namespace {
+    class LotteryMachineWithCodePlane : public LotteryPlane {
+    public:
+        LotteryMachineWithCodePlane() : LotteryPlane() {}
+
+    public:
+        void load(float width, float height) override {
+            this->ball_number_cpp = this->load_code("Lottery/numbers", 1.0F);
+            this->initialization_cpp = this->load_code("Lottery/initialization", 1.0F);
+            this->applying_forces_cpp = this->load_code("Lottery/forces", 1.0F);
+
+            LotteryPlane::load(width, height);
+        }
+
+        void reflow(float width, float height) override {
+            LotteryPlane::reflow(width, height);
+
+            this->move_to(this->ball_number_cpp, { width, height * 0.5F }, MatterAnchor::RC);
+            this->move_to(this->initialization_cpp, { 0.0F, height * 0.5F }, MatterAnchor::LB);
+            this->move_to(this->applying_forces_cpp, { 0.0F, height * 0.6F }, MatterAnchor::LT);
+        }
+
+    private:
+        Sprite* load_code(const char* path, float scale = 1.0F) {
+            Sprite* code = this->insert(new Sprite(digimon_path(path, ".png")));
+
+            if (scale != 1.0F) {
+                code->scale(scale);
+            }
+
+            return code;
+        }
+
+    private:
+        Sprite* ball_number_cpp;
+        Sprite* initialization_cpp;
+        Sprite* applying_forces_cpp;
+    };
+
     class LotteryMachine : public Cosmos {
     public:
         LotteryMachine() : Cosmos(60) {}
 
     public:
         void construct(int argc, char* argv[]) override {
+            GameFont::fontsize(20);
+            
             enter_digimon_zone(argv[0]);
             imgdb_setup(digimon_subdir("stone"));
+            this->set_snapshot_folder("/Users/wargrey/Desktop");
+            this->set_window_fullscreen(true);
 
 #ifdef __windows__
             digimon_appdata_setup("C:\\opt\\GYDMstem\\");
@@ -23,12 +65,7 @@ namespace {
             digimon_mascot_setup("/opt/GYDMstem/stone/mascot");
 #endif
 
-            this->set_snapshot_folder("/Users/wargrey/Desktop");
-            this->set_cmdwin_height(24);
-
-            GameFont::fontsize(20);
-
-            this->push_plane(new TwoColorLotteryPlane());
+            this->push_plane(new LotteryMachineWithCodePlane());
         }
     };
 }

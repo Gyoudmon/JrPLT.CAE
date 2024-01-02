@@ -1,6 +1,6 @@
-#include <gydm_stem/game.hpp>
+#include <gydm/game.hpp>
 
-using namespace WarGrey::STEM;
+using namespace GYDM;
 
 const float ball_radius = 8.0F;
 const float paddle_width = 128.0F;
@@ -37,7 +37,7 @@ namespace {
     };
 
     /******************************************* 声明游戏世界 ******************************************/
-    class PaddleBallWorld : public WarGrey::STEM::Universe {
+    class PaddleBallWorld : public GYDM::Universe {
     public:
         PaddleBallWorld() : Universe("Paddle Ball (Procedural)") { /* 什么都不做 */ }
         virtual ~PaddleBallWorld() { /* 什么都不做 */ }

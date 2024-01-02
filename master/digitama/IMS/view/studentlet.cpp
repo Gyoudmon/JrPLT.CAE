@@ -1,6 +1,6 @@
 #include "studentlet.hpp"
 
-using namespace WarGrey::STEM;
+using namespace GYDM;
 using namespace WarGrey::IMS;
 
 /*************************************************************************************************/

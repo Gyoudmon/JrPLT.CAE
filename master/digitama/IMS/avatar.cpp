@@ -1,9 +1,9 @@
 #include "avatar.hpp"
 
-#include <gydm_stem/datum/fixnum.hpp>
-#include <gydm_stem/datum/flonum.hpp>
+#include <gydm/datum/fixnum.hpp>
+#include <gydm/datum/flonum.hpp>
 
-using namespace WarGrey::STEM;
+using namespace GYDM;
 using namespace WarGrey::IMS;
 
 /*************************************************************************************************/
@@ -20,19 +20,16 @@ void WarGrey::IMS::AvatarPlane::load(float width, float height) {
 }
 
 void WarGrey::IMS::AvatarPlane::reflow(float width, float height) {
-    float grid_height = 0.0F;
-    float grid_y, grid_width;
+    Box tbox = this->title->get_bounding_box();
+    Box grid = this->avatars[0]->get_bounding_box() + tbox.rbdot;
+    float grid_width = grid.height() * 0.8F;
 
-    this->title->feed_extent(0.0F, 0.0F, nullptr, &grid_y);
-    this->avatars[0]->feed_extent(0.0F, 0.0F, nullptr, &grid_height);
-
-    grid_width = grid_height * 0.8F;
     for (size_t idx = 0; idx < this->labels.size(); idx ++) {
-        this->move_to(this->labels[idx], grid_width * 0.3F, grid_y + grid_height, MatterAnchor::CB);
-        this->move_to(this->avatars[idx], grid_width * 1.5F, grid_y + grid_height, MatterAnchor::CB);
+        this->move_to(this->labels[idx], { grid_width * 0.3F, grid.rbdot.y }, MatterAnchor::CB);
+        this->move_to(this->avatars[idx], { grid_width * 1.5F, grid.rbdot.y }, MatterAnchor::CB);
         
-        grid_y += grid_height;
+        grid += Dot(0.0F, grid.height());
     }
 
-    this->move_to(this->title, grid_width * 1.5F, 0.0F, MatterAnchor::CT);
+    this->move_to(this->title, { grid_width * 1.5F, 0.0F }, MatterAnchor::CT);
 }

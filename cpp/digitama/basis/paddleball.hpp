@@ -1,12 +1,11 @@
-//digitama/basis/shape.hpp 
 #pragma once // 确保只被 include 一次
 
-#include <gydm_stem/bang.hpp>
-#include <gydm_stem/matter/graphlet/shapelet.hpp>
+#include <gydm/bang.hpp>
 
-namespace WarGrey::STEM {
-    /******************************************* 声明游戏世界 ******************************************/
-    class PaddleBallWorld : public WarGrey::STEM::TheBigBang {
+// 以 Linguisteen 的名义提供
+namespace Linguisteen {
+    // 创建自定义数据类型，并命名为 PaddleBallWorld, 继承自 TheBigBang
+    class PaddleBallWorld : public GYDM::TheBigBang {
         public:
             PaddleBallWorld() : TheBigBang("托球游戏") {}
 
@@ -21,7 +20,7 @@ namespace WarGrey::STEM {
             void on_char(char key, uint16_t modifiers, uint8_t repeats, bool pressed) override;
 
         private:   // 本游戏世界中的物体
-            WarGrey::STEM::IShapelet* ball;
-            WarGrey::STEM::IShapelet* paddle;
+            GYDM::IShapelet* ball;
+            GYDM::IShapelet* paddle;
     };
 }

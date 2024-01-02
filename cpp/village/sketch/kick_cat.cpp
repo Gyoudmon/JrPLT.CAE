@@ -8,8 +8,10 @@
  * 但类型安全方案要留到学生入门之后再说。
  */
 
+typedef const char* cstring;
+
 // 定义函数：
-void 踢(const char* 猫, const char* 谁, const char* 哪只) {
+void 踢(cstring 猫, cstring 谁, cstring 哪只) {
     // 根据函数签名，还原自然语言描述
     // kick the cat with one's this foot
     printf("踢%s, 用%s的%s脚, %s很气愤\n", 猫, 谁, 哪只, 猫);
@@ -17,7 +19,7 @@ void 踢(const char* 猫, const char* 谁, const char* 哪只) {
 
 // 定义类和方法(用 struct 可默认 public)
 struct BadPerson {
-    BadPerson(const char* name) {
+    BadPerson(cstring name) {
         this->name = name;
         printf("%s is ready\n", name);
     }
@@ -26,13 +28,13 @@ struct BadPerson {
      * 方法令人不齿：欺软怕硬，欺负弱小
      * 不过，坏人一旦踢了人，大家就都知道坏人是谁了
      */
-    void 踢(const char* 弱者, const char* 哪只) {
+    void 踢(cstring 弱者, cstring 哪只) {
         // 根据函数签名，还原自然语言描述
         printf("%s kicks the %s with %s foot, %s is annoyed\n", this->name, 弱者, 哪只, 弱者);
     }
 
     // 坏人应该有个名字，方便通报批评
-    const char* name;
+    cstring name;
 };
 
 // 门槛不算高，但是极其折磨人

@@ -1,8 +1,8 @@
 #include "desklet.hpp"
 
-#include <gydm_stem/datum/flonum.hpp>
+#include <gydm/datum/flonum.hpp>
 
-using namespace WarGrey::STEM;
+using namespace GYDM;
 using namespace WarGrey::IMS;
 
 /*************************************************************************************************/
@@ -15,11 +15,10 @@ static MatterAnchor anchors [] = {
 
 /*************************************************************************************************/
 int WarGrey::IMS::HexagonalDesklet::get_seat_by(float local_x, float local_y) {
-    float theta, width, height;
-    int idx = 0; 
+    Dot O = this->get_bounding_box().dot(MatterAnchor::CC);
+    float theta = flatan(local_y - O.y, local_x - O.x);
 
-    this->feed_extent(0.0F, 0.0F, &width, &height);
-    theta = flatan(local_y - height * 0.5F, local_x - width * 0.5F);
+    int idx = 0; 
 
     if (theta < 0.0F) {
         theta = pi_f * 2.0F + theta;
@@ -36,17 +35,14 @@ void WarGrey::IMS::HexagonalDesklet::sit(ISprite* stu, int idx, double duration)
     
         if (master != nullptr) {
             float theta = (float(idx % this->seat_count()) + 0.5F) * unit_rad;
-            float w, h, cx, cy;
+            Box box = this->get_bounding_box() * 0.5F;
+            Dot O = master->get_matter_location(this, MatterAnchor::CC);
             float dx = 0.0F;
             float dy = 0.0F;
             
-            this->feed_extent(0.0F, 0.0F, &w, &h);
-            master->feed_matter_location(this, &cx, &cy, MatterAnchor::CC);
-            
             master->glide_to(duration, stu,
-                w * 0.5F * flcos(theta) + cx,
-                h * 0.5F * flsin(theta) + cy,
-                anchors[idx - 1]);
+                Dot(box.width() * flcos(theta), box.height() + flsin(theta)) + O,
+                anchors[idx - 1], Vector::O);
 
             switch (idx) {
             case 1: case 4: dy = +1.0F; break;
@@ -56,7 +52,7 @@ void WarGrey::IMS::HexagonalDesklet::sit(ISprite* stu, int idx, double duration)
             case 6: dx = -1.0F; dy = -1.0F; break;
             }
 
-            master->glide(0.1, stu, dx, dy);
+            master->glide(0.1, stu, { dx, dy });
         }
     }
 }

@@ -1,9 +1,9 @@
 #include "entity.hpp"
 
-#include <gydm_stem/datum/box.hpp>
+#include <gydm/datum/box.hpp>
 
 using namespace WarGrey::IMS;
-using namespace WarGrey::STEM;
+using namespace GYDM;
 
 /*************************************************************************************************/
 bool WarGrey::IMS::GMSEntity::match(const std::string& line, char line_mark, int* offset) {

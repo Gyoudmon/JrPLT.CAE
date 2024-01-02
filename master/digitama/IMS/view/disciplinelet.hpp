@@ -1,11 +1,11 @@
 #pragma once
 
-#include <gydm_stem/game.hpp>
+#include <gydm/game.hpp>
 
 #include "../entity/discipline.hpp"
 
 namespace WarGrey::IMS {
-    class DisciplineSprite : public WarGrey::STEM::Sprite {
+    class DisciplineSprite : public GYDM::Sprite {
     public:
         DisciplineSprite(DisciplineType type);
         virtual ~DisciplineSprite() {}

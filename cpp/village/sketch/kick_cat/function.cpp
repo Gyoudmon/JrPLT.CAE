@@ -1,7 +1,9 @@
 #include <iostream>
 
+typedef const char* cstring;
+
 // 定义函数：
-void 踢(const char* 猫, const char* 谁, const char* 哪只) {
+void 踢(cstring 猫, cstring 谁, cstring 哪只) {
     // 根据函数签名，还原自然语言描述
     // kick the cat with one's this foot
     printf("踢%s, 用%s的%s脚, %s很气愤\n", 猫, 谁, 哪只, 猫);

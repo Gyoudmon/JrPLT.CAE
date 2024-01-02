@@ -1,14 +1,14 @@
 #include "model.hpp"
 
-#include <gydm_stem/datum/box.hpp>
-#include <gydm_stem/datum/fixnum.hpp>
-#include <gydm_stem/datum/flonum.hpp>
-#include <gydm_stem/datum/vector.hpp>
+#include <gydm/datum/box.hpp>
+#include <gydm/datum/fixnum.hpp>
+#include <gydm/datum/flonum.hpp>
+#include <gydm/datum/vector.hpp>
 
 #include <fstream>
 #include <filesystem>
 
-using namespace WarGrey::STEM;
+using namespace GYDM;
 using namespace WarGrey::IMS;
 
 using namespace std::filesystem;

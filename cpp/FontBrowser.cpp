@@ -1,6 +1,6 @@
-#include <gydm_stem/game.hpp>
+#include <gydm/game.hpp>
 
-using namespace WarGrey::STEM;
+using namespace GYDM;
 
 /*************************************************************************************************/
 namespace {

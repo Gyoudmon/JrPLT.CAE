@@ -1,11 +1,11 @@
 #include "gradelet.hpp"
 
-#include <gydm_stem/datum/string.hpp>
-#include <gydm_stem/datum/vector.hpp>
+#include <gydm/datum/string.hpp>
+#include <gydm/datum/vector.hpp>
 
-#include <gydm_stem/graphics/image.hpp>
+#include <gydm/graphics/image.hpp>
 
-using namespace WarGrey::STEM;
+using namespace GYDM;
 using namespace WarGrey::IMS;
 
 /*************************************************************************************************/
@@ -33,15 +33,14 @@ void WarGrey::IMS::Gradelet::construct(SDL_Renderer* renderer) {
     this->total_score = std::make_shared<Texture>(game_blended_text_texture(renderer, "-", MATH_FONT, tail_color));
 }
 
-void WarGrey::IMS::Gradelet::feed_extent(float x, float y, float* width, float* height) {
+Box WarGrey::IMS::Gradelet::get_bounding_box() {
     float title_height, total_score_height;
     float line_count = float(this->disciplines.size());
 
     this->title->feed_extent(nullptr, &title_height);
     this->total_score->feed_extent(nullptr, &total_score_height);
 
-    SET_BOX(width, flabs(this->width));
-    SET_BOX(height, title_height + total_score_height + this->score_line_height() * line_count);
+    return { flabs(this->width), title_height + total_score_height + this->score_line_height() * line_count };
 }
 
 void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, float width, float height) {
@@ -92,7 +91,7 @@ void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, floa
     }
 }
 
-void WarGrey::IMS::Gradelet::set_title(const std::string& title, WarGrey::STEM::MatterAnchor anchor) {
+void WarGrey::IMS::Gradelet::set_title(const std::string& title, GYDM::MatterAnchor anchor) {
     SDL_Renderer* renderer = this->master_renderer();
 
     if (renderer != nullptr) {
@@ -108,12 +107,12 @@ void WarGrey::IMS::Gradelet::set_title(const char* title, ...) {
     this->set_title(t);
 }
 
-void WarGrey::IMS::Gradelet::set_title(WarGrey::STEM::MatterAnchor anchor, const char* title, ...) {
+void WarGrey::IMS::Gradelet::set_title(GYDM::MatterAnchor anchor, const char* title, ...) {
     VSNPRINT(t, title);
     this->set_title(t, anchor);
 }
 
-void WarGrey::IMS::Gradelet::set_disciplines(const std::vector<DisciplineType>& dis, WarGrey::STEM::MatterAnchor anchor) {
+void WarGrey::IMS::Gradelet::set_disciplines(const std::vector<DisciplineType>& dis, GYDM::MatterAnchor anchor) {
     SDL_Renderer* renderer = this->master_renderer();
 
     if (renderer != nullptr) {

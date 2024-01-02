@@ -1,12 +1,12 @@
 #pragma once
 
-#include <gydm_stem/game.hpp>
+#include <gydm/game.hpp>
 
 #include <vector>
 
 namespace WarGrey::IMS {
     /*********************************************************************************************/
-    class AvatarPlane : public WarGrey::STEM::Plane {
+    class AvatarPlane : public GYDM::Plane {
     using Plane::Plane;
 
     public:
@@ -14,8 +14,8 @@ namespace WarGrey::IMS {
         void reflow(float width, float height) override;
 
     private:
-        WarGrey::STEM::Labellet* title;
-        std::vector<WarGrey::STEM::Labellet*> labels;
-        std::vector<WarGrey::STEM::TrailStudent*> avatars;
+        GYDM::Labellet* title;
+        std::vector<GYDM::Labellet*> labels;
+        std::vector<GYDM::TrailStudent*> avatars;
     };
 }

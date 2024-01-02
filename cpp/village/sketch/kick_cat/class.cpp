@@ -1,22 +1,24 @@
 #include <iostream>
 
+typedef const char* cstring;
+
 // 用 class 关键字定义类
 class BadPerson {
 public:
     // 构造函数
-    BadPerson(const char* name) {
+    BadPerson(cstring name) {
         this->name = name;
     }
 
     // 坏人会踢人
-    void 踢(const char* 弱者, const char* 哪只) {
+    void 踢(cstring 弱者, cstring 哪只) {
         // 根据函数签名，还原自然语言描述
         printf("%s kicks the %s with %s foot, %s is annoyed\n", this->name, 弱者, 哪只, 弱者);
     }
 
 public:
     // 坏人应该有个名字，方便通报批评
-    const char* name;
+    cstring name;
 };
 
 // 门槛不算高，但是极其折磨人

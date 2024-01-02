@@ -1,11 +1,11 @@
 // shape.cpp 文件
-#include <gydm_stem/game.hpp> // 导入游戏模块
+#include <gydm/game.hpp> // 导入游戏模块
 
-using namespace WarGrey::STEM; // 声明本模块的类和函数默认以 WarGrey::STEM 的名义使用
+using namespace GYDM; // 声明本模块的类和函数默认以 GYDM 的名义使用
 
 /*************************************************************************************************/
 namespace {
-    class ShapeWorld : public WarGrey::STEM::Universe {
+    class ShapeWorld : public GYDM::Universe {
     public:
         // 构造函数，默认什么都不做，除了通过父类构造函数设置窗口标题和帧频
         ShapeWorld() : Universe("Primitive Shapes") {}

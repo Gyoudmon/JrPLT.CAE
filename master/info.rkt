@@ -13,13 +13,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sdl2-config
   '((config SDL2)
-    (lib gydm_stem)
+    (lib gydm)
     (include "C:\\opt\\GYDMstem\\include")
     (libpath "C:\\opt\\GYDMstem\\lib")))
 
-(define scsm-config
+(define stem-config
   '((config SDL2)
-    (lib gydm_stem scsmos)
+    (lib gydm stemos)
     (include "C:\\opt\\GYDMstem\\include")
     (libpath "C:\\opt\\GYDMstem\\lib")))
 
@@ -31,7 +31,7 @@
 (define native-compiled-debug '("debug"))
 
 (define native-launcher-names
-  `(["LotteryMachine.cpp" console ,scsm-config]
+  `(["LotteryMachine.cpp" console ,stem-config]
     ["STEMClassroom.cpp" console ,sdl2-config]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
