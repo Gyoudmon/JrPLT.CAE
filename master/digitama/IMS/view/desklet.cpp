@@ -15,7 +15,7 @@ static MatterAnchor anchors [] = {
 
 /*************************************************************************************************/
 int WarGrey::IMS::HexagonalDesklet::get_seat_by(float local_x, float local_y) {
-    Dot O = this->get_bounding_box().dot(MatterAnchor::CC);
+    Dot O = this->get_bounding_box().point(MatterAnchor::CC);
     float theta = flatan(local_y - O.y, local_x - O.x);
 
     int idx = 0; 

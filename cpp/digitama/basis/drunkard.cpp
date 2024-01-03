@@ -14,8 +14,8 @@ void Linguisteen::DrunkardWalkWorld::load(float width, float height) {
     this->drunkard = this->insert(new Agate());
     this->partner = this->insert(new Tita());
 
-    this->bind_canvas(this->drunkard, this->track);
-    this->bind_canvas(this->partner, this->track);
+    this->bind_canvas(this->drunkard, this->track, MatterAnchor::CB);
+    this->bind_canvas(this->partner, this->track, MatterAnchor::CB);
 
     this->set_pen_color(this->drunkard, FIREBRICK);
     this->set_pen_color(this->partner, DODGERBLUE);
@@ -26,7 +26,7 @@ void Linguisteen::DrunkardWalkWorld::load(float width, float height) {
 void Linguisteen::DrunkardWalkWorld::reflow(float width, float height) {
     this->move_to(this->beach, { width * 0.5F, height }, MatterAnchor::CB);
     this->move_to(this->tent, { 0.0F, height }, MatterAnchor::LB);
-    this->move_to(this->track, { width * 0.5F, height * 0.5F }, MatterAnchor::CB);
+    this->move_to(this->track, { width * 0.5F, height * 0.5F }, MatterAnchor::CC);
     
     TheBigBang::reflow(width, height);
 }
@@ -55,34 +55,35 @@ void Linguisteen::DrunkardWalkWorld::update(uint64_t interval, uint32_t count, u
 
 /*************************************************************************************************/
 void Linguisteen::DrunkardWalkWorld::random_walk(Bracer* who) {
+    Dot dot;
+    
     // random_uniform(-1, 1) 产生一个位于区间 [-1, 1] 的随机整数
-    int dx = (random_uniform(-1, 1)); // 左右移动或不动
-    int dy = (random_uniform(-1, 1)); // 上下移动或不动
+    dot.x = (random_uniform(-1, 1)); // 左右移动或不动
+    dot.y = (random_uniform(-1, 1)); // 上下移动或不动
 
     this->pen_down(who);
-    this->glide(step_duration, who, { dx * step_size, dy * step_size });
+    this->glide(step_duration, who, dot * step_size);
     this->pen_up(who);
 }
 
 void Linguisteen::DrunkardWalkWorld::drunkard_walk(Bracer* who) {
     // 产生位于区间 [0, 100] 的随机整数
     int chance = random_uniform(0, 100);
-    float dx = 0.0;
-    float dy = 0.0;
+    Dot dot;
     
     if (chance < 10) {
         // no move
     } else if (chance < 58) {
-        dx = -1.0F;
+        dot.x = -1.0F;
     } else if (chance < 60) {
-        dx = +1.0F;
+        dot.x = +1.0F;
     } else if (chance < 80) {
-        dy = +1.0F;
+        dot.y = +1.0F;
     } else {
-        dy = -1.0F;
+        dot.y = -1.0F;
     }
 
     this->pen_down(who);
-    this->move(who, dx, dy);
+    this->move(who, dot);
     this->pen_up(who);
 }

@@ -67,7 +67,7 @@ void Linguisteen::SelfAvoidingWalkWorld::load(float width, float height) {
 
         this->cell_region = this->tiles[0][0]->get_bounding_box();
         this->cell_region.rbdot.x -= margin.horizon();
-        this->cell_region.rbdot.y -= margin.horizon();
+        this->cell_region.rbdot.y -= margin.vertical();
     }
 
     TheBigBang::load(width, height);
