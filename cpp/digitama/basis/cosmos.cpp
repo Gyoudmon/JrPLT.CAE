@@ -1,8 +1,9 @@
 #include "cosmos.hpp"
 
-// 倒入一个个任务世界
+// 导入一个个任务世界
 #include "shape.hpp"                // 几何图形
 #include "paddleball.hpp"           // 托球游戏
+#include "angry_bird.hpp"           // 愤怒小鸟
 
 #include "color_mixture.hpp"        // 混色模型
 #include "color_wheel.hpp"          // 色相环
@@ -12,7 +13,7 @@
 #include "game_of_life.hpp"         // 生命游戏
 #include "evolution.hpp"            // 演化游戏
 
-// 倒入教师演示程序
+// 导入教师演示程序
 #include <pltmos/stream.hpp>
 #include <stemos/schematics/optics/chromaticity.hpp>
 
@@ -32,7 +33,7 @@ void Linguisteen::BigBangCosmos::construct(int argc, char* argv[]) {
     // 第一阶段
     this->push_plane(new ShapeWorld());
     this->push_plane(new PaddleBallWorld());
-    this->push_plane(new TheBigBang());
+    this->push_plane(new AngryBirdWorld());
 
     // 第二阶段
     this->push_plane(new ColorMixtureWorld());

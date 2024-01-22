@@ -39,7 +39,7 @@ namespace {
     /******************************************* 声明游戏世界 ******************************************/
     class PaddleBallWorld : public GYDM::Universe {
     public:
-        PaddleBallWorld() : Universe("Paddle Ball (Procedural)") { /* 什么都不做 */ }
+        PaddleBallWorld() : Universe("托球优秀(过程版)") { /* 什么都不做 */ }
         virtual ~PaddleBallWorld() { /* 什么都不做 */ }
 
     public: // 覆盖游戏基本方法
@@ -104,9 +104,9 @@ namespace {
         }
 
         // 定义和实现 PaddleBallWorld::draw 方法，在舞台上绘制出当前位置的球和桨
-        void draw(SDL_Renderer* renderer, int x, int y, int width, int height) override {
-            Brush::fill_circle(renderer, this->ball.x, this->ball.y, ball_radius, this->ball.color);
-            Brush::fill_rect(renderer, this->paddle.x, this->paddle.y, paddle_width, paddle_height, FORESTGREEN);
+        void draw(dc_t* dc, int x, int y, int width, int height) override {
+            dc->fill_circle(this->ball.x, this->ball.y, ball_radius, this->ball.color);
+            dc->fill_rect(this->paddle.x, this->paddle.y, paddle_width, paddle_height, FORESTGREEN);
         }
 
     protected: // 覆盖键盘事件处理方法

@@ -15,7 +15,7 @@ static MatterAnchor anchors [] = {
 
 /*************************************************************************************************/
 int WarGrey::IMS::HexagonalDesklet::get_seat_by(float local_x, float local_y) {
-    Dot O = this->get_bounding_box().point(MatterAnchor::CC);
+    Dot O = this->get_bounding_box().point_at(MatterAnchor::CC);
     float theta = flatan(local_y - O.y, local_x - O.x);
 
     int idx = 0; 
@@ -41,7 +41,7 @@ void WarGrey::IMS::HexagonalDesklet::sit(ISprite* stu, int idx, double duration)
             float dy = 0.0F;
             
             master->glide_to(duration, stu,
-                Dot(box.width() * flcos(theta), box.height() + flsin(theta)) + O,
+                Dot(box.width() * flcos(theta), box.height() * flsin(theta)) + O,
                 anchors[idx - 1], Vector::O);
 
             switch (idx) {
