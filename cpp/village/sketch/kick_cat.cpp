@@ -38,9 +38,9 @@ struct BadPerson {
 };
 
 // 门槛不算高，但是极其折磨人
-int main(int 参数数量, char* 参数小组[]) {
-    printf("Kick the Cat Effect: %s\n", 参数小组[0]);
+int main(int 参数数量, char* 参数小组[]) {printf("Kick the Cat Effect: %s\n", 参数小组[0]);
 
+    
     /* 注意区分这两种实例化方式 */
     BadPerson 老板("Boss");
     BadPerson* 员工 = new BadPerson("Employee");

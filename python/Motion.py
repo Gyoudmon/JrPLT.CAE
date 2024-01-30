@@ -30,8 +30,8 @@ class MotionWorld(Plane):
         self.blue.set_border_strategy([BorderStrategy.STOP])
         self.green.set_border_strategy([BorderStrategy.STOP])
 
-    # 实现 MotionWorld::on_mission_start 方法，调整球和桨的初始位置
-    def on_mission_start(self, width, height):
+    # 实现 MotionWorld::on_mission_start 方法，调整球的位置和速度
+    def reflow(self, width, height):
         self.move_to(self.red, (width * 0.5, ball_radius), MatterAnchor.CT)
         self.move_to(self.yellow, (width - ball_radius, height * 0.5), MatterAnchor.RC)
         self.move_to(self.blue, (width * 0.5, height - ball_radius), MatterAnchor.CB)
