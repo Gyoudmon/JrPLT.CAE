@@ -1,0 +1,77 @@
+/* CMD-SHIFT-V for preview */
+/* CMD-K Shift-V for realtime preview */
+
+digraph StageTree {
+    node [ style = filled, color = transparent, fontcolor = ghostwhite ];
+
+    /* special nodes */
+    node [ shape = egg, width = 0.4, height = 0.2 ];
+    Self [ color = Black, label = "" ];
+    Clone [ color = Black, label = "" ];
+
+    /* conditional nodes */
+    node [ shape = hexagon, width = 1.618, height = 0.3, fillcolor = steelblue ];
+    CollidingDetect [ label = "碰撞检测" ];
+    
+    /* Motion nodes */
+    node [ shape = rect, fillcolor = DodgerBlue ];
+    Self_Setup [ label = "基本设置" ];
+    Alter [ label = "改变运动状态" ];
+    LoopMove [ label = "左右来回移动" ];
+
+    /* Looks nodes */
+    node [ shape = rect, fillcolor = BlueViolet ];
+    Hide [ label = "隐藏" ];
+    Show [ label = "显示" ];
+
+    /* Control nodes */
+    node [ shape = rect, fillcolor = Gold ];
+    Clone_Self [ label = "克隆自己" ];
+    Wait_Self [ label = "等待几秒" ];
+    Delete_Clone [ label = "被吃或游戏结束" ];
+
+    /* edges */
+    subgraph main {
+        /* cluster attributes */
+        bgcolor = white;
+        color = LightGrey;
+        fontcolor = Grey;
+        fontsize = 12;
+            
+        subgraph cluster_self {
+            label = "本体";
+            labeljust = l;
+            
+            Self_Setup -> Hide -> Alter;
+
+            subgraph cluster_self_loop {
+                label = "本体主循环";
+                labeljust = l;
+                fontcolor = Goldenrod;
+                color = Gold;
+            
+                Alter -> Clone_Self -> Wait_Self;
+            }
+        }
+
+        subgraph cluster_clone {
+            label = "克隆体";
+            labeljust = l;
+
+            Show -> LoopMove;
+
+            subgraph cluster_clone_loop {
+                label = "克隆体主循环";
+                labeljust = l;
+                fontcolor = Goldenrod;
+                color = Gold;
+
+                LoopMove -> CollidingDetect;
+                CollidingDetect -> Delete_Clone [ taillabel = "Yes" ];
+            }
+        }
+
+        Self -> Self_Setup;
+        Clone -> Show;
+    }
+}

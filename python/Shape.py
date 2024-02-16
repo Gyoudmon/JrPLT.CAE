@@ -17,6 +17,7 @@ class ShapeWorld(Plane):
         self.door = None
         self.lock = None
         self.window = None
+        self.garden = None
 
     # 实现 ShapeWorld::load 方法，在舞台上加入基础几何图形的实例，注意添加顺序
     def load(self, Width, Height):

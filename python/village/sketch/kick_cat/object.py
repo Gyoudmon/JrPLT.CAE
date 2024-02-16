@@ -18,12 +18,10 @@ class BadPerson(object):
 
 # 实例化，找个人来扮演这个角色, 对象
 老板 = BadPerson("画饼大师")
-
-
 员工 = BadPerson("加班狗")
 孩子 = BadPerson("国粹哥")
 
 # 完整的“主谓宾”句子，还原“踢猫效应”情境
-# 老板.kick(员工.name, "左")
-# 员工.kick(孩子.name, "左")
-# 孩子.kick("瘟猫", "左")
+老板.kick(员工.name, "左")
+员工.kick(孩子.name, "左")
+孩子.kick("瘟猫", "左")
