@@ -14,7 +14,7 @@ paddle_speed = ball_speed * 1.5
 class PaddleBallWorld(Plane):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题
-        super(PaddleBallWorld, self).__init__("托球游戏")
+        super().__init__("托球游戏")
 
         # 本游戏世界中的物体
         self.ball = None

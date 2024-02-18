@@ -6,7 +6,7 @@ digraph StageTree {
 
     /* special nodes */
     node [ shape = egg, width = 0.4, height = 0.2 ];
-    Self [ color = Black, label = "" ];
+    Self [ color = Green, label = "" ];
     Clone [ color = Black, label = "" ];
 
     /* conditional nodes */

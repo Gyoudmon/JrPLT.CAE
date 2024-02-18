@@ -33,6 +33,7 @@ class MotionWorld(Plane):
     # 实现 MotionWorld::on_mission_start 方法，调整球的位置和速度
     def reflow(self, width, height):
         self.move_to(self.red, (width * 0.5, ball_radius), MatterAnchor.CT)
+        self.move_to(self.red, (width * 0.5, ball_radius), MatterAnchor.CT)
         self.move_to(self.yellow, (width - ball_radius, height * 0.5), MatterAnchor.RC)
         self.move_to(self.blue, (width * 0.5, height - ball_radius), MatterAnchor.CB)
         self.move_to(self.green, (ball_radius, height * 0.5), MatterAnchor.LC)
