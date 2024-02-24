@@ -1,8 +1,8 @@
 /* CMD-SHIFT-V for preview */
 /* CMD-K Shift-V for realtime preview */
 
-digraph StageTree {
-    node [ style = filled, color = transparent, fontcolor = ghostwhite ];
+digraph CloneFlowChart {
+    node [ style = filled, color = transparent, fontcolor = ghostwhite, fontsize = 24 ];
 
     /* special nodes */
     node [ shape = egg, width = 0.4, height = 0.2 ];
@@ -10,7 +10,7 @@ digraph StageTree {
     Clone [ color = Black, label = "" ];
 
     /* conditional nodes */
-    node [ shape = hexagon, width = 1.618, height = 0.3, fillcolor = steelblue ];
+    node [ shape = hexagon, width = 3.0, height = 0.3, fillcolor = steelblue ];
     CollidingDetect [ label = "碰撞检测" ];
     
     /* Motion nodes */
@@ -36,7 +36,7 @@ digraph StageTree {
         bgcolor = white;
         color = LightGrey;
         fontcolor = Grey;
-        fontsize = 12;
+        fontsize = 16;
             
         subgraph cluster_self {
             label = "本体";

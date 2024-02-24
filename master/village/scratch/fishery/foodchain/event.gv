@@ -1,0 +1,40 @@
+/* CMD-SHIFT-V for preview */
+/* CMD-K Shift-V for realtime preview */
+
+digraph EventFlowChart {
+    node [ style = filled, color = transparent, fontcolor = ghostwhite, fontsize = 24 ];
+
+    /* special nodes */
+    node [ shape = egg, width = 0.4, height = 0.2 ];
+    Attacking [ color = Gold, label = "河豚吃小鱼" ];
+    Attacked [ color = Gold, label = "鲨鱼攻击河豚" ];
+
+    /* conditional nodes */
+    node [ shape = hexagon, width = 3.0, height = 0.3, fillcolor = steelblue ];
+    AttackingCheck [ label = "河豚小鱼碰撞" ];
+    AttackedCheck [ label = "河豚鲨鱼碰撞" ];
+    BodySizeCheck [ label = "体型太小" ];
+
+    /* Looks nodes */
+    node [ shape = rect, fillcolor = BlueViolet ];
+    Expand [ label = "体型增大" ];
+    Shrink [ label = "体型减小" ];
+
+    /* Control nodes */
+    node [ shape = rect, fillcolor = Gold ];
+    GameOver [ label = "游戏结束" ];
+
+    /* edges */
+    subgraph main {
+        /* cluster attributes */
+        bgcolor = white;
+        color = LightGrey;
+        
+        AttackingCheck -> Attacking [ style = "dashed", arrowsize = "0.4", taillabel = "Yes" ]; 
+        AttackedCheck -> Attacked [ style = "dashed", arrowsize = "0.4", taillabel = "Yes" ];
+
+        Attacking -> Expand;
+        Attacked -> Shrink -> BodySizeCheck;
+        BodySizeCheck -> GameOver [ taillabel = "Yes" ];
+    }
+}

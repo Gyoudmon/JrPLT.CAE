@@ -13,6 +13,8 @@
             "internalConsoleOptions": "openOnSessionStart",
             "MIMode": "lldb",
             "preLaunchTask": "快捷构建",
+            "externalConsole": true,
+            "avoidWindowsConsoleRedirection": true,
 
             "windows": {
                 "program": "${fileDirname}/compiled/native/bin/${fileBasenameNoExtension}.exe",
