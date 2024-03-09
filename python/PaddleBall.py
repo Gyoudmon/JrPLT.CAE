@@ -41,16 +41,8 @@ class PaddleBallWorld(Plane):
 
     # 实现 PaddleBallWorld::update 方法，根据当前球和桨的当前位置判断是否有碰撞，无需考虑运动细节
     def update(self, count, interval, uptime):
-        # 查询桨右下角的位置
-        _, ball_ty = self.get_matter_location(self.ball, MatterAnchor.LT)
-        # 查询球左上角的位置
-        _, paddle_by = self.get_matter_location(self.paddle, MatterAnchor.RB)
-        
-        if ball_ty < paddle_by: # 球未脱板, 检测小球是否被捕获
-            if self.is_colliding(self.ball, self.paddle):
-                self.ball.motion_bounce(False, True) # 正常，反弹球
-        else:
-            self.ball.set_color(LIGHTGREY)
+        if self.is_colliding(self.ball, self.paddle):
+            self.ball.motion_bounce(False, True) # 正常，反弹球
 
     # 实现 PaddleBallWorld::on_char 方法，处理键盘事件，用于控制桨的移动
     def on_char(self, key, modifiers, repeats, pressed):
