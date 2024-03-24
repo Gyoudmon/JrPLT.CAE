@@ -43,11 +43,11 @@
 
 (module+ main
   (define data : (Listof (Vector Real Real))
-    (list #;(100 16)
-          #;(80 13)
-          #(60 4.8)
-          #(40 3.1)
-          #(20 1.9)))
+    (list #(100 8.2)
+          #(80 6.5)
+          #(60 4.7)
+          #(40 3.2)
+          #(20 1.8)))
   
   (define-values (k b fx) (hookes-fit/least-square-method data))
 
