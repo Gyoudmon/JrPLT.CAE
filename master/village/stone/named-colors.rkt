@@ -39,9 +39,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define named-colors : Bitmap
   (color-tables '(black darkgrey lightgrey grey white
-                        darkred darkgreen darkyellow darkblue darkmagenta
-                        darkcyan red lightred green lightgreen yellow lightyellow
-                        blue lightblue magenta lightmagenta cyan lightcyan
+                        darkred darkgreen darkblue darkmagenta
+                        darkcyan red green lightgreen yellow lightyellow
+                        blue lightblue magenta cyan lightcyan ghostwhite
                         lime orange chocolate gold purple violet darkviolet)
                 2))
 
