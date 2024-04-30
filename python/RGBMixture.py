@@ -7,10 +7,10 @@ radius: float = 100.0
 gliding_duration: float = 2.0
 
 ###############################################################################
-class ColorMixtureWorld(Plane):
+class RGBMixtureWorld(Plane):
     def __init__(self):
         # 通过父类的构造函数设置窗口标题和帧频
-        super(ColorMixtureWorld, self).__init__("混色模型")
+        super(RGBMixtureWorld, self).__init__("加色模型")
 
         # 本游戏世界有以下物体
         self.red = None
@@ -31,14 +31,14 @@ class ColorMixtureWorld(Plane):
         self.blue.set_color_mixture(ColorMixture.Add)
 
     def reflow(self, width, height):
-        self.move_to(self.green, (width * 0.5, height * 0.5), MatterAnchor.CC)
+        self.move_to(self.green, (0.0, height * 0.5), MatterAnchor.LC)
         self.move_to(self.red, (self.green, MatterAnchor.CT), MatterAnchor.CB)
         self.move_to(self.blue, (self.green, MatterAnchor.CB), MatterAnchor.CT)
 
     def can_select(self, matter):
         return isinstance(matter, Circlet)
 
-    # 实现 ColorMixtureWorld::after_select 方法
+    # 实现 RGBMixtureWorld::after_select 方法
     def after_select(self, matter, yes):
         if not yes:
             self.glide_to_mouse(gliding_duration, matter, MatterAnchor.CC)
@@ -49,4 +49,4 @@ class ColorMixtureWorld(Plane):
         self.no_selected()
     
 ###############################################################################
-launch_universe(ColorMixtureWorld, __name__)
+launch_universe(RGBMixtureWorld, __name__)

@@ -30,7 +30,7 @@ void Linguisteen::ColorMixtureWorld::load(float width, float height) {
     this->magenta = this->insert(new Circlet(radius, 0xFF00FFU)); // 品红
     this->yellow = this->insert(new Circlet(radius, 0xFFFF00U));  // 黄色
 
-    /* 设置混色模式，CYMK 属减少模型，但实际计算为乘法 */
+    /* 设置混色模式，CYMK 属减色模型，但实际计算为乘法 */
     this->cyan->set_color_mixture(ColorMixture::Subtract);
     this->magenta->set_color_mixture(ColorMixture::Multiply);
     this->yellow->set_color_mixture(ColorMixture::Multiply);
