@@ -11,7 +11,7 @@ namespace WarGrey::IMS {
         virtual ~StudentSprite() {}
 
     public:
-        void draw(SDL_Renderer* renderer, float x, float y, float Width, float Height) override;
+        void draw(GYDM::dc_t* renderer, float x, float y, float Width, float Height) override;
 
     public:
         const char* name() override { return this->nickname.c_str(); }

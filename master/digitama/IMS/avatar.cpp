@@ -25,11 +25,11 @@ void WarGrey::IMS::AvatarPlane::reflow(float width, float height) {
     float grid_width = grid.height() * 0.8F;
 
     for (size_t idx = 0; idx < this->labels.size(); idx ++) {
-        this->move_to(this->labels[idx], { grid_width * 0.3F, grid.rbdot.y }, MatterAnchor::CB);
-        this->move_to(this->avatars[idx], { grid_width * 1.5F, grid.rbdot.y }, MatterAnchor::CB);
+        this->move_to(this->labels[idx], { grid_width * 0.3F, grid.rbdot.y }, MatterPort::CB);
+        this->move_to(this->avatars[idx], { grid_width * 1.5F, grid.rbdot.y }, MatterPort::CB);
         
         grid += Dot(0.0F, grid.height());
     }
 
-    this->move_to(this->title, { grid_width * 1.5F, 0.0F }, MatterAnchor::CT);
+    this->move_to(this->title, { grid_width * 1.5F, 0.0F }, MatterPort::CT);
 }

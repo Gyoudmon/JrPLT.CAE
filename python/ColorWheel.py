@@ -42,12 +42,11 @@ class ColorWheelWorld(Plane):
 
     def reflow(self, width, height):
         cx, cy = width * 0.5, height * 0.5
-        
-        for cc in self.hues:
-            x, y = circle_point(wheel_radius, cc.get_color_hue() - 90.0, False)
-            self.move_to(cc, (cx + x, cy + y), MatterAnchor.CC)
+        off = 50.0
 
-        self.__reflow_primaries(cx, cy)
+        self.move_to(self.RED, (cx, cy), MatterAnchor.CB, 0.0, off)
+        self.move_to(self.GREEN, (self.RED, MatterAnchor.CB), MatterAnchor.RC, off)
+        self.move_to(self.BLUE, (self.GREEN, MatterAnchor.CC), MatterAnchor.LC)
 
     def can_select(self, matter):
         return isinstance(matter, Circlet)

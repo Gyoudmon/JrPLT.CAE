@@ -8,14 +8,14 @@ using namespace WarGrey::IMS;
 /*************************************************************************************************/
 static float unit_rad = pi_f / 3.0F;
 
-static MatterAnchor anchors [] = {
-    MatterAnchor::CC, MatterAnchor::RC, MatterAnchor::RB,
-    MatterAnchor::CB, MatterAnchor::LB, MatterAnchor::LC
+static MatterPort anchors [] = {
+    MatterPort::CC, MatterPort::RC, MatterPort::RB,
+    MatterPort::CB, MatterPort::LB, MatterPort::LC
 };
 
 /*************************************************************************************************/
 int WarGrey::IMS::HexagonalDesklet::get_seat_by(float local_x, float local_y) {
-    Dot O = this->get_bounding_box().point_at(MatterAnchor::CC);
+    Dot O = this->get_bounding_box().point_at(MatterPort::CC);
     float theta = flatan(local_y - O.y, local_x - O.x);
 
     int idx = 0; 
@@ -36,7 +36,7 @@ void WarGrey::IMS::HexagonalDesklet::sit(ISprite* stu, int idx, double duration)
         if (master != nullptr) {
             float theta = (float(idx % this->seat_count()) + 0.5F) * unit_rad;
             Box box = this->get_bounding_box() * 0.5F;
-            Dot O = master->get_matter_location(this, MatterAnchor::CC);
+            Dot O = master->get_matter_location(this, MatterPort::CC);
             float dx = 0.0F;
             float dy = 0.0F;
             

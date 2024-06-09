@@ -27,10 +27,10 @@ WarGrey::IMS::Gradelet::Gradelet(const char* name, float width) : _name(name), w
     this->enable_resize(false);
 }
 
-void WarGrey::IMS::Gradelet::construct(SDL_Renderer* renderer) {
-    this->title = std::make_shared<Texture>(game_blended_text_texture(renderer, this->_name, HEAD_FONT, head_color));
-    this->timestamp = std::make_shared<Texture>(game_blended_text_texture(renderer, " ", MATH_FONT, tail_color));
-    this->total_score = std::make_shared<Texture>(game_blended_text_texture(renderer, "-", MATH_FONT, tail_color));
+void WarGrey::IMS::Gradelet::construct(dc_t* dc) {
+    this->title = std::make_shared<Texture>(dc->create_blended_text(this->_name, HEAD_FONT, head_color));
+    this->timestamp = std::make_shared<Texture>(dc->create_blended_text(" ", MATH_FONT, tail_color));
+    this->total_score = std::make_shared<Texture>(dc->create_blended_text("-", MATH_FONT, tail_color));
 }
 
 Box WarGrey::IMS::Gradelet::get_bounding_box() {
@@ -43,7 +43,7 @@ Box WarGrey::IMS::Gradelet::get_bounding_box() {
     return { flabs(this->width), title_height + total_score_height + this->score_line_height() * line_count };
 }
 
-void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, float width, float height) {
+void WarGrey::IMS::Gradelet::draw(dc_t* dc, float x, float y, float width, float height) {
     float dis_height = this->score_line_height();
     float rx = x + width;
     float by = y + height;
@@ -52,14 +52,14 @@ void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, floa
     float cw, ch;
     
     /* background decoration */ {
-        Brush::fill_rect(renderer, x, y, width, height, RGBA(DIMGRAY, 0.5));
-        Brush::draw_rect(renderer, x, y, width, height, RGBA(ROYALBLUE, 1.0));
+        dc->fill_rect(x, y, width, height, RGBA(DIMGRAY, 0.5));
+        dc->draw_rect(x, y, width, height, RGBA(ROYALBLUE, 1.0));
     }
 
     /* draw title */ {
         this->title->feed_extent(&cw, &ch);
-        Brush::stamp(renderer, this->title->self(), x + (width - cw) * 0.5F, y);
-        Brush::draw_line(renderer, x, y + ch, rx, y + ch, line_color);
+        dc->stamp(this->title->self(), x + (width - cw) * 0.5F, y);
+        dc->draw_line(x, y + ch, rx, y + ch, line_color);
     }
 
     if (dis_height > 0.0F) {
@@ -69,15 +69,15 @@ void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, floa
             float dff_w = 0.0F;
         
             this->disciplines[idx]->feed_extent(&cw, &ch);
-            Brush::stamp(renderer, this->disciplines[idx]->self(), dis_lx, dis_row_by - ch, cw, ch);
+            dc->stamp(this->disciplines[idx]->self(), dis_lx, dis_row_by - ch, cw, ch);
         
             if (this->diffs[idx].use_count() > 0) {
                 this->diffs[idx]->feed_extent(&dff_w, &ch);
-                Brush::stamp(renderer, this->diffs[idx]->self(), dis_rx - dff_w, dis_row_by - ch, dff_w, ch);
+                dc->stamp(this->diffs[idx]->self(), dis_rx - dff_w, dis_row_by - ch, dff_w, ch);
             }
         
             this->scores[idx]->feed_extent(&cw, &ch);
-            Brush::stamp(renderer, this->scores[idx]->self(), dis_rx - cw - dff_w, dis_row_by - ch, cw, ch);
+            dc->stamp(this->scores[idx]->self(), dis_rx - cw - dff_w, dis_row_by - ch, cw, ch);
             
             dis_row_by += dis_height;
         }
@@ -85,18 +85,18 @@ void WarGrey::IMS::Gradelet::draw(SDL_Renderer* renderer, float x, float y, floa
 
     /* draw tail */ {
         this->total_score->feed_extent(&cw, &ch);
-        Brush::stamp(renderer, this->timestamp->self(), dis_lx, by - ch);
-        Brush::stamp(renderer, this->total_score->self(), dis_rx - cw, by - ch);
-        Brush::draw_line(renderer, x, by - ch, rx, by - ch, line_color);
+        dc->stamp(this->timestamp->self(), dis_lx, by - ch);
+        dc->stamp(this->total_score->self(), dis_rx - cw, by - ch);
+        dc->draw_line(x, by - ch, rx, by - ch, line_color);
     }
 }
 
-void WarGrey::IMS::Gradelet::set_title(const std::string& title, GYDM::MatterAnchor anchor) {
-    SDL_Renderer* renderer = this->master_renderer();
+void WarGrey::IMS::Gradelet::set_title(const std::string& title, GYDM::MatterPort anchor) {
+    dc_t* dc = this->master()->drawing_context();
 
-    if (renderer != nullptr) {
+    if (dc != nullptr) {
         this->moor(anchor);
-        this->title.reset(new Texture(game_blended_text_texture(renderer, title, HEAD_FONT, head_color)));
+        this->title.reset(new Texture(dc->create_blended_text(title, HEAD_FONT, head_color)));
         this->notify_updated();
         this->clear_moor();
     }
@@ -107,15 +107,15 @@ void WarGrey::IMS::Gradelet::set_title(const char* title, ...) {
     this->set_title(t);
 }
 
-void WarGrey::IMS::Gradelet::set_title(GYDM::MatterAnchor anchor, const char* title, ...) {
+void WarGrey::IMS::Gradelet::set_title(GYDM::MatterPort anchor, const char* title, ...) {
     VSNPRINT(t, title);
     this->set_title(t, anchor);
 }
 
-void WarGrey::IMS::Gradelet::set_disciplines(const std::vector<DisciplineType>& dis, GYDM::MatterAnchor anchor) {
-    SDL_Renderer* renderer = this->master_renderer();
+void WarGrey::IMS::Gradelet::set_disciplines(const std::vector<DisciplineType>& dis, GYDM::MatterPort anchor) {
+    dc_t* dc = this->master()->drawing_context();
 
-    if (renderer != nullptr) {
+    if (dc != nullptr) {
         size_t total = dis.size();
 
         this->moor(anchor);
@@ -128,8 +128,8 @@ void WarGrey::IMS::Gradelet::set_disciplines(const std::vector<DisciplineType>& 
         for (size_t idx = 0; idx < total; idx ++) {
             std::string name = make_nstring("%s", DisciplineEntity::type_to_name(dis[idx]));
 
-            this->disciplines[idx].reset(new Texture(game_blended_text_texture(renderer, name, BODY_FONT, body_color)));
-            this->scores[idx].reset(new Texture(game_blended_text_texture(renderer, "-", MATH_FONT, body_color)));
+            this->disciplines[idx].reset(new Texture(dc->create_blended_text(name, BODY_FONT, body_color)));
+            this->scores[idx].reset(new Texture(dc->create_blended_text("-", MATH_FONT, body_color)));
             this->diffs[idx].reset();
             this->percentages[idx].clear();
         }
@@ -140,9 +140,9 @@ void WarGrey::IMS::Gradelet::set_disciplines(const std::vector<DisciplineType>& 
 }
 
 void WarGrey::IMS::Gradelet::set_scores(uint64_t timestamp, const std::vector<double>& scores) {
-    SDL_Renderer* renderer = this->master_renderer();
+    dc_t* dc = this->master()->drawing_context();
 
-    if (renderer != nullptr) {
+    if (dc != nullptr) {
         size_t having = this->scores.size();
         size_t given = scores.size();
         double total = flnan;
@@ -152,26 +152,26 @@ void WarGrey::IMS::Gradelet::set_scores(uint64_t timestamp, const std::vector<do
                 double s = scores[idx];
 
                 if (s >= 0.0) {
-                    this->scores[idx].reset(new Texture(game_blended_text_texture(renderer,
+                    this->scores[idx].reset(new Texture(dc->create_blended_text(
                         make_nstring("%.2f", scores[idx]), MATH_FONT, this->score_color(scores, s))));
                     total = flisnan(total) ? s : total + s; 
                 } else {
-                    this->clear_score(renderer, idx);
+                    this->clear_score(dc, idx);
                 }
             } else {
-                this->clear_score(renderer, idx);
+                this->clear_score(dc, idx);
             }
         }
 
-        this->set_total_score(renderer, timestamp, total);
+        this->set_total_score(dc, timestamp, total);
         this->notify_updated();
     }
 }
 
 void WarGrey::IMS::Gradelet::set_score_via_points(uint64_t timestamp, const std::vector<std::vector<double>>& score_pts) {
-    SDL_Renderer* renderer = this->master_renderer();
+    dc_t* dc = this->master()->drawing_context();
 
-    if (renderer != nullptr) {
+    if (dc != nullptr) {
         size_t having = this->scores.size();
         size_t given = scores.size();
         double total = flnan;
@@ -184,29 +184,29 @@ void WarGrey::IMS::Gradelet::set_score_via_points(uint64_t timestamp, const std:
                     double s = vector_sum(pts);
 
                     if (s > 0.0) {
-                        this->scores[idx].reset(new Texture(game_blended_text_texture(renderer,
+                        this->scores[idx].reset(new Texture(dc->create_blended_text(
                             make_nstring("%.1f", s), MATH_FONT, this->score_color(pts, s))));
                         total = flisnan(total) ? s : total + s; 
                     } else {
-                        this->clear_score(renderer, idx);
+                        this->clear_score(dc, idx);
                     }
                 } else {
-                    this->clear_score(renderer, idx);
+                    this->clear_score(dc, idx);
                 }
             } else {
-                this->clear_score(renderer, idx);
+                this->clear_score(dc, idx);
             }
         }
 
-        this->set_total_score(renderer, timestamp, total);
+        this->set_total_score(dc, timestamp, total);
         this->notify_updated();
     }
 }
 
 void WarGrey::IMS::Gradelet::set_score_diffs(const std::vector<double>& diffs) {
-    SDL_Renderer* renderer = this->master_renderer();
+    dc_t* dc = this->master()->drawing_context();
 
-    if (renderer != nullptr) {
+    if (dc != nullptr) {
         size_t total = this->scores.size();
         size_t given = scores.size();
         
@@ -215,13 +215,13 @@ void WarGrey::IMS::Gradelet::set_score_diffs(const std::vector<double>& diffs) {
                 double diff = diffs[idx];
 
                 if (diff > 0.0) {
-                    this->diffs[idx].reset(new Texture(game_blended_text_texture(renderer,
+                    this->diffs[idx].reset(new Texture(dc->create_blended_text(
                         make_nstring("+%.1f", diff), DIFF_FONT, LIME)));
                 } else if (diff < 0.0) {
-                    this->diffs[idx].reset(new Texture(game_blended_text_texture(renderer,
+                    this->diffs[idx].reset(new Texture(dc->create_blended_text(
                         make_nstring("%.1f", diff), DIFF_FONT, DARKRED)));
                 } else if (diff == 0.0) {
-                    this->diffs[idx].reset(new Texture(game_blended_text_texture(renderer,
+                    this->diffs[idx].reset(new Texture(dc->create_blended_text(
                         "=", DIFF_FONT, LIGHTGRAY)));
                 } else { // NaN
                     this->diffs[idx].reset();
@@ -235,37 +235,37 @@ void WarGrey::IMS::Gradelet::set_score_diffs(const std::vector<double>& diffs) {
     }
 }
 
-void WarGrey::IMS::Gradelet::set_total_score(SDL_Renderer* renderer, uint64_t timestamp, double score) {
-    this->timestamp.reset(new Texture(game_blended_text_texture(renderer,
+void WarGrey::IMS::Gradelet::set_total_score(dc_t* dc, uint64_t timestamp, double score) {
+    this->timestamp.reset(new Texture(dc->create_blended_text(
         (timestamp > 0U) ? make_nstring("%llu", timestamp) : "-",
         MATH_FONT, tail_color)));
 
-    this->total_score.reset(new Texture(game_blended_text_texture(renderer,
+    this->total_score.reset(new Texture(dc->create_blended_text(
         (score >= 0.0) ? make_nstring("%.1f", score) : "-",
         MATH_FONT, tail_color)));
 }
 
-void WarGrey::IMS::Gradelet::clear(MatterAnchor anchor) {
-    SDL_Renderer* renderer = this->master_renderer();
+void WarGrey::IMS::Gradelet::clear(MatterPort anchor) {
+    dc_t* dc = this->master()->drawing_context();
 
-    if (renderer != nullptr) {
+    if (dc != nullptr) {
         this->moor(anchor);
 
         this->set_title(" ");
 
         for (size_t idx = 0; idx < this->scores.size(); idx ++) {
-            this->clear_score(renderer, idx);
+            this->clear_score(dc, idx);
         }
 
-        this->set_total_score(renderer, 0U, flnan);
+        this->set_total_score(dc, 0U, flnan);
 
         this->notify_updated();
         this->clear_moor();
     }
 }
 
-void WarGrey::IMS::Gradelet::clear_score(SDL_Renderer* renderer, int idx) {
-    this->scores[idx].reset(new Texture(game_blended_text_texture(renderer, "-", MATH_FONT, body_color)));
+void WarGrey::IMS::Gradelet::clear_score(dc_t* dc, int idx) {
+    this->scores[idx].reset(new Texture(dc->create_blended_text("-", MATH_FONT, body_color)));
     this->diffs[idx].reset();
 }
 

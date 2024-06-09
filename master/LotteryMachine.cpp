@@ -22,9 +22,9 @@ namespace {
         void reflow(float width, float height) override {
             LotteryPlane::reflow(width, height);
 
-            this->move_to(this->ball_number_cpp, { width, height * 0.5F }, MatterAnchor::RC);
-            this->move_to(this->initialization_cpp, { 0.0F, height * 0.5F }, MatterAnchor::LB);
-            this->move_to(this->applying_forces_cpp, { 0.0F, height * 0.6F }, MatterAnchor::LT);
+            this->move_to(this->ball_number_cpp, { width, height * 0.5F }, MatterPort::RC);
+            this->move_to(this->initialization_cpp, { 0.0F, height * 0.5F }, MatterPort::LB);
+            this->move_to(this->applying_forces_cpp, { 0.0F, height * 0.6F }, MatterPort::LT);
         }
 
     private:

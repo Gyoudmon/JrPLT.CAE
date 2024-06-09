@@ -98,7 +98,7 @@ namespace {
                     this->on_student_changed(stu->primary_key());
                 } else if (cls != nullptr) {
                     if ((this->the_task == MenuTask::BindClass) && (this->the_sNo > 0U)) {
-                        this->glide_to(gliding_duration, this->students[this->the_sNo], { cls, MatterAnchor::RC }, MatterAnchor::LC);
+                        this->glide_to(gliding_duration, this->students[this->the_sNo], { cls, MatterPort::RC }, MatterPort::LC);
                         this->model->bind_student_to_class(this->the_sNo, cls->primary_key());
                     } else {
                         this->on_class_changed(cls->primary_key(), false);
@@ -386,13 +386,13 @@ namespace {
             }
 
             this->the_clsId = (this->the_clsId != clsId) ? clsId : 0U;
-            this->stuLabel->set_text(MatterAnchor::RB, " ");
+            this->stuLabel->set_text(MatterPort::RB, " ");
 
             if (this->the_clsId > 0U) {
                 this->doors[this->the_clsId]->open();
-                this->clsLabel->set_text(MatterAnchor::RT, "%u班(%zu人)", this->the_clsId, this->model->get_class_population(this->the_clsId));
+                this->clsLabel->set_text(MatterPort::RT, "%u班(%zu人)", this->the_clsId, this->model->get_class_population(this->the_clsId));
             } else {
-                this->clsLabel->set_text(MatterAnchor::RB, " ");    
+                this->clsLabel->set_text(MatterPort::RB, " ");    
             }
             
             if (!in_batching) {
@@ -481,9 +481,9 @@ namespace {
             this->the_sNo = sNo;
 
             if (this->the_sNo > 0U) {
-                this->stuLabel->set_text(MatterAnchor::RB, "%s", this->students[this->the_sNo]->name());
+                this->stuLabel->set_text(MatterPort::RB, "%s", this->students[this->the_sNo]->name());
             } else {
-                this->stuLabel->set_text(MatterAnchor::RB, "-");
+                this->stuLabel->set_text(MatterPort::RB, "-");
             }
 
             this->update_student_report(this->the_sNo);
@@ -528,16 +528,16 @@ namespace {
             float sidebar_width = this->calculate_sidebar_width();
             float gap = 3.0F;
 
-            this->move_to(this->title, { this->agent, MatterAnchor::RB }, MatterAnchor::LB);
-            this->move_to(this->side_border, { sidebar_width, height }, MatterAnchor::CB);
+            this->move_to(this->title, { this->agent, MatterPort::RB }, MatterPort::LB);
+            this->move_to(this->side_border, { sidebar_width, height }, MatterPort::CB);
             
             for (auto menu : this->menus) {
-                this->move_to(menu.second, { this->agent, MatterAnchor::LB }, MatterAnchor::LT, { 4.0F, 4.0F });
+                this->move_to(menu.second, { this->agent, MatterPort::LB }, MatterPort::LT, { 4.0F, 4.0F });
             }
 
-            this->move_to(this->avatar, { 0.0F, height }, MatterAnchor::LB, { gap, -gap });
-            this->move_to(this->stuReport, { 0.0F, height }, MatterAnchor::LB, { gap, -gap });
-            this->move_to(this->clsReport, { this->stuReport, MatterAnchor::CT }, MatterAnchor::CB, { 0.0F, -gap });
+            this->move_to(this->avatar, { 0.0F, height }, MatterPort::LB, { gap, -gap });
+            this->move_to(this->stuReport, { 0.0F, height }, MatterPort::LB, { gap, -gap });
+            this->move_to(this->clsReport, { this->stuReport, MatterPort::CT }, MatterPort::CB, { 0.0F, -gap });
         }
 
     private:
@@ -555,17 +555,17 @@ namespace {
             float sidebar_pos = this->calculate_sidebar_width();
             float croom_width = width - sidebar_pos;
 
-            this->move_to(this->platform, { croom_width * 0.50F + sidebar_pos, height * 0.95F }, MatterAnchor::CC);
-            this->move_to(this->clsLabel, { this->platform, MatterAnchor::RT }, MatterAnchor::RT, { -4.0F, +4.0F });
-            this->move_to(this->stuLabel, { this->platform, MatterAnchor::RB }, MatterAnchor::RB, { -4.0F, -4.0F });
+            this->move_to(this->platform, { croom_width * 0.50F + sidebar_pos, height * 0.95F }, MatterPort::CC);
+            this->move_to(this->clsLabel, { this->platform, MatterPort::RT }, MatterPort::RT, { -4.0F, +4.0F });
+            this->move_to(this->stuLabel, { this->platform, MatterPort::RB }, MatterPort::RB, { -4.0F, -4.0F });
 
-            this->move_to(this->desks[0], { croom_width * 0.25F + sidebar_pos, height * 0.64F }, MatterAnchor::CC);
-            this->move_to(this->desks[1], { croom_width * 0.50F + sidebar_pos, height * 0.75F }, MatterAnchor::CC);
-            this->move_to(this->desks[2], { croom_width * 0.75F + sidebar_pos, height * 0.64F }, MatterAnchor::CC);
-            this->move_to(this->desks[3], { croom_width * 0.25F + sidebar_pos, height * 0.32F }, MatterAnchor::CC);
-            this->move_to(this->desks[4], { croom_width * 0.50F + sidebar_pos, height * 0.45F }, MatterAnchor::CC);
-            this->move_to(this->desks[5], { croom_width * 0.75F + sidebar_pos, height * 0.32F }, MatterAnchor::CC);
-            this->move_to(this->desks[6], { croom_width * 0.50F + sidebar_pos, height * 0.15F }, MatterAnchor::CC);
+            this->move_to(this->desks[0], { croom_width * 0.25F + sidebar_pos, height * 0.64F }, MatterPort::CC);
+            this->move_to(this->desks[1], { croom_width * 0.50F + sidebar_pos, height * 0.75F }, MatterPort::CC);
+            this->move_to(this->desks[2], { croom_width * 0.75F + sidebar_pos, height * 0.64F }, MatterPort::CC);
+            this->move_to(this->desks[3], { croom_width * 0.25F + sidebar_pos, height * 0.32F }, MatterPort::CC);
+            this->move_to(this->desks[4], { croom_width * 0.50F + sidebar_pos, height * 0.45F }, MatterPort::CC);
+            this->move_to(this->desks[5], { croom_width * 0.75F + sidebar_pos, height * 0.32F }, MatterPort::CC);
+            this->move_to(this->desks[6], { croom_width * 0.50F + sidebar_pos, height * 0.15F }, MatterPort::CC);
 
             this->reflow_model_sprites(0.0);
         }
@@ -578,11 +578,11 @@ namespace {
 
         void reflow_class_logos(double duration = gliding_duration) {
             if (!this->doors.empty()) {
-                Dot spot = this->get_matter_location(this->side_border, MatterAnchor::CB);
+                Dot spot = this->get_matter_location(this->side_border, MatterPort::CB);
                 Box grid = this->doors.rbegin()->second->get_bounding_box() * 1.2F;
 
                 for (auto cls = this->doors.rbegin(); cls != this->doors.rend(); cls ++) {
-                    this->glide_to(duration, cls->second, spot, MatterAnchor::CB, { 0.0F, -1.0F });
+                    this->glide_to(duration, cls->second, spot, MatterPort::CB, { 0.0F, -1.0F });
                     spot.y -= grid.height();
                 }
             }
@@ -591,7 +591,7 @@ namespace {
         void reflow_discipline_logos(double duration = gliding_duration) {
             if (!this->disciplines.empty()) {
                 Dot gap(4.0F, 0.0F);
-                Dot spot = this->get_matter_location(this->platform, MatterAnchor::LC) + gap;
+                Dot spot = this->get_matter_location(this->platform, MatterPort::LC) + gap;
                 float grid_width = this->disciplines.begin()->second->get_bounding_box().width() + gap.x;
                 float dis_x0 = spot.x;
 
@@ -600,10 +600,10 @@ namespace {
 
                     if ((disCode == this->the_disCode) || (this->the_disCode == 0U)) {
                         dis.second->show(true);
-                        this->glide_to(duration, dis.second, spot, MatterAnchor::LC);
+                        this->glide_to(duration, dis.second, spot, MatterPort::LC);
                         spot.x += grid_width;
                     } else {
-                        this->glide_to(duration, dis.second, { dis_x0, spot.y }, MatterAnchor::LC);
+                        this->glide_to(duration, dis.second, { dis_x0, spot.y }, MatterPort::LC);
                     }
                 }
             }
@@ -611,7 +611,7 @@ namespace {
 
         void reflow_students(double duration = gliding_duration) {
             if (!this->students.empty()) {
-                Dot nocls_stu = this->get_matter_location(this->side_border, MatterAnchor::LB);
+                Dot nocls_stu = this->get_matter_location(this->side_border, MatterPort::LB);
                 Box grid = this->students.begin()->second->get_bounding_box();
                 uint64_t desk_idx, seat_idx;
                 float gap = 4.0F;
@@ -626,13 +626,13 @@ namespace {
                     stu.second->show((stuClsId == this->the_clsId) || (stuClsId == 0U));
 
                     if (stuClsId == 0U) {
-                        this->glide_to(duration, stu.second, nocls_stu, MatterAnchor::RB);
+                        this->glide_to(duration, stu.second, nocls_stu, MatterPort::RB);
 
                         if (nocls_stu.y > grid_y) {
                             nocls_stu.y -= grid.height();
                         } else {
                             nocls_stu.x -= grid.width();
-                            nocls_stu.y = this->get_matter_location(this->side_border, MatterAnchor::LB).y;
+                            nocls_stu.y = this->get_matter_location(this->side_border, MatterPort::LB).y;
                         }
                     } else {
                         if (stu.second->visible()) {
@@ -641,10 +641,10 @@ namespace {
                             if ((desk_idx > 0U) && (seat_idx > 0U)) {
                                 this->desks[desk_idx - 1]->sit(stu.second, seat_idx, duration);
                             } else {
-                                this->glide_to(duration, stu.second, { this->doors[stuClsId], MatterAnchor::RC }, MatterAnchor::LC);
+                                this->glide_to(duration, stu.second, { this->doors[stuClsId], MatterPort::RC }, MatterPort::LC);
                             }
                         } else {
-                            this->move_to(stu.second, { this->doors[stuClsId], MatterAnchor::RC }, MatterAnchor::LC);
+                            this->move_to(stu.second, { this->doors[stuClsId], MatterPort::RC }, MatterPort::LC);
                         }
                     }
                 }
@@ -673,8 +673,8 @@ namespace {
                             } else {
                                 this->model->bind_student_to_seat(stuTarget, 0, the_st);
                                 this->glide_to(gliding_duration, this->students[stuTarget],
-                                    { this->doors[this->the_clsId], MatterAnchor::RC },
-                                    MatterAnchor::LC);
+                                    { this->doors[this->the_clsId], MatterPort::RC },
+                                    MatterPort::LC);
                             }
                         }
 
@@ -758,7 +758,7 @@ namespace {
                 }
             }
 
-            report->set_disciplines(actual_types, MatterAnchor::LB);
+            report->set_disciplines(actual_types, MatterPort::LB);
         }
 
         void update_class_report(uint64_t clsId) {

@@ -24,7 +24,7 @@ void WarGrey::IMS::IMenu::reflow(float width, float height) {
         Labellet* prev_label = this->menulabels[this->menuitems[idx - 1].first];
         Labellet* self_label = this->menulabels[this->menuitems[idx].first];
         
-        this->move_to(self_label, { prev_label, MatterAnchor::LB }, MatterAnchor::LT, { 0.0F, 2.0F });
+        this->move_to(self_label, { prev_label, MatterPort::LB }, MatterPort::LT, { 0.0F, 2.0F });
     }
 }
 
