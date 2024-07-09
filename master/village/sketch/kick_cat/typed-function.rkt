@@ -7,9 +7,9 @@
 ; 调整语序：踢 猫 左
 
 ; 定义函数：
- (define (踢 [小动物 : String] [这只 : (U '左 '右)])
-   (printf "用~a脚踢了~a~n" 这只 小动物))
+(define (kick [animal : String] [which : (U 'left 'right)])
+  (printf "kick the ~a with ~a foot~n" animal which))
 
-(踢 "缅因猫" '左)
-(踢 "暹罗猫" '右)
-#;(踢 3.0 '中)
+(kick "wild cat" 'left)
+(kick "leopard cat" 'right)
+#;(kick 3.0 'middle)

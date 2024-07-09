@@ -7,17 +7,15 @@
 ; 调整语序：踢 猫 左
 
 ; 定义函数：
-(define (踢 猫 左)
-  ; 根据函数签名，还原自然语言描述
-  ; kick the cat with left foot
-  (printf "用~a脚踢了~a~n" 左 猫))
+(define (kick cat left)
+  (printf "kick the ~a with ~a foot~n" cat left))
 
 ; 调用函数：
-(踢 "加菲猫" '左)
-(踢 "波斯猫" '右)
+(kick "Garfield" 'left)
+(kick "Persian" 'right)
 
 ; 古灵精怪：
-(踢 3.0 12)
+(kick 3.0 12)
 
 ; 发现问题，引出“类型”概念，并适当调整参数名
 ; 介绍 Typed Racket
