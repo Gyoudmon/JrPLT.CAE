@@ -1,6 +1,6 @@
 #lang typed/racket/base
 
-(require bitmap)
+(require geofun/vector)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define cols : Byte 30)
@@ -21,7 +21,7 @@
     (step-up rows)))
 
 (define coordinate
-  (bitmap-track wani))
+  (geo-freeze wani))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
