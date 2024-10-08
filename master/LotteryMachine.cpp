@@ -1,7 +1,7 @@
-#include <gydm/game.hpp>
+#include <plteen/game.hpp>
 #include <stemos/motion/lottery.hpp>
 
-using namespace GYDM;
+using namespace Plteen;
 using namespace WarGrey::STEM;
 
 /*************************************************************************************************/
@@ -58,11 +58,11 @@ namespace {
             this->set_window_fullscreen(true);
 
 #ifdef __windows__
-            digimon_appdata_setup("C:\\opt\\GYDMstem\\");
-            digimon_mascot_setup("C:\\opt\\GYDMstem\\stone\\mascot");
+            digimon_appdata_setup("C:\\opt\\Plteenstem\\");
+            digimon_mascot_setup("C:\\opt\\Plteenstem\\stone\\mascot");
 #else
-            digimon_appdata_setup("/opt/GYDMstem/");
-            digimon_mascot_setup("/opt/GYDMstem/stone/mascot");
+            digimon_appdata_setup("/opt/Plteenstem/");
+            digimon_mascot_setup("/opt/Plteenstem/stone/mascot");
 #endif
 
             this->push_plane(new LotteryMachineWithCodePlane());

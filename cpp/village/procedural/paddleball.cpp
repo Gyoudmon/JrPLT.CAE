@@ -1,6 +1,6 @@
-#include <gydm/game.hpp>
+#include <plteen/game.hpp>
 
-using namespace GYDM;
+using namespace Plteen;
 
 const float ball_radius = 8.0F;
 const float paddle_width = 128.0F;
@@ -37,7 +37,7 @@ namespace {
     };
 
     /******************************************* 声明游戏世界 ******************************************/
-    class PaddleBallWorld : public GYDM::Universe {
+    class PaddleBallWorld : public Plteen::Universe {
     public:
         PaddleBallWorld() : Universe("托球优秀(过程版)") { /* 什么都不做 */ }
         virtual ~PaddleBallWorld() { /* 什么都不做 */ }

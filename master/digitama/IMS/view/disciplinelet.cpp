@@ -1,6 +1,6 @@
 #include "disciplinelet.hpp"
 
-using namespace GYDM;
+using namespace Plteen;
 using namespace WarGrey::IMS;
 
 /*************************************************************************************************/

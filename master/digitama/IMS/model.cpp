@@ -1,14 +1,14 @@
 #include "model.hpp"
 
-#include <gydm/datum/box.hpp>
-#include <gydm/datum/fixnum.hpp>
-#include <gydm/datum/flonum.hpp>
-#include <gydm/datum/vector.hpp>
+#include <plteen/datum/box.hpp>
+#include <plteen/datum/fixnum.hpp>
+#include <plteen/datum/flonum.hpp>
+#include <plteen/datum/vector.hpp>
 
 #include <fstream>
 #include <filesystem>
 
-using namespace GYDM;
+using namespace Plteen;
 using namespace WarGrey::IMS;
 
 using namespace std::filesystem;

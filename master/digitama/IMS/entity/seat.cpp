@@ -1,7 +1,7 @@
 #include "seat.hpp"
 
 using namespace WarGrey::IMS;
-using namespace GYDM;
+using namespace Plteen;
 
 /*************************************************************************************************/
 bool WarGrey::IMS::SeatEntity::match(const std::string& line, int* offset) {

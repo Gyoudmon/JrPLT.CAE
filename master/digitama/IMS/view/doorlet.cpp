@@ -1,7 +1,7 @@
 #include "doorlet.hpp"
 
 using namespace WarGrey::IMS;
-using namespace GYDM;
+using namespace Plteen;
 
 /*************************************************************************************************/
 #define DOOR_PATH digimon_path("IMS/door", "")

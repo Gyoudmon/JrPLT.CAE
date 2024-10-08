@@ -1,6 +1,6 @@
-#include <gydm/game.hpp>
-#include <gydm/datum/string.hpp>
-#include <gydm/datum/vector.hpp>
+#include <plteen/game.hpp>
+#include <plteen/datum/string.hpp>
+#include <plteen/datum/vector.hpp>
 
 #include "digitama/IMS/menu.hpp"
 #include "digitama/IMS/avatar.hpp"
@@ -16,7 +16,7 @@
 #include <vector>
 #include <map>
 
-using namespace GYDM;
+using namespace Plteen;
 using namespace WarGrey::IMS;
 
 /*************************************************************************************************/
@@ -907,11 +907,11 @@ namespace {
             imgdb_setup(digimon_subdir("stone"));
 
 #ifdef __windows__
-            digimon_appdata_setup("C:\\opt\\GYDMstem\\");
-            digimon_mascot_setup("C:\\opt\\GYDMstem\\stone\\mascot");
+            digimon_appdata_setup("C:\\opt\\Plteenstem\\");
+            digimon_mascot_setup("C:\\opt\\Plteenstem\\stone\\mascot");
 #else
-            digimon_appdata_setup("/opt/GYDMstem/");
-            digimon_mascot_setup("/opt/GYDMstem/stone/mascot");
+            digimon_appdata_setup("/opt/Plteenstem/");
+            digimon_mascot_setup("/opt/Plteenstem/stone/mascot");
 #endif
 
             this->parse_commandline_argument(argc, argv);

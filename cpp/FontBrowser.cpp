@@ -1,6 +1,6 @@
-#include <gydm/game.hpp>
+#include <plteen/game.hpp>
 
-using namespace GYDM;
+using namespace Plteen;
 
 /*************************************************************************************************/
 namespace {

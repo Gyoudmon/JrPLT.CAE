@@ -1,11 +1,11 @@
 // shape.cpp 文件
-#include <gydm/game.hpp> // 导入游戏模块
+#include <plteen/game.hpp> // 导入游戏模块
 
-using namespace GYDM; // 声明本模块的类和函数默认以 GYDM 的名义使用
+using namespace Plteen; // 声明本模块的类和函数默认以 Plteen 的名义使用
 
 /*************************************************************************************************/
 namespace {
-    class ShapeWorld : public GYDM::Universe {
+    class ShapeWorld : public Plteen::Universe {
     public:
         // 构造函数，默认什么都不做，除了通过父类构造函数设置窗口标题和帧频
         ShapeWorld() : Universe("图形宇宙(过程版)") {}

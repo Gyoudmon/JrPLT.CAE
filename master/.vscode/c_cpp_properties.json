@@ -4,7 +4,7 @@
             "name": "macOS",
             "includePath": [
                 "/usr/local/include",
-                "/opt/GYDMstem/include"
+                "/opt/JrPLT/include"
             ],
             "defines": [
                 "__macosx__",

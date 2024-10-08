@@ -1,7 +1,7 @@
 #include "class.hpp"
 
 using namespace WarGrey::IMS;
-using namespace GYDM;
+using namespace Plteen;
 
 /*************************************************************************************************/
 bool WarGrey::IMS::ClassEntity::match(const std::string& line, int* offset) {

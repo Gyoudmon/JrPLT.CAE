@@ -13,15 +13,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sdl2-config
   '((config SDL2)
-    (lib gydm)
-    (include "C:\\opt\\GYDMstem\\include")
-    (libpath "C:\\opt\\GYDMstem\\lib")))
+    (lib plteen)
+    (include "C:\\opt\\JrPLT\\include")
+    (libpath "C:\\opt\\JrPLT\\lib")))
 
 (define stem-config
   '((config SDL2)
-    (lib gydm stemos)
-    (include "C:\\opt\\GYDMstem\\include")
-    (libpath "C:\\opt\\GYDMstem\\lib")))
+    (lib plteen stemos)
+    (include "C:\\opt\\JrPLT\\include")
+    (libpath "C:\\opt\\JrPLT\\lib")))
 
 (define native-compiled-subpath '())
 (define native-compiled-bindir '("bin"))

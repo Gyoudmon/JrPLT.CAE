@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <exception>
 
-#include <gydm/datum/string.hpp>
+#include <plteen/datum/string.hpp>
 
 /*************************************************************************************************/
 namespace WarGrey::IMS {

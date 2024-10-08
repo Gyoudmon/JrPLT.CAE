@@ -1,11 +1,11 @@
 #include "gradelet.hpp"
 
-#include <gydm/datum/string.hpp>
-#include <gydm/datum/vector.hpp>
+#include <plteen/datum/string.hpp>
+#include <plteen/datum/vector.hpp>
 
-#include <gydm/graphics/image.hpp>
+#include <plteen/graphics/image.hpp>
 
-using namespace GYDM;
+using namespace Plteen;
 using namespace WarGrey::IMS;
 
 /*************************************************************************************************/
@@ -91,7 +91,7 @@ void WarGrey::IMS::Gradelet::draw(dc_t* dc, float x, float y, float width, float
     }
 }
 
-void WarGrey::IMS::Gradelet::set_title(const std::string& title, GYDM::MatterPort anchor) {
+void WarGrey::IMS::Gradelet::set_title(const std::string& title, Plteen::MatterPort anchor) {
     dc_t* dc = this->master()->drawing_context();
 
     if (dc != nullptr) {
@@ -107,12 +107,12 @@ void WarGrey::IMS::Gradelet::set_title(const char* title, ...) {
     this->set_title(t);
 }
 
-void WarGrey::IMS::Gradelet::set_title(GYDM::MatterPort anchor, const char* title, ...) {
+void WarGrey::IMS::Gradelet::set_title(Plteen::MatterPort anchor, const char* title, ...) {
     VSNPRINT(t, title);
     this->set_title(t, anchor);
 }
 
-void WarGrey::IMS::Gradelet::set_disciplines(const std::vector<DisciplineType>& dis, GYDM::MatterPort anchor) {
+void WarGrey::IMS::Gradelet::set_disciplines(const std::vector<DisciplineType>& dis, Plteen::MatterPort anchor) {
     dc_t* dc = this->master()->drawing_context();
 
     if (dc != nullptr) {

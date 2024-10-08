@@ -1,12 +1,12 @@
 #pragma once
 
-#include <gydm/game.hpp>
+#include <plteen/game.hpp>
 
 #include <vector>
 
 namespace WarGrey::IMS {
     /*********************************************************************************************/
-    class AvatarPlane : public GYDM::Plane {
+    class AvatarPlane : public Plteen::Plane {
     using Plane::Plane;
 
     public:
@@ -14,8 +14,8 @@ namespace WarGrey::IMS {
         void reflow(float width, float height) override;
 
     private:
-        GYDM::Labellet* title;
-        std::vector<GYDM::Labellet*> labels;
-        std::vector<GYDM::TrailStudent*> avatars;
+        Plteen::Labellet* title;
+        std::vector<Plteen::Labellet*> labels;
+        std::vector<Plteen::TrailStudent*> avatars;
     };
 }

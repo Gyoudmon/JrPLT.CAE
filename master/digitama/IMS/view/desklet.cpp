@@ -1,8 +1,8 @@
 #include "desklet.hpp"
 
-#include <gydm/datum/flonum.hpp>
+#include <plteen/datum/flonum.hpp>
 
-using namespace GYDM;
+using namespace Plteen;
 using namespace WarGrey::IMS;
 
 /*************************************************************************************************/

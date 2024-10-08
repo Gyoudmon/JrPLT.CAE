@@ -3,7 +3,7 @@
 #include <strings.h>
 
 using namespace WarGrey::IMS;
-using namespace GYDM;
+using namespace Plteen;
 
 /*************************************************************************************************/
 static const char* gender_to_name(StudentGender gender) {

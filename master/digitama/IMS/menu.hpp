@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gydm/game.hpp>
+#include <plteen/game.hpp>
 
 #include <vector>
 #include <map>
@@ -22,7 +22,7 @@ namespace WarGrey::IMS {
     };
 
     /*********************************************************************************************/
-    class IMenu : public GYDM::Plane {
+    class IMenu : public Plteen::Plane {
     using Plane::Plane;
 
     public:
@@ -45,7 +45,7 @@ namespace WarGrey::IMS {
         
     private:
         std::vector<std::pair<char, std::string>> menuitems;
-        std::map<char, GYDM::Labellet*> menulabels;
+        std::map<char, Plteen::Labellet*> menulabels;
 
     private:
         char current_menuitem = '\0';

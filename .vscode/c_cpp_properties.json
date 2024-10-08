@@ -3,9 +3,9 @@
         {
             "name": "macOS",
             "includePath": [
-                "/opt/GYDMstem/include",
+                "/opt/JrPLT/include",
                 "/usr/local/include",
-                "C:\\opt\\GYDMstem\\include",
+                "C:\\opt\\JrPLT\\include",
                 "cpp"
             ],
             "defines": [

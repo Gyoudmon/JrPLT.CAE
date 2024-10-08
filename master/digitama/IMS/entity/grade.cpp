@@ -4,7 +4,7 @@
 #include <sstream>
 
 using namespace WarGrey::IMS;
-using namespace GYDM;
+using namespace Plteen;
 
 /*************************************************************************************************/
 static const char timestamp_mark = 't';

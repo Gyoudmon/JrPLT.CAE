@@ -3,7 +3,7 @@
 #include <strings.h>
 
 using namespace WarGrey::IMS;
-using namespace GYDM;
+using namespace Plteen;
 
 /*************************************************************************************************/
 bool WarGrey::IMS::DisciplineEntity::match(const std::string& line, int* offset) {

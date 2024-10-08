@@ -10,9 +10,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define sdl2-config
   '((config SDL2)
-    (lib gydm pltmos stemos)
-    (include "C:\\opt\\GYDMstem\\include")
-    (libpath "C:\\opt\\GYDMstem\\lib")))
+    (lib plteen pltmos stemos)
+    (include "C:\\opt\\JrPLT\\include")
+    (libpath "C:\\opt\\JrPLT\\lib")))
 
 (define native-compiled-subpath '())
 (define native-compiled-bindir '("bin"))
