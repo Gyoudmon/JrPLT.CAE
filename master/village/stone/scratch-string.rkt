@@ -1,7 +1,6 @@
 #lang typed/racket
 
 (require bitmap)
-(require bitmap/constants)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define font : Font (desc-font #:family 'monospace #:size 24))
@@ -14,7 +13,7 @@
     (define gridsize : Flonum (* (real->double-flonum (font-size font)) 1.618))
     (define subsize : Flonum (real->double-flonum (font-size subfont)))
     (define grid : Bitmap (bitmap-square gridsize #:fill fill-color))
-    (define subgrid : Bitmap (bitmap-square subsize #:border 'transparent))
+    (define subgrid : Bitmap (bitmap-square subsize #:stroke 'transparent))
 
     (bitmap-hc-append* #:gapsize gap
                        (let char->bitmap : (Listof Bitmap) ([cs : (Listof Char) src]
@@ -41,7 +40,7 @@
 
 (define bitmap-char-at : (-> String Positive-Index Bitmap)
   (lambda [txt idx]
-    (define ghost (bitmap-square (font-size subfont) #:border 'transparent))
+    (define ghost (bitmap-square (font-size subfont) #:stroke 'transparent))
     
     (bitmap-hc-append (make-chars-array txt)
                       (bitmap-text (format "[~a] = " idx) font)

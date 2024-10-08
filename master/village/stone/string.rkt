@@ -1,7 +1,6 @@
 #lang typed/racket
 
 (require bitmap)
-(require bitmap/constants)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define escape-chars : (HashTable Char String)
@@ -35,7 +34,7 @@
 
 (define bitmap-text* : (->* (String Font) (Real) Bitmap)
   (lambda [text font [size -2.0]]
-    (define content (bitmap-text #:ascent magenta #:descent blue #:capline orange #:meanline green #:baseline red
+    (define content (bitmap-text #:ascent 'magenta #:descent 'blue #:capline 'orange #:meanline 'green #:baseline 'red
                                  text (desc-font (desc-font font #:size 'xx-large) #:size size)))
     (bitmap-frame content)))
 

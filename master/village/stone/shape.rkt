@@ -15,37 +15,37 @@
 
 (define (cs-dot [x : Real] [y : Real] [c : Color 'black]) : Bitmap
   (bitmap-pin* 1.0 1.0 0.5 0.5 (cs-xyline x y)
-               (bitmap-circle 2.0 #:border #false #:fill c)))
+               (bitmap-circle 2.0 #:stroke #false #:fill c)))
 
 (define (cs-rect [x : Real] [y : Real] [w : Real] [h : Real] [c : Color 'black]) : Bitmap
   (bitmap-pin* 1.0 1.0 0.0 0.0 (cs-xyline x y)
-               (bitmap-ct-superimpose (bitmap-rc-superimpose (bitmap-rectangle w h #:border c) (bitmap-text "h " math-font))
+               (bitmap-ct-superimpose (bitmap-rc-superimpose (bitmap-rectangle w h #:stroke c) (bitmap-text "h " math-font))
                                       (bitmap-text "w " math-font))))
 
 (define (cs-circle [x : Real] [y : Real] [r : Real] [c : Color 'black]) : Bitmap
   (bitmap-pin-over (cs-xyline x y)
-                   (make-rectangular x y)
-                   (bitmap-hc-append (bitmap-rc-superimpose (bitmap-circle r #:border c) (bitmap-arrow ar (- r ar) #:fill arrow-color))
+                   x y
+                   (bitmap-hc-append (bitmap-rc-superimpose (bitmap-circle r #:stroke c) (bitmap-arrow ar (- r ar) #:fill arrow-color))
                                      (bitmap-text 'R math-font))
-                   (make-rectangular r r)))
+                   r r))
 
 (define (cs-ellipse [x : Real] [y : Real] [a : Real] [b : Real] [c : Color 'black]) : Bitmap
   (bitmap-pin-over (cs-xyline x y)
-                   (make-rectangular x y)
+                   x y
                    (bitmap-vc-append
                     (bitmap-hc-append
-                     (bitmap-cb-superimpose (bitmap-rc-superimpose (bitmap-ellipse (* a 2) (* b 2) #:border c)
+                     (bitmap-cb-superimpose (bitmap-rc-superimpose (bitmap-ellipse (* a 2) (* b 2) #:stroke c)
                                                                    (bitmap-arrow ar (- a ar) #:fill arrow-color))
                                             (bitmap-arrow ar (- b ar) pi/2 #:fill arrow-color))
                      (bitmap-text 'a math-font))
                     (bitmap-text 'b math-font))
-                   (make-rectangular a b)))
+                   a b))
 
 (define (cartesian-pin [cs : Bitmap] [shapes : (Listof Bitmap)]) : Bitmap
   (define pin-pt (+ (* ch 2) 2+2i))
   (for/fold ([bmp : Bitmap cs])
             ([shape (in-list shapes)])
-    (bitmap-pin-over bmp pin-pt shape)))
+    (bitmap-pin-over bmp (real-part pin-pt) (imag-part pin-pt) shape)))
 
 (define shape-demo
   (bitmap-scale

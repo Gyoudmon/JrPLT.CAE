@@ -6,22 +6,22 @@
 (define cols : Byte 30)
 (define rows : Byte 12)
 
-(define wani : Dryland-Wani (make-dryland-wani 16))
+(define gomamon : Gomamon (make-gomamon 16))
 
 (for ([i (in-range (add1 rows))])
-  (with-dryland-wani! wani
+  (with-gomamon! gomamon
     (jump-back)
     (jump-up i)
-    (step-right cols)))
+    (move-right cols)))
 
 (for ([i (in-range (add1 cols))])
-  (with-dryland-wani! wani
+  (with-gomamon! gomamon
     (jump-back)
     (jump-right i)
-    (step-up rows)))
+    (move-up rows)))
 
 (define coordinate
-  (geo-freeze wani))
+  (geo-freeze gomamon))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ main
