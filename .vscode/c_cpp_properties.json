@@ -3,10 +3,8 @@
         {
             "name": "macOS",
             "includePath": [
-                "/opt/JrPLT/include",
                 "/usr/local/include",
-                "C:\\opt\\JrPLT\\include",
-                "cpp"
+                "/opt/JrPLT/include"
             ],
             "defines": [
                 "__macosx__",

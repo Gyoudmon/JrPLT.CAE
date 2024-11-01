@@ -12,22 +12,27 @@
     
     "tasks": [
         {
-            "label": "快捷构建",
-            "detail": "构建和运行当前活动文件",
+            "label": "JrPLT 教室[Release]",
+            "detail": "构建和运行 JrPLT 教室",
             "command": "raco",
             "type": "cppbuild",
-            "args": [ "wisemon", "-d", "cc", "${file}"],
-            "problemMatcher": ["$gcc"],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "windows": {
-                "problemMatcher": ["$msCompile"]
-            }
+            "problemMatcher": [ "$gcc" ],
+            "args": [ "wisemon", "-d", "cc" ],
+            "options": { "cwd": "${workspaceFolder}" },
+            "group": { "kind": "build", "isDefault": false },
+            "windows": { "problemMatcher": ["$msCompile"] }
+        },
+
+        {
+            "type": "cppbuild",
+            "label": "JrPLT 教室[Debug]",
+            "detail": "构建和调试 JrPLT 教室",
+            "command": "raco",
+            "problemMatcher": [ "$gcc" ],
+            "args": [ "wisemon", "-d", "cc-dbg" ],
+            "options": { "cwd": "${workspaceFolder}" },
+            "group": { "kind": "build", "isDefault": false },
+            "windows": { "problemMatcher": ["$msCompile"] }
         }
     ]
 }

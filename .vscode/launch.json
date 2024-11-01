@@ -1,24 +1,40 @@
 {
-    "version": "0.2.0",
+    "version": "2.0.0",
+    
     "configurations": [
         {
-            "name": "C++ 快捷运行",
+            "name": "JrPLT 教室",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/compiled/native/bin/${fileBasenameNoExtension}",
-            "args": [],
+            "program": "${workspaceFolder}/compiled/native/bin/JrPLT-CR",
+            "args": ["--in", "tamer/gms.db"],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
-            "internalConsoleOptions": "openOnSessionStart",
             "MIMode": "lldb",
-            "preLaunchTask": "快捷构建",
-            "externalConsole": true,
-            "avoidWindowsConsoleRedirection": true,
+            "preLaunchTask": "JrPLT 教室[Release]",
 
             "windows": {
-                "program": "${fileDirname}/compiled/native/bin/${fileBasenameNoExtension}.exe",
-                "type": "cppvsdbg"    
+                "program": "${workspaceFolder}/compiled/native/bin/JrPLT-CR.exe",
+                "type": "cppvsdbg"
+            }
+        },
+        
+        {
+            "name": "JrPLT 教室[Debug]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/compiled/native/debug/bin/JrPLT-CR",
+            "args": ["--in", "tamer/gms.db"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "MIMode": "lldb",
+            "preLaunchTask": "JrPLT 教室[Debug]",
+
+            "windows": {
+                "program": "${workspaceFolder}/compiled/native/debug/bin/JrPLT-CR.exe",
+                "type": "cppvsdbg"
             }
         }
     ]
